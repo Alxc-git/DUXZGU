@@ -4,7 +4,7 @@ import { Controller } from "@hotwired/stimulus"
 // thumbnails and swatches are just two views of the same choice, and every price,
 // name and image target on the page repaints from whichever one the visitor uses.
 export default class extends Controller {
-  static targets = ["name", "price", "compareAt", "image", "thumb", "swatch"]
+  static targets = ["name", "price", "compareAt", "image", "heroImage", "thumb", "swatch"]
 
   select(event) {
     this.apply(event.target)
@@ -21,7 +21,7 @@ export default class extends Controller {
   }
 
   apply(radio) {
-    const { variantId, name, price, compareAt, image } = radio.dataset
+    const { variantId, name, price, compareAt, image, hero } = radio.dataset
 
     this.nameTargets.forEach((target) => { if (name) target.textContent = name })
     this.priceTargets.forEach((target) => { if (price) target.textContent = price })
@@ -33,6 +33,10 @@ export default class extends Controller {
 
     if (image) {
       this.imageTargets.forEach((target) => { target.src = image })
+    }
+
+    if (hero) {
+      this.heroImageTargets.forEach((target) => { target.src = hero })
     }
 
     this.markActive(this.thumbTargets, variantId)

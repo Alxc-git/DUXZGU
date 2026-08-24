@@ -1,0 +1,92 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
+
+.craft {
+  background: $color-ink-deep;
+  color: #ffffff;
+  padding: $spacing-xl 0;
+}
+
+.craft__grid {
+  align-items: center;
+  display: grid;
+  gap: $spacing-lg;
+
+  @include desktop {
+    gap: $spacing-xl;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  }
+}
+
+.craft__media {
+  display: grid;
+  place-items: center;
+}
+
+.craft__image {
+  height: auto;
+  max-height: 520px;
+  object-fit: contain;
+  width: 100%;
+}
+
+.craft__content {
+  display: grid;
+  gap: $spacing-sm;
+}
+
+.craft__eyebrow {
+  align-items: center;
+  color: $color-accent-warm;
+  display: flex;
+  font-size: 0.75rem;
+  font-weight: 600;
+  gap: 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.craft__title {
+  font-family: $font-family-display;
+  font-size: clamp(1.9rem, 3.8vw, 2.8rem);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.craft__lede {
+  color: rgba(255, 255, 255, 0.62);
+  max-width: 52ch;
+}
+
+.craft__list {
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  display: grid;
+  gap: $spacing-sm;
+  list-style: none;
+  margin: $spacing-xs 0 0;
+  padding: $spacing-md 0 0;
+
+  @include tablet {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  li {
+    align-items: center;
+    display: flex;
+    gap: 0.6rem;
+  }
+
+  svg {
+    color: $color-accent-warm;
+    flex: none;
+  }
+
+  strong {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    opacity: 0.55;
+    text-transform: uppercase;
+  }
+}

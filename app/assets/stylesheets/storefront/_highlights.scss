@@ -2,40 +2,39 @@
 @use "../abstracts/mixins" as *;
 
 .highlights {
-  padding: $spacing-sm 0 $spacing-lg;
+  padding: $spacing-sm 0 0;
+
+  @include tablet {
+    display: none;
+  }
 }
 
 .highlights__list {
-  background: $color-background;
+  background: rgba(255, 255, 255, 0.9);
   border: 1px solid $color-border;
-  border-radius: $radius-xl;
+  border-radius: $radius-lg;
   box-shadow: $shadow-sm;
   display: grid;
   gap: 1px;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   list-style: none;
   margin: 0;
   overflow: hidden;
-  padding: 0;
-
-  @include tablet {
-    grid-template-columns: repeat(4, 1fr);
-  }
+  padding: 0.8rem 0.5rem;
 }
 
 .highlights__item {
   align-items: center;
-  box-shadow: 0 0 0 1px $color-border;
-  color: $color-muted;
-  display: flex;
-  font-size: 0.92rem;
-  font-weight: 500;
-  gap: 0.6rem;
-  justify-content: center;
-  padding: $spacing-sm;
+  color: $color-text;
+  display: grid;
+  font-size: 0.72rem;
+  gap: 0.35rem;
+  justify-items: center;
+  line-height: 1.2;
+  min-width: 0;
+  text-align: center;
+}
 
-  svg {
-    color: $color-text;
-    flex: none;
-  }
+.highlights__item svg {
+  color: $color-ink;
 }

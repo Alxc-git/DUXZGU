@@ -17,8 +17,8 @@
   <% end %>
 
   <figure class="gallery__stage">
-    <%= variant_image_tag variant, alt: product.name, class: "gallery__image",
-          data: { variant_target: "image" }, fetchpriority: "high", decoding: "async" %>
+    <%= variant_hero_image_tag variant, alt: product.name, class: "gallery__image",
+          data: { variant_target: "heroImage" }, fetchpriority: "high", decoding: "async" %>
     <% if product.discount_percentage.present? %>
       <figcaption class="tag tag--sale gallery__badge">-<%= product.discount_percentage %>%</figcaption>
     <% end %>

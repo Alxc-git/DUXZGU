@@ -61,9 +61,11 @@
 
       <%= form.button type: "submit", class: "button button--lg button--block" do %>
         <%= icon "bag", size: 20 %>
-        <span>Acheter maintenant</span>
+        <span>Ajouter au panier</span>
       <% end %>
     </div>
+
+    <%= form.button "Acheter maintenant", type: "submit", class: "button button--lg button--ghost button--block" %>
   <% end %>
 
   <ul class="buy-box__reassurance">

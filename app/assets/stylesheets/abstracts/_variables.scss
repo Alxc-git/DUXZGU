@@ -12,6 +12,13 @@ $color-accent: #1f4ed8;
 $color-accent-strong: #17399f;
 // Near-black used for primary buttons and the wordmark.
 $color-ink: #111111;
+// Darker greys for the editorial sections, where the product photography is lit
+// against black and the page has to disappear behind it.
+$color-ink-deep: #08080a;
+$color-ink-soft: #17171b;
+// Warm champagne accent, used only on the dark sections: blue reads flat there,
+// and the watches themselves carry rose gold.
+$color-accent-warm: #c9a86a;
 $color-star: #f5a623;
 $color-success: #16803c;
 $color-warning: #9a6700;
@@ -23,6 +30,7 @@ $radius-lg: 12px;
 $radius-xl: 20px;
 
 $container-width: 1280px;
+$container-half: $container-width * 0.5;
 
 $spacing-xs: 0.5rem;
 $spacing-sm: 1rem;

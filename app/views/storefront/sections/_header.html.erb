@@ -7,20 +7,26 @@
       <span data-menu-target="closeIcon" hidden><%= icon "close", size: 22 %></span>
     </button>
 
-    <%= link_to current_store&.name.presence || "Boutique", root_path, class: "site-header__brand" %>
+    <%= link_to "LUXTIME", root_path, class: "site-header__brand" %>
 
     <nav id="site-nav" class="site-nav" data-menu-target="panel" aria-label="Navigation principale">
-      <%= link_to "La montre", featured ? storefront_product_path(featured.slug) : root_path, class: "site-nav__link" %>
-      <%= link_to "Couleurs", root_path(anchor: "couleurs"), class: "site-nav__link" %>
-      <%= link_to "Avis", root_path(anchor: "avis"), class: "site-nav__link" %>
-      <%= link_to "FAQ", root_path(anchor: "faq"), class: "site-nav__link" %>
+      <%= link_to "Nouveautes", root_path, class: "site-nav__link" %>
+      <%= link_to "Montres", featured ? storefront_product_path(featured.slug) : root_path, class: "site-nav__link" %>
+      <%= link_to "Collections", root_path(anchor: "couleurs"), class: "site-nav__link" %>
+      <%= link_to "Accessoires", root_path(anchor: "faq"), class: "site-nav__link" %>
     </nav>
 
     <div class="site-header__actions">
+      <%= link_to root_path, class: "site-header__icon", aria: { label: "Rechercher" } do %>
+        <%= icon "zoom", size: 24 %>
+      <% end %>
+      <%= link_to root_path, class: "site-header__icon site-header__icon--account", aria: { label: "Compte" } do %>
+        <%= icon "user", size: 24 %>
+      <% end %>
       <% if featured.present? %>
-        <%= link_to storefront_product_path(featured.slug), class: "button button--compact" do %>
+        <%= link_to storefront_product_path(featured.slug), class: "site-header__icon site-header__bag", aria: { label: "Panier" } do %>
           <%= icon "bag", size: 18 %>
-          <span>Commander</span>
+          <span class="site-header__count">0</span>
         <% end %>
       <% end %>
     </div>

@@ -2,10 +2,10 @@ class Product < ApplicationRecord
   # Storefront copy. Anything set under settings["content"] wins, so a store can
   # be re-skinned from the admin without touching the templates.
   DEFAULT_CONTENT = {
-    "eyebrow" => "Montre chronographe sport",
+    "eyebrow" => "Montre Chronographe Sport",
     "headline_lead" => "Precision sportive.",
     "headline_trail" => "Style premium.",
-    "subhead" => "Quartz | Silicone | Etanche 30M",
+    "subhead" => "Quartz  |  Silicone  |  Etanche 30M",
     "rating" => 4.7,
     "reviews_count" => 128,
     "highlights" => [
@@ -31,8 +31,8 @@ class Product < ApplicationRecord
       { "icon" => "gauge", "label" => "Fonctions", "value" => "Chronographe, date, lumineux" }
     ],
     "reassurance" => [
-      { "icon" => "truck", "title" => "Livraison suivie", "body" => "Expedition sous 24/48h" },
-      { "icon" => "lock", "title" => "Paiement securise", "body" => "Carte, Apple Pay, Google Pay" },
+      { "icon" => "truck", "title" => "Livraison suivie", "body" => "Expedition 24/48h" },
+      { "icon" => "lock", "title" => "Paiement securise", "body" => "CB, PayPal, Apple Pay" },
       { "icon" => "refresh", "title" => "Retour 30 jours", "body" => "Satisfait ou rembourse" }
     ],
     "reviews" => [
@@ -61,6 +61,8 @@ class Product < ApplicationRecord
   has_many :orders, dependent: :restrict_with_error
   has_many :variants, -> { ordered }, dependent: :destroy, inverse_of: :product
   has_many_attached :images
+  # Exploded view used by the craftsmanship section.
+  has_one_attached :craft_image
 
   # `all_blank` would keep the empty admin rows, whose `active` checkbox defaults
   # to true: a variant only counts once it is named or mapped to a supplier id.

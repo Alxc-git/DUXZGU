@@ -154,7 +154,28 @@ templates. Icons are inline SVG from `IconsHelper`, so there is no icon font.
 Colour selection is one radio group driven by `variant_controller.js`. The
 gallery thumbnails and the swatch grid are two views of the same choice: picking
 either repaints the price, the colour name, the main photo and the sticky bar.
-Product photos are served as their original webp, not Active Storage variants,
+Every colour carries two photos, because a picker and a showcase need opposite
+things from an image:
+
+- `variant.image` — the packshot in `montres_images/optimized/`, white
+  background, used by the swatches, thumbnails and colour grid
+- `variant.lifestyle_image` — the dark editorial shot in
+  `montres_images/lifestyle/`, used by the hero and the gallery stage
+
+`Variant#hero_image` falls back to the packshot, so a colour with no editorial
+shot still renders everywhere.
+
+The packshots are pre-processed once with ImageMagick rather than at request
+time. The supplier ships them at mixed sizes (1920 and 800 square), with a gift
+box composited into two of them and a stray fragment in a third — so the raw
+files render at wildly different scales in a grid. The recipe that fixes it:
+
+```bash
+# mask the gift box / stray fragment, then trim, rescale and re-centre
+convert in.webp -fuzz 8% -trim +repage   -fill white -draw "rectangle 448,435 747,735"   -fuzz 8% -trim +repage -resize x1450   -background white -gravity center -extent 1600x1600   -quality 88 optimized/out.webp
+```
+
+Product photos are served as their originals, not Active Storage variants,
 because variants need libvips — present in the Docker image, not on every dev
 machine.
 

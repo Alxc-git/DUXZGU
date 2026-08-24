@@ -19,7 +19,8 @@ module IconsHelper
     "close" => %w[M6 6l12 12 M18 6L6 18],
     "zoom" => %w[M11 4a7 7 0 100 14 7 7 0 000-14z M20 20l-4-4],
     "heart" => %w[M12 20.4S4.5 16 4.5 10.6A4.1 4.1 0 0112 8.4a4.1 4.1 0 017.5 2.2c0 5.4-7.5 9.8-7.5 9.8z],
-    "bag" => %w[M6 8h12l1 12H5z M9 8V6a3 3 0 016 0v2]
+    "bag" => %w[M6 8h12l1 12H5z M9 8V6a3 3 0 016 0v2],
+    "user" => %w[M12 12a4 4 0 100-8 4 4 0 000 8z M4.5 21a7.5 7.5 0 0115 0]
   }.freeze
 
   def icon(name, size: 20, **options)

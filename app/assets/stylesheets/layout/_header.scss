@@ -2,8 +2,7 @@
 @use "../abstracts/mixins" as *;
 
 .site-header {
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.94);
   border-bottom: 1px solid $color-border;
   position: sticky;
   top: 0;
@@ -15,36 +14,47 @@
   display: grid;
   gap: $spacing-sm;
   grid-template-columns: auto 1fr auto;
-  min-height: $header-height;
+  min-height: 64px;
 
   @include desktop {
-    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    grid-template-columns: minmax(220px, 1fr) auto minmax(220px, 1fr);
+    min-height: 82px;
   }
 }
 
 .site-header__brand {
   font-family: $font-family-display;
-  font-size: clamp(1.15rem, 2.6vw, 1.6rem);
+  font-size: clamp(1.7rem, 3vw, 2.35rem);
   font-weight: 500;
   justify-self: center;
   letter-spacing: 0.16em;
+  line-height: 1;
   text-decoration: none;
   text-transform: uppercase;
 
   @include desktop {
-    grid-column: 1;
     justify-self: start;
   }
 }
 
-.site-header__burger {
-  background: none;
+.site-header__burger,
+.site-header__icon {
+  align-items: center;
+  background: transparent;
   border: 0;
-  color: inherit;
+  border-radius: 999px;
+  color: $color-ink;
   cursor: pointer;
   display: inline-flex;
-  padding: 0.4rem;
+  height: 42px;
+  justify-content: center;
+  padding: 0;
+  position: relative;
+  text-decoration: none;
+  width: 42px;
+}
 
+.site-header__burger {
   @include desktop {
     display: none;
   }
@@ -55,20 +65,18 @@
   border-bottom: 1px solid $color-border;
   display: none;
   flex-direction: column;
-  gap: $spacing-xs;
-  inset: $header-height 0 auto 0;
+  gap: 0.35rem;
+  inset: 64px 0 auto 0;
   padding: $spacing-sm;
   position: fixed;
 
   @include desktop {
-    background: none;
+    background: transparent;
     border: 0;
     display: flex;
     flex-direction: row;
-    gap: $spacing-lg;
-    grid-column: 2;
+    gap: clamp(2rem, 4vw, 4rem);
     inset: auto;
-    justify-content: center;
     padding: 0;
     position: static;
   }
@@ -79,23 +87,44 @@
 }
 
 .site-nav__link {
-  border-radius: $radius-sm;
   color: $color-text;
-  font-size: 0.95rem;
-  padding: 0.6rem 0.4rem;
+  font-size: 1rem;
+  font-weight: 400;
+  padding: 0.65rem 0.35rem;
   text-decoration: none;
+}
 
-  &:hover {
-    color: $color-accent;
-  }
+.site-nav__link:hover {
+  color: $color-accent;
 }
 
 .site-header__actions {
+  align-items: center;
   display: flex;
-  gap: $spacing-xs;
+  gap: 0.35rem;
   justify-content: flex-end;
+}
 
-  @include desktop {
-    grid-column: 3;
+.site-header__icon--account {
+  display: none;
+
+  @include tablet {
+    display: inline-flex;
   }
+}
+
+.site-header__count {
+  align-items: center;
+  background: $color-ink;
+  border-radius: 999px;
+  color: #ffffff;
+  display: inline-flex;
+  font-size: 0.65rem;
+  font-weight: 700;
+  height: 1rem;
+  justify-content: center;
+  min-width: 1rem;
+  position: absolute;
+  right: 0.25rem;
+  top: 0.15rem;
 }

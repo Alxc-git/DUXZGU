@@ -1,7 +1,11 @@
 class Variant < ApplicationRecord
   belongs_to :product
   has_many :orders, dependent: :restrict_with_error
+  # `image` is the white-background packshot used by the pickers, where a uniform
+  # cut-out matters; `lifestyle_image` is the dark editorial shot used wherever the
+  # product is presented rather than chosen.
   has_one_attached :image
+  has_one_attached :lifestyle_image
 
   before_validation :set_position, if: -> { position.blank? || position.zero? }
 
@@ -50,6 +54,16 @@ class Variant < ApplicationRecord
   # Falls back to the product gallery so a variant without its own photo still renders.
   def display_image
     image.attached? ? image : product.images.first
+  end
+
+  # Editorial shot when there is one, otherwise the packshot, so callers never
+  # have to branch on which photos a given colour happens to have.
+  def hero_image
+    lifestyle_image.attached? ? lifestyle_image : display_image
+  end
+
+  def lifestyle?
+    lifestyle_image.attached?
   end
 
   def swatch_color

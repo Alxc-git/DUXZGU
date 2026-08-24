@@ -69,6 +69,18 @@
   }
 }
 
+// Outline button for the dark sections, where a light border is the only edge.
+.button--ghost-light {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.32);
+  color: #ffffff;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.6);
+  }
+}
+
 .button--secondary {
   background: #ffffff;
   border-color: $color-border;

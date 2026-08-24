@@ -1,7 +1,8 @@
+<% showcase = product.default_variant %>
 <section class="hero">
-  <div class="page-container hero__grid">
+  <div class="hero__grid">
     <div class="hero__content">
-      <p class="hero__eyebrow"><%= product.content["eyebrow"] %></p>
+      <p class="hero__eyebrow"><span class="hero__rule"></span><%= product.content["eyebrow"] %></p>
 
       <h1 class="hero__title">
         <span><%= product.content["headline_lead"] %></span>
@@ -10,15 +11,25 @@
 
       <p class="hero__subhead"><%= product.content["subhead"] %></p>
 
+      <p class="hero__meta">
+        <%= star_rating product.rating, size: 15 %>
+        <span><%= number_with_precision(product.rating, precision: 1, separator: ",") %> · <%= product.reviews_count %> avis</span>
+        <span class="hero__divider"></span>
+        <strong><%= (showcase || product).formatted_price %></strong>
+        <% if product.discount_percentage.present? %>
+          <s><%= product.formatted_compare_at_price %></s>
+        <% end %>
+      </p>
+
       <div class="hero__actions">
-        <%= link_to "Decouvrir la montre", storefront_product_path(product.slug), class: "button button--lg" %>
-        <%= link_to "Voir les couleurs", root_path(anchor: "couleurs"), class: "button button--lg button--ghost" %>
+        <%= link_to "Decouvrir la montre", storefront_product_path(product.slug), class: "button button--lg button--invert" %>
+        <%= link_to "Voir les couleurs", root_path(anchor: "couleurs"), class: "button button--lg button--ghost-light" %>
       </div>
 
       <ul class="hero__trust">
         <% product.content["reassurance"].each do |item| %>
           <li>
-            <%= icon item["icon"], size: 20 %>
+            <%= icon item["icon"], size: 18 %>
             <span><%= item["title"] %></span>
           </li>
         <% end %>
@@ -26,7 +37,7 @@
     </div>
 
     <div class="hero__media">
-      <%= variant_image_tag product.default_variant, alt: product.name,
+      <%= variant_hero_image_tag showcase, alt: product.name,
             class: "hero__image", fetchpriority: "high", decoding: "async" %>
     </div>
   </div>

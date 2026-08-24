@@ -2,69 +2,113 @@
 @use "../abstracts/mixins" as *;
 
 .hero {
-  background: linear-gradient(180deg, $color-surface 0%, $color-background 100%);
+  background: $color-ink-deep;
+  color: #ffffff;
   overflow: hidden;
-  padding: $spacing-lg 0 0;
-
-  @include tablet {
-    padding: $spacing-xl 0 0;
-  }
 }
 
 .hero__grid {
-  align-items: center;
   display: grid;
-  gap: $spacing-lg;
 
-  @include tablet {
-    gap: $spacing-xl;
-    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  @include desktop {
+    align-items: stretch;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    min-height: min(82vh, 780px);
   }
 }
 
 .hero__content {
+  align-content: center;
   display: grid;
   gap: $spacing-sm;
-  padding-bottom: $spacing-lg;
+  order: 2;
+  padding: $spacing-lg $spacing-sm $spacing-xl;
+
+  @include desktop {
+    order: 0;
+    padding-block: $spacing-xl;
+    padding-right: $spacing-xl;
+    // Aligns the copy with where the page container's left edge would fall, while
+    // the photo beside it keeps bleeding to the viewport edge.
+    padding-left: max(#{$spacing-lg}, calc(50vw - #{$container-half} + #{$spacing-sm}));
+  }
 }
 
 .hero__eyebrow {
-  color: $color-accent;
-  font-size: 0.8rem;
+  align-items: center;
+  color: $color-accent-warm;
+  display: flex;
+  font-size: 0.75rem;
   font-weight: 600;
-  letter-spacing: 0.14em;
+  gap: 0.75rem;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
+}
+
+.hero__rule {
+  background: currentColor;
+  display: inline-block;
+  height: 1px;
+  opacity: 0.7;
+  width: 2.25rem;
 }
 
 .hero__title {
   display: grid;
   font-family: $font-family-display;
-  font-size: clamp(2.4rem, 6.2vw, 4.25rem);
+  font-size: clamp(2.6rem, 5.4vw, 4.5rem);
   font-weight: 400;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
+  line-height: 1.02;
 }
 
 .hero__subhead {
-  color: $color-muted;
-  font-size: 1.05rem;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 1rem;
+  letter-spacing: 0.02em;
+}
+
+.hero__meta {
+  align-items: center;
+  color: rgba(255, 255, 255, 0.62);
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 0.92rem;
+  gap: 0.6rem;
+
+  strong {
+    color: #ffffff;
+    font-size: 1.15rem;
+  }
+
+  s {
+    color: rgba(255, 255, 255, 0.38);
+  }
+}
+
+.hero__divider {
+  background: rgba(255, 255, 255, 0.22);
+  height: 1rem;
+  width: 1px;
 }
 
 .hero__actions {
   display: flex;
   flex-wrap: wrap;
-  gap: $spacing-xs;
+  gap: 0.6rem;
   margin-top: $spacing-xs;
 }
 
 .hero__trust {
-  color: $color-muted;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.62);
   display: flex;
   flex-wrap: wrap;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   gap: $spacing-md;
   list-style: none;
   margin: $spacing-sm 0 0;
-  padding: 0;
+  padding: $spacing-md 0 0;
 
   li {
     align-items: center;
@@ -74,24 +118,36 @@
 }
 
 .hero__media {
-  display: grid;
-  place-items: center;
+  order: 1;
   position: relative;
 
-  // Soft halo behind the watch, so the cut-out product does not float on white.
-  &::before {
-    background: radial-gradient(circle at 50% 45%, rgba(17, 17, 17, 0.09), transparent 62%);
-    border-radius: 50%;
+  @include desktop {
+    order: 0;
+  }
+
+  // Feathers the photo into the copy so the two halves read as one image.
+  &::after {
+    background: linear-gradient(180deg, $color-ink-deep 0%, rgba(8, 8, 10, 0) 28%);
     content: "";
-    inset: 8%;
+    inset: 0;
+    pointer-events: none;
     position: absolute;
+
+    @include desktop {
+      background: linear-gradient(90deg, $color-ink-deep 0%, rgba(8, 8, 10, 0) 22%);
+    }
   }
 }
 
 .hero__image {
-  height: auto;
-  max-height: 560px;
-  object-fit: contain;
-  position: relative;
+  aspect-ratio: 4 / 3;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 42%;
   width: 100%;
+
+  @include desktop {
+    aspect-ratio: auto;
+    object-position: center;
+  }
 }

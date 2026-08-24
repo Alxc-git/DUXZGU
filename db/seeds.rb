@@ -33,24 +33,28 @@ end
 product.currency = store.currency
 product.save!
 
-# Each entry maps a colour to its photo in montres_images/ and to the CJ `vid`
-# that must be filled in from the admin before the colour can be fulfilled.
+# Every colour carries two photos: a packshot from montres_images/optimized/ (white
+# background, all trimmed to one optical scale) for the pickers, and an editorial
+# shot from montres_images/lifestyle/ for the hero and gallery. The CJ `vid` still
+# has to be filled in from the admin before a colour can actually be fulfilled.
 COLOURS = [
-  { name: "Argent Noir", hex: "#b8bcc0", image: "2401150511170325800.webp" },
-  { name: "Noir Or Rose", hex: "#1c1c1c", image: "2401150511170326500.webp" },
-  { name: "Or Rose", hex: "#b76e79", image: "2401150511170326900.webp" },
-  { name: "Or Rose Cuir", hex: "#a9746e", image: "2401150511170327400.webp" },
-  { name: "Bleu Or Rose", hex: "#1e3f7a", image: "2401150511170328100.webp" },
-  { name: "Argent Cuir", hex: "#9aa0a6", image: "2401150511170328600.webp" }
+  { name: "Or Noir", hex: "#c69747", file: "or-noir.webp" },
+  { name: "Or Bleu", hex: "#173a77", file: "or-bleu.webp" },
+  { name: "Argent Noir", hex: "#b8bcc0", file: "argent-noir.webp" },
+  { name: "Noir Integral", hex: "#111111", file: "noir-integral.webp" },
+  { name: "Rose Gold Noir", hex: "#b76e79", file: "rose-gold-noir.webp" },
+  { name: "Argent Bracelet Noir", hex: "#d7d9dc", file: "argent-bracelet-noir.webp" }
 ].freeze
 
-attach_photo = lambda do |variant, filename|
-  path = Rails.root.join("montres_images", filename)
-  next Rails.logger.warn("[seeds] missing photo #{filename}") unless File.exist?(path)
-  next if variant.image.attached? && variant.image.filename.to_s == filename
+attach_photo = lambda do |attachment, folder, filename|
+  path = Rails.root.join("montres_images", folder, filename)
+  next Rails.logger.warn("[seeds] missing photo #{folder}/#{filename}") unless File.exist?(path)
+  next if attachment.attached? && attachment.filename.to_s == filename
 
-  variant.image.attach(io: File.open(path), filename: filename, content_type: "image/webp")
+  attachment.attach(io: File.open(path), filename: filename, content_type: "image/webp")
 end
+
+attach_photo.call(product.craft_image, "lifestyle", "eclate.webp")
 
 COLOURS.each_with_index do |colour, index|
   variant = product.variants.find_or_initialize_by(name: colour[:name])
@@ -60,7 +64,8 @@ COLOURS.each_with_index do |colour, index|
   variant.active = true
   variant.save!
 
-  attach_photo.call(variant, colour[:image])
+  attach_photo.call(variant.image, "optimized", colour[:file])
+  attach_photo.call(variant.lifestyle_image, "lifestyle", colour[:file])
 end
 
 # Retire colours that are no longer offered, but never one a customer has ordered.
