@@ -1,0 +1,12 @@
+<section class="highlights">
+  <div class="page-container">
+    <ul class="highlights__list">
+      <% product.content["highlights"].each do |item| %>
+        <li class="highlights__item">
+          <%= icon item["icon"], size: 20 %>
+          <span><%= item["label"] %></span>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+</section>

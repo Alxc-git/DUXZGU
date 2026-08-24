@@ -1,0 +1,13 @@
+<section class="features">
+  <div class="page-container">
+    <ul class="features__grid">
+      <% product.content["features"].each do |feature| %>
+        <li class="feature">
+          <span class="feature__icon"><%= icon feature["icon"], size: 24 %></span>
+          <h3 class="feature__title"><%= feature["title"] %></h3>
+          <p class="feature__body"><%= feature["body"] %></p>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+</section>

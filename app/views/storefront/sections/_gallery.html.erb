@@ -1,0 +1,26 @@
+<div class="gallery">
+  <% if product.variants? %>
+    <ul class="gallery__thumbs" role="list">
+      <% product.available_variants.each do |item| %>
+        <li>
+          <button type="button"
+                  class="gallery__thumb <%= "is-active" if item == variant %>"
+                  data-variant-target="thumb"
+                  data-variant-id="<%= item.id %>"
+                  data-action="variant#pick"
+                  aria-label="Voir la couleur <%= item.name %>">
+            <%= variant_image_tag item, alt: "#{product.name} - #{item.name}", loading: "lazy", decoding: "async" %>
+          </button>
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
+
+  <figure class="gallery__stage">
+    <%= variant_image_tag variant, alt: product.name, class: "gallery__image",
+          data: { variant_target: "image" }, fetchpriority: "high", decoding: "async" %>
+    <% if product.discount_percentage.present? %>
+      <figcaption class="tag tag--sale gallery__badge">-<%= product.discount_percentage %>%</figcaption>
+    <% end %>
+  </figure>
+</div>

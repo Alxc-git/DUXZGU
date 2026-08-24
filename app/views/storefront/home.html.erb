@@ -1,8 +1,17 @@
-<% content_for :title, current_store.name %>
+<% content_for :title, [ current_store.name, @product&.name ].compact_blank.join(" | ") %>
+<% content_for :description, @product&.description %>
 
-<%= render "storefront/sections/hero", product: @product %>
-<%= render "storefront/sections/product", product: @product %>
-<%= render "storefront/sections/benefits" %>
-<%= render "storefront/sections/reviews" %>
-<%= render "storefront/sections/faq" %>
-<%= render "storefront/sections/footer_cta", product: @product %>
+<% if @product.present? %>
+  <%= render "storefront/sections/hero", product: @product %>
+  <%= render "storefront/sections/highlights", product: @product %>
+  <%= render "storefront/sections/colours", product: @product, heading: "Toutes les couleurs", id: "couleurs" %>
+  <%= render "storefront/sections/features", product: @product %>
+  <%= render "storefront/sections/reviews", product: @product %>
+  <%= render "storefront/sections/faq", product: @product %>
+  <%= render "storefront/sections/footer_cta", product: @product %>
+<% else %>
+  <section class="empty-state page-container">
+    <h1>Boutique en preparation</h1>
+    <p>Aucun produit n'est encore publie sur <%= current_store.name %>.</p>
+  </section>
+<% end %>

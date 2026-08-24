@@ -1,5 +1,12 @@
-<section class="checkout-status page-container">
-  <h1>Payment received</h1>
-  <p>Your order is being prepared.</p>
-  <%= link_to "Back to store", root_path, class: "button" %>
+<% content_for :title, "Merci pour votre commande | #{current_store.name}" %>
+<section class="checkout-status">
+  <div class="page-container checkout-status__inner">
+    <span class="checkout-status__icon checkout-status__icon--success"><%= icon "check", size: 32 %></span>
+    <h1 class="checkout-status__title">Merci, votre commande est confirmee</h1>
+    <p class="checkout-status__body">
+      Vous allez recevoir un courriel de confirmation. Votre montre est preparee sous 24 a 48h,
+      puis vous recevrez votre numero de suivi des l'expedition.
+    </p>
+    <%= link_to "Retour a la boutique", root_path, class: "button button--lg" %>
+  </div>
 </section>

@@ -1,3 +1,101 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
+
 .site-header {
-  padding: 1rem 0;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid $color-border;
+  position: sticky;
+  top: 0;
+  z-index: 40;
+}
+
+.site-header__inner {
+  align-items: center;
+  display: grid;
+  gap: $spacing-sm;
+  grid-template-columns: auto 1fr auto;
+  min-height: $header-height;
+
+  @include desktop {
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  }
+}
+
+.site-header__brand {
+  font-family: $font-family-display;
+  font-size: clamp(1.15rem, 2.6vw, 1.6rem);
+  font-weight: 500;
+  justify-self: center;
+  letter-spacing: 0.16em;
+  text-decoration: none;
+  text-transform: uppercase;
+
+  @include desktop {
+    grid-column: 1;
+    justify-self: start;
+  }
+}
+
+.site-header__burger {
+  background: none;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  padding: 0.4rem;
+
+  @include desktop {
+    display: none;
+  }
+}
+
+.site-nav {
+  background: $color-background;
+  border-bottom: 1px solid $color-border;
+  display: none;
+  flex-direction: column;
+  gap: $spacing-xs;
+  inset: $header-height 0 auto 0;
+  padding: $spacing-sm;
+  position: fixed;
+
+  @include desktop {
+    background: none;
+    border: 0;
+    display: flex;
+    flex-direction: row;
+    gap: $spacing-lg;
+    grid-column: 2;
+    inset: auto;
+    justify-content: center;
+    padding: 0;
+    position: static;
+  }
+}
+
+.site-header--open .site-nav {
+  display: flex;
+}
+
+.site-nav__link {
+  border-radius: $radius-sm;
+  color: $color-text;
+  font-size: 0.95rem;
+  padding: 0.6rem 0.4rem;
+  text-decoration: none;
+
+  &:hover {
+    color: $color-accent;
+  }
+}
+
+.site-header__actions {
+  display: flex;
+  gap: $spacing-xs;
+  justify-content: flex-end;
+
+  @include desktop {
+    grid-column: 3;
+  }
 }

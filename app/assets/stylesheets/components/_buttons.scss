@@ -2,25 +2,76 @@
 
 .button {
   align-items: center;
-  background: $color-accent;
-  border: 1px solid $color-accent;
-  border-radius: $radius-sm;
+  background: $color-ink;
+  border: 1px solid $color-ink;
+  border-radius: $radius-md;
   color: #ffffff;
+  cursor: pointer;
   display: inline-flex;
-  font-weight: 700;
-  gap: 0.4rem;
+  font: inherit;
+  font-weight: 600;
+  gap: 0.5rem;
   justify-content: center;
-  min-height: 2.5rem;
-  padding: 0.6rem 1rem;
+  min-height: 2.75rem;
+  padding: 0.6rem 1.1rem;
   text-decoration: none;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+
+  &:hover {
+    background: #000000;
+    border-color: #000000;
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+
+  &[disabled] {
+    cursor: progress;
+    opacity: 0.6;
+  }
 }
 
-.button:hover {
-  background: $color-accent-strong;
+.button--lg {
+  font-size: 1rem;
+  min-height: 3.25rem;
+  padding: 0.85rem 1.6rem;
+}
+
+.button--compact {
+  min-height: 2.4rem;
+  padding: 0.45rem 0.9rem;
+}
+
+.button--block {
+  width: 100%;
+}
+
+.button--ghost {
+  background: transparent;
+  border-color: $color-border;
+  color: $color-text;
+
+  &:hover {
+    background: $color-surface;
+    border-color: $color-text;
+  }
+}
+
+.button--invert {
+  background: #ffffff;
+  border-color: #ffffff;
+  color: $color-ink;
+
+  &:hover {
+    background: $color-surface;
+    border-color: $color-surface;
+  }
 }
 
 .button--secondary {
   background: #ffffff;
+  border-color: $color-border;
   color: $color-text;
 }
 

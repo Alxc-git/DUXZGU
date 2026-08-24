@@ -1,4 +1,26 @@
-<section class="reviews page-container">
-  <h2>Reviews</h2>
-  <blockquote class="card reviews__quote">Add store-specific social proof in this partial.</blockquote>
+<section class="reviews" id="avis">
+  <div class="page-container">
+    <div class="reviews__header">
+      <h2 class="section-heading">Ce qu'en disent nos clients</h2>
+      <p class="reviews__summary">
+        <%= star_rating product.rating, size: 18 %>
+        <strong><%= number_with_precision(product.rating, precision: 1, separator: ",") %></strong>
+        <span>sur <%= product.reviews_count %> avis</span>
+      </p>
+    </div>
+
+    <ul class="reviews__grid">
+      <% product.content["reviews"].each do |review| %>
+        <li class="review">
+          <%= star_rating review["rating"], size: 14 %>
+          <h3 class="review__title"><%= review["title"] %></h3>
+          <p class="review__body"><%= review["body"] %></p>
+          <p class="review__author">
+            <%= review["author"] %>
+            <span class="review__verified"><%= icon "check", size: 14 %> Achat verifie</span>
+          </p>
+        </li>
+      <% end %>
+    </ul>
+  </div>
 </section>

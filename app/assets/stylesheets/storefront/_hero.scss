@@ -1,44 +1,97 @@
 @use "../abstracts/variables" as *;
 @use "../abstracts/mixins" as *;
 
-.product-hero {
-  padding: $spacing-lg 0;
+.hero {
+  background: linear-gradient(180deg, $color-surface 0%, $color-background 100%);
+  overflow: hidden;
+  padding: $spacing-lg 0 0;
+
+  @include tablet {
+    padding: $spacing-xl 0 0;
+  }
 }
 
-.product-hero__grid {
+.hero__grid {
+  align-items: center;
   display: grid;
   gap: $spacing-lg;
 
   @include tablet {
-    grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr);
-    align-items: center;
+    gap: $spacing-xl;
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
   }
 }
 
-.product-hero__content {
+.hero__content {
   display: grid;
-  gap: $spacing-md;
+  gap: $spacing-sm;
+  padding-bottom: $spacing-lg;
 }
 
-.product-hero__title {
-  font-size: clamp(2rem, 6vw, 4rem);
-  letter-spacing: 0;
+.hero__eyebrow {
+  color: $color-accent;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }
 
-.product-hero__description {
+.hero__title {
+  display: grid;
+  font-family: $font-family-display;
+  font-size: clamp(2.4rem, 6.2vw, 4.25rem);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.hero__subhead {
   color: $color-muted;
-  font-size: 1.08rem;
+  font-size: 1.05rem;
 }
 
-.product-hero__price {
-  font-size: 1.6rem;
-  font-weight: 800;
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-xs;
+  margin-top: $spacing-xs;
 }
 
-.product-hero__media {
-  background: $color-surface;
-  border: 1px solid $color-border;
-  border-radius: $radius-lg;
-  min-height: 320px;
-  overflow: hidden;
+.hero__trust {
+  color: $color-muted;
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 0.9rem;
+  gap: $spacing-md;
+  list-style: none;
+  margin: $spacing-sm 0 0;
+  padding: 0;
+
+  li {
+    align-items: center;
+    display: flex;
+    gap: 0.5rem;
+  }
+}
+
+.hero__media {
+  display: grid;
+  place-items: center;
+  position: relative;
+
+  // Soft halo behind the watch, so the cut-out product does not float on white.
+  &::before {
+    background: radial-gradient(circle at 50% 45%, rgba(17, 17, 17, 0.09), transparent 62%);
+    border-radius: 50%;
+    content: "";
+    inset: 8%;
+    position: absolute;
+  }
+}
+
+.hero__image {
+  height: auto;
+  max-height: 560px;
+  object-fit: contain;
+  position: relative;
+  width: 100%;
 }

@@ -1,12 +1,58 @@
 @use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
 
 .faq {
+  padding: $spacing-xl 0;
+}
+
+.faq__inner {
   display: grid;
-  gap: $spacing-sm;
-  padding: $spacing-lg 0;
+  gap: $spacing-lg;
+
+  @include tablet {
+    align-items: start;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  }
+}
+
+.faq__list {
+  border-top: 1px solid $color-border;
 }
 
 .faq__item {
-  border-top: 1px solid $color-border;
-  padding-top: $spacing-sm;
+  border-bottom: 1px solid $color-border;
+}
+
+.faq__question {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  font-weight: 500;
+  gap: $spacing-sm;
+  justify-content: space-between;
+  list-style: none;
+  padding: $spacing-sm 0;
+
+  &::-webkit-details-marker {
+    display: none;
+  }
+
+  &:hover {
+    color: $color-accent;
+  }
+}
+
+.faq__chevron {
+  flex: none;
+  transition: transform 0.2s ease;
+}
+
+.faq__item[open] .faq__chevron {
+  transform: rotate(180deg);
+}
+
+.faq__answer {
+  color: $color-muted;
+  padding: 0 0 $spacing-sm;
+  max-width: 68ch;
 }

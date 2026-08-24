@@ -1,0 +1,28 @@
+<% featured = current_product %>
+<header class="site-header" data-controller="menu" data-menu-open-class="site-header--open">
+  <div class="site-header__inner page-container">
+    <button type="button" class="site-header__burger" data-action="menu#toggle"
+            aria-expanded="false" aria-controls="site-nav" aria-label="Ouvrir le menu">
+      <span data-menu-target="openIcon"><%= icon "menu", size: 22 %></span>
+      <span data-menu-target="closeIcon" hidden><%= icon "close", size: 22 %></span>
+    </button>
+
+    <%= link_to current_store&.name.presence || "Boutique", root_path, class: "site-header__brand" %>
+
+    <nav id="site-nav" class="site-nav" data-menu-target="panel" aria-label="Navigation principale">
+      <%= link_to "La montre", featured ? storefront_product_path(featured.slug) : root_path, class: "site-nav__link" %>
+      <%= link_to "Couleurs", root_path(anchor: "couleurs"), class: "site-nav__link" %>
+      <%= link_to "Avis", root_path(anchor: "avis"), class: "site-nav__link" %>
+      <%= link_to "FAQ", root_path(anchor: "faq"), class: "site-nav__link" %>
+    </nav>
+
+    <div class="site-header__actions">
+      <% if featured.present? %>
+        <%= link_to storefront_product_path(featured.slug), class: "button button--compact" do %>
+          <%= icon "bag", size: 18 %>
+          <span>Commander</span>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+</header>

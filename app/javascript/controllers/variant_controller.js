@@ -1,21 +1,47 @@
 import { Controller } from "@hotwired/stimulus"
 
-// Keeps the displayed name, price and photo in sync with the selected colour.
-// The selection itself travels with the form as `variant_id`; this is display only.
+// Single source of truth for the selected colour. The radios carry the data, the
+// thumbnails and swatches are just two views of the same choice, and every price,
+// name and image target on the page repaints from whichever one the visitor uses.
 export default class extends Controller {
-  static targets = ["name", "price", "compareAt", "image"]
+  static targets = ["name", "price", "compareAt", "image", "thumb", "swatch"]
 
   select(event) {
-    const { name, price, compareAt, image } = event.target.dataset
+    this.apply(event.target)
+  }
 
-    if (this.hasNameTarget && name) this.nameTarget.textContent = name
-    if (this.hasPriceTarget && price) this.priceTarget.textContent = price
+  // Thumbnails sit outside the form, so they check the matching radio first.
+  pick(event) {
+    const id = event.currentTarget.dataset.variantId
+    const radio = this.element.querySelector(`input[name="variant_id"][value="${id}"]`)
+    if (!radio) return
 
-    if (this.hasCompareAtTarget) {
-      this.compareAtTarget.textContent = compareAt || ""
-      this.compareAtTarget.hidden = !compareAt
+    radio.checked = true
+    this.apply(radio)
+  }
+
+  apply(radio) {
+    const { variantId, name, price, compareAt, image } = radio.dataset
+
+    this.nameTargets.forEach((target) => { if (name) target.textContent = name })
+    this.priceTargets.forEach((target) => { if (price) target.textContent = price })
+
+    this.compareAtTargets.forEach((target) => {
+      target.textContent = compareAt || ""
+      target.hidden = !compareAt
+    })
+
+    if (image) {
+      this.imageTargets.forEach((target) => { target.src = image })
     }
 
-    if (this.hasImageTarget && image) this.imageTarget.src = image
+    this.markActive(this.thumbTargets, variantId)
+    this.markActive(this.swatchTargets, variantId)
+  }
+
+  markActive(elements, variantId) {
+    elements.forEach((element) => {
+      element.classList.toggle("is-active", element.dataset.variantId === variantId)
+    })
   }
 }

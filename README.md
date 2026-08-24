@@ -133,17 +133,38 @@ then overwritten with what Stripe actually charged (`amount_total`,
 9. Test `/webhooks/stripe` with Stripe CLI.
 10. Test supplier order creation and retry behavior from the admin order page.
 
-## Storefront Theming
+## Storefront
 
-The public frontend is intentionally minimal. Sections are split by responsibility:
+Two pages: a landing page at `/` and a product page at `/montre/:slug`.
+Each section is one ERB partial plus one matching SCSS partial:
 
 ```text
 app/views/storefront/sections/_hero.html.erb
 app/assets/stylesheets/storefront/_hero.scss
-app/javascript/controllers/quantity_controller.js
 ```
 
-The backend resolves the current store from `request.host` through `Current.store`. Store-specific templates can later be added under `app/views/storefront/templates` and selected with `store.settings["template"]`.
+Design tokens (fonts, colours, spacing, shadows) live in
+`app/assets/stylesheets/abstracts/_variables.scss` and are shared with the admin.
+
+Storefront copy — headline, specs, features, reviews, FAQ — comes from
+`Product::DEFAULT_CONTENT`, overridable per product through
+`settings["content"]`, so a second store can be re-skinned without touching the
+templates. Icons are inline SVG from `IconsHelper`, so there is no icon font.
+
+Colour selection is one radio group driven by `variant_controller.js`. The
+gallery thumbnails and the swatch grid are two views of the same choice: picking
+either repaints the price, the colour name, the main photo and the sticky bar.
+Product photos are served as their original webp, not Active Storage variants,
+because variants need libvips — present in the Docker image, not on every dev
+machine.
+
+There is no cart. A one-product store converts better going straight from the
+product page to Stripe Checkout, so "Acheter maintenant" posts `product_id`,
+`variant_id` and `quantity` directly to `/checkout`.
+
+The backend resolves the current store from `request.host` through
+`Current.store`. Store-specific templates can later be added under
+`app/views/storefront/templates` and selected with `store.settings["template"]`.
 
 ## Supplier Fulfillment
 

@@ -1,11 +1,78 @@
 @use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
 
 .reviews {
-  display: grid;
-  gap: $spacing-sm;
-  padding: $spacing-lg 0;
+  background: $color-surface;
+  padding: $spacing-xl 0;
 }
 
-.reviews__quote {
+.reviews__header {
+  align-items: end;
+  display: grid;
+  gap: $spacing-xs;
+  margin-bottom: $spacing-lg;
+
+  @include tablet {
+    grid-template-columns: 1fr auto;
+  }
+}
+
+.reviews__summary {
+  align-items: center;
   color: $color-muted;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+
+  strong {
+    color: $color-text;
+  }
+}
+
+.reviews__grid {
+  display: grid;
+  gap: $spacing-sm;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  @include tablet {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.review {
+  background: $color-background;
+  border: 1px solid $color-border;
+  border-radius: $radius-lg;
+  display: grid;
+  gap: 0.6rem;
+  padding: $spacing-md;
+}
+
+.review__title {
+  font-size: 1.02rem;
+  font-weight: 600;
+}
+
+.review__body {
+  color: $color-muted;
+  font-size: 0.95rem;
+}
+
+.review__author {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 0.88rem;
+  font-weight: 600;
+  gap: 0.5rem;
+}
+
+.review__verified {
+  align-items: center;
+  color: $color-success;
+  display: inline-flex;
+  font-weight: 500;
+  gap: 0.25rem;
 }

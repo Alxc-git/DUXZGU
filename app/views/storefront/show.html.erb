@@ -1,0 +1,24 @@
+<% content_for :title, "#{@product.name} | #{current_store.name}" %>
+<% content_for :description, @product.description %>
+
+<article class="pdp" data-controller="variant">
+  <div class="page-container">
+    <nav class="breadcrumb" aria-label="Fil d'Ariane">
+      <%= link_to "Accueil", root_path %>
+      <%= icon "chevron-right", size: 14 %>
+      <span aria-current="page"><%= @product.name %></span>
+    </nav>
+
+    <div class="pdp__grid">
+      <%= render "storefront/sections/gallery", product: @product, variant: @variant %>
+      <%= render "storefront/sections/buy_box", product: @product, variant: @variant %>
+    </div>
+  </div>
+
+  <%= render "storefront/sections/specs", product: @product %>
+  <%= render "storefront/sections/sticky_bar", product: @product, variant: @variant %>
+</article>
+
+<%= render "storefront/sections/colours", product: @product, heading: "Decouvrez aussi", id: "autres-couleurs" %>
+<%= render "storefront/sections/reviews", product: @product %>
+<%= render "storefront/sections/faq", product: @product %>

@@ -1,0 +1,41 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
+
+.highlights {
+  padding: $spacing-sm 0 $spacing-lg;
+}
+
+.highlights__list {
+  background: $color-background;
+  border: 1px solid $color-border;
+  border-radius: $radius-xl;
+  box-shadow: $shadow-sm;
+  display: grid;
+  gap: 1px;
+  grid-template-columns: repeat(2, 1fr);
+  list-style: none;
+  margin: 0;
+  overflow: hidden;
+  padding: 0;
+
+  @include tablet {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.highlights__item {
+  align-items: center;
+  box-shadow: 0 0 0 1px $color-border;
+  color: $color-muted;
+  display: flex;
+  font-size: 0.92rem;
+  font-weight: 500;
+  gap: 0.6rem;
+  justify-content: center;
+  padding: $spacing-sm;
+
+  svg {
+    color: $color-text;
+    flex: none;
+  }
+}

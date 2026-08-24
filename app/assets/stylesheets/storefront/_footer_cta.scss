@@ -1,14 +1,41 @@
 @use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
 
 .footer-cta {
-  background: $color-surface;
-  margin-top: $spacing-lg;
-  padding: $spacing-lg 0;
+  background: $color-ink;
+  color: #ffffff;
+  padding: $spacing-xl 0;
 }
 
 .footer-cta__inner {
+  align-items: center;
+  display: grid;
+  gap: $spacing-md;
+
+  @include tablet {
+    grid-template-columns: 1fr auto;
+  }
+}
+
+.footer-cta__title {
+  font-family: $font-family-display;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 400;
+}
+
+.footer-cta__price {
+  align-items: center;
   display: flex;
   flex-wrap: wrap;
-  gap: $spacing-sm;
-  justify-content: space-between;
+  gap: 0.6rem;
+  margin-top: 0.4rem;
+
+  strong {
+    font-size: 1.35rem;
+  }
+}
+
+.footer-cta__compare {
+  color: rgba(255, 255, 255, 0.55);
+  text-decoration: line-through;
 }

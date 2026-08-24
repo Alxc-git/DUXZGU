@@ -1,0 +1,45 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
+
+.features {
+  padding: $spacing-lg 0;
+}
+
+.features__grid {
+  border-top: 1px solid $color-border;
+  display: grid;
+  gap: $spacing-lg;
+  list-style: none;
+  margin: 0;
+  padding: $spacing-lg 0 0;
+
+  @include tablet {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.feature {
+  display: grid;
+  gap: 0.5rem;
+  justify-items: start;
+}
+
+.feature__icon {
+  align-items: center;
+  background: $color-surface;
+  border-radius: 50%;
+  display: inline-flex;
+  height: 2.75rem;
+  justify-content: center;
+  width: 2.75rem;
+}
+
+.feature__title {
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.feature__body {
+  color: $color-muted;
+  font-size: 0.95rem;
+}

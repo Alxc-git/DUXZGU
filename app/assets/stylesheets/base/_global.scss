@@ -2,10 +2,38 @@
 
 body {
   background: $color-background;
+
+  &.has-open-menu {
+    overflow: hidden;
+  }
 }
 
 a {
   color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid $color-accent;
+  outline-offset: 2px;
+}
+
+.skip-link {
+  background: $color-ink;
+  border-radius: 0 0 $radius-md 0;
+  color: #ffffff;
+  left: 0;
+  padding: 0.75rem 1rem;
+  position: absolute;
+  top: -100%;
+  z-index: 100;
+
+  &:focus {
+    top: 0;
+  }
+}
+
+.flash-stack {
+  padding-top: $spacing-sm;
 }
 
 .flash {
@@ -23,4 +51,34 @@ a {
 .flash--notice {
   border-color: $color-success;
   color: $color-success;
+}
+
+.tag {
+  border-radius: 999px;
+  display: inline-flex;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  padding: 0.2rem 0.5rem;
+}
+
+.tag--sale {
+  background: $color-accent;
+  color: #ffffff;
+}
+
+// Stand-in for a variant that has no photo yet.
+.media-placeholder {
+  aspect-ratio: 1;
+  background: repeating-linear-gradient(45deg, $color-surface, $color-surface 8px, $color-surface-strong 8px, $color-surface-strong 16px);
+  border-radius: $radius-md;
+  width: 100%;
+}
+
+.empty-state {
+  display: grid;
+  gap: $spacing-sm;
+  min-height: 50vh;
+  place-content: center;
+  text-align: center;
 }

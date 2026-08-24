@@ -1,0 +1,80 @@
+<% priced = variant || product %>
+<div class="buy-box">
+  <h1 class="buy-box__title"><%= product.name %></h1>
+
+  <p class="buy-box__rating">
+    <%= star_rating product.rating, size: 16 %>
+    <strong><%= number_with_precision(product.rating, precision: 1, separator: ",") %></strong>
+    <%= link_to "(#{product.reviews_count} avis)", root_path(anchor: "avis"), class: "buy-box__reviews-link" %>
+  </p>
+
+  <div class="buy-box__pricing">
+    <span class="buy-box__price" data-variant-target="price"><%= priced.formatted_price %></span>
+    <% compare_at = priced.formatted_compare_at_price %>
+    <span class="buy-box__compare" data-variant-target="compareAt" <%= "hidden" if compare_at.blank? %>><%= compare_at %></span>
+    <% if product.discount_percentage.present? %>
+      <span class="tag tag--sale">-<%= product.discount_percentage %>%</span>
+    <% end %>
+  </div>
+  <p class="buy-box__taxes">Taxes incluses<%= ". Livraison gratuite" if current_store.free_shipping? %></p>
+
+  <%= form_with url: checkout_path, method: :post, id: "formulaire-achat",
+                data: { controller: "quantity checkout" }, class: "buy-box__form" do |form| %>
+    <%= form.hidden_field :product_id, value: product.id %>
+
+    <% if product.variants? %>
+      <fieldset class="swatches">
+        <legend class="swatches__legend">
+          <span>Couleur</span>
+          <strong data-variant-target="name"><%= variant.name %></strong>
+        </legend>
+
+        <div class="swatches__grid">
+          <% product.available_variants.each do |item| %>
+            <label class="swatch <%= "is-active" if item == variant %>" data-variant-target="swatch" data-variant-id="<%= item.id %>">
+              <%= form.radio_button :variant_id, item.id,
+                    checked: item == variant,
+                    class: "swatch__input",
+                    data: { action: "change->variant#select" }.merge(variant_data(item)) %>
+              <span class="swatch__media">
+                <%= variant_image_tag item, alt: item.name, loading: "lazy", decoding: "async" %>
+              </span>
+              <span class="swatch__name"><%= item.name %></span>
+            </label>
+          <% end %>
+        </div>
+      </fieldset>
+    <% end %>
+
+    <div class="buy-box__actions">
+      <div class="stepper" role="group" aria-label="Quantite">
+        <button type="button" class="stepper__button" data-action="quantity#decrement" aria-label="Diminuer la quantite">
+          <%= icon "minus", size: 18 %>
+        </button>
+        <%= form.number_field :quantity, value: 1, min: 1, max: 99, class: "stepper__input",
+              inputmode: "numeric", "aria-label": "Quantite",
+              data: { quantity_target: "input", action: "change->quantity#clamp" } %>
+        <button type="button" class="stepper__button" data-action="quantity#increment" aria-label="Augmenter la quantite">
+          <%= icon "plus", size: 18 %>
+        </button>
+      </div>
+
+      <%= form.button type: "submit", class: "button button--lg button--block" do %>
+        <%= icon "bag", size: 20 %>
+        <span>Acheter maintenant</span>
+      <% end %>
+    </div>
+  <% end %>
+
+  <ul class="buy-box__reassurance">
+    <% product.content["reassurance"].each do |item| %>
+      <li>
+        <%= icon item["icon"], size: 22 %>
+        <span>
+          <strong><%= item["title"] %></strong>
+          <small><%= item["body"] %></small>
+        </span>
+      </li>
+    <% end %>
+  </ul>
+</div>

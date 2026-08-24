@@ -1,6 +1,16 @@
 <section class="footer-cta">
   <div class="page-container footer-cta__inner">
-    <h2><%= product&.name || "Ready to launch" %></h2>
-    <%= link_to "Back to top", root_path(anchor: "top"), class: "button button--secondary" %>
+    <div>
+      <h2 class="footer-cta__title"><%= product.name %></h2>
+      <p class="footer-cta__price">
+        <strong><%= (product.default_variant || product).formatted_price %></strong>
+        <% if product.discount_percentage.present? %>
+          <span class="footer-cta__compare"><%= product.formatted_compare_at_price %></span>
+          <span class="tag tag--sale">-<%= product.discount_percentage %>%</span>
+        <% end %>
+      </p>
+    </div>
+
+    <%= link_to "Commander maintenant", storefront_product_path(product.slug), class: "button button--lg button--invert" %>
   </div>
 </section>

@@ -1,3 +1,73 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
+
 .site-footer {
-  padding: 2rem 0;
+  background: $color-surface;
+  border-top: 1px solid $color-border;
+  margin-top: $spacing-xl;
+  padding: $spacing-xl 0 $spacing-lg;
+}
+
+.site-footer__inner {
+  display: grid;
+  gap: $spacing-lg;
+
+  @include tablet {
+    grid-template-columns: 1.6fr repeat(3, 1fr);
+  }
+}
+
+.site-footer__wordmark {
+  display: block;
+  font-family: $font-family-display;
+  font-size: 1.35rem;
+  letter-spacing: 0.16em;
+  margin-bottom: $spacing-xs;
+  text-transform: uppercase;
+}
+
+.site-footer__brand p {
+  color: $color-muted;
+  max-width: 34ch;
+}
+
+.site-footer__column {
+  display: grid;
+  gap: 0.5rem;
+  align-content: start;
+
+  h2 {
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  a {
+    color: $color-muted;
+    text-decoration: none;
+
+    &:hover {
+      color: $color-text;
+    }
+  }
+}
+
+.site-footer__reassurance {
+  align-items: center;
+  color: $color-muted;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.site-footer__legal {
+  border-top: 1px solid $color-border;
+  color: $color-muted;
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 0.85rem;
+  gap: $spacing-sm;
+  justify-content: space-between;
+  margin-top: $spacing-lg;
+  padding-top: $spacing-sm;
 }

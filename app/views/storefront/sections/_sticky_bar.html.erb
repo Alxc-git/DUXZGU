@@ -1,0 +1,23 @@
+<%# Mirrors the buy box once it scrolls out of view; submits the same form. %>
+<% priced = variant || product %>
+<div class="sticky-bar" data-controller="sticky-bar" data-sticky-bar-visible-class="sticky-bar--visible"
+     data-sticky-bar-anchor-value="#formulaire-achat" hidden>
+  <div class="page-container sticky-bar__inner">
+    <div class="sticky-bar__product">
+      <%= variant_image_tag variant, alt: product.name, class: "sticky-bar__image",
+            data: { variant_target: "image" }, loading: "lazy" %>
+      <div>
+        <strong class="sticky-bar__name"><%= product.name %></strong>
+        <span class="sticky-bar__colour" data-variant-target="name"><%= variant&.name %></span>
+      </div>
+    </div>
+
+    <div class="sticky-bar__cta">
+      <span class="sticky-bar__price" data-variant-target="price"><%= priced.formatted_price %></span>
+      <button type="submit" form="formulaire-achat" class="button button--lg">
+        <%= icon "bag", size: 18 %>
+        <span>Acheter</span>
+      </button>
+    </div>
+  </div>
+</div>

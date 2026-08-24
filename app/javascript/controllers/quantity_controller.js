@@ -1,10 +1,29 @@
 import { Controller } from "@hotwired/stimulus"
 
+const MIN = 1
+const MAX = 99
+
 export default class extends Controller {
   static targets = ["input"]
 
+  increment() {
+    this.setValue(this.value + 1)
+  }
+
+  decrement() {
+    this.setValue(this.value - 1)
+  }
+
   clamp() {
-    const value = Number.parseInt(this.inputTarget.value || "1", 10)
-    this.inputTarget.value = Math.min(Math.max(value, 1), 99)
+    this.setValue(this.value)
+  }
+
+  get value() {
+    const parsed = Number.parseInt(this.inputTarget.value, 10)
+    return Number.isNaN(parsed) ? MIN : parsed
+  }
+
+  setValue(next) {
+    this.inputTarget.value = Math.min(Math.max(next, MIN), MAX)
   }
 }

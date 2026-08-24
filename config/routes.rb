@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   root "storefront#home"
+  get "montre/:slug", to: "storefront#show", as: :storefront_product
 
   post "checkout", to: "checkouts#create", as: :checkout
   get "checkout/success", to: "storefront#success", as: :checkout_success

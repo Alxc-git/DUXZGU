@@ -3,31 +3,77 @@ require "test_helper"
 class StorefrontControllerTest < ActionDispatch::IntegrationTest
   setup { host! "localhost" }
 
-  test "renders the product page with a swatch per active colour" do
+  test "the landing page shows the hero and one card per active colour" do
     get root_path
 
     assert_response :success
+    assert_select ".hero__title"
+    assert_select ".colour-card", 2
+    assert_select ".colour-card__name", text: "Bleu"
+  end
+
+  test "the landing page survives a store with no product" do
+    products(:demo_product).update!(active: false)
+
+    get root_path
+
+    assert_response :success
+    assert_select ".empty-state"
+  end
+
+  test "the product page renders a swatch and a thumbnail per colour" do
+    get storefront_product_path(products(:demo_product).slug)
+
+    assert_response :success
     assert_select "input[name=variant_id]", 2
+    assert_select ".gallery__thumb", 2
     assert_select "input[name=variant_id][value=?][checked=checked]", variants(:black).id.to_s
-    assert_select ".variant-swatch__name", text: "Bleu"
+    assert_select ".buy-box__price", text: variants(:black).formatted_price
+  end
+
+  test "the product page preselects the colour given in the URL" do
+    get storefront_product_path(products(:demo_product).slug, couleur: variants(:blue).id)
+
+    assert_response :success
+    assert_select "input[name=variant_id][value=?][checked=checked]", variants(:blue).id.to_s
+    assert_select ".buy-box__price", text: variants(:blue).formatted_price
+  end
+
+  test "an unknown colour in the URL falls back to the default instead of failing" do
+    get storefront_product_path(products(:demo_product).slug, couleur: variants(:other_variant).id)
+
+    assert_response :success
+    assert_select "input[name=variant_id][value=?][checked=checked]", variants(:black).id.to_s
   end
 
   test "hides variants that are not active" do
     variants(:blue).update!(active: false)
 
-    get root_path
+    get storefront_product_path(products(:demo_product).slug)
 
     assert_response :success
     assert_select "input[name=variant_id]", 1
   end
 
-  test "renders without a picker when the product has no variants" do
+  test "renders a product with no variants at all" do
     products(:demo_product).variants.destroy_all
 
-    get root_path
+    get storefront_product_path(products(:demo_product).slug)
 
     assert_response :success
     assert_select "input[name=variant_id]", 0
-    assert_select ".product-hero__price"
+    assert_select ".buy-box__price", text: products(:demo_product).formatted_price
+  end
+
+  test "an unknown product slug redirects home instead of 500ing" do
+    get storefront_product_path("montre-inexistante")
+
+    assert_redirected_to root_path
+  end
+
+  test "the product page of another store is not reachable" do
+    get storefront_product_path(products(:other_product).slug)
+
+    assert_redirected_to root_path
   end
 end

@@ -1,0 +1,43 @@
+<% featured = current_product %>
+<footer class="site-footer">
+  <div class="page-container site-footer__inner">
+    <div class="site-footer__brand">
+      <span class="site-footer__wordmark"><%= current_store&.name %></span>
+      <p>Montres chronographes pensees pour durer, expediees partout au Canada.</p>
+    </div>
+
+    <nav class="site-footer__column" aria-label="Boutique">
+      <h2>Boutique</h2>
+      <% if featured.present? %>
+        <%= link_to featured.name, storefront_product_path(featured.slug) %>
+      <% end %>
+      <%= link_to "Toutes les couleurs", root_path(anchor: "couleurs") %>
+      <%= link_to "Avis clients", root_path(anchor: "avis") %>
+    </nav>
+
+    <nav class="site-footer__column" aria-label="Aide">
+      <h2>Aide</h2>
+      <%= link_to "Questions frequentes", root_path(anchor: "faq") %>
+      <% if current_store&.support_email.present? %>
+        <%= mail_to current_store.support_email, "Nous ecrire" %>
+      <% end %>
+    </nav>
+
+    <div class="site-footer__column">
+      <h2>Paiement</h2>
+      <p class="site-footer__reassurance">
+        <%= icon "lock", size: 16 %>
+        Paiement securise par Stripe
+      </p>
+      <p class="site-footer__reassurance">
+        <%= icon "refresh", size: 16 %>
+        Retour 30 jours
+      </p>
+    </div>
+  </div>
+
+  <div class="page-container site-footer__legal">
+    <span>&copy; <%= Date.current.year %> <%= current_store&.name %></span>
+    <span>Prix en <%= current_store&.currency.to_s.upcase %></span>
+  </div>
+</footer>

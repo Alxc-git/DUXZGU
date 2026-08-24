@@ -1,7 +1,40 @@
+@use "../abstracts/variables" as *;
+
 .checkout-status {
+  padding: $spacing-xl 0;
+}
+
+.checkout-status__inner {
   display: grid;
-  gap: 1rem;
-  min-height: 60vh;
+  gap: $spacing-sm;
+  justify-items: center;
+  max-width: 42rem;
+  min-height: 50vh;
   place-content: center;
   text-align: center;
+}
+
+.checkout-status__icon {
+  align-items: center;
+  background: $color-surface;
+  border-radius: 50%;
+  display: inline-flex;
+  height: 4.5rem;
+  justify-content: center;
+  width: 4.5rem;
+}
+
+.checkout-status__icon--success {
+  background: rgba(22, 128, 60, 0.12);
+  color: $color-success;
+}
+
+.checkout-status__title {
+  font-family: $font-family-display;
+  font-size: clamp(1.7rem, 4vw, 2.4rem);
+  font-weight: 400;
+}
+
+.checkout-status__body {
+  color: $color-muted;
 }

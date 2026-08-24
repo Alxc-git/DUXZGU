@@ -1,0 +1,19 @@
+<section class="colours" id="<%= id %>">
+  <div class="page-container">
+    <h2 class="section-heading section-heading--ruled"><%= heading %></h2>
+
+    <ul class="colours__grid">
+      <% product.available_variants.each do |variant| %>
+        <li>
+          <%= link_to storefront_product_path(product.slug, couleur: variant.id), class: "colour-card" do %>
+            <span class="colour-card__media">
+              <%= variant_image_tag variant, alt: "#{product.name} - #{variant.name}",
+                    class: "colour-card__image", loading: "lazy", decoding: "async" %>
+            </span>
+            <span class="colour-card__name"><%= variant.name %></span>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+</section>
