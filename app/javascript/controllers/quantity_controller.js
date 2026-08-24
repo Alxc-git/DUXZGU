@@ -23,7 +23,15 @@ export default class extends Controller {
     return Number.isNaN(parsed) ? MIN : parsed
   }
 
+  // Dispatches `change` so a surrounding form (the cart lines) can react. Only on
+  // a real change, otherwise clamp() -> setValue() -> change -> clamp() would loop.
   setValue(next) {
-    this.inputTarget.value = Math.min(Math.max(next, MIN), MAX)
+    const clamped = Math.min(Math.max(next, MIN), MAX)
+    const previous = this.inputTarget.value
+    this.inputTarget.value = clamped
+
+    if (String(clamped) !== previous) {
+      this.inputTarget.dispatchEvent(new Event("change", { bubbles: true }))
+    }
   }
 }

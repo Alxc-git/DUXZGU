@@ -26,6 +26,9 @@ module Payments
         assert_equal 9_800, result.order.total_cents
         assert_equal @store.id, calls.first.first[:metadata][:store_id]
         assert_equal result.order.id, calls.first.first[:metadata][:order_id]
+        assert_equal result.order.id.to_s, calls.first.first[:client_reference_id]
+        assert_equal "always", calls.first.first[:customer_creation]
+        assert_includes calls.first.first[:success_url], "session_id={CHECKOUT_SESSION_ID}"
       end
     end
 
@@ -83,6 +86,16 @@ module Payments
       assert_raises(Payments::CreateCheckout::Error) do
         Payments::CreateCheckout.call(store: @store, product: products(:other_product), quantity: 1, request: @request)
       end
+    end
+
+    test "explains when Stripe is not configured" do
+      Stripe.api_key = nil
+
+      error = assert_raises(Payments::CreateCheckout::Error) do
+        Payments::CreateCheckout.call(**checkout_args)
+      end
+
+      assert_match "STRIPE_SECRET_KEY", error.message
     end
 
     private

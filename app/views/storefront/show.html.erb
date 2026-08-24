@@ -19,7 +19,7 @@
   <%= render "storefront/sections/sticky_bar", product: @product, variant: @variant %>
 </article>
 
-<%= render "storefront/sections/craft", product: @product %>
-<%= render "storefront/sections/colours", product: @product, heading: "Decouvrez aussi", id: "autres-couleurs" %>
+<%= render "storefront/sections/craft", product: @product, variant: :collection %>
 <%= render "storefront/sections/reviews", product: @product %>
 <%= render "storefront/sections/faq", product: @product %>
+<%= render "storefront/sections/footer_cta", product: @product %>

@@ -1,12 +1,119 @@
 <% content_for :title, "Merci pour votre commande | #{current_store.name}" %>
-<section class="checkout-status">
-  <div class="page-container checkout-status__inner">
-    <span class="checkout-status__icon checkout-status__icon--success"><%= icon "check", size: 32 %></span>
-    <h1 class="checkout-status__title">Merci, votre commande est confirmee</h1>
-    <p class="checkout-status__body">
-      Vous allez recevoir un courriel de confirmation. Votre montre est preparee sous 24 a 48h,
-      puis vous recevrez votre numero de suivi des l'expedition.
-    </p>
-    <%= link_to "Retour a la boutique", root_path, class: "button button--lg" %>
+<% first_order = @orders.first %>
+
+<section class="confirmation">
+  <div class="page-container confirmation__inner">
+    <%= render "checkouts/progress", step: :done %>
+
+    <header class="confirmation__head">
+      <% if @awaiting_payment %>
+        <span class="confirmation__icon confirmation__icon--pending"><%= icon "clock", size: 30 %></span>
+        <h1 class="confirmation__title">Votre commande est enregistree</h1>
+        <p class="confirmation__lead">
+          Elle est rattachee a <strong><%= first_order&.email %></strong>, mais le paiement reste
+          a finaliser : la boutique n'a pas encore ses cles Stripe. Rien n'a ete debite.
+        </p>
+      <% else %>
+        <span class="confirmation__icon"><%= icon "check", size: 30 %></span>
+        <h1 class="confirmation__title">Merci, votre paiement est confirme</h1>
+        <% if first_order&.email.present? %>
+          <p class="confirmation__lead">
+            Une confirmation part vers <strong><%= first_order.email %></strong>.
+            Votre montre est preparee sous 24 a 48h, puis vous recevrez votre numero de suivi.
+          </p>
+        <% else %>
+          <p class="confirmation__lead">
+            Vous allez recevoir un courriel de confirmation. Votre montre est preparee sous 24 a 48h,
+            puis vous recevrez votre numero de suivi des l'expedition.
+          </p>
+        <% end %>
+      <% end %>
+    </header>
+
+    <% if @orders.any? %>
+      <article class="confirmation__card">
+        <header class="confirmation__card-head">
+          <div>
+            <span class="confirmation__label">Reference</span>
+            <strong class="confirmation__reference">
+              <%= first_order.metadata["checkout_reference"].presence || "LX-#{first_order.id}" %>
+            </strong>
+          </div>
+          <div>
+            <span class="confirmation__label">Date</span>
+            <strong><%= first_order.created_at.strftime("%d/%m/%Y") %></strong>
+          </div>
+          <div>
+            <span class="confirmation__label">Livraison estimee</span>
+            <strong><%= delivery_window %></strong>
+          </div>
+        </header>
+
+        <ul class="confirmation__lines" role="list">
+          <% @orders.each do |order| %>
+            <li class="confirmation__line">
+              <span class="confirmation__media">
+                <%= variant_image_tag order.variant, alt: order.line_item_name, loading: "lazy" %>
+                <span class="confirmation__badge"><%= order.quantity %></span>
+              </span>
+              <span class="confirmation__info">
+                <strong><%= order.product.name %></strong>
+                <span><%= order.variant&.name %></span>
+              </span>
+              <span class="confirmation__price"><%= order.formatted_total %></span>
+            </li>
+          <% end %>
+        </ul>
+
+        <div class="confirmation__totals">
+          <div class="confirmation__total-row confirmation__total-row--strong">
+            <span><%= @awaiting_payment ? "Total a payer" : "Total paye" %></span>
+            <span><%= MoneyFormatter.format(@orders.sum(&:total_cents), first_order.currency) %></span>
+          </div>
+        </div>
+
+        <% if first_order.address_line1.present? %>
+          <div class="confirmation__address">
+            <span class="confirmation__label">Adresse de livraison</span>
+            <address>
+              <%= first_order.customer_name %><br>
+              <%= first_order.address_line1 %><br>
+              <% if first_order.address_line2.present? %><%= first_order.address_line2 %><br><% end %>
+              <%= [ first_order.city, first_order.province, first_order.postal_code ].compact_blank.join(", ") %><br>
+              <%= country_name(first_order.country) %>
+            </address>
+          </div>
+        <% end %>
+      </article>
+
+      <ol class="confirmation__timeline" role="list">
+        <li class="confirmation__step <%= "confirmation__step--done" unless @awaiting_payment %>">
+          <span class="confirmation__step-mark"><%= icon "check", size: 14 %></span>
+          <div>
+            <strong><%= @awaiting_payment ? "Commande recue" : "Paiement confirme" %></strong>
+            <span><%= @awaiting_payment ? "En attente du paiement." : "Nous l'avons bien enregistree." %></span>
+          </div>
+        </li>
+        <li class="confirmation__step">
+          <span class="confirmation__step-mark"><%= icon "package", size: 14 %></span>
+          <div>
+            <strong>Preparation</strong>
+            <span>Sous 24 a 48h ouvrables.</span>
+          </div>
+        </li>
+        <li class="confirmation__step">
+          <span class="confirmation__step-mark"><%= icon "truck", size: 14 %></span>
+          <div>
+            <strong>Expedition</strong>
+            <span>Numero de suivi envoye par courriel.</span>
+          </div>
+        </li>
+      </ol>
+    <% end %>
+
+    <%= link_to root_path, class: "button button--lg" do %>
+      <%= icon "arrow-right", size: 18 %>
+      <span>Retour a la boutique</span>
+    <% end %>
   </div>
 </section>

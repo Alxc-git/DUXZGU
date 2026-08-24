@@ -31,9 +31,10 @@ class Product < ApplicationRecord
       { "icon" => "gauge", "label" => "Fonctions", "value" => "Chronographe, date, lumineux" }
     ],
     "reassurance" => [
-      { "icon" => "truck", "title" => "Livraison suivie", "body" => "Expedition 24/48h" },
       { "icon" => "lock", "title" => "Paiement securise", "body" => "CB, PayPal, Apple Pay" },
-      { "icon" => "refresh", "title" => "Retour 30 jours", "body" => "Satisfait ou rembourse" }
+      { "icon" => "refresh", "title" => "Retour 30 jours", "body" => "Satisfait ou rembourse" },
+      { "icon" => "truck", "title" => "Expedition 24/48h", "body" => "Livraison suivie" },
+      { "icon" => "award", "title" => "Garantie 2 ans", "body" => "Qualite premium" }
     ],
     "reviews" => [
       { "author" => "Maxime L.", "rating" => 5, "title" => "Elle en impose",
@@ -61,8 +62,11 @@ class Product < ApplicationRecord
   has_many :orders, dependent: :restrict_with_error
   has_many :variants, -> { ordered }, dependent: :destroy, inverse_of: :product
   has_many_attached :images
-  # Exploded view used by the craftsmanship section.
+  # Editorial images used by the dark content section on home and product pages.
   has_one_attached :craft_image
+  has_one_attached :collection_image
+  # Detail photos of the case, crown, back and strap shown beside the product image.
+  has_many_attached :part_images
 
   # `all_blank` would keep the empty admin rows, whose `active` checkbox defaults
   # to true: a variant only counts once it is named or mapped to a supplier id.

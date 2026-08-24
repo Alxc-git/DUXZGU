@@ -13,8 +13,9 @@
     </div>
 
     <div class="sticky-bar__cta">
+      <%= payment_marks(class: "payment-marks--sm sticky-bar__marks") %>
       <span class="sticky-bar__price" data-variant-target="price"><%= priced.formatted_price %></span>
-      <button type="submit" form="formulaire-achat" class="button button--lg">
+      <button type="submit" form="formulaire-achat" name="then" value="checkout" class="button button--lg">
         <%= icon "bag", size: 18 %>
         <span>Acheter</span>
       </button>

@@ -1,3 +1,5 @@
+require "digest/md5"
+
 # Idempotent seeds: safe to re-run. Store configuration is re-applied on every run
 # so an existing store picks up new defaults; product content is only written on
 # creation so prices and copy edited in the admin are never overwritten.
@@ -49,12 +51,39 @@ COLOURS = [
 attach_photo = lambda do |attachment, folder, filename|
   path = Rails.root.join("montres_images", folder, filename)
   next Rails.logger.warn("[seeds] missing photo #{folder}/#{filename}") unless File.exist?(path)
-  next if attachment.attached? && attachment.filename.to_s == filename
+
+  source_checksum = Digest::MD5.file(path).base64digest
+  if attachment.attached? &&
+      attachment.filename.to_s == filename &&
+      attachment.blob.checksum == source_checksum
+    next
+  end
+
+  attachment.purge if attachment.attached?
 
   attachment.attach(io: File.open(path), filename: filename, content_type: "image/webp")
 end
 
 attach_photo.call(product.craft_image, "lifestyle", "eclate.webp")
+attach_photo.call(product.collection_image, "lifestyle", "collection.webp")
+
+PART_IMAGES = [
+  "ChatGPT Image 24 août 2026, 01_17_23 (2).png",
+  "ChatGPT Image 24 août 2026, 01_17_23 (3).png",
+  "ChatGPT Image 24 août 2026, 01_17_23 (4).png",
+  "ChatGPT Image 24 août 2026, 01_17_24 (9).png"
+].freeze
+
+current_part_filenames = product.part_images.map { |attachment| attachment.filename.to_s }
+product.part_images.purge if current_part_filenames.sort != PART_IMAGES.sort
+
+PART_IMAGES.each do |filename|
+  path = Rails.root.join("separer", filename)
+  next Rails.logger.warn("[seeds] missing part photo #{filename}") unless File.exist?(path)
+  next if product.part_images.any? { |attachment| attachment.filename.to_s == filename }
+
+  product.part_images.attach(io: File.open(path), filename:, content_type: "image/png")
+end
 
 COLOURS.each_with_index do |colour, index|
   variant = product.variants.find_or_initialize_by(name: colour[:name])

@@ -21,12 +21,14 @@ class StorefrontControllerTest < ActionDispatch::IntegrationTest
     assert_select ".empty-state"
   end
 
-  test "the product page renders a swatch and a thumbnail per colour" do
+  test "the product page renders a swatch per colour and a gallery rail" do
     get storefront_product_path(products(:demo_product).slug)
 
     assert_response :success
     assert_select "input[name=variant_id]", 2
-    assert_select ".gallery__thumb", 2
+    # Colours live in the swatches; the rail is the photo strip, so a product with
+    # no detail shots attached still carries the watch itself as its only slide.
+    assert_select ".gallery__thumb", 1
     assert_select "input[name=variant_id][value=?][checked=checked]", variants(:black).id.to_s
     assert_select ".buy-box__price", text: variants(:black).formatted_price
   end

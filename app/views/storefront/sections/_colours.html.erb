@@ -1,8 +1,17 @@
 <section class="colours" id="<%= id %>">
   <div class="page-container">
-    <h2 class="section-heading section-heading--ruled"><%= heading %></h2>
+    <div class="section-head">
+      <div>
+        <p class="section-head__eyebrow">Coloris disponibles</p>
+        <h2 class="section-heading"><%= heading %></h2>
+      </div>
+      <%= link_to storefront_product_path(product.slug), class: "section-head__link" do %>
+        <span>Voir tout</span>
+        <%= icon "chevron-right", size: 16 %>
+      <% end %>
+    </div>
 
-    <ul class="colours__grid">
+    <ul class="colours__grid" role="list">
       <% product.available_variants.each do |variant| %>
         <li>
           <%= link_to storefront_product_path(product.slug, couleur: variant.id), class: "colour-card" do %>
@@ -10,7 +19,10 @@
               <%= variant_image_tag variant, alt: "#{product.name} - #{variant.name}",
                     class: "colour-card__image", loading: "lazy", decoding: "async" %>
             </span>
-            <span class="colour-card__name"><%= variant.name %></span>
+            <span class="colour-card__foot">
+              <span class="colour-card__name"><%= variant.name %></span>
+              <span class="colour-card__price"><%= variant.formatted_price %></span>
+            </span>
           <% end %>
         </li>
       <% end %>

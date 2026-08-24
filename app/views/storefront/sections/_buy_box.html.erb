@@ -1,12 +1,14 @@
 <% priced = variant || product %>
 <div class="buy-box">
-  <h1 class="buy-box__title"><%= product.name %></h1>
+  <div class="buy-box__head">
+    <h1 class="buy-box__title"><%= product.name %></h1>
 
-  <p class="buy-box__rating">
-    <%= star_rating product.rating, size: 16 %>
-    <strong><%= number_with_precision(product.rating, precision: 1, separator: ",") %></strong>
-    <%= link_to "(#{product.reviews_count} avis)", root_path(anchor: "avis"), class: "buy-box__reviews-link" %>
-  </p>
+    <p class="buy-box__rating">
+      <%= star_rating product.rating, size: 16 %>
+      <strong><%= number_with_precision(product.rating, precision: 1, separator: ",") %></strong>
+      <%= link_to "(#{product.reviews_count} avis)", "#avis", class: "buy-box__reviews-link" %>
+    </p>
+  </div>
 
   <div class="buy-box__pricing">
     <span class="buy-box__price" data-variant-target="price"><%= priced.formatted_price %></span>
@@ -16,22 +18,32 @@
       <span class="tag tag--sale">-<%= product.discount_percentage %>%</span>
     <% end %>
   </div>
-  <p class="buy-box__taxes">Taxes incluses<%= ". Livraison gratuite" if current_store.free_shipping? %></p>
 
-  <%= form_with url: checkout_path, method: :post, id: "formulaire-achat",
+  <p class="buy-box__taxes">
+    Taxes incluses<%= ". Livraison gratuite" if current_store.free_shipping? %>.
+    <span class="buy-box__stock">
+      <span class="buy-box__dot"></span>
+      En stock
+    </span>
+  </p>
+
+  <%= form_with url: cart_lines_path, method: :post, id: "formulaire-achat",
                 data: { controller: "quantity checkout" }, class: "buy-box__form" do |form| %>
     <%= form.hidden_field :product_id, value: product.id %>
 
     <% if product.variants? %>
-      <fieldset class="swatches">
+      <fieldset class="swatches" id="couleurs">
         <legend class="swatches__legend">
           <span>Couleur</span>
-          <strong data-variant-target="name"><%= variant.name %></strong>
+          <strong data-variant-target="name"><%= variant&.name %></strong>
         </legend>
 
         <div class="swatches__grid">
           <% product.available_variants.each do |item| %>
-            <label class="swatch <%= "is-active" if item == variant %>" data-variant-target="swatch" data-variant-id="<%= item.id %>">
+            <label class="swatch <%= "is-active" if item == variant %>"
+                   data-variant-target="swatch"
+                   data-variant-id="<%= item.id %>"
+                   title="<%= item.name %>">
               <%= form.radio_button :variant_id, item.id,
                     checked: item == variant,
                     class: "swatch__input",
@@ -59,22 +71,43 @@
         </button>
       </div>
 
-      <%= form.button type: "submit", class: "button button--lg button--block" do %>
+      <button type="button"
+              class="wishlist"
+              data-controller="wishlist"
+              data-wishlist-key-value="<%= product.slug %>"
+              data-wishlist-saved-class="is-saved"
+              data-action="wishlist#toggle"
+              aria-pressed="false"
+              aria-label="Ajouter aux favoris">
+        <%= icon "heart", size: 20 %>
+      </button>
+
+      <%= form.button type: "submit", class: "button button--lg button--block buy-box__submit" do %>
         <%= icon "bag", size: 20 %>
         <span>Ajouter au panier</span>
       <% end %>
     </div>
 
-    <%= form.button "Acheter maintenant", type: "submit", class: "button button--lg button--ghost button--block" %>
+    <%# Same form, but this button carries the customer straight to the address step. %>
+    <%= button_tag "Acheter maintenant", type: "submit", name: "then", value: "checkout",
+          class: "button button--lg button--ghost button--block" %>
   <% end %>
 
-  <ul class="buy-box__reassurance">
-    <% product.content["reassurance"].each do |item| %>
+  <% reassurance_source = product.content["reassurance"].reject { |item| item["title"].to_s.match?(/garantie/i) } %>
+  <% reassurance_items = [
+    reassurance_source.find { |item| item["icon"] == "truck" || item["title"].to_s.match?(/livraison|expedition/i) },
+    reassurance_source.find { |item| item["title"].to_s.match?(/paiement/i) },
+    reassurance_source.find { |item| item["title"].to_s.match?(/retour/i) }
+  ].compact %>
+  <ul class="buy-box__reassurance" role="list">
+    <% reassurance_items.each do |item| %>
+      <% title = item["icon"] == "truck" ? item["body"] : item["title"] %>
+      <% body = item["icon"] == "truck" ? item["title"] : item["body"] %>
       <li>
-        <%= icon item["icon"], size: 22 %>
+        <%= icon item["icon"], size: 20 %>
         <span>
-          <strong><%= item["title"] %></strong>
-          <small><%= item["body"] %></small>
+          <strong><%= title %></strong>
+          <small><%= body %></small>
         </span>
       </li>
     <% end %>

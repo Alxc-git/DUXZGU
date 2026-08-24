@@ -2,44 +2,187 @@
 @use "../abstracts/mixins" as *;
 
 .faq {
-  padding: $spacing-xl 0;
+  background: linear-gradient(180deg, #ffffff 0%, $color-surface 100%);
+  border-top: 1px solid $color-border;
+  padding: clamp(3rem, 7vw, 6rem) 0;
 }
 
 .faq__inner {
   display: grid;
-  gap: $spacing-lg;
+  gap: clamp(2rem, 5vw, 4rem);
 
   @include tablet {
-    align-items: start;
-    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    align-items: stretch;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.faq__intro {
+  align-content: start;
+  display: grid;
+  gap: 0.9rem;
+
+  @include tablet {
+    grid-template-rows: auto auto auto minmax(0, 1fr);
+    height: 100%;
+  }
+}
+
+.faq__eyebrow {
+  color: $color-muted;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.faq__lead {
+  color: $color-muted;
+  max-width: 48ch;
+}
+
+.faq__support-stack {
+  display: grid;
+  gap: $spacing-sm;
+  margin-top: 0.35rem;
+
+  @include tablet {
+    align-self: stretch;
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+    height: 100%;
+    margin-top: 0;
+  }
+}
+
+.faq__support-card {
+  align-items: center;
+  background: $color-background;
+  border: 1px solid $color-border;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-card;
+  color: $color-text;
+  display: grid;
+  gap: $spacing-sm;
+  grid-template-columns: auto minmax(0, 1fr);
+  min-height: 9.7rem;
+  padding: $spacing-md;
+}
+
+.faq__support-card > svg {
+  color: $color-success;
+  flex: none;
+}
+
+.faq__support-card strong {
+  display: block;
+  font-size: 1rem;
+}
+
+.faq__support-card > div > span {
+  color: $color-muted;
+  display: block;
+  font-size: 0.92rem;
+  margin-top: 0.2rem;
+}
+
+.faq__support-marks {
+  margin-top: 0.7rem;
+}
+
+.faq__support-link {
+  align-items: center;
+  color: $color-ink;
+  display: inline-flex;
+  font-size: 0.92rem;
+  font-weight: 600;
+  gap: 0.3rem;
+  margin-top: 0.6rem;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  svg {
+    flex: none;
   }
 }
 
 .faq__list {
-  border-top: 1px solid $color-border;
+  align-content: start;
+  display: grid;
+  gap: 0.75rem;
+
+  @include tablet {
+    height: 100%;
+  }
 }
 
 .faq__item {
-  border-bottom: 1px solid $color-border;
+  background: $color-background;
+  border: 1px solid $color-border;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-sm;
+  overflow: hidden;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.faq__item:hover {
+  border-color: $color-border-strong;
+}
+
+.faq__item--open,
+.faq__item[open] {
+  border-color: $color-border-strong;
+  box-shadow: $shadow-card;
 }
 
 .faq__question {
   align-items: center;
   cursor: pointer;
-  display: flex;
+  display: grid;
   font-weight: 500;
-  gap: $spacing-sm;
-  justify-content: space-between;
+  gap: 0.7rem;
+  grid-template-columns: auto auto minmax(0, 1fr) auto;
   list-style: none;
-  padding: $spacing-sm 0;
+  min-height: 4.3rem;
+  padding: 1rem;
 
   &::-webkit-details-marker {
     display: none;
   }
 
   &:hover {
-    color: $color-accent;
+    color: $color-ink;
   }
+}
+
+.faq__number {
+  color: $color-muted;
+  min-width: 1.5rem;
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.faq__question-icon {
+  align-items: center;
+  background: $color-surface;
+  border: 1px solid $color-border-subtle;
+  border-radius: $radius-md;
+  color: $color-ink;
+  display: inline-flex;
+  height: 2.1rem;
+  justify-content: center;
+  width: 2.1rem;
+}
+
+.faq__item[open] .faq__question-icon {
+  background: $color-surface-strong;
+  border-color: $color-border;
+  color: $color-ink;
 }
 
 .faq__chevron {
@@ -53,6 +196,26 @@
 
 .faq__answer {
   color: $color-muted;
-  padding: 0 0 $spacing-sm;
   max-width: 68ch;
+  padding: 0 1.5rem 1.25rem 6rem;
+}
+
+@media (max-width: 520px) {
+  .faq__support-card {
+    min-height: 11.35rem;
+  }
+
+  .faq__question {
+    gap: 0.5rem;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    min-height: 5.25rem;
+  }
+
+  .faq__number {
+    display: none;
+  }
+
+  .faq__answer {
+    padding-left: 3.8rem;
+  }
 }

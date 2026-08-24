@@ -97,6 +97,24 @@ Admin is available at `/admin`. Login exists only after you seed with `ADMIN_EMA
 
 ## Stripe CLI
 
+For local checkout testing:
+
+```bash
+cp .env.example .env
+```
+
+Then put your Stripe test keys in `.env`:
+
+```text
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_PUBLISHABLE_KEY=pk_test_...
+```
+
+Restart `bin/dev` after changing `.env`. Once `STRIPE_SECRET_KEY` is present,
+the product form posts to `/checkout`, creates an order in Rails, creates a
+hosted Stripe Checkout Session, then redirects the customer to the Stripe
+payment page.
+
 Forward Stripe events to the local webhook endpoint:
 
 ```bash

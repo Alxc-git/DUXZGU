@@ -5,9 +5,15 @@ $font-family-display: "Playfair Display", Georgia, "Times New Roman", serif;
 $color-background: #ffffff;
 $color-surface: #f6f6f4;
 $color-surface-strong: #ecece7;
+// Tinted surface used inside framed media, so a packshot never floats on raw white.
+$color-surface-media: #f4f4f1;
 $color-text: #0f0f0f;
 $color-muted: #6b6b6b;
-$color-border: #e3e3de;
+// Three border weights instead of one: hairlines inside a card, the default edge,
+// and a strong edge for the outlines that have to read at a glance.
+$color-border-subtle: #eeeeea;
+$color-border: #dcdcd6;
+$color-border-strong: #c3c3ba;
 $color-accent: #1f4ed8;
 $color-accent-strong: #17399f;
 // Near-black used for primary buttons and the wordmark.
@@ -24,10 +30,11 @@ $color-success: #16803c;
 $color-warning: #9a6700;
 $color-danger: #c62828;
 
-$radius-sm: 6px;
-$radius-md: 8px;
-$radius-lg: 12px;
-$radius-xl: 20px;
+$radius-sm: 4px;
+$radius-md: 6px;
+$radius-lg: 8px;
+$radius-xl: 10px;
+$radius-pill: 999px;
 
 $container-width: 1280px;
 $container-half: $container-width * 0.5;
@@ -40,6 +47,14 @@ $spacing-xl: 4rem;
 
 $header-height: 72px;
 
+// Elevation: every shadow keeps a hairline top edge so a raised surface still has
+// a visible contour on white, which a soft drop shadow alone does not give.
 $shadow-sm: 0 1px 2px rgba(15, 15, 15, 0.06);
 $shadow-md: 0 8px 24px rgba(15, 15, 15, 0.08);
 $shadow-lg: 0 20px 60px rgba(15, 15, 15, 0.12);
+$shadow-card: 0 1px 1px rgba(15, 15, 15, 0.04), 0 8px 20px rgba(15, 15, 15, 0.05);
+$shadow-raised: 0 1px 1px rgba(15, 15, 15, 0.05), 0 14px 32px rgba(15, 15, 15, 0.09);
+
+// Selection ring shared by swatches, thumbs and focus states.
+$ring-accent: 0 0 0 2px rgba(31, 78, 216, 0.18);
+$ring-ink: 0 0 0 2px rgba(17, 17, 17, 0.12);

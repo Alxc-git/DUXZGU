@@ -1,0 +1,55 @@
+<%# lines: [{variant:, product:, quantity:, amount:}], totals: {subtotal:, shipping_cents:, total:} %>
+<aside class="order-summary">
+  <h2 class="order-summary__title">
+    <span>Votre commande</span>
+    <% if local_assigns[:edit_path].present? %>
+      <%= link_to "Modifier", edit_path, class: "order-summary__edit" %>
+    <% end %>
+  </h2>
+
+  <ul class="order-summary__lines" role="list">
+    <% lines.each do |line| %>
+      <li class="order-summary__line">
+        <span class="order-summary__media">
+          <%= variant_image_tag line[:variant], alt: "#{line[:product].name} #{line[:variant]&.name}",
+                loading: "lazy", decoding: "async" %>
+          <span class="order-summary__badge"><%= line[:quantity] %></span>
+        </span>
+        <span class="order-summary__info">
+          <strong><%= line[:product].name %></strong>
+          <span><%= line[:variant]&.name %></span>
+        </span>
+        <span class="order-summary__price"><%= line[:amount] %></span>
+      </li>
+    <% end %>
+  </ul>
+
+  <dl class="order-summary__rows">
+    <div class="order-summary__row">
+      <dt>Sous-total</dt>
+      <dd><%= totals[:subtotal] %></dd>
+    </div>
+    <div class="order-summary__row">
+      <dt>Livraison</dt>
+      <dd>
+        <% if totals[:shipping_cents].to_i.zero? %>
+          <span class="order-summary__free">Offerte</span>
+        <% else %>
+          <%= MoneyFormatter.format(totals[:shipping_cents], current_store.currency) %>
+        <% end %>
+      </dd>
+    </div>
+    <div class="order-summary__row order-summary__row--total">
+      <dt>Total</dt>
+      <dd><%= totals[:total] %></dd>
+    </div>
+  </dl>
+
+  <p class="order-summary__taxes">Taxes incluses.</p>
+
+  <ul class="order-summary__perks" role="list">
+    <li><%= icon "truck", size: 16 %><span>Expedition sous 24/48h</span></li>
+    <li><%= icon "refresh", size: 16 %><span>Retour 30 jours</span></li>
+    <li><%= icon "award", size: 16 %><span>Garantie 2 ans</span></li>
+  </ul>
+</aside>

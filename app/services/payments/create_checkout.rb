@@ -16,12 +16,14 @@ module Payments
     end
 
     def call
-      raise Error, "Stripe is not configured" if Stripe.api_key.blank?
+      raise Error, "Stripe n'est pas encore configure. Ajoutez STRIPE_SECRET_KEY puis relancez le serveur." if Stripe.api_key.blank?
       raise Error, "Produit indisponible" unless product.store_id == store.id && product.active?
       raise Error, "Veuillez choisir une couleur" if product.variants? && variant.blank?
 
       order = build_order
       session = create_stripe_session(order)
+      raise Error, "Stripe n'a pas retourne d'URL de paiement" if session.url.blank?
+
       order.update!(
         status: :checkout_created,
         stripe_checkout_session_id: session.id,
@@ -58,7 +60,9 @@ module Payments
       params = {
         mode: "payment",
         locale: store.checkout_locale,
-        success_url: checkout_url(:checkout_success_url),
+        client_reference_id: order.id.to_s,
+        customer_creation: "always",
+        success_url: "#{checkout_url(:checkout_success_url)}?session_id={CHECKOUT_SESSION_ID}",
         cancel_url: checkout_url(:checkout_cancel_url),
         # Without this the webhook has no address and the supplier order cannot ship.
         shipping_address_collection: { allowed_countries: store.shipping_countries },

@@ -1,0 +1,84 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
+
+.field {
+  display: grid;
+  gap: 0.3rem;
+  min-width: 0;
+
+  label {
+    font-size: 0.88rem;
+    font-weight: 500;
+  }
+}
+
+.field-row {
+  display: grid;
+  gap: 0.85rem;
+
+  @include tablet {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.field-row--three {
+  @include desktop {
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr) minmax(0, 1fr);
+  }
+}
+
+.input {
+  background: $color-background;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  color: $color-text;
+  font: inherit;
+  min-height: 3rem;
+  padding: 0.65rem 0.85rem;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  width: 100%;
+
+  &::placeholder {
+    color: #a3a39c;
+  }
+
+  &:hover {
+    border-color: $color-border-strong;
+  }
+
+  &:focus {
+    border-color: $color-accent;
+    box-shadow: $ring-accent;
+    outline: none;
+  }
+}
+
+// Native select arrow removed so the control matches the text inputs beside it.
+select.input {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b6b6b' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9.5l6 6 6-6'/%3E%3C/svg%3E");
+  background-position: right 0.75rem center;
+  background-repeat: no-repeat;
+  background-size: 1.15rem;
+  padding-right: 2.4rem;
+}
+
+.input--invalid {
+  border-color: $color-danger;
+
+  &:focus {
+    border-color: $color-danger;
+    box-shadow: 0 0 0 2px rgba(198, 40, 40, 0.16);
+  }
+}
+
+.field__hint {
+  color: $color-muted;
+  font-size: 0.8rem;
+}
+
+.field__error {
+  color: $color-danger;
+  font-size: 0.82rem;
+  font-weight: 500;
+}

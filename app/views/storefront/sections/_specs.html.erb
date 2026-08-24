@@ -1,6 +1,6 @@
-<section class="specs">
+<section class="specs" id="specifications">
   <div class="page-container specs__grid">
-    <div class="specs__features">
+    <div class="specs__panel specs__features">
       <h2 class="section-heading section-heading--sm">Pourquoi cette montre</h2>
       <ul class="specs__feature-list">
         <% product.content["features"].each do |feature| %>
@@ -15,7 +15,7 @@
       </ul>
     </div>
 
-    <div class="specs__table">
+    <div class="specs__panel specs__table">
       <h2 class="section-heading section-heading--sm">Specifications</h2>
       <dl class="spec-list">
         <% product.content["specs"].each do |spec| %>

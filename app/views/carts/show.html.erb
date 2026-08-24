@@ -1,0 +1,167 @@
+<% content_for :title, "Panier | #{current_store.name}" %>
+
+<section class="cart">
+  <div class="page-container">
+    <nav class="breadcrumb" aria-label="Fil d'Ariane">
+      <%= link_to "Accueil", root_path %>
+      <%= icon "chevron-right", size: 14 %>
+      <span aria-current="page">Panier</span>
+    </nav>
+
+    <header class="cart__header">
+      <h1 class="cart__title">Votre panier</h1>
+      <% if current_cart.any? %>
+        <p class="cart__count"><%= pluralize(current_cart.count, "article", "articles") %></p>
+      <% end %>
+    </header>
+
+    <% if current_cart.empty? %>
+      <div class="cart__empty">
+        <span class="cart__empty-icon"><%= icon "bag", size: 30 %></span>
+        <h2>Votre panier est vide</h2>
+        <p>Choisissez votre couleur, elle vous attendra ici.</p>
+        <%= link_to current_product ? storefront_product_path(current_product.slug) : root_path,
+              class: "button button--lg" do %>
+          <%= icon "arrow-right", size: 18 %>
+          <span>Voir la montre</span>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="cart__grid">
+        <div class="cart__lines">
+          <% current_cart.lines.each do |line| %>
+            <article class="cart-line">
+              <%= link_to storefront_product_path(line.product.slug, couleur: line.variant.id),
+                    class: "cart-line__media" do %>
+                <%= variant_image_tag line.variant, alt: "#{line.product.name} #{line.variant.name}",
+                      loading: "lazy", decoding: "async" %>
+              <% end %>
+
+              <div class="cart-line__info">
+                <h2 class="cart-line__name">
+                  <%= link_to line.product.name, storefront_product_path(line.product.slug, couleur: line.variant.id) %>
+                </h2>
+                <p class="cart-line__colour">
+                  <span class="cart-line__dot" style="background: <%= line.variant.swatch_color %>"></span>
+                  <%= line.variant.name %>
+                </p>
+                <p class="cart-line__unit"><%= line.formatted_unit_price %> l'unite</p>
+              </div>
+
+              <%= form_with url: cart_line_path(line.variant.id), method: :patch,
+                    data: { controller: "quantity cart-line", action: "change->cart-line#submit" },
+                    class: "cart-line__quantity" do |form| %>
+                <div class="stepper" role="group" aria-label="Quantite <%= line.variant.name %>">
+                  <button type="button" class="stepper__button" data-action="quantity#decrement"
+                          aria-label="Diminuer la quantite">
+                    <%= icon "minus", size: 16 %>
+                  </button>
+                  <%= form.number_field :quantity, value: line.quantity, min: 1, max: Cart::MAX_QUANTITY,
+                        id: "quantite-#{line.variant.id}", class: "stepper__input",
+                        inputmode: "numeric", "aria-label": "Quantite",
+                        data: { quantity_target: "input", action: "change->quantity#clamp" } %>
+                  <button type="button" class="stepper__button" data-action="quantity#increment"
+                          aria-label="Augmenter la quantite">
+                    <%= icon "plus", size: 16 %>
+                  </button>
+                </div>
+                <noscript><%= form.button "Mettre a jour", class: "button button--compact" %></noscript>
+              <% end %>
+
+              <div class="cart-line__total"><%= line.formatted_total %></div>
+
+              <%= button_to cart_line_path(line.variant.id), method: :delete,
+                    class: "cart-line__remove", form_class: "cart-line__remove-form",
+                    aria: { label: "Retirer #{line.variant.name} du panier" } do %>
+                <%= icon "close", size: 16 %>
+                <span>Retirer</span>
+              <% end %>
+            </article>
+          <% end %>
+
+          <% if @suggestions.any? %>
+            <section class="cart-suggest">
+              <header class="cart-suggest__head">
+                <h2>Ajoutez une autre couleur</h2>
+                <p>Meme montre, meme prix &mdash; livree dans le meme colis.</p>
+              </header>
+
+              <ul class="cart-suggest__list" role="list">
+                <% @suggestions.each do |suggestion| %>
+                  <li>
+                    <%= form_with url: cart_lines_path, method: :post, class: "cart-suggest__form" do |form| %>
+                      <%= form.hidden_field :product_id, value: suggestion.product_id %>
+                      <%= form.hidden_field :variant_id, value: suggestion.id %>
+                      <button type="submit" class="cart-suggest__item">
+                        <span class="cart-suggest__media">
+                          <%= variant_image_tag suggestion, alt: suggestion.name, loading: "lazy", decoding: "async" %>
+                        </span>
+                        <span class="cart-suggest__name"><%= suggestion.name %></span>
+                        <span class="cart-suggest__add">
+                          <%= icon "plus", size: 14 %>
+                          <span>Ajouter</span>
+                        </span>
+                      </button>
+                    <% end %>
+                  </li>
+                <% end %>
+              </ul>
+            </section>
+          <% end %>
+        </div>
+
+        <aside class="cart-summary">
+          <h2 class="cart-summary__title">Recapitulatif</h2>
+
+          <dl class="cart-summary__rows">
+            <div class="cart-summary__row">
+              <dt>Sous-total</dt>
+              <dd><%= current_cart.formatted_subtotal %></dd>
+            </div>
+            <div class="cart-summary__row">
+              <dt>Livraison</dt>
+              <dd>
+                <% if current_store.free_shipping? %>
+                  <span class="cart-summary__free">Offerte</span>
+                <% else %>
+                  <%= current_cart.formatted_shipping %>
+                <% end %>
+              </dd>
+            </div>
+            <div class="cart-summary__row cart-summary__row--total">
+              <dt>Total</dt>
+              <dd><%= current_cart.formatted_total %></dd>
+            </div>
+          </dl>
+
+          <p class="cart-summary__taxes">Taxes incluses.</p>
+
+          <%= link_to checkout_path, class: "button button--lg button--block" do %>
+            <%= icon "lock", size: 18 %>
+            <span>Passer la commande</span>
+          <% end %>
+
+          <%= link_to current_product ? storefront_product_path(current_product.slug) : root_path,
+                class: "cart-summary__continue" do %>
+            <%= icon "chevron-left", size: 15 %>
+            <span>Continuer mes achats</span>
+          <% end %>
+
+          <div class="payment-note cart-summary__payment">
+            <span class="payment-note__label">
+              <%= icon "lock", size: 15 %>
+              <span>Paiement securise &mdash; <%= estimated_delivery_range %></span>
+            </span>
+            <%= payment_marks(class: "payment-marks--sm") %>
+          </div>
+
+          <ul class="cart-summary__perks" role="list">
+            <li><%= icon "truck", size: 17 %><span>Livraison suivie</span></li>
+            <li><%= icon "refresh", size: 17 %><span>Retour 30 jours</span></li>
+            <li><%= icon "award", size: 17 %><span>Garantie 2 ans</span></li>
+          </ul>
+        </aside>
+      </div>
+    <% end %>
+  </div>
+</section>

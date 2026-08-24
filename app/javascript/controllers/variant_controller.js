@@ -41,6 +41,14 @@ export default class extends Controller {
 
     this.markActive(this.thumbTargets, variantId)
     this.markActive(this.swatchTargets, variantId)
+
+    // The gallery sits inside this controller's element, so the event goes through
+    // window rather than bubbling, which only ever travels upwards.
+    this.dispatch("change", {
+      target: window,
+      prefix: "variant",
+      detail: { variantId, name, hero, image }
+    })
   }
 
   markActive(elements, variantId) {

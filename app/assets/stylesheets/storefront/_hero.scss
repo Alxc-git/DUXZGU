@@ -93,19 +93,23 @@
 }
 
 .hero__actions {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
   gap: 0.6rem;
   margin-top: $spacing-xs;
+
+  @include tablet {
+    display: flex;
+    flex-wrap: wrap;
+  }
 }
 
 .hero__trust {
   border-top: 1px solid rgba(255, 255, 255, 0.12);
-  color: rgba(255, 255, 255, 0.62);
-  display: flex;
-  flex-wrap: wrap;
+  color: rgba(255, 255, 255, 0.66);
+  display: grid;
   font-size: 0.85rem;
-  gap: $spacing-md;
+  gap: 0.75rem $spacing-md;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   list-style: none;
   margin: $spacing-sm 0 0;
   padding: $spacing-md 0 0;
@@ -114,15 +118,23 @@
     align-items: center;
     display: flex;
     gap: 0.5rem;
+    min-width: 0;
+  }
+
+  svg {
+    color: $color-accent-warm;
+    flex: none;
   }
 }
 
 .hero__media {
   order: 1;
+  padding-top: 1.25rem;
   position: relative;
 
   @include desktop {
     order: 0;
+    padding-top: 0;
   }
 
   // Feathers the photo into the copy so the two halves read as one image.

@@ -1,34 +1,128 @@
 <% featured = current_product %>
-<header class="site-header" data-controller="menu" data-menu-open-class="site-header--open">
-  <div class="site-header__inner page-container">
-    <button type="button" class="site-header__burger" data-action="menu#toggle"
-            aria-expanded="false" aria-controls="site-nav" aria-label="Ouvrir le menu">
-      <span data-menu-target="openIcon"><%= icon "menu", size: 22 %></span>
-      <span data-menu-target="closeIcon" hidden><%= icon "close", size: 22 %></span>
-    </button>
+<% product_path = featured.present? ? storefront_product_path(featured.slug) : root_path %>
 
-    <%= link_to "LUXTIME", root_path, class: "site-header__brand" %>
+<div class="announce">
+  <div class="page-container announce__inner">
+    <span class="announce__item announce__item--primary">
+      <%= icon "truck", size: 15 %>
+      <span>Livraison suivie <%= current_store&.free_shipping? ? "offerte" : "24/48h" %></span>
+    </span>
+    <span class="announce__item">
+      <%= icon "shield-check", size: 15 %>
+      <span>Garantie 2 ans</span>
+    </span>
+    <span class="announce__item">
+      <%= icon "refresh", size: 15 %>
+      <span>Retour 30 jours</span>
+    </span>
+  </div>
+</div>
 
-    <nav id="site-nav" class="site-nav" data-menu-target="panel" aria-label="Navigation principale">
-      <%= link_to "Nouveautes", root_path, class: "site-nav__link" %>
-      <%= link_to "Montres", featured ? storefront_product_path(featured.slug) : root_path, class: "site-nav__link" %>
-      <%= link_to "Collections", root_path(anchor: "couleurs"), class: "site-nav__link" %>
-      <%= link_to "Accessoires", root_path(anchor: "faq"), class: "site-nav__link" %>
-    </nav>
+<header class="site-header"
+        data-controller="site-header menu search"
+        data-menu-open-class="site-header--menu-open"
+        data-site-header-stuck-class="site-header--stuck"
+        data-site-header-hidden-class="site-header--hidden">
+  <%# Wordmark centred, controls balanced either side of it: the sections live in
+      the menu panel rather than as tabs in the bar. %>
+  <div class="site-header__bar page-container">
+    <div class="site-header__side">
+      <button type="button"
+              class="site-header__control"
+              data-action="menu#toggle"
+              aria-expanded="false"
+              aria-controls="menu-panel">
+        <span class="site-header__control-icon" data-menu-target="openIcon"><%= icon "menu", size: 19 %></span>
+        <span class="site-header__control-icon" data-menu-target="closeIcon" hidden><%= icon "close", size: 19 %></span>
+        <span class="site-header__control-label">Menu</span>
+      </button>
 
-    <div class="site-header__actions">
-      <%= link_to root_path, class: "site-header__icon", aria: { label: "Rechercher" } do %>
-        <%= icon "zoom", size: 24 %>
-      <% end %>
-      <%= link_to root_path, class: "site-header__icon site-header__icon--account", aria: { label: "Compte" } do %>
-        <%= icon "user", size: 24 %>
-      <% end %>
       <% if featured.present? %>
-        <%= link_to storefront_product_path(featured.slug), class: "site-header__icon site-header__bag", aria: { label: "Panier" } do %>
-          <%= icon "bag", size: 18 %>
-          <span class="site-header__count">0</span>
-        <% end %>
+        <%# Hidden on phones, where it would unbalance the bar: the menu panel
+            carries the search entry there instead. %>
+        <button type="button" class="site-header__control site-header__control--search" data-action="search#open">
+          <span class="site-header__control-icon"><%= icon "search", size: 19 %></span>
+          <span class="site-header__control-label">Rechercher</span>
+        </button>
+      <% end %>
+    </div>
+
+    <%= link_to "LUXTIME", root_path, class: "site-header__brand", aria: { label: "#{current_store&.name} accueil" } %>
+
+    <div class="site-header__side site-header__side--end">
+      <%= link_to cart_path, class: "site-header__control site-header__cart",
+            aria: { label: "Voir le panier" } do %>
+        <span class="site-header__control-icon">
+          <%= icon "bag", size: 19 %>
+          <% if current_cart.any? %>
+            <span class="site-header__cart-count"><%= current_cart.count %></span>
+          <% end %>
+        </span>
+        <span class="site-header__control-label">Panier</span>
+      <% end %>
+
+      <% if featured.present? %>
+        <%= link_to "Acheter", "#{product_path}#formulaire-achat", class: "site-header__buy" %>
       <% end %>
     </div>
   </div>
+
+  <div class="site-header__drawer" id="menu-panel" data-menu-target="panel">
+    <nav class="site-header__drawer-nav" aria-label="Menu">
+      <% if featured.present? %>
+        <button type="button" class="site-header__drawer-search" data-action="menu#close search#open">
+          <span>Rechercher</span>
+          <%= icon "search", size: 18 %>
+        </button>
+        <%= link_to product_path, data: { action: "menu#close" } do %>
+          <span><%= featured.name %></span>
+          <%= icon "chevron-right", size: 18 %>
+        <% end %>
+        <%= link_to "#{product_path}#couleurs", data: { action: "menu#close" } do %>
+          <span>Toutes les couleurs</span>
+          <%= icon "chevron-right", size: 18 %>
+        <% end %>
+        <%= link_to "#{product_path}#specifications", data: { action: "menu#close" } do %>
+          <span>Specifications</span>
+          <%= icon "chevron-right", size: 18 %>
+        <% end %>
+        <%= link_to "#{product_path}#avis", data: { action: "menu#close" } do %>
+          <span>Avis clients</span>
+          <%= icon "chevron-right", size: 18 %>
+        <% end %>
+        <%= link_to "#{product_path}#faq", data: { action: "menu#close" } do %>
+          <span>Questions frequentes</span>
+          <%= icon "chevron-right", size: 18 %>
+        <% end %>
+      <% end %>
+      <%= link_to cart_path, data: { action: "menu#close" } do %>
+        <span>Panier<%= " (#{current_cart.count})" if current_cart.any? %></span>
+        <%= icon "chevron-right", size: 18 %>
+      <% end %>
+      <% if current_store&.support_email.present? %>
+        <%= mail_to current_store.support_email, data: { action: "menu#close" } do %>
+          <span>Nous ecrire</span>
+          <%= icon "chevron-right", size: 18 %>
+        <% end %>
+      <% end %>
+    </nav>
+
+    <div class="site-header__drawer-foot">
+      <% if featured.present? %>
+        <%= link_to "Acheter maintenant", "#{product_path}#formulaire-achat",
+              class: "button button--lg button--block", data: { action: "menu#close" } %>
+      <% end %>
+      <div class="payment-note">
+        <span class="payment-note__label">
+          <%= icon "lock", size: 15 %>
+          <span>Paiement securise</span>
+        </span>
+        <%= payment_marks(class: "payment-marks--sm") %>
+      </div>
+    </div>
+  </div>
+
+  <% if featured.present? %>
+    <%= render "storefront/sections/search", product: featured %>
+  <% end %>
 </header>

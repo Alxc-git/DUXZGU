@@ -16,7 +16,8 @@
           <h3 class="review__title"><%= review["title"] %></h3>
           <p class="review__body"><%= review["body"] %></p>
           <p class="review__author">
-            <%= review["author"] %>
+            <span class="review__avatar" aria-hidden="true"><%= review["author"].to_s.first %></span>
+            <span class="review__name"><%= review["author"] %></span>
             <span class="review__verified"><%= icon "check", size: 14 %> Achat verifie</span>
           </p>
         </li>

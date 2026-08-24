@@ -7,7 +7,7 @@ class ApplicationController < ActionController::Base
 
   before_action :set_current_store
 
-  helper_method :current_store
+  helper_method :current_store, :current_cart, :current_product
 
   private
 
@@ -17,6 +17,18 @@ class ApplicationController < ActionController::Base
 
   def current_store
     Current.store
+  end
+
+  def current_cart
+    @current_cart ||= Cart.new(store: Current.store, session:)
+  end
+
+  # The storefront sells one product per store, and the header, footer and cart
+  # all link to it, so it is resolved once here rather than per controller.
+  def current_product
+    return @current_product if defined?(@current_product)
+
+    @current_product = Current.store&.products&.active&.includes(:variants)&.order(:created_at)&.first
   end
 
   def require_current_store!

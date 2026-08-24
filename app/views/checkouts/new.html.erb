@@ -1,0 +1,149 @@
+<% content_for :title, "Livraison | #{current_store.name}" %>
+
+<section class="checkout">
+  <div class="page-container">
+    <header class="checkout__header">
+      <div>
+        <p class="checkout__eyebrow">Etape 2 sur 4</p>
+        <h1 class="checkout__title">Livraison</h1>
+        <p class="checkout__lead">Dites-nous ou envoyer votre montre. Preparation sous 24 a 48h.</p>
+      </div>
+      <%= render "checkouts/progress", step: :address %>
+    </header>
+
+    <div class="checkout__grid">
+      <%= form_with model: @form, url: checkout_path, method: :post, scope: :checkout_form,
+            data: { controller: "checkout" }, class: "checkout__main" do |form| %>
+
+        <% if @form.errors.any? %>
+          <div class="checkout__errors" role="alert">
+            <strong>
+              <%= icon "close", size: 16 %>
+              Verifiez les champs suivants
+            </strong>
+            <ul>
+              <% @form.errors.each do |error| %>
+                <li><%= error.message %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <section class="checkout__panel">
+          <header class="checkout__panel-head">
+            <span class="checkout__panel-mark"><%= icon "mail", size: 16 %></span>
+            <h2>Contact</h2>
+          </header>
+
+          <div class="field-row">
+            <div class="field">
+              <%= form.label :email, "Courriel" %>
+              <%= form.email_field :email, autocomplete: "email", placeholder: "vous@exemple.ca",
+                    required: true, class: field_class(@form, :email) %>
+              <%= checkout_field_error(@form, :email) %>
+            </div>
+
+            <div class="field">
+              <%= form.label :phone, "Telephone" %>
+              <%= form.telephone_field :phone, autocomplete: "tel", placeholder: "514 555 0123",
+                    class: field_class(@form, :phone) %>
+            </div>
+          </div>
+        </section>
+
+        <section class="checkout__panel">
+          <header class="checkout__panel-head">
+            <span class="checkout__panel-mark"><%= icon "truck", size: 16 %></span>
+            <h2>Adresse de livraison</h2>
+          </header>
+
+          <div class="field-row">
+            <div class="field">
+              <%= form.label :first_name, "Prenom" %>
+              <%= form.text_field :first_name, autocomplete: "given-name", required: true,
+                    class: field_class(@form, :first_name) %>
+              <%= checkout_field_error(@form, :first_name) %>
+            </div>
+
+            <div class="field">
+              <%= form.label :last_name, "Nom" %>
+              <%= form.text_field :last_name, autocomplete: "family-name", required: true,
+                    class: field_class(@form, :last_name) %>
+              <%= checkout_field_error(@form, :last_name) %>
+            </div>
+          </div>
+
+          <div class="field">
+            <%= form.label :address_line1, "Adresse" %>
+            <%= form.text_field :address_line1, autocomplete: "address-line1", required: true,
+                  placeholder: "123 rue Sainte-Catherine", class: field_class(@form, :address_line1) %>
+            <%= checkout_field_error(@form, :address_line1) %>
+          </div>
+
+          <div class="field">
+            <%= form.label :address_line2, "Appartement, suite" %>
+            <%= form.text_field :address_line2, autocomplete: "address-line2",
+                  placeholder: "Facultatif", class: field_class(@form, :address_line2) %>
+          </div>
+
+          <div class="field-row field-row--three">
+            <div class="field">
+              <%= form.label :city, "Ville" %>
+              <%= form.text_field :city, autocomplete: "address-level2", required: true,
+                    class: field_class(@form, :city) %>
+              <%= checkout_field_error(@form, :city) %>
+            </div>
+
+            <div class="field">
+              <%= form.label :province, "Province" %>
+              <%= form.text_field :province, autocomplete: "address-level1",
+                    class: field_class(@form, :province) %>
+            </div>
+
+            <div class="field">
+              <%= form.label :postal_code, "Code postal" %>
+              <%= form.text_field :postal_code, autocomplete: "postal-code", required: true,
+                    placeholder: "H2X 1Y6", class: field_class(@form, :postal_code) %>
+              <%= checkout_field_error(@form, :postal_code) %>
+            </div>
+          </div>
+
+          <div class="field">
+            <%= form.label :country, "Pays" %>
+            <%= form.select :country, shipping_country_options, {}, class: field_class(@form, :country) %>
+            <%= checkout_field_error(@form, :country) %>
+          </div>
+        </section>
+
+        <div class="checkout__submit">
+          <%= form.button type: "submit", class: "button button--lg button--block" do %>
+            <span>Continuer vers le paiement</span>
+            <%= icon "arrow-right", size: 18 %>
+          <% end %>
+
+          <div class="checkout__submit-note">
+            <%= payment_marks(class: "payment-marks--sm") %>
+            <span>
+              <%= icon "lock", size: 14 %>
+              Paiement securise a l'etape suivante
+            </span>
+          </div>
+
+          <%= link_to cart_path, class: "checkout__back" do %>
+            <%= icon "chevron-left", size: 15 %>
+            <span>Retour au panier</span>
+          <% end %>
+        </div>
+      <% end %>
+
+      <div class="checkout__side">
+        <%= render "checkouts/summary",
+              lines: summary_lines_from_cart(current_cart),
+              totals: summary_totals_from_cart(current_cart),
+              edit_path: cart_path %>
+
+        <%= render "checkouts/help" %>
+      </div>
+    </div>
+  </div>
+</section>

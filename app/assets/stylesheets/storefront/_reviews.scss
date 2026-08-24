@@ -45,9 +45,16 @@
   background: $color-background;
   border: 1px solid $color-border;
   border-radius: $radius-lg;
+  box-shadow: $shadow-sm;
   display: grid;
   gap: 0.6rem;
   padding: $spacing-md;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+
+  &:hover {
+    border-color: $color-border-strong;
+    box-shadow: $shadow-card;
+  }
 }
 
 .review__title {
@@ -62,11 +69,32 @@
 
 .review__author {
   align-items: center;
+  border-top: 1px solid $color-border-subtle;
   display: flex;
   flex-wrap: wrap;
   font-size: 0.88rem;
   font-weight: 600;
   gap: 0.5rem;
+  margin-top: 0.15rem;
+  padding-top: 0.85rem;
+}
+
+.review__avatar {
+  align-items: center;
+  background: $color-ink;
+  border-radius: $radius-pill;
+  color: #ffffff;
+  display: inline-flex;
+  flex: none;
+  font-size: 0.8rem;
+  font-weight: 700;
+  height: 1.9rem;
+  justify-content: center;
+  width: 1.9rem;
+}
+
+.review__name {
+  margin-right: auto;
 }
 
 .review__verified {

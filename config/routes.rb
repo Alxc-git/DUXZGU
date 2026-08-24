@@ -2,7 +2,19 @@ Rails.application.routes.draw do
   root "storefront#home"
   get "montre/:slug", to: "storefront#show", as: :storefront_product
 
-  post "checkout", to: "checkouts#create", as: :checkout
+  get "panier", to: "carts#show", as: :cart
+  post "panier", to: "carts#create", as: :cart_lines
+  patch "panier/:variant_id", to: "carts#update", as: :cart_line
+  delete "panier/:variant_id", to: "carts#destroy"
+
+  get "commande", to: "checkouts#new", as: :checkout
+  post "commande", to: "checkouts#create"
+
+  get "paiement", to: "payments#new", as: :payment
+  post "paiement", to: "payments#create"
+
+  # Stripe returns the customer to these two, so their paths are part of the
+  # payment integration and stay as they are.
   get "checkout/success", to: "storefront#success", as: :checkout_success
   get "checkout/cancel", to: "storefront#cancel", as: :checkout_cancel
 

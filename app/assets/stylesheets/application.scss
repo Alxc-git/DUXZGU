@@ -10,7 +10,10 @@
 @use "components/cards";
 @use "components/badges";
 @use "components/forms";
+@use "components/fields";
 @use "components/modals";
+@use "components/payment";
+@use "components/trust";
 
 @use "layout/header";
 @use "layout/footer";
@@ -25,4 +28,7 @@
 @use "storefront/reviews";
 @use "storefront/faq";
 @use "storefront/footer_cta";
+@use "storefront/cart";
+@use "storefront/order";
 @use "storefront/checkout";
+@use "storefront/gallery";

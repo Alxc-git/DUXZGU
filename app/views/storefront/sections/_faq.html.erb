@@ -1,11 +1,46 @@
-<section class="faq" id="faq">
+<section class="faq" id="faq" data-controller="faq" data-faq-open-class="faq__item--open">
   <div class="page-container faq__inner">
-    <h2 class="section-heading">Questions frequentes</h2>
+    <div class="faq__intro">
+      <p class="faq__eyebrow">Besoin d'etre rassure ?</p>
+      <h2 class="section-heading">Questions frequentes</h2>
+      <p class="faq__lead">
+        Les points importants avant de commander : livraison, etancheite,
+        retours et garantie. Tout est clair avant le paiement.
+      </p>
+
+      <div class="faq__support-stack">
+        <div class="faq__support-card">
+          <%= icon "lock", size: 26 %>
+          <div>
+            <strong>Paiement protege</strong>
+            <span>Checkout securise, confirmation instantanee et suivi de commande.</span>
+            <%= payment_marks(class: "payment-marks--sm faq__support-marks") %>
+          </div>
+        </div>
+
+        <div class="faq__support-card">
+          <%= icon "headset", size: 26 %>
+          <div>
+            <strong>Une question avant de commander ?</strong>
+            <span>Notre equipe repond sous 24h, du lundi au vendredi.</span>
+            <% if current_store&.support_email.present? %>
+              <%= mail_to current_store.support_email, class: "faq__support-link" do %>
+                <span><%= current_store.support_email %></span>
+                <%= icon "chevron-right", size: 16 %>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <div class="faq__list">
-      <% product.content["faq"].each do |entry| %>
-        <details class="faq__item">
-          <summary class="faq__question">
+      <% faq_icons = %w[truck drop refresh shield lock] %>
+      <% product.content["faq"].each_with_index do |entry, index| %>
+        <details class="faq__item" <%= "open" if index.zero? %> data-faq-target="item" data-action="toggle->faq#sync">
+          <summary class="faq__question" data-action="click->faq#toggle">
+            <span class="faq__number"><%= format("%02d", index + 1) %></span>
+            <span class="faq__question-icon"><%= icon faq_icons[index % faq_icons.length], size: 18 %></span>
             <span><%= entry["question"] %></span>
             <%= icon "chevron-down", size: 20, class: "faq__chevron" %>
           </summary>

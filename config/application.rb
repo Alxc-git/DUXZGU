@@ -6,6 +6,12 @@ require "rails/all"
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
+# Local secrets, before any initializer reads ENV. Without this only `bin/dev`
+# (Foreman) would see .env, and `bin/rails server` would boot with no Stripe key.
+if defined?(Dotenv)
+  Dotenv.load(File.expand_path("../.env", __dir__))
+end
+
 module ECommerce
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.

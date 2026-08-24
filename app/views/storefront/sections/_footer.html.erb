@@ -1,43 +1,65 @@
 <% featured = current_product %>
+<% product_path = featured.present? ? storefront_product_path(featured.slug) : root_path %>
 <footer class="site-footer">
   <div class="page-container site-footer__inner">
     <div class="site-footer__brand">
       <span class="site-footer__wordmark"><%= current_store&.name %></span>
       <p>Montres chronographes pensees pour durer, expediees partout au Canada.</p>
+
+      <div class="site-footer__social" aria-label="Reseaux sociaux">
+        <a href="https://www.instagram.com" class="site-footer__social-link" rel="noopener noreferrer" target="_blank" aria-label="Instagram">
+          <%= icon "instagram", size: 18 %>
+        </a>
+        <a href="https://www.tiktok.com" class="site-footer__social-link" rel="noopener noreferrer" target="_blank" aria-label="TikTok">
+          <%= icon "tiktok", size: 18 %>
+        </a>
+        <a href="https://www.facebook.com" class="site-footer__social-link" rel="noopener noreferrer" target="_blank" aria-label="Facebook">
+          <%= icon "facebook", size: 18 %>
+        </a>
+      </div>
     </div>
 
     <nav class="site-footer__column" aria-label="Boutique">
       <h2>Boutique</h2>
       <% if featured.present? %>
-        <%= link_to featured.name, storefront_product_path(featured.slug) %>
+        <%= link_to featured.name, product_path %>
+        <%= link_to "Toutes les couleurs", "#{product_path}#couleurs" %>
+        <%= link_to "Specifications", "#{product_path}#specifications" %>
+        <%= link_to "Avis clients", "#{product_path}#avis" %>
       <% end %>
-      <%= link_to "Toutes les couleurs", root_path(anchor: "couleurs") %>
-      <%= link_to "Avis clients", root_path(anchor: "avis") %>
     </nav>
 
     <nav class="site-footer__column" aria-label="Aide">
       <h2>Aide</h2>
-      <%= link_to "Questions frequentes", root_path(anchor: "faq") %>
+      <%= link_to "Questions frequentes", "#{product_path}#faq" %>
       <% if current_store&.support_email.present? %>
         <%= mail_to current_store.support_email, "Nous ecrire" %>
       <% end %>
+      <span class="site-footer__note">
+        <%= icon "headset", size: 15 %>
+        Reponse sous 24h
+      </span>
     </nav>
 
     <div class="site-footer__column">
       <h2>Paiement</h2>
-      <p class="site-footer__reassurance">
-        <%= icon "lock", size: 16 %>
+      <%= payment_marks(class: "payment-marks--sm site-footer__marks") %>
+      <span class="site-footer__note">
+        <%= icon "lock", size: 15 %>
         Paiement securise par Stripe
-      </p>
-      <p class="site-footer__reassurance">
-        <%= icon "refresh", size: 16 %>
+      </span>
+      <span class="site-footer__note">
+        <%= icon "refresh", size: 15 %>
         Retour 30 jours
-      </p>
+      </span>
     </div>
   </div>
 
   <div class="page-container site-footer__legal">
     <span>&copy; <%= Date.current.year %> <%= current_store&.name %></span>
-    <span>Prix en <%= current_store&.currency.to_s.upcase %></span>
+    <span class="site-footer__legal-meta">
+      <%= icon "globe", size: 14 %>
+      Canada &mdash; prix en <%= current_store&.currency.to_s.upcase %>
+    </span>
   </div>
 </footer>

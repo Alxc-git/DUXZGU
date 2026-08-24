@@ -59,6 +59,10 @@ end
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
+
+  # Loads .env, so `bin/rails server` and `bin/rails console` see the same keys
+  # `bin/dev` does. Declared explicitly rather than leaned on as a kamal dependency.
+  gem "dotenv"
 end
 
 group :test do

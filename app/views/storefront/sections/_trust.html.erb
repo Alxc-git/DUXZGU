@@ -1,0 +1,25 @@
+<%# The reassurance block from the mockup: a framed 2x2 grid, then the accepted
+    payment marks underneath. %>
+<section class="trust">
+  <div class="page-container">
+    <ul class="trust__grid" role="list">
+      <% product.content["reassurance"].each do |item| %>
+        <li class="trust__item">
+          <span class="trust__icon"><%= icon item["icon"], size: 22 %></span>
+          <span class="trust__body">
+            <strong><%= item["title"] %></strong>
+            <small><%= item["body"] %></small>
+          </span>
+        </li>
+      <% end %>
+    </ul>
+
+    <div class="trust__payment">
+      <span class="trust__payment-label">
+        <%= icon "lock", size: 16 %>
+        <span>Paiement securise &mdash; vos donnees sont chiffrees</span>
+      </span>
+      <%= payment_marks %>
+    </div>
+  </div>
+</section>

@@ -84,16 +84,31 @@ module Payments
       }.compact
     end
 
+    # A cart with several colours becomes several orders behind one intent, so
+    # every order of the checkout is marked, not just the first one found.
     def handle_payment_intent_succeeded(intent)
-      order = Order.find_by(id: metadata(intent)["order_id"]) || Order.find_by(stripe_payment_intent_id: intent.id)
-      return if order.blank? || order.paid?
+      data = metadata(intent)
+      single = Order.find_by(id: data["order_id"]) if data["order_id"].present?
 
-      order.update!(status: :paid, paid_at: Time.current, stripe_payment_intent_id: intent.id)
+      MarkOrdersPaid.call(
+        intent_id: intent.id,
+        orders: single.present? ? [ single ] : nil,
+        metadata: data
+      )
     end
 
     def handle_payment_intent_failed(intent)
-      order = Order.find_by(id: metadata(intent)["order_id"]) || Order.find_by(stripe_payment_intent_id: intent.id)
-      order&.update!(status: :failed, stripe_payment_intent_id: intent.id)
+      orders_for(intent).each { |order| order.update!(status: :failed, stripe_payment_intent_id: intent.id) }
+    end
+
+    def orders_for(intent)
+      data = metadata(intent)
+      return [ Order.find_by(id: data["order_id"]) ].compact if data["order_id"].present?
+
+      ids = data["order_ids"].to_s.split(",").map(&:to_i).reject(&:zero?)
+      return Order.where(id: ids).to_a if ids.any?
+
+      Order.where(stripe_payment_intent_id: intent.id).to_a
     end
 
     def handle_charge_refunded(charge)

@@ -63,8 +63,11 @@ a {
 }
 
 .tag--sale {
-  background: $color-accent;
+  background: $color-ink;
+  border: 1px solid rgba(255, 255, 255, 0.14);
   color: #ffffff;
+  letter-spacing: 0.03em;
+  padding: 0.25rem 0.6rem;
 }
 
 // Stand-in for a variant that has no photo yet.

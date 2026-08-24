@@ -30,6 +30,7 @@ class Store < ApplicationRecord
 
   def self.development_fallback(host)
     return unless Rails.env.development? || Rails.env.test?
+    return active.first if Rails.env.development?
     return active.first if host.in?(%w[localhost 127.0.0.1 0.0.0.0])
 
     nil

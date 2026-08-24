@@ -3,32 +3,106 @@ require "test_helper"
 class CheckoutsControllerTest < ActionDispatch::IntegrationTest
   setup { host! "localhost" }
 
-  test "rejects product from another store" do
-    post checkout_path, params: { product_id: products(:other_product).id, quantity: 1 }
+  test "redirects an empty cart back to the cart page" do
+    get checkout_path
 
-    assert_redirected_to root_path
+    assert_redirected_to cart_path
+    assert_equal "Votre panier est vide", flash[:alert]
   end
 
-  test "rejects a variant that belongs to another product" do
-    with_stripe_key do
-      post checkout_path, params: {
-        product_id: products(:demo_product).id,
-        variant_id: variants(:other_variant).id,
-        quantity: 1
-      }
+  test "renders the checkout form for a filled cart" do
+    post cart_lines_path, params: {
+      product_id: products(:demo_product).id,
+      variant_id: variants(:black).id,
+      quantity: 1,
+      then: "checkout"
+    }
+
+    assert_redirected_to checkout_path
+    follow_redirect!
+    assert_response :success
+    assert_select "form[action=?]", checkout_path
+    assert_select ".order-summary", text: /Demo Product/
+  end
+
+  test "refuses an incomplete form without creating an order" do
+    fill_cart
+
+    assert_no_difference "Order.count" do
+      post checkout_path, params: { checkout_form: { email: "" } }
     end
 
-    assert_redirected_to root_path
-    assert_equal "Veuillez choisir une couleur", flash[:alert]
+    assert_response :unprocessable_entity
+    assert_select ".checkout__errors"
+  end
+
+  test "refuses a malformed email" do
+    fill_cart
+
+    assert_no_difference "Order.count" do
+      post checkout_path, params: { checkout_form: valid_details.merge(email: "pas-un-courriel") }
+    end
+
+    assert_response :unprocessable_entity
+    assert_select ".checkout__errors", text: /courriel/i
+  end
+
+  test "places the order, empties the cart and confirms" do
+    fill_cart
+
+    assert_difference "Order.count", 1 do
+      post checkout_path, params: { checkout_form: valid_details }
+    end
+
+    assert_redirected_to payment_path
+    follow_redirect!
+    assert_response :success
+    assert_select ".checkout__title", text: "Paiement"
+    assert_select ".order-summary__line", 1
+
+    post payment_path
+    assert_redirected_to checkout_success_path
+    follow_redirect!
+    assert_response :success
+    assert_select ".confirmation__reference"
+    assert_select ".confirmation__line", 1
+
+    get cart_path
+    assert_select ".cart__empty", 1
+  end
+
+  test "the confirmation only shows orders placed in this session" do
+    fill_cart
+    post checkout_path, params: { checkout_form: valid_details }
+
+    reset!
+    host! "localhost"
+    get checkout_success_path
+
+    assert_response :success
+    assert_select ".confirmation__card", 0
   end
 
   private
 
-  def with_stripe_key
-    original = Stripe.api_key
-    Stripe.api_key = "sk_test"
-    yield
-  ensure
-    Stripe.api_key = original
+  def fill_cart(quantity: 1)
+    post cart_lines_path, params: {
+      product_id: products(:demo_product).id,
+      variant_id: variants(:black).id,
+      quantity:
+    }
+  end
+
+  def valid_details
+    {
+      email: "alexis@exemple.ca",
+      first_name: "Alexis",
+      last_name: "Giard",
+      address_line1: "123 rue Sainte-Catherine",
+      city: "Montreal",
+      province: "QC",
+      postal_code: "H2X 1Y6",
+      country: "CA"
+    }
   end
 end

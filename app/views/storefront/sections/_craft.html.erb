@@ -1,26 +1,46 @@
-<%# Only renders for a product that actually has an exploded view attached. %>
-<% if product.craft_image.attached? %>
+<%# Home and product pages use the same visual section with different editorial angles. %>
+<% section_variant = local_assigns.fetch(:variant, :fabrication).to_sym %>
+<% if section_variant == :collection %>
+  <% section_image = product.collection_image %>
+  <% section_alt = "Trois finitions de #{product.name}" %>
+  <% section_eyebrow = "Collection signature" %>
+  <% section_title = "Trois styles, meme presence" %>
+  <% section_lede = "Bleu profond, argent noir ou rose gold cuir : chaque finition garde le meme cadran chronographe puissant, avec une allure pensee pour passer du quotidien au soir sans changer de montre." %>
+  <% section_points = [
+    { icon: "sparkles", label: "Finitions", value: "Or bleu, argent noir et rose gold" },
+    { icon: "gauge", label: "Cadran", value: "Chronographe detaille avec date visible" },
+    { icon: "strap", label: "Bracelet", value: "Silicone sport ou cuir texture" },
+    { icon: "shield-check", label: "Confiance", value: "Etanche 30M, retour 30 jours" }
+  ] %>
+<% else %>
+  <% section_image = product.craft_image %>
+  <% section_alt = "Vue detaillee de #{product.name}" %>
+  <% section_eyebrow = "Fabrication" %>
+  <% section_title = "Chaque piece a sa raison d'etre" %>
+  <% section_lede = "Boitier en alliage, verre mineral durci, mouvement quartz chronographe et joint d'etancheite : la montre est assemblee piece par piece, puis controlee avant expedition." %>
+  <% section_points = product.content["specs"].first(4).map do |spec|
+    { icon: spec["icon"], label: spec["label"], value: spec["value"] }
+  end %>
+<% end %>
+
+<% if section_image.attached? %>
   <section class="craft">
     <div class="page-container craft__grid">
       <div class="craft__media">
-        <%= image_tag product.craft_image, alt: "Vue eclatee de #{product.name}",
+        <%= image_tag section_image, alt: section_alt,
               class: "craft__image", loading: "lazy", decoding: "async" %>
       </div>
 
       <div class="craft__content">
-        <p class="craft__eyebrow"><span class="hero__rule"></span>Fabrication</p>
-        <h2 class="craft__title">Chaque piece a sa raison d'etre</h2>
-        <p class="craft__lede">
-          Boitier en alliage, verre mineral durci, mouvement quartz chronographe et
-          joint d'etancheite : la montre est assemblee piece par piece, puis controlee
-          avant expedition.
-        </p>
+        <p class="craft__eyebrow"><span class="hero__rule"></span><%= section_eyebrow %></p>
+        <h2 class="craft__title"><%= section_title %></h2>
+        <p class="craft__lede"><%= section_lede %></p>
 
         <ul class="craft__list">
-          <% product.content["specs"].first(4).each do |spec| %>
+          <% section_points.each do |point| %>
             <li>
-              <%= icon spec["icon"], size: 18 %>
-              <span><strong><%= spec["label"] %></strong><%= spec["value"] %></span>
+              <%= icon point[:icon], size: 18 %>
+              <span><strong><%= point[:label] %></strong><%= point[:value] %></span>
             </li>
           <% end %>
         </ul>

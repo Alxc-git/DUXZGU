@@ -19,13 +19,17 @@
 }
 
 .craft__media {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.01));
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: $radius-xl;
   display: grid;
+  overflow: hidden;
   place-items: center;
 }
 
 .craft__image {
   height: auto;
-  max-height: 520px;
+  max-height: 540px;
   object-fit: contain;
   width: 100%;
 }
