@@ -1,0 +1,13 @@
+<h2>Nouveau message depuis <%= @store.name %></h2>
+
+<p>
+  <strong>De :</strong> <%= @message.name %> &lt;<%= @message.email %>&gt;<br>
+  <strong>Sujet :</strong> <%= @message.subject_or_default %>
+  <% if @message.order_reference.present? %>
+    <br><strong>Commande :</strong> <%= @message.order_reference %>
+  <% end %>
+</p>
+
+<hr>
+
+<p><%= simple_format @message.body %></p>

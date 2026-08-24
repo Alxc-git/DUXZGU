@@ -63,6 +63,12 @@ select.input {
   padding-right: 2.4rem;
 }
 
+.input--area {
+  line-height: 1.55;
+  min-height: 9rem;
+  resize: vertical;
+}
+
 .input--invalid {
   border-color: $color-danger;
 

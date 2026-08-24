@@ -13,7 +13,7 @@
         <strong><%= (product.default_variant || product).formatted_price %></strong>
         <% if product.discount_percentage.present? %>
           <span class="footer-cta__compare"><%= product.formatted_compare_at_price %></span>
-          <span class="tag tag--sale">-<%= product.discount_percentage %>%</span>
+          <span class="tag tag--sale">Liquidation -<%= product.discount_percentage %>%</span>
         <% end %>
       </div>
 

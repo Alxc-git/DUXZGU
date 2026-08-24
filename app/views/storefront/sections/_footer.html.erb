@@ -32,9 +32,7 @@
     <nav class="site-footer__column" aria-label="Aide">
       <h2>Aide</h2>
       <%= link_to "Questions frequentes", "#{product_path}#faq" %>
-      <% if current_store&.support_email.present? %>
-        <%= mail_to current_store.support_email, "Nous ecrire" %>
-      <% end %>
+      <%= link_to "Nous contacter", contact_path %>
       <span class="site-footer__note">
         <%= icon "headset", size: 15 %>
         Reponse sous 24h

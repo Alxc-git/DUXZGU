@@ -2,6 +2,9 @@ Rails.application.routes.draw do
   root "storefront#home"
   get "montre/:slug", to: "storefront#show", as: :storefront_product
 
+  get "contact", to: "contacts#new", as: :contact
+  post "contact", to: "contacts#create"
+
   get "panier", to: "carts#show", as: :cart
   post "panier", to: "carts#create", as: :cart_lines
   patch "panier/:variant_id", to: "carts#update", as: :cart_line

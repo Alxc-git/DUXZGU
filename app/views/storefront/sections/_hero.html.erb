@@ -18,6 +18,7 @@
         <strong><%= (showcase || product).formatted_price %></strong>
         <% if product.discount_percentage.present? %>
           <s><%= product.formatted_compare_at_price %></s>
+          <span class="tag tag--sale">Liquidation -<%= product.discount_percentage %>%</span>
         <% end %>
       </p>
 

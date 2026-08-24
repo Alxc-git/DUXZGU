@@ -22,7 +22,7 @@
         <li data-search-target="result" data-search-terms="<%= [ product.name, product.description ].join(" ").downcase %>">
           <%= link_to storefront_product_path(product.slug), class: "search-result" do %>
             <span class="search-result__media">
-              <%= variant_image_tag product.default_variant, alt: product.name, loading: "lazy" %>
+              <%= variant_image_tag product.default_variant, alt: product.name, thumb: 90, loading: "lazy" %>
             </span>
             <span class="search-result__body">
               <strong><%= product.name %></strong>

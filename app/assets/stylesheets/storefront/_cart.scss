@@ -54,32 +54,29 @@
   grid-template-areas:
     "media info   remove"
     "media qty    total";
-  grid-template-columns: 84px minmax(0, 1fr) auto;
+  grid-template-columns: 72px minmax(0, 1fr) auto;
   padding: 0.75rem;
 
   @include tablet {
     grid-template-areas: "media info qty total remove";
-    grid-template-columns: 96px minmax(0, 1fr) auto minmax(90px, auto) auto;
+    grid-template-columns: 84px minmax(0, 1fr) auto minmax(90px, auto) auto;
     gap: $spacing-sm;
     padding: 0.9rem;
   }
 }
 
 .cart-line__media {
-  align-items: center;
   background: $color-surface-media;
   border: 1px solid $color-border-subtle;
   border-radius: $radius-md;
-  display: flex;
+  display: block;
   grid-area: media;
-  justify-content: center;
   overflow: hidden;
-  padding: 0.3rem;
 
   img {
-    aspect-ratio: 1;
-    height: 100%;
-    object-fit: contain;
+    aspect-ratio: 2 / 3;
+    display: block;
+    object-fit: cover;
     width: 100%;
   }
 }
@@ -363,21 +360,27 @@
   }
 }
 
+// One scrolling row rather than a grid: the number of colours left to suggest
+// changes with the cart, and a grid leaves an orphan card on its own line as
+// soon as the count does not divide evenly.
 .cart-suggest__list {
-  display: grid;
-  gap: 0.6rem;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  display: flex;
+  gap: 0.7rem;
   list-style: none;
   margin: 0;
-  padding: 0;
+  overflow-x: auto;
+  padding: 0 0 0.35rem;
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
 
-  @include tablet {
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  > li {
+    flex: 0 0 142px;
+    scroll-snap-align: start;
   }
 }
 
 .cart-suggest__item {
-  align-items: center;
+  align-content: start;
   background: $color-background;
   border: 1px solid $color-border;
   border-radius: $radius-md;
@@ -385,48 +388,67 @@
   display: grid;
   font: inherit;
   gap: 0.5rem;
-  grid-template-columns: 46px minmax(0, 1fr);
-  padding: 0.5rem;
-  text-align: left;
+  height: 100%;
+  overflow: hidden;
+  padding: 0;
+  text-align: center;
   transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
   width: 100%;
 
   &:hover {
     border-color: $color-border-strong;
     box-shadow: $shadow-card;
-    transform: translateY(-1px);
+    transform: translateY(-2px);
   }
 }
 
 .cart-suggest__media {
   background: $color-surface-media;
-  border: 1px solid $color-border-subtle;
-  border-radius: $radius-sm;
+  border-bottom: 1px solid $color-border-subtle;
   display: block;
-  padding: 0.15rem;
+  overflow: hidden;
 
   img {
-    aspect-ratio: 1;
+    aspect-ratio: 4 / 5;
     display: block;
-    object-fit: contain;
+    object-fit: cover;
+    transition: transform 0.35s ease;
     width: 100%;
   }
 }
 
+.cart-suggest__item:hover .cart-suggest__media img {
+  transform: scale(1.04);
+}
+
 .cart-suggest__name {
-  font-size: 0.85rem;
-  font-weight: 500;
+  font-size: 0.86rem;
+  font-weight: 600;
   line-height: 1.25;
+  // Two lines are reserved so a long colour name does not push its own "Ajouter"
+  // button below the ones beside it.
+  min-height: 2.5em;
   min-width: 0;
+  padding: 0 0.5rem;
+}
+
+.cart-suggest__price {
+  color: $color-muted;
+  font-size: 0.82rem;
+  margin-top: -0.3rem;
 }
 
 .cart-suggest__add {
   align-items: center;
-  color: $color-muted;
+  border-top: 1px solid $color-border-subtle;
+  color: $color-ink;
   display: flex;
-  font-size: 0.76rem;
-  gap: 0.2rem;
-  grid-column: 2;
+  font-size: 0.8rem;
+  font-weight: 600;
+  gap: 0.28rem;
+  justify-content: center;
+  margin-top: 0.1rem;
+  padding: 0.55rem 0.5rem;
 
   svg {
     flex: none;
@@ -434,5 +456,5 @@
 }
 
 .cart-suggest__item:hover .cart-suggest__add {
-  color: $color-ink;
+  background: $color-surface;
 }

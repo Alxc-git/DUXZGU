@@ -53,7 +53,7 @@
           <% @orders.each do |order| %>
             <li class="confirmation__line">
               <span class="confirmation__media">
-                <%= variant_image_tag order.variant, alt: order.line_item_name, loading: "lazy" %>
+                <%= variant_image_tag order.variant, alt: order.line_item_name, thumb: 90, loading: "lazy" %>
                 <span class="confirmation__badge"><%= order.quantity %></span>
               </span>
               <span class="confirmation__info">

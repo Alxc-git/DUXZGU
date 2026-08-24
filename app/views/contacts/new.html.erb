@@ -1,0 +1,166 @@
+<% content_for :title, "Nous contacter | #{current_store.name}" %>
+<% content_for :description, "Une question sur votre commande, la livraison ou un retour ? Notre equipe repond sous 24h ouvrables." %>
+
+<section class="contact">
+  <div class="page-container">
+    <nav class="breadcrumb" aria-label="Fil d'Ariane">
+      <%= link_to "Accueil", root_path %>
+      <%= icon "chevron-right", size: 14 %>
+      <span aria-current="page">Contact</span>
+    </nav>
+
+    <header class="contact__header">
+      <p class="contact__eyebrow">Service client</p>
+      <h1 class="contact__title">Nous contacter</h1>
+      <p class="contact__lead">
+        Une question sur votre commande, la livraison ou un retour ? Ecrivez-nous,
+        notre equipe repond sous 24h ouvrables.
+      </p>
+    </header>
+
+    <div class="contact__grid">
+      <%= form_with model: @message, url: contact_path, method: :post, scope: :contact_message,
+            class: "contact__form" do |form| %>
+
+        <% if @message.errors.any? %>
+          <div class="checkout__errors" role="alert">
+            <strong>
+              <%= icon "close", size: 16 %>
+              Verifiez les champs suivants
+            </strong>
+            <ul>
+              <% @message.errors.each do |error| %>
+                <li><%= error.message %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <section class="checkout__panel">
+          <header class="checkout__panel-head">
+            <span class="checkout__panel-mark"><%= icon "mail", size: 16 %></span>
+            <h2>Votre message</h2>
+          </header>
+
+          <div class="field-row">
+            <div class="field">
+              <%= form.label :name, "Nom" %>
+              <%= form.text_field :name, autocomplete: "name", required: true,
+                    class: field_class(@message, :name) %>
+              <%= checkout_field_error(@message, :name) %>
+            </div>
+
+            <div class="field">
+              <%= form.label :email, "Courriel" %>
+              <%= form.email_field :email, autocomplete: "email", placeholder: "vous@exemple.ca",
+                    required: true, class: field_class(@message, :email) %>
+              <%= checkout_field_error(@message, :email) %>
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <%= form.label :subject, "Sujet" %>
+              <%= form.select :subject,
+                    ContactMessage::SUBJECTS,
+                    { include_blank: "Choisissez un sujet" },
+                    class: field_class(@message, :subject) %>
+              <%= checkout_field_error(@message, :subject) %>
+            </div>
+
+            <div class="field">
+              <%= form.label :order_reference, "Numero de commande" %>
+              <%= form.text_field :order_reference, placeholder: "LX-XXXXXXXX (facultatif)",
+                    class: field_class(@message, :order_reference) %>
+              <p class="field__hint">Il figure sur votre courriel de confirmation.</p>
+            </div>
+          </div>
+
+          <div class="field">
+            <%= form.label :body, "Message" %>
+            <%= form.text_area :body, rows: 7, required: true,
+                  placeholder: "Decrivez votre demande en quelques lignes.",
+                  class: "#{field_class(@message, :body)} input--area" %>
+            <%= checkout_field_error(@message, :body) %>
+          </div>
+        </section>
+
+        <div class="checkout__submit">
+          <%= form.button type: "submit", class: "button button--lg button--block" do %>
+            <%= icon "mail", size: 18 %>
+            <span>Envoyer le message</span>
+          <% end %>
+          <p class="checkout__terms">
+            Nous utilisons votre courriel uniquement pour repondre a cette demande.
+          </p>
+        </div>
+      <% end %>
+
+      <aside class="contact__side">
+        <div class="contact__card">
+          <h2 class="contact__card-title">Reponse rapide</h2>
+          <ul class="contact__facts" role="list">
+            <li>
+              <span class="contact__fact-icon"><%= icon "clock", size: 17 %></span>
+              <span>
+                <strong>Sous 24h ouvrables</strong>
+                <small>Du lundi au vendredi</small>
+              </span>
+            </li>
+            <% if current_store&.support_email.present? %>
+              <li>
+                <span class="contact__fact-icon"><%= icon "mail", size: 17 %></span>
+                <span>
+                  <strong><%= mail_to current_store.support_email %></strong>
+                  <small>Ecrivez-nous directement</small>
+                </span>
+              </li>
+            <% end %>
+            <li>
+              <span class="contact__fact-icon"><%= icon "globe", size: 17 %></span>
+              <span>
+                <strong>Expedition au Canada</strong>
+                <small>Prix en <%= current_store&.currency.to_s.upcase %></small>
+              </span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="contact__card">
+          <h2 class="contact__card-title">Reponses immediates</h2>
+          <p class="contact__card-lead">La plupart des questions sont deja traitees ici.</p>
+          <ul class="contact__links" role="list">
+            <% if current_product.present? %>
+              <li>
+                <%= link_to "#{storefront_product_path(current_product.slug)}#faq" do %>
+                  <span>Questions frequentes</span>
+                  <%= icon "chevron-right", size: 16 %>
+                <% end %>
+              </li>
+              <li>
+                <%= link_to "#{storefront_product_path(current_product.slug)}#specifications" do %>
+                  <span>Specifications de la montre</span>
+                  <%= icon "chevron-right", size: 16 %>
+                <% end %>
+              </li>
+            <% end %>
+            <li>
+              <%= link_to cart_path do %>
+                <span>Voir mon panier</span>
+                <%= icon "chevron-right", size: 16 %>
+              <% end %>
+            </li>
+          </ul>
+        </div>
+
+        <div class="contact__card contact__card--trust">
+          <ul class="cart-summary__perks" role="list">
+            <li><%= icon "truck", size: 17 %><span>Livraison suivie, expedition 24/48h</span></li>
+            <li><%= icon "refresh", size: 17 %><span>Retour 30 jours, satisfait ou rembourse</span></li>
+            <li><%= icon "award", size: 17 %><span>Garantie 2 ans sur le mouvement</span></li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>

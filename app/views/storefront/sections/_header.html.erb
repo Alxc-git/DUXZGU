@@ -68,44 +68,56 @@
   </div>
 
   <div class="site-header__drawer" id="menu-panel" data-menu-target="panel">
+    <%# Four real destinations. The section anchors that used to sit here all led
+        back to the same page, so the product itself fills the panel instead. %>
     <nav class="site-header__drawer-nav" aria-label="Menu">
       <% if featured.present? %>
         <button type="button" class="site-header__drawer-search" data-action="menu#close search#open">
           <span>Rechercher</span>
           <%= icon "search", size: 18 %>
         </button>
+      <% end %>
+      <%= link_to root_path, data: { action: "menu#close" } do %>
+        <span>Accueil</span>
+        <%= icon "chevron-right", size: 18 %>
+      <% end %>
+      <% if featured.present? %>
         <%= link_to product_path, data: { action: "menu#close" } do %>
-          <span><%= featured.name %></span>
+          <span>La montre</span>
           <%= icon "chevron-right", size: 18 %>
         <% end %>
-        <%= link_to "#{product_path}#couleurs", data: { action: "menu#close" } do %>
-          <span>Toutes les couleurs</span>
-          <%= icon "chevron-right", size: 18 %>
-        <% end %>
-        <%= link_to "#{product_path}#specifications", data: { action: "menu#close" } do %>
-          <span>Specifications</span>
-          <%= icon "chevron-right", size: 18 %>
-        <% end %>
-        <%= link_to "#{product_path}#avis", data: { action: "menu#close" } do %>
-          <span>Avis clients</span>
-          <%= icon "chevron-right", size: 18 %>
-        <% end %>
-        <%= link_to "#{product_path}#faq", data: { action: "menu#close" } do %>
-          <span>Questions frequentes</span>
-          <%= icon "chevron-right", size: 18 %>
-        <% end %>
+      <% end %>
+      <%= link_to contact_path, data: { action: "menu#close" } do %>
+        <span>Contact</span>
+        <%= icon "chevron-right", size: 18 %>
       <% end %>
       <%= link_to cart_path, data: { action: "menu#close" } do %>
         <span>Panier<%= " (#{current_cart.count})" if current_cart.any? %></span>
         <%= icon "chevron-right", size: 18 %>
       <% end %>
-      <% if current_store&.support_email.present? %>
-        <%= mail_to current_store.support_email, data: { action: "menu#close" } do %>
-          <span>Nous ecrire</span>
-          <%= icon "chevron-right", size: 18 %>
-        <% end %>
-      <% end %>
     </nav>
+
+    <% if featured.present? %>
+      <%= link_to product_path, class: "drawer-product", data: { action: "menu#close" } do %>
+        <span class="drawer-product__media">
+          <%= variant_image_tag featured.default_variant, alt: featured.name, thumb: 130, loading: "lazy" %>
+        </span>
+        <span class="drawer-product__body">
+          <span class="drawer-product__eyebrow">Notre modele</span>
+          <strong class="drawer-product__name"><%= featured.name %></strong>
+          <span class="drawer-product__rating">
+            <%= star_rating featured.rating, size: 13 %>
+            <span><%= number_with_precision(featured.rating, precision: 1, separator: ",") %> &middot; <%= featured.reviews_count %> avis</span>
+          </span>
+          <span class="drawer-product__price">
+            <strong><%= featured.formatted_price %></strong>
+            <% if featured.formatted_compare_at_price.present? %>
+              <s><%= featured.formatted_compare_at_price %></s>
+            <% end %>
+          </span>
+        </span>
+      <% end %>
+    <% end %>
 
     <div class="site-header__drawer-foot">
       <% if featured.present? %>

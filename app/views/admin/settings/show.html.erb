@@ -1,7 +1,12 @@
 <div class="admin-main__header"><h1>Settings</h1></div>
 
 <section class="card">
+  <% cj_configured = current_store&.supplier_settings&.values_at("api_key", "access_token")&.any?(&:present?) ||
+    ENV["CJ_API_KEY"].present? ||
+    ENV["CJ_ACCESS_TOKEN"].present? ||
+    Rails.application.credentials.dig(:cj, :api_key).present? ||
+    Rails.application.credentials.dig(:cj, :access_token).present? %>
   <p>Secrets are read from Rails credentials or environment variables.</p>
   <p><strong>Stripe configured:</strong> <%= Stripe.api_key.present? %></p>
-  <p><strong>CJ API key configured:</strong> <%= ENV["CJ_API_KEY"].present? || Rails.application.credentials.dig(:cj, :api_key).present? %></p>
+  <p><strong>CJ configured:</strong> <%= cj_configured %></p>
 </section>

@@ -15,7 +15,7 @@
     <% compare_at = priced.formatted_compare_at_price %>
     <span class="buy-box__compare" data-variant-target="compareAt" <%= "hidden" if compare_at.blank? %>><%= compare_at %></span>
     <% if product.discount_percentage.present? %>
-      <span class="tag tag--sale">-<%= product.discount_percentage %>%</span>
+      <span class="tag tag--sale">Liquidation -<%= product.discount_percentage %>%</span>
     <% end %>
   </div>
 
@@ -49,7 +49,7 @@
                     class: "swatch__input",
                     data: { action: "change->variant#select" }.merge(variant_data(item)) %>
               <span class="swatch__media">
-                <%= variant_image_tag item, alt: item.name, loading: "lazy", decoding: "async" %>
+                <%= variant_image_tag item, alt: item.name, thumb: 150, loading: "lazy", decoding: "async" %>
               </span>
               <span class="swatch__name"><%= item.name %></span>
             </label>

@@ -18,6 +18,8 @@ store.settings = store.settings.merge(
 store.save!
 
 PRODUCT_SLUG = "montre-chronographe-sport".freeze
+SALE_PRICE_CENTS = 5499
+COMPARE_AT_PRICE_CENTS = 12000
 
 product = store.products.find_by(slug: PRODUCT_SLUG) || store.products.new
 if product.new_record?
@@ -25,14 +27,19 @@ if product.new_record?
   product.slug = PRODUCT_SLUG
   product.description = "Montre homme quartz a mouvement chronographe, bracelet silicone, " \
                         "affichage de la date et etancheite 30M."
-  product.price_cents = 7990
-  product.compare_at_price_cents = 12990
+  product.price_cents = SALE_PRICE_CENTS
+  product.compare_at_price_cents = COMPARE_AT_PRICE_CENTS
   product.active = true
   # Fill in from the CJ dashboard before going live.
   product.supplier_product_id = ""
   product.supplier_cost_cents = 1200
 end
 product.currency = store.currency
+product.price_cents = SALE_PRICE_CENTS
+product.compare_at_price_cents = COMPARE_AT_PRICE_CENTS
+product.supplier_product_id = "1406875579055214592" if product.supplier_product_id.blank?
+product.supplier_sku = "CJYD118430701AZ" if product.supplier_sku.blank?
+product.supplier_cost_cents ||= 1260
 product.save!
 
 # Every colour carries two photos: a packshot from montres_images/optimized/ (white
@@ -40,12 +47,30 @@ product.save!
 # shot from montres_images/lifestyle/ for the hero and gallery. The CJ `vid` still
 # has to be filled in from the admin before a colour can actually be fulfilled.
 COLOURS = [
-  { name: "Or Noir", hex: "#c69747", file: "or-noir.webp" },
-  { name: "Or Bleu", hex: "#173a77", file: "or-bleu.webp" },
-  { name: "Argent Noir", hex: "#b8bcc0", file: "argent-noir.webp" },
-  { name: "Noir Integral", hex: "#111111", file: "noir-integral.webp" },
-  { name: "Rose Gold Noir", hex: "#b76e79", file: "rose-gold-noir.webp" },
-  { name: "Argent Bracelet Noir", hex: "#d7d9dc", file: "argent-bracelet-noir.webp" }
+  {
+    name: "Or Noir", hex: "#c69747", file: "or-noir.webp",
+    cj_vid: "1406875580481277952", cj_sku: "CJYD118430703CX"
+  },
+  {
+    name: "Or Bleu", hex: "#173a77", file: "or-bleu.webp",
+    cj_vid: "1406875580464500736", cj_sku: "CJYD118430701AZ"
+  },
+  {
+    name: "Argent Noir", hex: "#b8bcc0", file: "argent-noir.webp",
+    cj_vid: "1406875580472889344", cj_sku: "CJYD118430702BY"
+  },
+  {
+    name: "Noir Integral", hex: "#111111", file: "noir-integral.webp",
+    cj_vid: "1406875580493860864", cj_sku: "CJYD118430704DW"
+  },
+  {
+    name: "Rose Gold Noir", hex: "#b76e79", file: "rose-gold-noir.webp",
+    cj_vid: "1406875580502249472", cj_sku: "CJYD118430705EV"
+  },
+  {
+    name: "Argent Bracelet Noir", hex: "#d7d9dc", file: "argent-bracelet-noir.webp",
+    cj_vid: "1406875580510638080", cj_sku: "CJYD118430706FU"
+  }
 ].freeze
 
 attach_photo = lambda do |attachment, folder, filename|
@@ -91,6 +116,9 @@ COLOURS.each_with_index do |colour, index|
   variant.color_hex = colour[:hex]
   variant.position = index + 1
   variant.active = true
+  variant.supplier_variant_id = colour[:cj_vid] if variant.supplier_variant_id.blank?
+  variant[:supplier_sku] = colour[:cj_sku] if variant[:supplier_sku].blank?
+  variant[:supplier_cost_cents] ||= 1310
   variant.save!
 
   attach_photo.call(variant.image, "optimized", colour[:file])

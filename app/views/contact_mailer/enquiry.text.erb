@@ -1,0 +1,9 @@
+Nouveau message depuis <%= @store.name %>
+
+De     : <%= @message.name %> <<%= @message.email %>>
+Sujet  : <%= @message.subject_or_default %>
+<% if @message.order_reference.present? -%>
+Commande : <%= @message.order_reference %>
+<% end -%>
+
+<%= @message.body %>

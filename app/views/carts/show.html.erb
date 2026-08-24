@@ -34,7 +34,7 @@
               <%= link_to storefront_product_path(line.product.slug, couleur: line.variant.id),
                     class: "cart-line__media" do %>
                 <%= variant_image_tag line.variant, alt: "#{line.product.name} #{line.variant.name}",
-                      loading: "lazy", decoding: "async" %>
+                      thumb: 120, loading: "lazy", decoding: "async" %>
               <% end %>
 
               <div class="cart-line__info">
@@ -94,9 +94,10 @@
                       <%= form.hidden_field :variant_id, value: suggestion.id %>
                       <button type="submit" class="cart-suggest__item">
                         <span class="cart-suggest__media">
-                          <%= variant_image_tag suggestion, alt: suggestion.name, loading: "lazy", decoding: "async" %>
+                          <%= variant_image_tag suggestion, alt: suggestion.name, thumb: 200, loading: "lazy", decoding: "async" %>
                         </span>
                         <span class="cart-suggest__name"><%= suggestion.name %></span>
+                        <span class="cart-suggest__price"><%= suggestion.formatted_price %></span>
                         <span class="cart-suggest__add">
                           <%= icon "plus", size: 14 %>
                           <span>Ajouter</span>

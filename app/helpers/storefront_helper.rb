@@ -1,7 +1,18 @@
 module StorefrontHelper
-  # Originals are served as-is: they are already optimised webp, and Active Storage
-  # variants would need libvips, which is present in the Docker image but not in
-  # every dev machine. Swap in `.variant(...)` once that is guaranteed everywhere.
+  # The packshots are 1600px files. Drawing one into an 80px thumbnail leaves the
+  # browser to downscale 20:1, which speckles the dial and the bracelet, so a
+  # resized copy is served instead wherever the image is displayed small.
+  #
+  # Resizing needs libvips. It is installed in the Docker image, but a dev machine
+  # may not have it, so its absence falls back to the original rather than serving
+  # a URL that would 500 when the browser fetches it.
+  IMAGE_PROCESSOR_AVAILABLE = begin
+    require "vips"
+    true
+  rescue LoadError
+    false
+  end
+
   def variant_image_url(variant)
     attached_url(variant&.display_image)
   end
@@ -10,9 +21,11 @@ module StorefrontHelper
     attached_url(variant&.hero_image)
   end
 
-  # The white-background packshot, for pickers and thumbnails.
-  def variant_image_tag(variant, alt:, **options)
-    attached_image_tag(variant&.display_image, alt:, **options)
+  # The white-background packshot, for pickers and thumbnails. `thumb` is the
+  # longest edge in CSS pixels; it is doubled so the image stays sharp on a
+  # retina screen.
+  def variant_image_tag(variant, alt:, thumb: nil, **options)
+    attached_image_tag(resized(variant&.display_image, thumb), alt:, **options)
   end
 
   # The editorial shot, for the hero and the gallery stage.
@@ -60,6 +73,14 @@ module StorefrontHelper
   def business_days_after(date, count)
     count.times { date = date.next_day; date = date.next_day while date.saturday? || date.sunday? }
     date
+  end
+
+  def resized(attachment, thumb)
+    return attachment if thumb.blank? || !IMAGE_PROCESSOR_AVAILABLE
+    return attachment unless attachment.respond_to?(:variant) && attachment.attached?
+
+    edge = thumb.to_i * 2
+    attachment.variant(resize_to_limit: [ edge, edge ], format: :webp, saver: { quality: 80 })
   end
 
   def attached_url(attachment)

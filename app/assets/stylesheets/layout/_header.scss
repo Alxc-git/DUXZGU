@@ -185,7 +185,9 @@
   display: grid;
   gap: $spacing-sm;
   left: 0;
-  max-height: min(78vh, 32rem);
+  // Tall enough for the four links plus the product card; it still scrolls on a
+  // short viewport rather than clipping the payment line at the bottom.
+  max-height: min(86vh, 39rem);
   opacity: 0;
   overflow-y: auto;
   padding: $spacing-sm;
@@ -422,5 +424,90 @@
 
   &[hidden] {
     display: none;
+  }
+}
+
+// Featured product inside the menu panel: the section anchors that used to fill
+// this space all pointed back at the same page, so the product does the work.
+.drawer-product {
+  align-items: center;
+  background: $color-surface;
+  border: 1px solid $color-border;
+  border-radius: $radius-lg;
+  display: grid;
+  gap: 0.9rem;
+  grid-template-columns: 68px minmax(0, 1fr);
+  margin: $spacing-sm $spacing-md 0;
+  padding: 0.7rem;
+  text-decoration: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+  &:hover {
+    border-color: $color-border-strong;
+    box-shadow: $shadow-card;
+  }
+}
+
+.drawer-product__media {
+  background: $color-surface-media;
+  border: 1px solid $color-border-subtle;
+  border-radius: $radius-md;
+  display: block;
+  overflow: hidden;
+
+  img {
+    aspect-ratio: 4 / 5;
+    display: block;
+    object-fit: cover;
+    width: 100%;
+  }
+}
+
+.drawer-product__body {
+  display: grid;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.drawer-product__eyebrow {
+  color: $color-muted;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.drawer-product__name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.drawer-product__rating {
+  align-items: center;
+  color: $color-muted;
+  display: flex;
+  font-size: 0.78rem;
+  gap: 0.35rem;
+
+  .stars {
+    color: $color-star;
+  }
+}
+
+.drawer-product__price {
+  align-items: baseline;
+  display: flex;
+  gap: 0.4rem;
+  margin-top: 0.15rem;
+
+  strong {
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  s {
+    color: $color-muted;
+    font-size: 0.82rem;
   }
 }

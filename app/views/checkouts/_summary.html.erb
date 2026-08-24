@@ -12,7 +12,7 @@
       <li class="order-summary__line">
         <span class="order-summary__media">
           <%= variant_image_tag line[:variant], alt: "#{line[:product].name} #{line[:variant]&.name}",
-                loading: "lazy", decoding: "async" %>
+                thumb: 90, loading: "lazy", decoding: "async" %>
           <span class="order-summary__badge"><%= line[:quantity] %></span>
         </span>
         <span class="order-summary__info">

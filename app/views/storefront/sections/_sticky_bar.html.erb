@@ -4,7 +4,7 @@
      data-sticky-bar-anchor-value="#formulaire-achat" hidden>
   <div class="page-container sticky-bar__inner">
     <div class="sticky-bar__product">
-      <%= variant_image_tag variant, alt: product.name, class: "sticky-bar__image",
+      <%= variant_image_tag variant, alt: product.name, thumb: 80, class: "sticky-bar__image",
             data: { variant_target: "image" }, loading: "lazy" %>
       <div>
         <strong class="sticky-bar__name"><%= product.name %></strong>
