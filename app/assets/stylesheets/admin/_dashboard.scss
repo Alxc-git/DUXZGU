@@ -1,0 +1,16 @@
+@use "../abstracts/variables" as *;
+
+.dashboard-grid {
+  display: grid;
+  gap: $spacing-sm;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.dashboard-metric__value {
+  font-size: 1.8rem;
+  font-weight: 800;
+}
+
+.dashboard-metric__label {
+  color: $color-muted;
+}

@@ -1,0 +1,13 @@
+@use "../abstracts/variables" as *;
+
+.product-detail {
+  display: grid;
+  gap: $spacing-md;
+  padding: $spacing-lg 0;
+}
+
+.product-detail__list {
+  display: grid;
+  gap: 0.75rem;
+  padding-left: 1.2rem;
+}

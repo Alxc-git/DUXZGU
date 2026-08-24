@@ -1,0 +1,26 @@
+@use "../abstracts/variables" as *;
+
+body {
+  background: $color-background;
+}
+
+a {
+  color: inherit;
+}
+
+.flash {
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  margin-bottom: $spacing-sm;
+  padding: $spacing-sm;
+}
+
+.flash--alert {
+  border-color: $color-danger;
+  color: $color-danger;
+}
+
+.flash--notice {
+  border-color: $color-success;
+  color: $color-success;
+}

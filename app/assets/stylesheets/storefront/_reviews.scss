@@ -1,0 +1,11 @@
+@use "../abstracts/variables" as *;
+
+.reviews {
+  display: grid;
+  gap: $spacing-sm;
+  padding: $spacing-lg 0;
+}
+
+.reviews__quote {
+  color: $color-muted;
+}

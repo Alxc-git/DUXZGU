@@ -1,0 +1,28 @@
+@use "../abstracts/variables" as *;
+
+.admin-shell {
+  background: $color-surface;
+  min-height: 100vh;
+}
+
+.admin-shell__body {
+  display: grid;
+  min-height: 100vh;
+
+  @media (min-width: 900px) {
+    grid-template-columns: 240px minmax(0, 1fr);
+  }
+}
+
+.admin-main {
+  padding: $spacing-md;
+}
+
+.admin-main__header {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-sm;
+  justify-content: space-between;
+  margin-bottom: $spacing-md;
+}

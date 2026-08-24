@@ -1,0 +1,21 @@
+<div class="admin-main__header"><h1>Customers</h1></div>
+
+<%= form_with url: admin_customers_path, method: :get, class: "admin-filters" do |form| %>
+  <%= form.collection_select :store_id, @stores, :id, :name, { include_blank: "All stores", selected: params[:store_id] }, class: "form__select" %>
+  <%= form.text_field :email, value: params[:email], placeholder: "Email", class: "form__input" %>
+  <%= form.submit "Filter", class: "button button--secondary" %>
+<% end %>
+
+<table class="admin-table">
+  <thead><tr><th>Email</th><th>Name</th><th>Store</th><th>Stripe customer</th></tr></thead>
+  <tbody>
+    <% @customers.each do |customer| %>
+      <tr>
+        <td><%= link_to customer.email, admin_customer_path(customer) %></td>
+        <td><%= customer.full_name %></td>
+        <td><%= customer.store.name %></td>
+        <td><%= customer.stripe_customer_id %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

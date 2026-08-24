@@ -1,0 +1,27 @@
+<div class="admin-main__header">
+  <h1>Order #<%= @order.id %></h1>
+  <div class="order-actions">
+    <%= button_to "Retry fulfillment", retry_fulfillment_admin_order_path(@order), class: "button button--secondary" %>
+    <%= button_to "Mark shipped", mark_shipped_admin_order_path(@order), class: "button button--secondary" %>
+    <%= button_to "Refund", refund_admin_order_path(@order), class: "button button--danger" %>
+    <% if @order.stripe_payment_intent_id.present? %>
+      <%= link_to "Open Stripe payment", "https://dashboard.stripe.com/payments/#{@order.stripe_payment_intent_id}", class: "button button--secondary", target: "_blank", rel: "noopener" %>
+    <% end %>
+  </div>
+</div>
+
+<section class="card">
+  <p><strong>Status:</strong> <%= @order.status %></p>
+  <p><strong>Store:</strong> <%= @order.store.name %></p>
+  <p><strong>Product:</strong> <%= @order.product.name %></p>
+  <p><strong>Quantity:</strong> <%= @order.quantity %></p>
+  <p><strong>Total:</strong> <%= @order.formatted_total %></p>
+  <p><strong>Email:</strong> <%= @order.email %></p>
+  <p><strong>Name:</strong> <%= @order.customer_name %></p>
+  <p><strong>Address:</strong> <%= [@order.address_line1, @order.address_line2, @order.city, @order.province, @order.postal_code, @order.country].compact_blank.join(", ") %></p>
+  <p><strong>Stripe checkout:</strong> <%= @order.stripe_checkout_session_id %></p>
+  <p><strong>Stripe payment:</strong> <%= @order.stripe_payment_intent_id %></p>
+  <p><strong>Supplier order:</strong> <%= @order.supplier_order_id %></p>
+  <p><strong>Supplier status:</strong> <%= @order.supplier_status %></p>
+  <p><strong>Tracking:</strong> <%= link_to_if @order.tracking_url.present?, @order.tracking_number, @order.tracking_url, target: "_blank", rel: "noopener" %></p>
+</section>

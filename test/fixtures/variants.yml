@@ -1,0 +1,31 @@
+black:
+  product: demo_product
+  name: Noir
+  color: Noir
+  color_hex: "#111827"
+  position: 1
+  active: true
+  supplier_variant_id: cj-variant-black
+  supplier_sku: CJ-SKU-BLACK
+  metadata: {}
+
+blue:
+  product: demo_product
+  name: Bleu
+  color: Bleu
+  color_hex: "#1d4ed8"
+  position: 2
+  active: true
+  price_cents: 5400
+  supplier_variant_id: cj-variant-blue
+  supplier_sku: CJ-SKU-BLUE
+  metadata: {}
+
+other_variant:
+  product: other_product
+  name: Rouge
+  color: Rouge
+  position: 1
+  active: true
+  supplier_variant_id: other-variant-red
+  metadata: {}

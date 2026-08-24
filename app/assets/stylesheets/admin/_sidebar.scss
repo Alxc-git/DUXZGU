@@ -1,0 +1,28 @@
+@use "../abstracts/variables" as *;
+
+.admin-sidebar {
+  background: #111111;
+  color: #ffffff;
+  padding: $spacing-md;
+}
+
+.admin-sidebar__brand {
+  font-weight: 800;
+  margin-bottom: $spacing-md;
+}
+
+.admin-sidebar__nav {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.admin-sidebar__link {
+  border-radius: $radius-sm;
+  color: #ffffff;
+  padding: 0.55rem 0.7rem;
+  text-decoration: none;
+}
+
+.admin-sidebar__link:hover {
+  background: rgba(255, 255, 255, 0.12);
+}

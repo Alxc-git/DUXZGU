@@ -1,0 +1,12 @@
+@use "../abstracts/variables" as *;
+
+.faq {
+  display: grid;
+  gap: $spacing-sm;
+  padding: $spacing-lg 0;
+}
+
+.faq__item {
+  border-top: 1px solid $color-border;
+  padding-top: $spacing-sm;
+}

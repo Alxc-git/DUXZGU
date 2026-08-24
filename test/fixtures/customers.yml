@@ -1,0 +1,8 @@
+demo_customer:
+  store: demo
+  email: customer@example.com
+  first_name: Ada
+  last_name: Lovelace
+  phone: "123"
+  stripe_customer_id: cus_test
+  metadata: {}

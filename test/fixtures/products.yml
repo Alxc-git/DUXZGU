@@ -1,0 +1,25 @@
+demo_product:
+  store: demo
+  name: Demo Product
+  slug: demo-product
+  description: Demo description
+  price_cents: 4900
+  compare_at_price_cents: 7900
+  currency: cad
+  active: true
+  supplier_product_id: cj-product
+  supplier_variant_id: cj-variant
+  supplier_sku: CJ-SKU
+  supplier_cost_cents: 1800
+  settings: {}
+
+other_product:
+  store: other
+  name: Other Product
+  slug: other-product
+  description: Other description
+  price_cents: 9900
+  currency: usd
+  active: true
+  supplier_variant_id: other-variant
+  settings: {}

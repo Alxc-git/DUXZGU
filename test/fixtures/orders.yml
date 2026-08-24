@@ -1,0 +1,49 @@
+paid_order:
+  store: demo
+  product: demo_product
+  customer: demo_customer
+  status: paid
+  quantity: 1
+  subtotal_cents: 4900
+  shipping_cents: 0
+  tax_cents: 0
+  total_cents: 4900
+  currency: cad
+  email: customer@example.com
+  first_name: Ada
+  last_name: Lovelace
+  phone: "+15145550142"
+  address_line1: 1250 rue Sainte-Catherine O
+  address_line2: App 302
+  city: Montreal
+  province: QC
+  postal_code: H3G 1P1
+  country: CA
+  stripe_checkout_session_id: cs_paid
+  stripe_payment_intent_id: pi_paid
+  metadata: {}
+
+submitted_order:
+  store: demo
+  product: demo_product
+  customer: demo_customer
+  status: submitted_to_supplier
+  quantity: 1
+  subtotal_cents: 4900
+  shipping_cents: 0
+  tax_cents: 0
+  total_cents: 4900
+  currency: cad
+  email: customer@example.com
+  first_name: Ada
+  last_name: Lovelace
+  phone: "+15145550142"
+  address_line1: 1250 rue Sainte-Catherine O
+  address_line2: App 302
+  city: Montreal
+  province: QC
+  postal_code: H3G 1P1
+  country: CA
+  supplier_order_id: cj-order
+  supplier_status: submitted
+  metadata: {}

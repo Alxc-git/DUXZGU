@@ -1,0 +1,18 @@
+<div class="admin-main__header">
+  <h1>Dashboard</h1>
+  <%= form_with url: admin_root_path, method: :get, class: "admin-filters" do |form| %>
+    <%= form.collection_select :store_id, @stores, :id, :name, { include_blank: "All stores", selected: @selected_store&.id }, class: "form__select" %>
+    <%= form.submit "Filter", class: "button button--secondary" %>
+  <% end %>
+</div>
+
+<div class="dashboard-grid">
+  <div class="card dashboard-metric"><div class="dashboard-metric__value"><%= @stores.count %></div><div class="dashboard-metric__label">Stores</div></div>
+  <div class="card dashboard-metric"><div class="dashboard-metric__value"><%= @orders.created_since(@today).count %></div><div class="dashboard-metric__label">Orders today</div></div>
+  <div class="card dashboard-metric"><div class="dashboard-metric__value"><%= @orders.created_since(@seven_days_ago).count %></div><div class="dashboard-metric__label">Orders 7 days</div></div>
+  <div class="card dashboard-metric"><div class="dashboard-metric__value"><%= MoneyFormatter.format(@orders.paid.created_since(@today).sum(:total_cents), @dashboard_currency) %></div><div class="dashboard-metric__label">Revenue today</div></div>
+  <div class="card dashboard-metric"><div class="dashboard-metric__value"><%= MoneyFormatter.format(@orders.paid.created_since(@seven_days_ago).sum(:total_cents), @dashboard_currency) %></div><div class="dashboard-metric__label">Revenue 7 days</div></div>
+  <div class="card dashboard-metric"><div class="dashboard-metric__value"><%= @orders.paid.count %></div><div class="dashboard-metric__label">Paid</div></div>
+  <div class="card dashboard-metric"><div class="dashboard-metric__value"><%= @orders.shipped.count %></div><div class="dashboard-metric__label">Shipped</div></div>
+  <div class="card dashboard-metric"><div class="dashboard-metric__value"><%= @orders.supplier_errors.count %></div><div class="dashboard-metric__label">Supplier errors</div></div>
+</div>

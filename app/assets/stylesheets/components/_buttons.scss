@@ -1,0 +1,30 @@
+@use "../abstracts/variables" as *;
+
+.button {
+  align-items: center;
+  background: $color-accent;
+  border: 1px solid $color-accent;
+  border-radius: $radius-sm;
+  color: #ffffff;
+  display: inline-flex;
+  font-weight: 700;
+  gap: 0.4rem;
+  justify-content: center;
+  min-height: 2.5rem;
+  padding: 0.6rem 1rem;
+  text-decoration: none;
+}
+
+.button:hover {
+  background: $color-accent-strong;
+}
+
+.button--secondary {
+  background: #ffffff;
+  color: $color-text;
+}
+
+.button--danger {
+  background: $color-danger;
+  border-color: $color-danger;
+}

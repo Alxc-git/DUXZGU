@@ -1,0 +1,19 @@
+demo:
+  name: Demo Store
+  domain: localhost
+  slug: demo-store
+  active: true
+  currency: cad
+  supplier_type: cj
+  supplier_settings: {}
+  settings: {}
+
+other:
+  name: Other Store
+  domain: other.test
+  slug: other-store
+  active: true
+  currency: usd
+  supplier_type: cj
+  supplier_settings: {}
+  settings: {}

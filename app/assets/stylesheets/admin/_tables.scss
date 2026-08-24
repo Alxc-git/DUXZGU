@@ -1,0 +1,20 @@
+@use "../abstracts/variables" as *;
+
+.admin-table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.admin-table th,
+.admin-table td {
+  border-bottom: 1px solid $color-border;
+  padding: 0.75rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.admin-table th {
+  color: $color-muted;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+}

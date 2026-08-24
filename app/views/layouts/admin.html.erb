@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "Admin" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_link_tag "tailwind", "admin", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="admin-shell">
+    <div class="admin-shell__body">
+      <aside class="admin-sidebar">
+        <div class="admin-sidebar__brand">Commerce Admin</div>
+        <nav class="admin-sidebar__nav">
+          <%= link_to "Dashboard", admin_root_path, class: "admin-sidebar__link" %>
+          <%= link_to "Stores", admin_stores_path, class: "admin-sidebar__link" %>
+          <%= link_to "Products", admin_products_path, class: "admin-sidebar__link" %>
+          <%= link_to "Orders", admin_orders_path, class: "admin-sidebar__link" %>
+          <%= link_to "Customers", admin_customers_path, class: "admin-sidebar__link" %>
+          <%= link_to "Settings", admin_settings_path, class: "admin-sidebar__link" %>
+          <% if defined?(current_admin_user) && current_admin_user.present? %>
+            <%= button_to "Logout", admin_logout_path, method: :delete, class: "button button--secondary" %>
+          <% end %>
+        </nav>
+      </aside>
+
+      <main class="admin-main">
+        <% if alert.present? %>
+          <div class="flash flash--alert"><%= alert %></div>
+        <% end %>
+
+        <% if notice.present? %>
+          <div class="flash flash--notice"><%= notice %></div>
+        <% end %>
+
+        <%= yield %>
+      </main>
+    </div>
+  </body>
+</html>

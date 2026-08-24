@@ -1,0 +1,7 @@
+<div class="admin-main__header"><h1>Settings</h1></div>
+
+<section class="card">
+  <p>Secrets are read from Rails credentials or environment variables.</p>
+  <p><strong>Stripe configured:</strong> <%= Stripe.api_key.present? %></p>
+  <p><strong>CJ API key configured:</strong> <%= ENV["CJ_API_KEY"].present? || Rails.application.credentials.dig(:cj, :api_key).present? %></p>
+</section>

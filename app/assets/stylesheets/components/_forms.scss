@@ -1,0 +1,27 @@
+@use "../abstracts/variables" as *;
+
+.form {
+  display: grid;
+  gap: $spacing-sm;
+}
+
+.form__field {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.form__input,
+.form__textarea,
+.form__select {
+  border: 1px solid $color-border;
+  border-radius: $radius-sm;
+  font: inherit;
+  padding: 0.65rem 0.75rem;
+  width: 100%;
+}
+
+.form__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-sm;
+}

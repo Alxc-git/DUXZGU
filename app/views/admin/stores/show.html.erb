@@ -1,0 +1,12 @@
+<div class="admin-main__header">
+  <h1><%= @store.name %></h1>
+  <%= link_to "Edit", edit_admin_store_path(@store), class: "button" %>
+</div>
+
+<section class="card">
+  <p><strong>Domain:</strong> <%= @store.domain %></p>
+  <p><strong>Slug:</strong> <%= @store.slug %></p>
+  <p><strong>Currency:</strong> <%= @store.currency.upcase %></p>
+  <p><strong>Supplier:</strong> <%= @store.supplier_type %></p>
+  <p><strong>Active:</strong> <%= @store.active? %></p>
+</section>

@@ -1,0 +1,24 @@
+<div class="admin-main__header">
+  <h1>Products</h1>
+  <%= link_to "New product", new_admin_product_path, class: "button" %>
+</div>
+
+<%= form_with url: admin_products_path, method: :get, class: "admin-filters" do |form| %>
+  <%= form.collection_select :store_id, @stores, :id, :name, { include_blank: "All stores", selected: params[:store_id] }, class: "form__select" %>
+  <%= form.submit "Filter", class: "button button--secondary" %>
+<% end %>
+
+<table class="admin-table">
+  <thead><tr><th>Name</th><th>Store</th><th>Price</th><th>Supplier variant</th><th>Status</th></tr></thead>
+  <tbody>
+    <% @products.each do |product| %>
+      <tr>
+        <td><%= link_to product.name, admin_product_path(product) %></td>
+        <td><%= product.store.name %></td>
+        <td><%= product.formatted_price %></td>
+        <td><%= product.supplier_variant_id %></td>
+        <td><span class="badge"><%= product.active? ? "Active" : "Inactive" %></span></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

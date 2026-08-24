@@ -1,0 +1,73 @@
+<section class="product-hero" data-controller="variant">
+  <div class="page-container product-hero__grid">
+    <div class="product-hero__content">
+      <span class="badge"><%= current_store.name %></span>
+      <h1 class="product-hero__title"><%= product&.name || "Demo product" %></h1>
+      <p class="product-hero__description">
+        <%= product&.description.presence || "Replace this section for each one-product store while keeping checkout, orders and suppliers shared." %>
+      </p>
+
+      <% if product.present? %>
+        <% selected = product.default_variant %>
+        <div class="product-hero__pricing">
+          <span class="product-hero__price" data-variant-target="price">
+            <%= (selected || product).formatted_price %>
+          </span>
+          <% compare_at = (selected || product).formatted_compare_at_price %>
+          <span class="product-hero__compare-at" data-variant-target="compareAt" <%= "hidden" if compare_at.blank? %>>
+            <%= compare_at %>
+          </span>
+        </div>
+
+        <%= form_with url: checkout_path, method: :post, data: { controller: "quantity checkout" } do |form| %>
+          <%= form.hidden_field :product_id, value: product.id %>
+
+          <% if product.variants? %>
+            <fieldset class="variant-picker">
+              <legend class="variant-picker__legend">
+                Couleur : <span data-variant-target="name"><%= selected.name %></span>
+              </legend>
+              <div class="variant-picker__options">
+                <% product.available_variants.each do |variant| %>
+                  <label class="variant-swatch" style="--swatch: <%= variant.swatch_color %>" title="<%= variant.name %>">
+                    <%= form.radio_button :variant_id, variant.id,
+                          checked: variant == selected,
+                          class: "variant-swatch__input",
+                          data: {
+                            action: "change->variant#select",
+                            name: variant.name,
+                            price: variant.formatted_price,
+                            compare_at: variant.formatted_compare_at_price,
+                            image: (url_for(variant.display_image) if variant.display_image.present?)
+                          } %>
+                    <span class="variant-swatch__dot" aria-hidden="true"></span>
+                    <span class="variant-swatch__name"><%= variant.name %></span>
+                  </label>
+                <% end %>
+              </div>
+            </fieldset>
+          <% end %>
+
+          <div class="form__field">
+            <%= form.label :quantity, "Quantité" %>
+            <%= form.number_field :quantity, value: 1, min: 1, max: 99, class: "form__input", data: { quantity_target: "input" } %>
+          </div>
+
+          <%= form.submit "Commander", class: "button" %>
+        <% end %>
+
+        <p class="product-hero__reassurance">
+          <%= current_store.free_shipping? ? "Livraison gratuite" : "Livraison #{MoneyFormatter.format(current_store.shipping_cents, current_store.currency)}" %>
+          &middot; Paiement sécurisé par Stripe
+        </p>
+      <% end %>
+    </div>
+
+    <div class="product-hero__media">
+      <% hero_image = product&.default_variant&.display_image || product&.images&.first %>
+      <% if hero_image.present? %>
+        <%= image_tag hero_image, alt: product.name, data: { variant_target: "image" } %>
+      <% end %>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,13 @@
+<div class="admin-main__header">
+  <h1><%= @product.name %></h1>
+  <%= link_to "Edit", edit_admin_product_path(@product), class: "button" %>
+</div>
+
+<section class="card">
+  <p><strong>Store:</strong> <%= @product.store.name %></p>
+  <p><strong>Price:</strong> <%= @product.formatted_price %></p>
+  <p><strong>Compare at:</strong> <%= @product.formatted_compare_at_price %></p>
+  <p><strong>Supplier product:</strong> <%= @product.supplier_product_id %></p>
+  <p><strong>Supplier variant:</strong> <%= @product.supplier_variant_id %></p>
+  <p><strong>Supplier SKU:</strong> <%= @product.supplier_sku %></p>
+</section>

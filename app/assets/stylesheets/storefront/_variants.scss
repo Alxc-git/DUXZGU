@@ -1,0 +1,85 @@
+@use "../abstracts/variables" as *;
+
+.product-hero__pricing {
+  display: flex;
+  align-items: baseline;
+  gap: $spacing-xs;
+}
+
+.product-hero__compare-at {
+  color: $color-muted;
+  text-decoration: line-through;
+
+  &[hidden] {
+    display: none;
+  }
+}
+
+.product-hero__reassurance {
+  color: $color-muted;
+  font-size: 0.9rem;
+  margin-top: $spacing-xs;
+}
+
+.variant-picker {
+  border: 0;
+  margin: $spacing-sm 0;
+  padding: 0;
+}
+
+.variant-picker__legend {
+  font-weight: 600;
+  margin-bottom: $spacing-xs;
+  padding: 0;
+}
+
+.variant-picker__options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-xs;
+}
+
+.variant-swatch {
+  align-items: center;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  cursor: pointer;
+  display: inline-flex;
+  gap: 0.5rem;
+  padding: 0.4rem 0.75rem;
+
+  &:hover {
+    border-color: $color-accent;
+  }
+
+  // The radio stays in the accessibility tree but the label carries the styling.
+  &:has(.variant-swatch__input:checked) {
+    border-color: $color-accent;
+    box-shadow: 0 0 0 1px $color-accent;
+  }
+
+  &:has(.variant-swatch__input:focus-visible) {
+    outline: 2px solid $color-accent;
+    outline-offset: 2px;
+  }
+}
+
+.variant-swatch__input {
+  height: 1px;
+  opacity: 0;
+  position: absolute;
+  width: 1px;
+}
+
+.variant-swatch__dot {
+  background: var(--swatch, #{$color-border});
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 50%;
+  display: inline-block;
+  height: 1.15rem;
+  width: 1.15rem;
+}
+
+.variant-swatch__name {
+  font-size: 0.95rem;
+}

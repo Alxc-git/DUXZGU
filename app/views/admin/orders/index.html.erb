@@ -1,0 +1,31 @@
+<div class="admin-main__header"><h1>Orders</h1></div>
+
+<%= form_with url: admin_orders_path, method: :get, class: "admin-filters" do |form| %>
+  <%= form.collection_select :store_id, @stores, :id, :name, { include_blank: "All stores", selected: params[:store_id] }, class: "form__select" %>
+  <%= form.select :status, Order.statuses.keys, { include_blank: "Any status", selected: params[:status] }, class: "form__select" %>
+  <%= form.text_field :email, value: params[:email], placeholder: "Email", class: "form__input" %>
+  <%= form.text_field :supplier_status, value: params[:supplier_status], placeholder: "Supplier status", class: "form__input" %>
+  <%= form.date_field :date, value: params[:date], class: "form__input" %>
+  <%= form.submit "Filter", class: "button button--secondary" %>
+<% end %>
+
+<table class="admin-table">
+  <thead><tr><th>ID</th><th>Store</th><th>Customer</th><th>Product</th><th>Qty</th><th>Total</th><th>Status</th><th>Stripe</th><th>Supplier</th><th>Tracking</th><th>Created</th></tr></thead>
+  <tbody>
+    <% @orders.each do |order| %>
+      <tr>
+        <td><%= link_to order.id, admin_order_path(order) %></td>
+        <td><%= order.store.name %></td>
+        <td><%= order.email || order.customer&.email %></td>
+        <td><%= order.product.name %></td>
+        <td><%= order.quantity %></td>
+        <td><%= order.formatted_total %></td>
+        <td><span class="badge"><%= order.status %></span></td>
+        <td><%= order.stripe_payment_intent_id.presence || order.stripe_checkout_session_id %></td>
+        <td><%= order.supplier_status %></td>
+        <td><%= order.tracking_number %></td>
+        <td><%= l(order.created_at, format: :short) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

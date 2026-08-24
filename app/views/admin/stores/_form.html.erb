@@ -1,0 +1,13 @@
+<%= form_with model: [:admin, store], class: "form" do |form| %>
+  <% if store.errors.any? %>
+    <div class="flash flash--alert"><%= store.errors.full_messages.to_sentence %></div>
+  <% end %>
+  <div class="form__field"><%= form.label :name %><%= form.text_field :name, class: "form__input" %></div>
+  <div class="form__field"><%= form.label :domain %><%= form.text_field :domain, class: "form__input" %></div>
+  <div class="form__field"><%= form.label :slug %><%= form.text_field :slug, class: "form__input" %></div>
+  <div class="form__field"><%= form.label :currency %><%= form.text_field :currency, class: "form__input" %></div>
+  <div class="form__field"><%= form.label :supplier_type %><%= form.select :supplier_type, Store::SUPPLIER_TYPES, {}, class: "form__select" %></div>
+  <div class="form__field"><%= form.label :stripe_account_id %><%= form.text_field :stripe_account_id, class: "form__input" %></div>
+  <label><%= form.check_box :active %> Active</label>
+  <div class="form__actions"><%= form.submit class: "button" %></div>
+<% end %>

@@ -1,0 +1,19 @@
+<div class="admin-main__header">
+  <h1>Stores</h1>
+  <%= link_to "New store", new_admin_store_path, class: "button" %>
+</div>
+
+<table class="admin-table">
+  <thead><tr><th>Name</th><th>Domain</th><th>Currency</th><th>Supplier</th><th>Status</th></tr></thead>
+  <tbody>
+    <% @stores.each do |store| %>
+      <tr>
+        <td><%= link_to store.name, admin_store_path(store) %></td>
+        <td><%= store.domain %></td>
+        <td><%= store.currency.upcase %></td>
+        <td><%= store.supplier_type %></td>
+        <td><span class="badge"><%= store.active? ? "Active" : "Inactive" %></span></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

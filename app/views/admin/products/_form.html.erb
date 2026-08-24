@@ -1,0 +1,49 @@
+<%= form_with model: [:admin, product], class: "form" do |form| %>
+  <% if product.errors.any? %>
+    <div class="flash flash--alert"><%= product.errors.full_messages.to_sentence %></div>
+  <% end %>
+  <div class="form__field"><%= form.label :store_id %><%= form.collection_select :store_id, stores, :id, :name, {}, class: "form__select" %></div>
+  <div class="form__field"><%= form.label :name %><%= form.text_field :name, class: "form__input" %></div>
+  <div class="form__field"><%= form.label :slug %><%= form.text_field :slug, class: "form__input" %></div>
+  <div class="form__field"><%= form.label :description %><%= form.text_area :description, class: "form__textarea" %></div>
+  <div class="form__field"><%= form.label :price_cents %><%= form.number_field :price_cents, class: "form__input" %></div>
+  <div class="form__field"><%= form.label :compare_at_price_cents %><%= form.number_field :compare_at_price_cents, class: "form__input" %></div>
+  <div class="form__field"><%= form.label :currency %><%= form.text_field :currency, class: "form__input" %></div>
+  <div class="form__field"><%= form.label :supplier_product_id %><%= form.text_field :supplier_product_id, class: "form__input" %></div>
+  <div class="form__field"><%= form.label :supplier_variant_id %><%= form.text_field :supplier_variant_id, class: "form__input" %></div>
+  <div class="form__field"><%= form.label :supplier_sku %><%= form.text_field :supplier_sku, class: "form__input" %></div>
+  <div class="form__field"><%= form.label :supplier_cost_cents %><%= form.number_field :supplier_cost_cents, class: "form__input" %></div>
+  <div class="form__field"><%= form.label :images %><%= form.file_field :images, multiple: true, class: "form__input" %></div>
+  <label><%= form.check_box :active %> Active</label>
+
+  <fieldset class="variants-fieldset">
+    <legend>Colours / variants</legend>
+    <p class="variants-fieldset__hint">
+      One row per colour. <strong>Supplier variant id</strong> is the CJ <code>vid</code> of that colour &mdash;
+      it is what decides which colour actually ships. Leave price fields empty to inherit the product price.
+      Blank rows are ignored.
+    </p>
+
+    <%= form.fields_for :variants do |variant_form| %>
+      <div class="variant-row">
+        <div class="form__field"><%= variant_form.label :name, "Name" %><%= variant_form.text_field :name, class: "form__input", placeholder: "Noir" %></div>
+        <div class="form__field"><%= variant_form.label :color, "Colour" %><%= variant_form.text_field :color, class: "form__input", placeholder: "Noir" %></div>
+        <div class="form__field"><%= variant_form.label :color_hex, "Swatch" %><%= variant_form.text_field :color_hex, class: "form__input", placeholder: "#111827" %></div>
+        <div class="form__field"><%= variant_form.label :supplier_variant_id, "CJ vid" %><%= variant_form.text_field :supplier_variant_id, class: "form__input" %></div>
+        <div class="form__field"><%= variant_form.label :supplier_sku, "CJ SKU" %><%= variant_form.text_field :supplier_sku, class: "form__input" %></div>
+        <div class="form__field"><%= variant_form.label :price_cents, "Price (cents)" %><%= variant_form.number_field :price_cents, class: "form__input" %></div>
+        <div class="form__field"><%= variant_form.label :supplier_cost_cents, "Cost (cents)" %><%= variant_form.number_field :supplier_cost_cents, class: "form__input" %></div>
+        <div class="form__field"><%= variant_form.label :position, "Position" %><%= variant_form.number_field :position, class: "form__input" %></div>
+        <div class="form__field"><%= variant_form.label :image, "Photo" %><%= variant_form.file_field :image, class: "form__input" %></div>
+        <div class="variant-row__flags">
+          <label><%= variant_form.check_box :active %> Active</label>
+          <% if variant_form.object.persisted? %>
+            <label class="variant-row__destroy"><%= variant_form.check_box :_destroy %> Delete</label>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </fieldset>
+
+  <div class="form__actions"><%= form.submit class: "button" %></div>
+<% end %>

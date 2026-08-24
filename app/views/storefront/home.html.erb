@@ -1,0 +1,8 @@
+<% content_for :title, current_store.name %>
+
+<%= render "storefront/sections/hero", product: @product %>
+<%= render "storefront/sections/product", product: @product %>
+<%= render "storefront/sections/benefits" %>
+<%= render "storefront/sections/reviews" %>
+<%= render "storefront/sections/faq" %>
+<%= render "storefront/sections/footer_cta", product: @product %>
