@@ -22,7 +22,7 @@ class CartsController < ApplicationController
       redirect_to checkout_path
     else
       redirect_to cart_path,
-        notice: "✨ Ajoute au panier - #{variant.product.name} (#{variant.name}). Checkout securise et livraison suivie."
+        notice: "✨ #{variant.product.name} (#{variant.name}) ajoutée au panier."
     end
   end
 

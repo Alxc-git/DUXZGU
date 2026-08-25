@@ -32,8 +32,8 @@ a {
   }
 }
 
-.flash-stack {
-  padding-top: $spacing-sm;
+.page-container.flash-stack {
+  margin-top: $spacing-lg;
 }
 
 .flash {
@@ -43,6 +43,8 @@ a {
   font-size: 0.96rem;
   font-weight: 500;
   margin-bottom: $spacing-sm;
+  margin-inline: auto;
+  max-width: 48rem;
   padding: 0.95rem $spacing-sm;
 }
 
@@ -56,6 +58,7 @@ a {
     linear-gradient(120deg, rgba(17, 17, 17, 0.04), transparent 34%),
     #ffffff;
   border-color: $color-ink;
+  box-shadow: $shadow-md;
   color: $color-ink;
 }
 

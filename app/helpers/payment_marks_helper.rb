@@ -2,13 +2,15 @@ module PaymentMarksHelper
   # Card and wallet marks drawn inline, so the trust row costs no extra request and
   # stays crisp on every screen. Each mark is drawn in a 40x26 box (card ratio) and
   # sized from CSS, so the caller only picks which ones to show.
-  PAYMENT_MARKS = %w[visa mastercard amex paypal apple-pay google-pay].freeze
+  PAYMENT_MARKS = %w[visa mastercard amex paypal klarna affirm].freeze
 
   PAYMENT_LABELS = {
     "visa" => "Visa",
     "mastercard" => "Mastercard",
     "amex" => "American Express",
     "paypal" => "PayPal",
+    "klarna" => "Klarna",
+    "affirm" => "Affirm",
     "apple-pay" => "Apple Pay",
     "google-pay" => "Google Pay",
     "stripe" => "Stripe"
@@ -39,6 +41,8 @@ module PaymentMarksHelper
     when "mastercard" then mastercard_mark
     when "amex" then amex_mark
     when "paypal" then paypal_mark
+    when "klarna" then klarna_mark
+    when "affirm" then affirm_mark
     when "apple-pay" then apple_pay_mark
     when "google-pay" then google_pay_mark
     when "stripe" then stripe_mark
@@ -126,6 +130,22 @@ module PaymentMarksHelper
       mark_plate,
       mark_text("G", x: 7, y: 17.4, size: 11, length: 8, fill: "#4285F4"),
       mark_text("Pay", x: 16.5, y: 17.4, size: 9.6, length: 16, fill: "#5F6368")
+    ])
+  end
+
+  def klarna_mark
+    safe_join([
+      mark_plate(fill: "#FFB3C7"),
+      mark_text("Klarna", x: 20, y: 17, size: 8, length: 27, fill: "#0B051D",
+                "text-anchor": "middle")
+    ])
+  end
+
+  def affirm_mark
+    safe_join([
+      mark_plate,
+      mark_text("affirm", x: 20, y: 17, size: 8.6, length: 26, fill: "#4A4AF4",
+                "text-anchor": "middle")
     ])
   end
 
