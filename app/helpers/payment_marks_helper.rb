@@ -56,7 +56,11 @@ module PaymentMarksHelper
 
   private
 
-  def mark_text(content, x:, y: 17.4, size: 10.5, weight: 700, fill: "#111111", **options)
+  # `length` pins the run to an exact width and lets the browser stretch the
+  # glyphs to reach it. Without it every mark is drawn at whatever width the
+  # available font happens to produce, so the plates look different before and
+  # after the web font arrives — and the widest of them, AMEX, ran edge to edge.
+  def mark_text(content, x:, length:, y: 17.4, size: 10.5, weight: 700, fill: "#111111", **options)
     tag.text(
       content,
       x: x,
@@ -65,6 +69,8 @@ module PaymentMarksHelper
       "font-family": MARK_FONT,
       "font-size": size,
       "font-weight": weight,
+      textLength: length,
+      lengthAdjust: "spacingAndGlyphs",
       **options
     )
   end
@@ -76,8 +82,8 @@ module PaymentMarksHelper
   def visa_mark
     safe_join([
       mark_plate,
-      mark_text("VISA", x: 20, y: 17.6, size: 11, fill: "#1434CB",
-                "text-anchor": "middle", "font-style": "italic", "letter-spacing": "0.6")
+      mark_text("VISA", x: 20, y: 17.6, size: 11, length: 26, fill: "#1434CB",
+                "text-anchor": "middle", "font-style": "italic")
     ])
   end
 
@@ -94,16 +100,16 @@ module PaymentMarksHelper
   def amex_mark
     safe_join([
       mark_plate(fill: "#006FCF"),
-      mark_text("AMEX", x: 20, y: 16.9, size: 8.4, fill: "#ffffff",
-                "text-anchor": "middle", "letter-spacing": "0.4")
+      mark_text("AMEX", x: 20, y: 16.9, size: 8.4, length: 25, fill: "#ffffff",
+                "text-anchor": "middle")
     ])
   end
 
   def paypal_mark
     safe_join([
       mark_plate,
-      mark_text("Pay", x: 7.4, y: 17.2, size: 9.6, fill: "#003087", "letter-spacing": "-0.2"),
-      mark_text("Pal", x: 22.2, y: 17.2, size: 9.6, fill: "#009CDE", "letter-spacing": "-0.2")
+      mark_text("Pay", x: 6.5, y: 17.2, size: 9.6, length: 14, fill: "#003087"),
+      mark_text("Pal", x: 20.5, y: 17.2, size: 9.6, length: 13, fill: "#009CDE")
     ])
   end
 
@@ -111,23 +117,23 @@ module PaymentMarksHelper
     safe_join([
       mark_plate,
       tag.g(tag.path(d: APPLE_GLYPH, fill: "#111111"), transform: "translate(4.2 3.4) scale(0.6)"),
-      mark_text("Pay", x: 19.6, y: 17.2, size: 9.6, fill: "#111111", "letter-spacing": "-0.2")
+      mark_text("Pay", x: 19.6, y: 17.2, size: 9.6, length: 15.5, fill: "#111111")
     ])
   end
 
   def google_pay_mark
     safe_join([
       mark_plate,
-      mark_text("G", x: 7.2, y: 17.4, size: 11, fill: "#4285F4"),
-      mark_text("Pay", x: 16.4, y: 17.4, size: 9.6, fill: "#5F6368", "letter-spacing": "-0.2")
+      mark_text("G", x: 7, y: 17.4, size: 11, length: 8, fill: "#4285F4"),
+      mark_text("Pay", x: 16.5, y: 17.4, size: 9.6, length: 16, fill: "#5F6368")
     ])
   end
 
   def stripe_mark
     safe_join([
       mark_plate(fill: "#635BFF"),
-      mark_text("stripe", x: 20, y: 17, size: 8.8, fill: "#ffffff",
-                "text-anchor": "middle", "letter-spacing": "-0.1")
+      mark_text("stripe", x: 20, y: 17, size: 8.8, length: 25, fill: "#ffffff",
+                "text-anchor": "middle")
     ])
   end
 end

@@ -7,10 +7,14 @@
   <% section_title = "Trois styles, meme presence" %>
   <% section_lede = "Bleu profond, argent noir ou rose gold cuir : chaque finition garde le meme cadran chronographe puissant, avec une allure pensee pour passer du quotidien au soir sans changer de montre." %>
   <% section_points = [
-    { icon: "sparkles", label: "Finitions", value: "Or bleu, argent noir et rose gold" },
-    { icon: "gauge", label: "Cadran", value: "Chronographe detaille avec date visible" },
-    { icon: "strap", label: "Bracelet", value: "Silicone sport ou cuir texture" },
-    { icon: "shield-check", label: "Confiance", value: "Etanche 30M, retour 30 jours" }
+    { icon: "sparkles", label: "Finitions", value: "Or bleu, argent noir et rose gold",
+      body: "Trois couleurs fortes, gardees dans une palette sobre et premium." },
+    { icon: "gauge", label: "Cadran", value: "Chronographe detaille avec date visible",
+      body: "Sous-cadrans, index lumineux et date pour une lecture rapide." },
+    { icon: "strap", label: "Bracelet", value: "Silicone sport ou cuir texture",
+      body: "Un maintien confortable avec une presence plus habillee au poignet." },
+    { icon: "shield-check", label: "Confiance", value: "Etanche 30M, retour 30 jours",
+      body: "Controle avant expedition et achat couvert apres reception." }
   ] %>
 <% else %>
   <% section_image = product.craft_image %>
@@ -18,8 +22,14 @@
   <% section_eyebrow = "Fabrication" %>
   <% section_title = "Chaque piece a sa raison d'etre" %>
   <% section_lede = "Boitier en alliage, verre mineral durci, mouvement quartz chronographe et joint d'etancheite : la montre est assemblee piece par piece, puis controlee avant expedition." %>
+  <% spec_descriptions = {
+    "Mouvement" => "Quartz precis pour garder une heure stable au quotidien.",
+    "Materiau du boitier" => "Structure en alliage pensee pour proteger le cadran.",
+    "Verre" => "Surface minerale claire, faite pour resister aux marques legeres.",
+    "Etancheite" => "Protection 30M contre les eclaboussures et la pluie."
+  } %>
   <% section_points = product.content["specs"].first(4).map do |spec|
-    { icon: spec["icon"], label: spec["label"], value: spec["value"] }
+    { icon: spec["icon"], label: spec["label"], value: spec["value"], body: spec_descriptions[spec["label"]] }
   end %>
 <% end %>
 
@@ -40,7 +50,13 @@
           <% section_points.each do |point| %>
             <li>
               <%= icon point[:icon], size: 18 %>
-              <span><strong><%= point[:label] %></strong><%= point[:value] %></span>
+              <span>
+                <strong><%= point[:label] %></strong>
+                <%= point[:value] %>
+                <% if point[:body].present? %>
+                  <small><%= point[:body] %></small>
+                <% end %>
+              </span>
             </li>
           <% end %>
         </ul>

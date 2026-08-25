@@ -157,7 +157,8 @@
 // ------------------------------------------------------------------- messages
 
 .support-chat__messages {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 0.6rem;
   overflow-y: auto;
   padding: 0.9rem;
@@ -168,6 +169,14 @@
 
 .support-chat__message {
   display: flex;
+  flex: none;
+}
+
+// Pushes the conversation to the bottom of the panel, the way a messaging app
+// reads. An auto margin is used rather than `justify-content: flex-end`, which
+// makes overflowing content unreachable above the scroll area.
+.support-chat__message:first-child {
+  margin-top: auto;
 }
 
 .support-chat__message p {

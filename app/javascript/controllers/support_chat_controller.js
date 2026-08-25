@@ -1,8 +1,15 @@
 import { Controller } from "@hotwired/stimulus"
 
-const STORAGE_KEY = "luxtime.support-chat"
+// Versioned: bumping it retires conversations stored under the previous
+// greeting, which would otherwise keep showing the old opening line forever.
+const STORAGE_KEY = "luxtime.support-chat.v2"
+// Says who it is, sets the expectation, and states the one thing the customer
+// cannot guess: an order lookup needs the reference AND the email, because that
+// pair is what the server verifies before showing anything.
 const GREETING =
-  "Bonjour ! Je peux vous aider sur le suivi d'une commande, la livraison, les retours ou les couleurs disponibles."
+  "Bonjour ! Je suis l'assistant LUXTIME, disponible 24/7. " +
+  "Pour suivre une commande, donnez-moi sa reference (LX-XXXXXXXX) et le courriel utilise a l'achat. " +
+  "Sinon, choisissez une question ci-dessous."
 
 export default class extends Controller {
   static targets = ["panel", "messages", "input", "toggle", "submit", "badge", "suggestions"]
@@ -20,6 +27,7 @@ export default class extends Controller {
     this.history.forEach((item) => this.draw(item.role, item.content))
     this.unread = this.readUnread()
     this.renderBadge()
+    this.renderSuggestions()
 
     // The visual viewport shrinks when the keyboard opens; the layout viewport
     // does not. Following it is what keeps the compose box above the keys.
@@ -142,7 +150,7 @@ export default class extends Controller {
   setBusy(busy) {
     this.busy = busy
     this.submitTarget.disabled = busy
-    if (this.hasSuggestionsTarget) this.suggestionsTarget.hidden = busy || this.history.length > 2
+    this.renderSuggestions()
 
     if (busy) {
       const holder = document.createElement("div")
@@ -154,6 +162,14 @@ export default class extends Controller {
     } else {
       this.messagesTarget.querySelector("[data-typing]")?.remove()
     }
+  }
+
+  // The chips are a starting point, not a permanent menu: once the conversation
+  // is under way they only take room from the answers.
+  renderSuggestions() {
+    if (!this.hasSuggestionsTarget) return
+
+    this.suggestionsTarget.hidden = Boolean(this.busy) || this.history.some((item) => item.role === "user")
   }
 
   scrollToLatest() {
