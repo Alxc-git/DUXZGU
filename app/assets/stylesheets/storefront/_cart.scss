@@ -458,3 +458,39 @@
 .cart-suggest__item:hover .cart-suggest__add {
   background: $color-surface;
 }
+
+// ------------------------------------------------------------------ duo offer
+
+.duo-banner {
+  align-items: center;
+  background: $color-surface;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  display: flex;
+  gap: 0.6rem;
+  margin-bottom: $spacing-sm;
+  padding: 0.75rem 0.9rem;
+
+  svg {
+    color: $color-ink;
+    flex: none;
+  }
+
+  span {
+    font-size: 0.9rem;
+  }
+}
+
+.duo-banner--earned {
+  background: rgba(22, 128, 60, 0.07);
+  border-color: rgba(22, 128, 60, 0.3);
+
+  svg {
+    color: $color-success;
+  }
+}
+
+.cart-summary__row--discount dd {
+  color: $color-success;
+  font-weight: 600;
+}

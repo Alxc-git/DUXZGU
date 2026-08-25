@@ -1,16 +1,454 @@
 @use "../abstracts/variables" as *;
 
-.dashboard-grid {
+// ============================================================== page furniture
+
+.admin-page-head {
+  border-bottom: 1px solid $color-border;
   display: grid;
   gap: $spacing-sm;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  margin-bottom: $spacing-md;
+  padding-bottom: $spacing-md;
+
+  @media (min-width: 860px) {
+    align-items: end;
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  h1 {
+    font-family: $font-family-display;
+    font-size: clamp(1.7rem, 3vw, 2.3rem);
+    font-weight: 500;
+    line-height: 1.05;
+  }
 }
 
-.dashboard-metric__value {
-  font-size: 1.8rem;
-  font-weight: 800;
-}
-
-.dashboard-metric__label {
+.admin-page-head__eyebrow {
   color: $color-muted;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+}
+
+.admin-page-head__lead {
+  color: $color-muted;
+  font-size: 0.9rem;
+  margin-top: 0.35rem;
+}
+
+.admin-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.admin-select {
+  background: #ffffff;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  font: inherit;
+  font-size: 0.9rem;
+  min-height: 2.6rem;
+  padding: 0 2rem 0 0.75rem;
+
+  &:focus-visible {
+    border-color: $color-accent;
+    box-shadow: $ring-accent;
+    outline: 0;
+  }
+}
+
+.admin-grid {
+  display: grid;
+  gap: $spacing-sm;
+  margin-bottom: $spacing-sm;
+}
+
+.admin-grid--charts {
+  @media (min-width: 1180px) {
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  }
+}
+
+.admin-grid--thirds {
+  @media (min-width: 780px) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.admin-grid--split {
+  @media (min-width: 1024px) {
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  }
+}
+
+.admin-card {
+  background: #ffffff;
+  border: 1px solid $color-border;
+  border-radius: $radius-lg;
+  margin-bottom: $spacing-sm;
+  padding: $spacing-md;
+}
+
+.admin-card__head {
+  align-items: baseline;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem $spacing-sm;
+  justify-content: space-between;
+  margin-bottom: $spacing-sm;
+
+  h2 {
+    font-size: 1.02rem;
+    font-weight: 600;
+  }
+}
+
+.admin-card__note {
+  color: $color-muted;
+  font-size: 0.82rem;
+}
+
+.admin-card__link {
+  color: $color-accent;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.admin-empty {
+  color: $color-muted;
+  font-size: 0.9rem;
+  padding: $spacing-sm 0;
+}
+
+.admin-notice {
+  background: #fffbeb;
+  border: 1px solid #f5d78e;
+  border-radius: $radius-md;
+  margin-bottom: $spacing-sm;
+  padding: $spacing-sm $spacing-md;
+
+  p {
+    color: $color-muted;
+    font-size: 0.88rem;
+    margin-top: 0.3rem;
+    max-width: 74ch;
+  }
+}
+
+// ==================================================================== KPI tiles
+
+.kpi-row {
+  display: grid;
+  gap: $spacing-sm;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-bottom: $spacing-sm;
+
+  @media (min-width: 720px) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  @media (min-width: 1180px) {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+
+.kpi {
+  background: #ffffff;
+  border: 1px solid $color-border;
+  border-radius: $radius-lg;
+  display: grid;
+  gap: 0.3rem;
+  min-width: 0;
+  padding: $spacing-sm;
+}
+
+.kpi__label {
+  color: $color-muted;
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+// The hero figure: big enough to read across the room, tabular so a column of
+// tiles lines up digit for digit.
+.kpi__value {
+  font-size: clamp(1.5rem, 2.6vw, 1.95rem);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.kpi__foot {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.kpi__delta {
+  align-items: center;
+  display: inline-flex;
+  font-size: 0.8rem;
+  font-weight: 700;
+  gap: 0.2rem;
+  justify-self: start;
+
+  svg {
+    flex: none;
+  }
+}
+
+// Direction is carried by the arrow as well as the colour, so the tile still
+// reads without colour vision.
+.kpi__delta--up {
+  color: $color-success;
+}
+
+.kpi__delta--down {
+  color: $color-danger;
+}
+
+.kpi__delta--flat,
+.kpi__delta--none {
+  color: $color-muted;
+  font-weight: 500;
+}
+
+.kpi__hint {
+  color: $color-muted;
+  font-size: 0.76rem;
+}
+
+// ======================================================================= charts
+
+.chart {
+  position: relative;
+}
+
+.chart__svg {
+  display: block;
+  height: auto;
+  overflow: visible;
+  width: 100%;
+}
+
+.chart__grid {
+  stroke: $color-border-subtle;
+  stroke-width: 1;
+}
+
+.chart__axis-label {
+  fill: $color-muted;
+  font-family: $font-family-base;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.chart__line {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.chart__area {
+  opacity: 0.1;
+  stroke: none;
+}
+
+.chart__point {
+  stroke: #ffffff;
+  stroke-width: 2;
+}
+
+.chart__bar {
+  fill: #2a78d6;
+}
+
+.chart__hit {
+  fill: transparent;
+}
+
+.chart__hit.is-active {
+  fill: rgba(15, 15, 15, 0.05);
+}
+
+.chart__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1rem;
+  list-style: none;
+  margin: 0 0 0.5rem;
+  padding: 0;
+}
+
+.chart__legend-item {
+  align-items: center;
+  color: $color-muted;
+  display: flex;
+  font-size: 0.82rem;
+  gap: 0.4rem;
+}
+
+.chart__swatch {
+  border-radius: 3px;
+  display: inline-block;
+  flex: none;
+  height: 10px;
+  width: 10px;
+}
+
+.chart__tooltip {
+  background: $color-ink-deep;
+  border-radius: $radius-md;
+  box-shadow: 0 10px 30px rgba(8, 8, 10, 0.24);
+  color: #ffffff;
+  display: grid;
+  font-size: 0.8rem;
+  gap: 0.2rem;
+  padding: 0.55rem 0.7rem;
+  pointer-events: none;
+  position: absolute;
+  white-space: nowrap;
+  z-index: 5;
+
+  &[hidden] {
+    display: none;
+  }
+}
+
+.chart__tooltip-date {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.74rem;
+}
+
+.chart__tooltip-row {
+  align-items: center;
+  display: flex;
+  gap: 0.4rem;
+
+  strong {
+    font-variant-numeric: tabular-nums;
+    margin-left: auto;
+    padding-left: 0.75rem;
+  }
+}
+
+// ==================================================================== breakdown
+
+.breakdown {
+  display: grid;
+  gap: 0.55rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.breakdown__row {
+  align-items: center;
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: minmax(0, 1fr) 70px auto auto;
+}
+
+.breakdown__label {
+  font-size: 0.86rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.breakdown__track {
+  background: $color-surface-strong;
+  border-radius: 999px;
+  display: block;
+  height: 6px;
+  overflow: hidden;
+}
+
+.breakdown__fill {
+  background: #2a78d6;
+  border-radius: 999px;
+  display: block;
+  height: 100%;
+}
+
+.breakdown__value {
+  font-size: 0.86rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.breakdown__share {
+  color: $color-muted;
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+  min-width: 2.6rem;
+  text-align: right;
+}
+
+// ==================================================================== attention
+
+.attention {
+  display: grid;
+  gap: 0.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.attention__row {
+  align-items: center;
+  background: $color-surface;
+  border: 1px solid $color-border-subtle;
+  border-radius: $radius-md;
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  padding: 0.7rem 0.8rem;
+
+  strong {
+    display: block;
+    font-size: 0.9rem;
+  }
+
+  small {
+    color: $color-muted;
+    display: block;
+    font-size: 0.78rem;
+  }
+}
+
+.attention__count {
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  display: inline-flex;
+  font-size: 1rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  height: 2.3rem;
+  justify-content: center;
+  min-width: 2.3rem;
+}
+
+.attention__row--alert .attention__count {
+  background: rgba(198, 40, 40, 0.1);
+  border-color: rgba(198, 40, 40, 0.3);
+  color: $color-danger;
+}
+
+.attention__row--warn .attention__count {
+  background: rgba(154, 103, 0, 0.1);
+  border-color: rgba(154, 103, 0, 0.3);
+  color: $color-warning;
+}
+
+.attention__link {
+  color: $color-accent;
+  font-size: 0.84rem;
+  font-weight: 500;
 }

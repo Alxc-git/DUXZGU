@@ -21,7 +21,8 @@ class CartsController < ApplicationController
     if params[:then] == "checkout"
       redirect_to checkout_path
     else
-      redirect_to cart_path, notice: "#{variant.product.name} (#{variant.name}) ajoute au panier"
+      redirect_to cart_path,
+        notice: "✨ Ajoute au panier - #{variant.product.name} (#{variant.name}). Checkout securise et livraison suivie."
     end
   end
 

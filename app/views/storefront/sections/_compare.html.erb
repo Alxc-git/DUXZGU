@@ -1,0 +1,71 @@
+<% variants = product.available_variants %>
+<% return if variants.size < 2 %>
+<% offer = DuoOffer.new(current_store) %>
+
+<%# Picking a colour one swatch at a time means holding the previous one in your
+    head. Here up to three sit side by side at full size. %>
+<section class="compare" id="comparateur"
+         data-controller="compare"
+         data-compare-max-value="3"
+         data-compare-selected-class="is-picked">
+  <div class="page-container">
+    <header class="compare__head">
+      <div>
+        <p class="compare__eyebrow">Comparateur</p>
+        <h2 class="compare__title">Voyez-les cote a cote</h2>
+        <p class="compare__lead">
+          Choisissez jusqu'a trois couleurs pour les comparer en grand.
+          <% if offer.active? %><%= offer.label %> si vous en prenez deux.<% end %>
+        </p>
+      </div>
+
+      <p class="compare__counter" data-compare-target="counter" aria-live="polite"></p>
+    </header>
+
+    <ul class="compare__picker" role="list">
+      <% variants.each_with_index do |item, index| %>
+        <li>
+          <button type="button"
+                  class="compare__chip"
+                  data-compare-target="chip"
+                  data-compare-id-param="<%= item.id %>"
+                  data-action="compare#toggle"
+                  aria-pressed="<%= index < 2 %>">
+            <span class="compare__chip-dot" style="background: <%= item.swatch_color %>"></span>
+            <span><%= item.name %></span>
+          </button>
+        </li>
+      <% end %>
+    </ul>
+
+    <div class="compare__stage" data-compare-target="stage">
+      <% variants.each_with_index do |item, index| %>
+        <article class="compare__card" data-compare-target="card" data-compare-id="<%= item.id %>"
+                 <%= "hidden" if index >= 2 %>>
+          <span class="compare__media">
+            <%= variant_image_tag item, alt: "#{product.name} - #{item.name}", thumb: 320,
+                  loading: "lazy", decoding: "async" %>
+          </span>
+
+          <div class="compare__body">
+            <h3><%= item.name %></h3>
+            <p class="compare__price"><%= item.formatted_price %></p>
+          </div>
+
+          <%= form_with url: cart_lines_path, method: :post, class: "compare__form" do |form| %>
+            <%= form.hidden_field :product_id, value: product.id %>
+            <%= form.hidden_field :variant_id, value: item.id %>
+            <%= form.button type: "submit", class: "button button--block button--secondary" do %>
+              <%= icon "bag", size: 17 %>
+              <span>Ajouter</span>
+            <% end %>
+          <% end %>
+        </article>
+      <% end %>
+
+      <p class="compare__empty" data-compare-target="empty" hidden>
+        Choisissez au moins une couleur ci-dessus.
+      </p>
+    </div>
+  </div>
+</section>

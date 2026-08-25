@@ -1,6 +1,8 @@
 <% featured = current_product %>
 <% product_path = featured.present? ? storefront_product_path(featured.slug) : root_path %>
 
+<%# Announcement bar disabled temporarily for visual comparison. %>
+<% if false %>
 <div class="announce">
   <div class="page-container announce__inner">
     <span class="announce__item announce__item--primary">
@@ -17,9 +19,11 @@
     </span>
   </div>
 </div>
+<% end %>
 
+<div class="search-scope" data-controller="search">
 <header class="site-header"
-        data-controller="site-header menu search"
+        data-controller="site-header menu"
         data-menu-open-class="site-header--menu-open"
         data-site-header-stuck-class="site-header--stuck"
         data-site-header-hidden-class="site-header--hidden">
@@ -134,7 +138,10 @@
     </div>
   </div>
 
-  <% if featured.present? %>
-    <%= render "storefront/sections/search", product: featured %>
-  <% end %>
 </header>
+
+<%# Outside the header on purpose: see the comment on .search-scope above. %>
+<% if featured.present? %>
+  <%= render "storefront/sections/search", product: featured %>
+<% end %>
+</div>

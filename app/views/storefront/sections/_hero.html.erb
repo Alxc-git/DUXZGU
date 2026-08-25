@@ -15,7 +15,24 @@
         <%= star_rating product.rating, size: 15 %>
         <span><%= number_with_precision(product.rating, precision: 1, separator: ",") %> · <%= product.reviews_count %> avis</span>
         <span class="hero__divider"></span>
-        <strong><%= (showcase || product).formatted_price %></strong>
+        <% hero_price = (showcase || product).formatted_price %>
+        <strong class="hero-price-roll" aria-label="<%= hero_price %>">
+          <% hero_price.each_char.with_index do |character, index| %>
+            <% if character.match?(/\d/) %>
+              <span class="hero-price-roll__digit"
+                    style="--digit: <%= character %>; --delay: <%= index * 45 %>ms;"
+                    aria-hidden="true">
+                <span class="hero-price-roll__track">
+                  <% 10.times do |number| %>
+                    <span><%= number %></span>
+                  <% end %>
+                </span>
+              </span>
+            <% else %>
+              <span class="hero-price-roll__char" aria-hidden="true"><%= character %></span>
+            <% end %>
+          <% end %>
+        </strong>
         <% if product.discount_percentage.present? %>
           <s><%= product.formatted_compare_at_price %></s>
           <span class="tag tag--sale">Liquidation -<%= product.discount_percentage %>%</span>

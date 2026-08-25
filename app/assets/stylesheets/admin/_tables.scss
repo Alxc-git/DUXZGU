@@ -18,3 +18,86 @@
   font-size: 0.82rem;
   text-transform: uppercase;
 }
+
+.admin-table th {
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.admin-table td {
+  font-size: 0.9rem;
+  vertical-align: middle;
+}
+
+.admin-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.admin-table tbody tr:hover {
+  background: $color-surface;
+}
+
+.admin-table .is-numeric {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.admin-table--compact td,
+.admin-table--compact th {
+  padding: 0.55rem 0.5rem;
+}
+
+.admin-table__sub {
+  color: $color-muted;
+  display: block;
+  font-size: 0.76rem;
+}
+
+// Order state, as a labelled chip rather than a bare colour.
+.status {
+  border: 1px solid $color-border;
+  border-radius: 999px;
+  display: inline-block;
+  font-size: 0.74rem;
+  font-weight: 600;
+  padding: 0.15rem 0.5rem;
+  white-space: nowrap;
+}
+
+.status--paid,
+.status--delivered {
+  background: rgba(22, 128, 60, 0.1);
+  border-color: rgba(22, 128, 60, 0.3);
+  color: $color-success;
+}
+
+.status--shipped,
+.status--submitted_to_supplier {
+  background: rgba(31, 78, 216, 0.09);
+  border-color: rgba(31, 78, 216, 0.28);
+  color: $color-accent;
+}
+
+.status--failed,
+.status--cancelled {
+  background: rgba(198, 40, 40, 0.09);
+  border-color: rgba(198, 40, 40, 0.28);
+  color: $color-danger;
+}
+
+.status--pending,
+.status--checkout_created {
+  background: rgba(154, 103, 0, 0.09);
+  border-color: rgba(154, 103, 0, 0.28);
+  color: $color-warning;
+}
+
+// Wide tables scroll inside their card instead of pushing the page sideways.
+.admin-card .admin-table {
+  min-width: 520px;
+}
+
+.admin-card:has(.admin-table) {
+  overflow-x: auto;
+}

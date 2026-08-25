@@ -29,6 +29,13 @@
       <dt>Sous-total</dt>
       <dd><%= totals[:subtotal] %></dd>
     </div>
+    <% if totals[:discount_cents].to_i.positive? %>
+      <div class="order-summary__row order-summary__row--discount">
+        <dt><%= totals[:discount_label] %></dt>
+        <dd>&minus;<%= MoneyFormatter.format(totals[:discount_cents], current_store.currency) %></dd>
+      </div>
+    <% end %>
+
     <div class="order-summary__row">
       <dt>Livraison</dt>
       <dd>

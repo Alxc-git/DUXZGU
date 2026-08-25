@@ -27,6 +27,26 @@
         <% end %>
       </div>
     <% else %>
+      <% if current_cart.offer.active? %>
+        <% if current_cart.discount? %>
+          <p class="duo-banner duo-banner--earned">
+            <%= icon "check", size: 17 %>
+            <span>
+              <strong><%= current_cart.offer.label %> applique.</strong>
+              Vous economisez <%= current_cart.formatted_discount %> sur cette commande.
+            </span>
+          </p>
+        <% elsif current_cart.units_to_offer.positive? %>
+          <p class="duo-banner">
+            <%= icon "spark", size: 17 %>
+            <span>
+              <strong>Ajoutez une deuxieme montre</strong> et
+              <%= current_cart.offer.label.downcase %>. Meme colis, meme livraison.
+            </span>
+          </p>
+        <% end %>
+      <% end %>
+
       <div class="cart__grid">
         <div class="cart__lines">
           <% current_cart.lines.each do |line| %>
@@ -83,7 +103,16 @@
             <section class="cart-suggest">
               <header class="cart-suggest__head">
                 <h2>Ajoutez une autre couleur</h2>
-                <p>Meme montre, meme prix &mdash; livree dans le meme colis.</p>
+                <% if current_cart.offer.active? %>
+                  <p>
+                    <%= current_cart.offer.label %>, livree dans le meme colis.
+                    <% if current_cart.units_to_offer.positive? %>
+                      Il vous en manque une pour en profiter.
+                    <% end %>
+                  </p>
+                <% else %>
+                  <p>Meme montre, meme prix &mdash; livree dans le meme colis.</p>
+                <% end %>
               </header>
 
               <ul class="cart-suggest__list" role="list">
@@ -119,6 +148,13 @@
               <dt>Sous-total</dt>
               <dd><%= current_cart.formatted_subtotal %></dd>
             </div>
+            <% if current_cart.discount? %>
+              <div class="cart-summary__row cart-summary__row--discount">
+                <dt><%= current_cart.offer.label %></dt>
+                <dd>&minus;<%= current_cart.formatted_discount %></dd>
+              </div>
+            <% end %>
+
             <div class="cart-summary__row">
               <dt>Livraison</dt>
               <dd>

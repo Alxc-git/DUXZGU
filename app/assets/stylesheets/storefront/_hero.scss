@@ -92,6 +92,66 @@
   width: 1px;
 }
 
+.hero-price-roll {
+  align-items: baseline;
+  display: inline-flex;
+  font-variant-numeric: tabular-nums;
+  gap: 0.01em;
+  line-height: 1;
+  overflow: hidden;
+}
+
+.hero-price-roll__digit {
+  display: inline-block;
+  height: 1em;
+  overflow: hidden;
+  position: relative;
+  width: 0.62em;
+}
+
+.hero-price-roll__track {
+  animation: hero-price-roll 1.05s cubic-bezier(0.19, 1, 0.22, 1) both;
+  animation-delay: var(--delay);
+  display: grid;
+  transform: translateY(calc(var(--digit) * -1em));
+  will-change: transform;
+}
+
+.hero-price-roll__track span {
+  display: block;
+  height: 1em;
+  line-height: 1;
+  text-align: center;
+}
+
+.hero-price-roll__char {
+  display: inline-block;
+  min-width: 0.22em;
+}
+
+@keyframes hero-price-roll {
+  0% {
+    filter: blur(1px);
+    transform: translateY(0);
+  }
+
+  72% {
+    filter: blur(0);
+    transform: translateY(calc((var(--digit) * -1em) - 0.18em));
+  }
+
+  100% {
+    filter: blur(0);
+    transform: translateY(calc(var(--digit) * -1em));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-price-roll__track {
+    animation: none;
+  }
+}
+
 .hero__actions {
   display: grid;
   gap: 0.6rem;

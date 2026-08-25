@@ -267,6 +267,13 @@
 
 // ---------------------------------------------------------------- search panel
 
+// Generates no box at all, so the sticky header still sticks to the page and the
+// search overlay inside it is positioned against the viewport rather than against
+// the header's transform.
+.search-scope {
+  display: contents;
+}
+
 .search-overlay {
   backdrop-filter: blur(3px);
   background: rgba(8, 8, 10, 0.42);

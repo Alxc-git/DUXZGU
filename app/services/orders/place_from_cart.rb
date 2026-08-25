@@ -41,6 +41,7 @@ module Orders
         currency: line.product.currency,
         # Shipping is charged once per checkout, on the first line.
         shipping_cents: first ? store.shipping_cents : 0,
+        discount_cents: cart.discount_for(line),
         customer:,
         metadata: { "checkout_reference" => reference }
       )

@@ -15,6 +15,10 @@ store.settings = store.settings.merge(
   "shipping_cents" => 0,
   "support_email" => "contact@luxtime.ca"
 )
+store.supplier_settings = store.supplier_settings.merge(
+  "pay_type" => store.supplier_settings["pay_type"].presence || 2,
+  "fulfillment_delay_minutes" => store.supplier_settings["fulfillment_delay_minutes"].presence || 30
+)
 store.save!
 
 PRODUCT_SLUG = "montre-chronographe-sport".freeze

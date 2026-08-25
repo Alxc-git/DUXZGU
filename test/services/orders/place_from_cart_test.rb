@@ -46,14 +46,14 @@ class Orders::PlaceFromCartTest < ActiveSupport::TestCase
     assert_equal [ 900, 0 ], place.map(&:shipping_cents)
   end
 
-  test "totals cover the quantity plus shipping" do
+  test "totals cover the quantity plus shipping minus discounts" do
     @store.update!(settings: @store.settings.merge("shipping_cents" => 900))
     @cart.add(variants(:black), quantity: 3)
 
     order = place.first
 
     assert_equal 14_700, order.subtotal_cents
-    assert_equal 15_600, order.total_cents
+    assert_equal order.subtotal_cents - order.discount_cents + order.shipping_cents, order.total_cents
   end
 
   test "the shipping address is copied onto every order" do

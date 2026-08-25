@@ -2,6 +2,8 @@ module Admin
   class BaseController < ApplicationController
     layout "admin"
 
+    skip_after_action :track_visit
+
     before_action :require_admin_user!
 
     helper_method :current_admin_user

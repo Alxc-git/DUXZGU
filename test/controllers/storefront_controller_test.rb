@@ -25,7 +25,7 @@ class StorefrontControllerTest < ActionDispatch::IntegrationTest
     get storefront_product_path(products(:demo_product).slug)
 
     assert_response :success
-    assert_select "input[name=variant_id]", 2
+    assert_select ".buy-box input[name=variant_id]", 2
     # Colours live in the swatches; the rail is the photo strip, so a product with
     # no detail shots attached still carries the watch itself as its only slide.
     assert_select ".gallery__thumb", 1
@@ -54,7 +54,7 @@ class StorefrontControllerTest < ActionDispatch::IntegrationTest
     get storefront_product_path(products(:demo_product).slug)
 
     assert_response :success
-    assert_select "input[name=variant_id]", 1
+    assert_select ".buy-box input[name=variant_id]", 1
   end
 
   test "renders a product with no variants at all" do
@@ -63,7 +63,7 @@ class StorefrontControllerTest < ActionDispatch::IntegrationTest
     get storefront_product_path(products(:demo_product).slug)
 
     assert_response :success
-    assert_select "input[name=variant_id]", 0
+    assert_select ".buy-box input[name=variant_id]", 0
     assert_select ".buy-box__price", text: products(:demo_product).formatted_price
   end
 

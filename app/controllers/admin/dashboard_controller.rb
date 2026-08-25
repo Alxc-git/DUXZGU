@@ -3,10 +3,20 @@ module Admin
     def show
       @stores = Store.order(:name)
       @selected_store = @stores.find_by(id: params[:store_id]) if params[:store_id].present?
-      @orders = @selected_store ? @selected_store.orders : Order.all
-      @dashboard_currency = @selected_store&.currency || Store::DEFAULT_CURRENCY
-      @today = Time.zone.now.beginning_of_day
-      @seven_days_ago = 7.days.ago
+      @report = Analytics::Report.new(store: @selected_store, days: params[:days])
+
+      @recent_orders = order_scope.recent.includes(:product, :variant).limit(8)
+      @attention = {
+        supplier_errors: order_scope.supplier_errors.count,
+        awaiting_fulfillment: order_scope.paid.where(supplier_order_id: nil).count,
+        unpaid: order_scope.where(paid_at: nil).where(created_at: 2.days.ago..).count
+      }
+    end
+
+    private
+
+    def order_scope
+      @selected_store ? @selected_store.orders : Order.all
     end
   end
 end

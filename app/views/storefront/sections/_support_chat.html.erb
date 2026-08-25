@@ -1,0 +1,61 @@
+<% featured = current_product %>
+<div class="support-chat"
+     data-controller="support-chat"
+     data-support-chat-url-value="<%= support_chat_path %>"
+     data-support-chat-open-class="is-open">
+  <button type="button"
+          class="support-chat__toggle"
+          data-support-chat-target="toggle"
+          data-action="support-chat#toggle"
+          aria-expanded="false"
+          aria-label="Ouvrir l'assistant">
+    <span class="support-chat__toggle-icon"><%= icon "sparkles", size: 22 %></span>
+    <%# Sits above the button so a waiting reply is visible without opening it. %>
+    <span class="support-chat__badge" data-support-chat-target="badge" aria-hidden="true">1</span>
+  </button>
+
+  <section class="support-chat__panel" data-support-chat-target="panel"
+           role="dialog" aria-label="Assistant LUXTIME" hidden>
+    <header class="support-chat__head">
+      <span class="support-chat__avatar"><%= icon "sparkles", size: 18 %></span>
+      <span class="support-chat__identity">
+        <strong>Assistant LUXTIME</strong>
+        <small><span class="support-chat__pulse"></span>En ligne 24/7</small>
+      </span>
+      <button type="button" class="support-chat__close" data-action="support-chat#close" aria-label="Fermer">
+        <%= icon "close", size: 18 %>
+      </button>
+    </header>
+
+    <div class="support-chat__messages" data-support-chat-target="messages" role="log" aria-live="polite"></div>
+
+    <%# Three questions that cover most of what support actually receives. %>
+    <div class="support-chat__suggestions" data-support-chat-target="suggestions">
+      <% [
+        "Ou en est ma commande ?",
+        "Comment faire un retour ?",
+        featured.present? ? "Quelles couleurs sont disponibles ?" : nil,
+        "Combien de temps pour la livraison ?"
+      ].compact.each do |prompt| %>
+        <button type="button" class="support-chat__chip"
+                data-action="support-chat#useSuggestion"
+                data-support-chat-prompt-param="<%= prompt %>"><%= prompt %></button>
+      <% end %>
+    </div>
+
+    <form class="support-chat__form" data-support-chat-target="form" data-action="submit->support-chat#submit">
+      <label class="support-chat__label" for="support-chat-message">Votre message</label>
+      <textarea id="support-chat-message"
+                class="support-chat__input"
+                data-support-chat-target="input"
+                data-action="keydown->support-chat#keydown input->support-chat#grow"
+                rows="1"
+                maxlength="1000"
+                enterkeyhint="send"
+                placeholder="Ecrivez votre question..."></textarea>
+      <button type="submit" class="support-chat__send" data-support-chat-target="submit" aria-label="Envoyer">
+        <%= icon "arrow-right", size: 18 %>
+      </button>
+    </form>
+  </section>
+</div>

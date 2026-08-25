@@ -81,13 +81,40 @@ class Cart
     lines.sum(&:total_cents)
   end
 
+  def offer
+    @offer ||= DuoOffer.new(store)
+  end
+
+  # What the duo offer takes off the whole cart.
+  def discount_cents
+    discount[:total_cents]
+  end
+
+  def discount?
+    discount_cents.positive?
+  end
+
+  # The share of the discount carried by one line, so each order row can be
+  # written with its own amount and the totals still reconcile.
+  def discount_for(line)
+    discount[:per_key][line.variant.id]
+  end
+
+  # How many more units before the offer applies. Drives the nudge in the cart.
+  def units_to_offer
+    return 0 unless offer.active?
+
+    remainder = count % 2
+    remainder.zero? ? 0 : 1
+  end
+
   # A shipping fee is per parcel, not per line, so it is counted once.
   def shipping_cents
     empty? ? 0 : store.shipping_cents
   end
 
   def total_cents
-    subtotal_cents + shipping_cents
+    subtotal_cents - discount_cents + shipping_cents
   end
 
   def currency
@@ -102,6 +129,10 @@ class Cart
     MoneyFormatter.format(shipping_cents, currency)
   end
 
+  def formatted_discount
+    MoneyFormatter.format(discount_cents, currency)
+  end
+
   def formatted_total
     MoneyFormatter.format(total_cents, currency)
   end
@@ -109,6 +140,12 @@ class Cart
   private
 
   attr_reader :store, :session
+
+  def discount
+    @discount ||= offer.apply(
+      lines.flat_map { |line| Array.new(line.quantity) { DuoOffer::Unit.new(line.variant.id, line.unit_price_cents) } }
+    )
+  end
 
   # Guards every read: a variant that was retired, deactivated or belongs to
   # another store simply disappears from the cart instead of being purchasable.
@@ -147,5 +184,6 @@ class Cart
   def reset
     @lines = nil
     @purchasable = nil
+    @discount = nil
   end
 end

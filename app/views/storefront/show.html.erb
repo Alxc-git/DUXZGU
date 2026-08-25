@@ -19,6 +19,7 @@
   <%= render "storefront/sections/sticky_bar", product: @product, variant: @variant %>
 </article>
 
+<%# Comparateur retire de la page produit pour garder un parcours d'achat plus direct. %>
 <%= render "storefront/sections/craft", product: @product, variant: :collection %>
 <%= render "storefront/sections/reviews", product: @product %>
 <%= render "storefront/sections/faq", product: @product %>

@@ -62,7 +62,7 @@ class CartTest < ActiveSupport::TestCase
     @cart.add(variants(:blue))
 
     assert_equal 900, @cart.shipping_cents
-    assert_equal @cart.subtotal_cents + 900, @cart.total_cents
+    assert_equal @cart.subtotal_cents - @cart.discount_cents + 900, @cart.total_cents
   end
 
   test "a variant from another store never appears in the cart" do

@@ -20,7 +20,7 @@ class Order < ApplicationRecord
   enum :status, STATUSES, default: :pending
 
   validates :quantity, numericality: { only_integer: true, greater_than: 0 }
-  validates :subtotal_cents, :shipping_cents, :tax_cents, :total_cents,
+  validates :subtotal_cents, :shipping_cents, :tax_cents, :total_cents, :discount_cents,
     numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :currency, presence: true
   validate :product_belongs_to_store
@@ -33,8 +33,18 @@ class Order < ApplicationRecord
 
   def recalculate_totals!
     self.subtotal_cents = unit_price_cents * quantity
-    self.total_cents = subtotal_cents + shipping_cents + tax_cents
+    # The duo discount is carried per row, so a multi-line checkout still adds up
+    # to the total the customer was shown.
+    self.total_cents = [ subtotal_cents - discount_cents + shipping_cents + tax_cents, 0 ].max
     self.currency = product.currency
+  end
+
+  def discount?
+    discount_cents.positive?
+  end
+
+  def formatted_discount
+    MoneyFormatter.format(discount_cents, currency)
   end
 
   # A variant may override the product price; without one the product price applies.

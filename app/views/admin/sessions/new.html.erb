@@ -1,14 +1,56 @@
-<section class="card" style="max-width: 420px;">
-  <h1>Admin login</h1>
-  <%= form_with url: admin_login_path, class: "form" do |form| %>
-    <div class="form__field">
-      <%= form.label :email %>
-      <%= form.email_field :email, class: "form__input", required: true %>
+<% content_for :title, "Connexion admin" %>
+
+<section class="admin-login">
+  <div class="admin-login__panel">
+    <div class="admin-login__brand">
+      <span class="admin-login__mark"><%= icon "shield-check", size: 22 %></span>
+      <span>LUXTIME</span>
     </div>
-    <div class="form__field">
-      <%= form.label :password %>
-      <%= form.password_field :password, class: "form__input", required: true %>
+
+    <div class="admin-login__copy">
+      <p class="admin-login__eyebrow">Acces securise</p>
+      <h1>Connexion administrateur</h1>
+      <p>Gerez les commandes, les variantes CJ, les paiements Stripe et le suivi client depuis un espace protege.</p>
     </div>
-    <%= form.submit "Login", class: "button" %>
-  <% end %>
+
+    <ul class="admin-login__checks" role="list">
+      <li><%= icon "lock", size: 17 %><span>Session privee</span></li>
+      <li><%= icon "credit-card", size: 17 %><span>Stripe configure</span></li>
+      <li><%= icon "truck", size: 17 %><span>Fulfillment CJ</span></li>
+    </ul>
+  </div>
+
+  <div class="admin-login__card">
+    <div class="admin-login__card-head">
+      <p class="admin-login__eyebrow">Back office</p>
+      <h2>Se connecter</h2>
+    </div>
+
+    <%= form_with url: admin_login_path, class: "admin-login__form" do |form| %>
+      <div class="admin-login__field">
+        <%= form.label :email, "Courriel" %>
+        <span class="admin-login__input-wrap">
+          <%= icon "mail", size: 18 %>
+          <%= form.email_field :email, class: "admin-login__input", autocomplete: "email",
+                placeholder: "admin@luxtime.ca", required: true %>
+        </span>
+      </div>
+
+      <div class="admin-login__field">
+        <%= form.label :password, "Mot de passe" %>
+        <span class="admin-login__input-wrap">
+          <%= icon "lock", size: 18 %>
+          <%= form.password_field :password, class: "admin-login__input",
+                autocomplete: "current-password", placeholder: "12 caracteres minimum", required: true %>
+        </span>
+      </div>
+
+      <%= form.submit "Entrer dans l'admin", class: "button button--lg button--block" %>
+    <% end %>
+
+    <p class="admin-login__note">
+      <%= icon "shield", size: 16 %>
+      <span>Utilise ton compte admin local. Les clients ne voient jamais cette page.</span>
+    </p>
+  </div>
 </section>

@@ -65,6 +65,13 @@ class Store < ApplicationRecord
     settings["support_email"].presence
   end
 
+  def fulfillment_delay_minutes
+    minutes = supplier_settings["fulfillment_delay_minutes"].to_i
+    return 30 if minutes <= 0
+
+    [ minutes, 240 ].min
+  end
+
   private
 
   def normalize_domain

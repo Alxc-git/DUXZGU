@@ -14,6 +14,7 @@
 @use "components/modals";
 @use "components/payment";
 @use "components/trust";
+@use "components/support_chat";
 
 @use "layout/header";
 @use "layout/footer";
@@ -30,6 +31,7 @@
 @use "storefront/footer_cta";
 @use "storefront/cart";
 @use "storefront/contact";
+@use "storefront/compare";
 @use "storefront/order";
 @use "storefront/checkout";
 @use "storefront/gallery";

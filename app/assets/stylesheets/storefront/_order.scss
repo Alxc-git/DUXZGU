@@ -959,3 +959,8 @@
     flex: none;
   }
 }
+
+.order-summary__row--discount dd {
+  color: $color-success;
+  font-weight: 600;
+}

@@ -44,7 +44,7 @@ module Payments
         )
       end
 
-      FulfillOrderJob.perform_later(order.id) if enqueue
+      Fulfillment::EnqueueOrder.call(order:) if enqueue
     end
   end
 end

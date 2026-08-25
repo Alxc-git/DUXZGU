@@ -1,0 +1,22 @@
+<%# One headline figure with its change against the previous period. The delta is
+    what tells you whether the site is improving; the raw number alone does not. %>
+<article class="kpi">
+  <p class="kpi__label"><%= label %></p>
+  <p class="kpi__value"><%= value %></p>
+
+  <p class="kpi__foot">
+    <% if delta.nil? %>
+      <span class="kpi__delta kpi__delta--none">Pas de comparaison</span>
+    <% else %>
+      <%# For bounce rate a fall is the good news, so the colour follows meaning
+          rather than the sign. %>
+      <% good = local_assigns[:invert] ? delta.negative? : delta.positive? %>
+      <% direction = good ? "up" : "down" %>
+      <span class="kpi__delta kpi__delta--<%= delta.zero? ? "flat" : direction %>">
+        <%= icon(delta.negative? ? "trend-down" : "trend-up", size: 14) unless delta.zero? %>
+        <%= "#{delta.positive? ? '+' : ''}#{number_with_precision(delta, precision: 1, separator: ',')} %" %>
+      </span>
+    <% end %>
+    <span class="kpi__hint"><%= hint %></span>
+  </p>
+</article>

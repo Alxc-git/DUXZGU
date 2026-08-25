@@ -5,6 +5,10 @@ class ApplicationController < ActionController::Base
   # Changes to the importmap will invalidate the etag for HTML responses
   stale_when_importmap_changes
 
+  # Storefront traffic is recorded for the admin dashboard; the admin itself opts
+  # out below so browsing your own orders never shows up as customer visits.
+  include TracksVisits
+
   before_action :set_current_store
 
   helper_method :current_store, :current_cart, :current_product

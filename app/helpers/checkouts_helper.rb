@@ -40,7 +40,13 @@ module CheckoutsHelper
   end
 
   def summary_totals_from_cart(cart)
-    { subtotal: cart.formatted_subtotal, shipping_cents: cart.shipping_cents, total: cart.formatted_total }
+    {
+      subtotal: cart.formatted_subtotal,
+      discount_cents: cart.discount_cents,
+      discount_label: cart.offer.label,
+      shipping_cents: cart.shipping_cents,
+      total: cart.formatted_total
+    }
   end
 
   def summary_totals_from_orders(orders)
@@ -48,6 +54,8 @@ module CheckoutsHelper
 
     {
       subtotal: MoneyFormatter.format(orders.sum(&:subtotal_cents), currency),
+      discount_cents: orders.sum(&:discount_cents),
+      discount_label: DuoOffer.new(orders.first.store).label,
       shipping_cents: orders.sum(&:shipping_cents),
       total: MoneyFormatter.format(orders.sum(&:total_cents), currency)
     }

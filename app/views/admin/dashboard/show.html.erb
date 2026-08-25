@@ -1,18 +1,208 @@
-<div class="admin-main__header">
-  <h1>Dashboard</h1>
-  <%= form_with url: admin_root_path, method: :get, class: "admin-filters" do |form| %>
-    <%= form.collection_select :store_id, @stores, :id, :name, { include_blank: "All stores", selected: @selected_store&.id }, class: "form__select" %>
-    <%= form.submit "Filter", class: "button button--secondary" %>
+<% content_for :title, "Tableau de bord | Admin" %>
+<% report = @report %>
+<% money = ->(cents) { MoneyFormatter.format(cents, report.currency) } %>
+
+<header class="admin-page-head">
+  <div>
+    <p class="admin-page-head__eyebrow">Vue d'ensemble</p>
+    <h1>Tableau de bord</h1>
+    <p class="admin-page-head__lead">
+      <%= @selected_store&.name || "Toutes les boutiques" %> &mdash;
+      <%= Analytics::Report::PERIODS[report.days].downcase %>,
+      compare aux <%= Analytics::Report::PERIODS[report.days].downcase %> precedents.
+    </p>
+  </div>
+
+  <%= form_with url: admin_root_path, method: :get, class: "admin-filters", data: { turbo_frame: "_top" } do |form| %>
+    <%= form.select :store_id,
+          options_from_collection_for_select(@stores, :id, :name, @selected_store&.id),
+          { include_blank: "Toutes les boutiques" },
+          class: "admin-select", onchange: "this.form.requestSubmit()" %>
+    <%= form.select :days,
+          options_for_select(Analytics::Report::PERIODS.map { |value, label| [ label, value ] }, report.days),
+          {},
+          class: "admin-select", onchange: "this.form.requestSubmit()" %>
+    <noscript><%= form.submit "Appliquer", class: "button button--secondary" %></noscript>
   <% end %>
+</header>
+
+<%# The six numbers that answer "is the site working?", each against its own past. %>
+<div class="kpi-row">
+  <%= render "admin/dashboard/kpi", label: "Visites", value: number_with_delimiter(report.visits),
+        delta: report.delta(:visits), hint: "Sessions ouvertes" %>
+  <%= render "admin/dashboard/kpi", label: "Rebond",
+        value: "#{number_with_precision(report.bounce_rate, precision: 1, separator: ',')} %",
+        delta: report.delta(:bounce_rate), hint: "Repartis apres une seule page", invert: true %>
+  <%= render "admin/dashboard/kpi", label: "Pages vues", value: number_with_delimiter(report.page_views),
+        delta: report.delta(:page_views),
+        hint: "#{number_with_precision(report.pages_per_visit, precision: 1, separator: ',')} par visite" %>
+  <%= render "admin/dashboard/kpi", label: "Commandes", value: number_with_delimiter(report.orders),
+        delta: report.delta(:orders), hint: "Toutes commandes creees" %>
+  <%= render "admin/dashboard/kpi", label: "Revenus", value: money.call(report.revenue_cents),
+        delta: report.delta(:revenue_cents),
+        hint: "Panier moyen #{money.call(report.average_order_cents)}" %>
+  <%= render "admin/dashboard/kpi", label: "Conversion",
+        value: "#{number_with_precision(report.conversion_rate, precision: 2, separator: ',')} %",
+        delta: report.delta(:conversion_rate), hint: "Visites devenues commandes" %>
 </div>
 
-<div class="dashboard-grid">
-  <div class="card dashboard-metric"><div class="dashboard-metric__value"><%= @stores.count %></div><div class="dashboard-metric__label">Stores</div></div>
-  <div class="card dashboard-metric"><div class="dashboard-metric__value"><%= @orders.created_since(@today).count %></div><div class="dashboard-metric__label">Orders today</div></div>
-  <div class="card dashboard-metric"><div class="dashboard-metric__value"><%= @orders.created_since(@seven_days_ago).count %></div><div class="dashboard-metric__label">Orders 7 days</div></div>
-  <div class="card dashboard-metric"><div class="dashboard-metric__value"><%= MoneyFormatter.format(@orders.paid.created_since(@today).sum(:total_cents), @dashboard_currency) %></div><div class="dashboard-metric__label">Revenue today</div></div>
-  <div class="card dashboard-metric"><div class="dashboard-metric__value"><%= MoneyFormatter.format(@orders.paid.created_since(@seven_days_ago).sum(:total_cents), @dashboard_currency) %></div><div class="dashboard-metric__label">Revenue 7 days</div></div>
-  <div class="card dashboard-metric"><div class="dashboard-metric__value"><%= @orders.paid.count %></div><div class="dashboard-metric__label">Paid</div></div>
-  <div class="card dashboard-metric"><div class="dashboard-metric__value"><%= @orders.shipped.count %></div><div class="dashboard-metric__label">Shipped</div></div>
-  <div class="card dashboard-metric"><div class="dashboard-metric__value"><%= @orders.supplier_errors.count %></div><div class="dashboard-metric__label">Supplier errors</div></div>
+<% unless report.any_traffic? %>
+  <div class="admin-notice">
+    <strong>Aucune visite enregistree sur la periode.</strong>
+    <p>
+      Le suivi demarre a la premiere page ouverte par un visiteur. Ouvrez la boutique
+      dans une fenetre privee pour verifier qu'il fonctionne &mdash; vos propres pages
+      d'administration ne sont jamais comptees.
+    </p>
+  </div>
+<% end %>
+
+<div class="admin-grid admin-grid--charts">
+  <section class="admin-card">
+    <header class="admin-card__head">
+      <h2>Trafic</h2>
+      <span class="admin-card__note">Visites et pages vues par jour</span>
+    </header>
+    <%= line_chart id: "chart-trafic", points: report.series, series: [
+          { key: :visits, label: "Visites", color: "#2a78d6", fill: true },
+          { key: :page_views, label: "Pages vues", color: "#eb6834" }
+        ] %>
+  </section>
+
+  <section class="admin-card">
+    <header class="admin-card__head">
+      <h2>Revenus</h2>
+      <span class="admin-card__note">Commandes payees par jour</span>
+    </header>
+    <%= bar_chart id: "chart-revenus", points: report.series, key: :revenue_cents,
+          formatter: ->(cents) { MoneyFormatter.format(cents, report.currency) } %>
+  </section>
 </div>
+
+<div class="admin-grid admin-grid--thirds">
+  <section class="admin-card">
+    <header class="admin-card__head">
+      <h2>Sources de trafic</h2>
+      <span class="admin-card__note">D'ou viennent les visites</span>
+    </header>
+    <%= breakdown_list report.top_sources %>
+  </section>
+
+  <section class="admin-card">
+    <header class="admin-card__head">
+      <h2>Pages les plus vues</h2>
+    </header>
+    <%= breakdown_list report.top_pages %>
+  </section>
+
+  <section class="admin-card">
+    <header class="admin-card__head">
+      <h2>Appareils</h2>
+    </header>
+    <%= breakdown_list report.devices %>
+  </section>
+</div>
+
+<div class="admin-grid admin-grid--split">
+  <section class="admin-card">
+    <header class="admin-card__head">
+      <h2>Toutes vos boutiques</h2>
+      <span class="admin-card__note">Sur la meme periode</span>
+    </header>
+
+    <table class="admin-table admin-table--compact">
+      <thead>
+        <tr>
+          <th>Boutique</th>
+          <th class="is-numeric">Visites</th>
+          <th class="is-numeric">Commandes</th>
+          <th class="is-numeric">Revenus</th>
+          <th class="is-numeric">Conv.</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% report.stores_summary.each do |row| %>
+          <tr>
+            <td>
+              <%= link_to row[:store].name, admin_root_path(store_id: row[:store].id, days: report.days) %>
+              <span class="admin-table__sub"><%= row[:store].domain %></span>
+            </td>
+            <td class="is-numeric"><%= number_with_delimiter(row[:visits]) %></td>
+            <td class="is-numeric"><%= number_with_delimiter(row[:orders]) %></td>
+            <td class="is-numeric"><%= MoneyFormatter.format(row[:revenue_cents], row[:store].currency) %></td>
+            <td class="is-numeric"><%= number_with_precision(row[:conversion_rate], precision: 1, separator: ",") %> %</td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="admin-card">
+    <header class="admin-card__head">
+      <h2>A traiter</h2>
+    </header>
+
+    <ul class="attention" role="list">
+      <li class="attention__row <%= "attention__row--alert" if @attention[:supplier_errors].positive? %>">
+        <span class="attention__count"><%= @attention[:supplier_errors] %></span>
+        <span>
+          <strong>Erreurs fournisseur</strong>
+          <small>Commandes que le fournisseur a refusees</small>
+        </span>
+        <%= link_to "Voir", admin_orders_path, class: "attention__link" %>
+      </li>
+      <li class="attention__row <%= "attention__row--warn" if @attention[:awaiting_fulfillment].positive? %>">
+        <span class="attention__count"><%= @attention[:awaiting_fulfillment] %></span>
+        <span>
+          <strong>En attente d'expedition</strong>
+          <small>Payees, pas encore transmises</small>
+        </span>
+        <%= link_to "Voir", admin_orders_path, class: "attention__link" %>
+      </li>
+      <li class="attention__row">
+        <span class="attention__count"><%= @attention[:unpaid] %></span>
+        <span>
+          <strong>Paniers abandonnes</strong>
+          <small>Commandes non payees, 48 dernieres heures</small>
+        </span>
+      </li>
+    </ul>
+  </section>
+</div>
+
+<section class="admin-card">
+  <header class="admin-card__head">
+    <h2>Dernieres commandes</h2>
+    <%= link_to "Toutes les commandes", admin_orders_path, class: "admin-card__link" %>
+  </header>
+
+  <% if @recent_orders.any? %>
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Commande</th>
+          <th>Client</th>
+          <th>Produit</th>
+          <th>Statut</th>
+          <th class="is-numeric">Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @recent_orders.each do |order| %>
+          <tr>
+            <td>
+              <%= link_to order.metadata["checkout_reference"].presence || "##{order.id}", admin_order_path(order) %>
+              <span class="admin-table__sub"><%= admin_short_datetime(order.created_at) %></span>
+            </td>
+            <td><%= order.customer_name.presence || order.email.presence || "&mdash;".html_safe %></td>
+            <td><%= order.line_item_name %></td>
+            <td><span class="status status--<%= order.status %>"><%= order_status_label(order.status) %></span></td>
+            <td class="is-numeric"><%= order.formatted_total %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p class="admin-empty">Aucune commande pour l'instant.</p>
+  <% end %>
+</section>

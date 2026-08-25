@@ -68,9 +68,17 @@
   padding: $spacing-md;
 }
 
-.faq__support-card > svg {
-  color: $color-success;
+.faq__support-icon {
+  align-items: center;
+  background: $color-surface;
+  border: 1px solid $color-border-subtle;
+  border-radius: $radius-pill;
+  color: $color-ink;
+  display: inline-flex;
   flex: none;
+  height: 2.7rem;
+  justify-content: center;
+  width: 2.7rem;
 }
 
 .faq__support-card strong {

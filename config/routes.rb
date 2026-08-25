@@ -4,6 +4,7 @@ Rails.application.routes.draw do
 
   get "contact", to: "contacts#new", as: :contact
   post "contact", to: "contacts#create"
+  post "support/chat", to: "support_chats#create", as: :support_chat
 
   get "panier", to: "carts#show", as: :cart
   post "panier", to: "carts#create", as: :cart_lines

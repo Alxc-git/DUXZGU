@@ -1,28 +1,160 @@
 @use "../abstracts/variables" as *;
 
 .admin-sidebar {
-  background: #111111;
+  background: $color-ink-deep;
   color: #ffffff;
-  padding: $spacing-md;
+  display: grid;
+  gap: $spacing-md;
+  align-content: start;
+  padding: $spacing-md $spacing-sm;
+
+  @media (min-width: 900px) {
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    overflow-y: auto;
+  }
 }
 
 .admin-sidebar__brand {
-  font-weight: 800;
-  margin-bottom: $spacing-md;
+  align-items: center;
+  display: flex;
+  gap: 0.6rem;
+  padding: 0 0.5rem;
+  text-decoration: none;
+}
+
+.admin-sidebar__mark {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: $radius-md;
+  color: $color-accent-warm;
+  display: inline-flex;
+  flex: none;
+  height: 34px;
+  justify-content: center;
+  width: 34px;
+}
+
+.admin-sidebar__wordmark {
+  display: grid;
+  line-height: 1.15;
+
+  strong {
+    font-family: $font-family-display;
+    font-size: 1.05rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+  }
+
+  span {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+}
+
+.admin-sidebar__section {
+  color: rgba(255, 255, 255, 0.38);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  margin: 0 0 0.4rem 0.55rem;
+  text-transform: uppercase;
 }
 
 .admin-sidebar__nav {
   display: grid;
-  gap: 0.35rem;
+  gap: 0.15rem;
 }
 
 .admin-sidebar__link {
-  border-radius: $radius-sm;
-  color: #ffffff;
-  padding: 0.55rem 0.7rem;
+  align-items: center;
+  border-radius: $radius-md;
+  color: rgba(255, 255, 255, 0.74);
+  display: flex;
+  font-size: 0.92rem;
+  gap: 0.65rem;
+  padding: 0.6rem 0.55rem;
   text-decoration: none;
+  transition: background 0.15s ease, color 0.15s ease;
+
+  svg {
+    color: rgba(255, 255, 255, 0.45);
+    flex: none;
+    transition: color 0.15s ease;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+
+    svg {
+      color: $color-accent-warm;
+    }
+  }
 }
 
-.admin-sidebar__link:hover {
-  background: rgba(255, 255, 255, 0.12);
+// The current page is marked by a bar and a weight change as well as a tint, so
+// it is not signalled by colour alone.
+.admin-sidebar__link--active {
+  background: rgba(255, 255, 255, 0.11);
+  box-shadow: inset 2px 0 0 $color-accent-warm;
+  color: #ffffff;
+  font-weight: 600;
+
+  svg {
+    color: $color-accent-warm;
+  }
+}
+
+.admin-sidebar__foot {
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  display: grid;
+  gap: 0.6rem;
+  padding-top: $spacing-sm;
+}
+
+.admin-sidebar__user {
+  display: grid;
+  gap: 0.1rem;
+  padding: 0 0.55rem;
+
+  strong {
+    font-size: 0.85rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  span {
+    color: rgba(255, 255, 255, 0.45);
+    font-size: 0.74rem;
+  }
+}
+
+.admin-sidebar__action {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: $radius-md;
+  color: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+  display: flex;
+  font: inherit;
+  font-size: 0.86rem;
+  gap: 0.5rem;
+  padding: 0.55rem 0.7rem;
+  text-decoration: none;
+  width: 100%;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.14);
+    color: #ffffff;
+  }
+
+  svg {
+    flex: none;
+  }
 }

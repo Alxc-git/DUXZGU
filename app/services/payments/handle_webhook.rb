@@ -60,7 +60,7 @@ module Payments
         )
       end
 
-      FulfillOrderJob.perform_later(order.id) if enqueue_fulfillment
+      Fulfillment::EnqueueOrder.call(order:) if enqueue_fulfillment
     end
 
     # Shipping address moved to collected_information in recent API versions; older

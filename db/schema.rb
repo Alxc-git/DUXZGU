@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_24_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_25_110000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -74,6 +74,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_24_120000) do
     t.string "currency", default: "cad", null: false
     t.bigint "customer_id"
     t.datetime "delivered_at"
+    t.integer "discount_cents", default: 0, null: false
     t.string "email"
     t.string "first_name"
     t.string "last_name"
@@ -175,6 +176,23 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_24_120000) do
     t.index ["product_id"], name: "index_variants_on_product_id"
   end
 
+  create_table "visits", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "device", default: "desktop", null: false
+    t.boolean "landing", default: false, null: false
+    t.string "path", null: false
+    t.string "referrer_host"
+    t.bigint "store_id", null: false
+    t.string "utm_campaign"
+    t.string "utm_medium"
+    t.string "utm_source"
+    t.string "visitor_token", null: false
+    t.index ["store_id", "created_at"], name: "index_visits_on_store_id_and_created_at"
+    t.index ["store_id", "landing", "created_at"], name: "index_visits_on_store_id_and_landing_and_created_at"
+    t.index ["store_id", "visitor_token"], name: "index_visits_on_store_id_and_visitor_token"
+    t.index ["store_id"], name: "index_visits_on_store_id"
+  end
+
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "customers", "stores"
@@ -184,4 +202,5 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_24_120000) do
   add_foreign_key "orders", "variants"
   add_foreign_key "products", "stores"
   add_foreign_key "variants", "products"
+  add_foreign_key "visits", "stores"
 end
