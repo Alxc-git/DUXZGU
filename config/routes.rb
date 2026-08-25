@@ -21,6 +21,8 @@ Rails.application.routes.draw do
   # payment integration and stay as they are.
   get "checkout/success", to: "storefront#success", as: :checkout_success
   get "checkout/cancel", to: "storefront#cancel", as: :checkout_cancel
+  
+  post "/webhooks/paypal", to: "webhooks/paypal#create"
 
   namespace :webhooks do
     post "stripe", to: "stripe#create"
