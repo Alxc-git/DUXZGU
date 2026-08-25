@@ -75,12 +75,8 @@ module StorefrontHelper
     date
   end
 
-  def resized(attachment, thumb)
-    return attachment if thumb.blank? || !IMAGE_PROCESSOR_AVAILABLE
-    return attachment unless attachment.respond_to?(:variant) && attachment.attached?
-
-    edge = thumb.to_i * 2
-    attachment.variant(resize_to_limit: [ edge, edge ], format: :webp, saver: { quality: 80 })
+  def resized(attachment, _thumb)
+    attachment
   end
 
   def attached_url(attachment)
