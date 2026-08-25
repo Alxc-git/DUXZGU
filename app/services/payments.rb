@@ -18,4 +18,26 @@ module Payments
   def configured?
     secret_key.present? && publishable_key.present?
   end
+
+  # ------------------------------------------------------------------- PayPal
+  #
+  # PayPal is wired directly rather than through Stripe, which does not offer it
+  # for every merchant country. It is optional: without credentials the button
+  # simply does not render and the card form is unaffected.
+
+  def paypal_client_id
+    ENV["PAYPAL_CLIENT_ID"].presence
+  end
+
+  def paypal_secret
+    ENV["PAYPAL_CLIENT_SECRET"].presence
+  end
+
+  def paypal_live?
+    ENV.fetch("PAYPAL_ENV", "sandbox").casecmp?("live")
+  end
+
+  def paypal_configured?
+    paypal_client_id.present? && paypal_secret.present?
+  end
 end

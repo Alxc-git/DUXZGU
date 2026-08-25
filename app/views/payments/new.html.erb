@@ -59,6 +59,24 @@
             </span>
           </header>
 
+          <%# PayPal sits above the card form: it is a different funding source, not
+              another card, and Stripe cannot offer it for this merchant country. %>
+          <% if Payments.paypal_configured? %>
+            <div class="paypal-block"
+                 data-controller="paypal-button"
+                 data-paypal-button-client-id-value="<%= Payments.paypal_client_id %>"
+                 data-paypal-button-currency-value="<%= @orders.first.currency.to_s.upcase %>"
+                 data-paypal-button-create-url-value="<%= paypal_checkout_path %>"
+                 data-paypal-button-capture-url-value="<%= paypal_capture_path %>">
+              <div class="paypal-block__buttons" data-paypal-button-target="container"></div>
+              <p class="paypal-block__error" data-paypal-button-target="error" role="alert" hidden></p>
+            </div>
+
+            <% if @client_secret.present? %>
+              <p class="paypal-block__divider"><span>ou payer par carte</span></p>
+            <% end %>
+          <% end %>
+
           <% if @client_secret.present? %>
             <%# Card fields, Apple Pay, Google Pay, Link and PayPal are all drawn by
                 Stripe inside this element; which ones appear is decided by the

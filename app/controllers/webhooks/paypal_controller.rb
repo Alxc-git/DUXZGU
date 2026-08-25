@@ -1,145 +1,96 @@
-require "net/http"
-require "uri"
-require "json"
-
 module Webhooks
+  # PayPal's own notifications. The browser already captures and confirms, so this
+  # is the safety net: it catches a capture that completed while the customer had
+  # already closed the tab, and it is the only path that hears about a refund.
   class PaypalController < ApplicationController
     skip_forgery_protection
     skip_before_action :set_current_store
+    skip_after_action :track_visit
 
     def create
       event = JSON.parse(request.raw_post)
 
-      unless paypal_signature_valid?(event)
-        Rails.logger.warn(
-          "[PayPal Webhook] INVALID SIGNATURE event=#{event['id']}"
-        )
-
+      unless signature_valid?(event)
+        Rails.logger.warn("[PayPal] signature invalide event=#{event['id']}")
         return head :unauthorized
       end
 
-      Rails.logger.info(
-        "[PayPal Webhook] VERIFIED #{event['event_type']} #{event['id']}"
-      )
-
-      case event["event_type"]
-      when "PAYMENT.CAPTURE.COMPLETED"
-        Rails.logger.info("[PayPal] Payment completed")
-
-      when "PAYMENT.CAPTURE.DECLINED"
-        Rails.logger.warn("[PayPal] Payment declined")
-
-      when "PAYMENT.CAPTURE.PENDING"
-        Rails.logger.info("[PayPal] Payment pending")
-
-      when "PAYMENT.CAPTURE.REFUNDED"
-        Rails.logger.info("[PayPal] Payment refunded")
-
-      when "PAYMENT.CAPTURE.REVERSED"
-        Rails.logger.warn("[PayPal] Payment reversed")
-
-      when "CHECKOUT.ORDER.APPROVED"
-        Rails.logger.info("[PayPal] Order approved")
-      end
-
+      handle(event)
       head :ok
     rescue JSON::ParserError
       head :bad_request
     rescue StandardError => e
-      Rails.logger.error(
-        "[PayPal Webhook] #{e.class}: #{e.message}"
-      )
-
+      # Anything other than 2xx makes PayPal retry, which is what should happen
+      # when the failure is ours.
+      Rails.logger.error("[PayPal] #{e.class}: #{e.message}")
       head :internal_server_error
     end
 
     private
 
-    def paypal_signature_valid?(event)
-      webhook_id = ENV["PAYPAL_WEBHOOK_ID"]
+    def handle(event)
+      type = event["event_type"]
+      Rails.logger.info("[PayPal] #{type} #{event['id']}")
 
-      transmission_id   = request.get_header("HTTP_PAYPAL_TRANSMISSION_ID")
-      transmission_time = request.get_header("HTTP_PAYPAL_TRANSMISSION_TIME")
-      transmission_sig  = request.get_header("HTTP_PAYPAL_TRANSMISSION_SIG")
-      cert_url          = request.get_header("HTTP_PAYPAL_CERT_URL")
-      auth_algo         = request.get_header("HTTP_PAYPAL_AUTH_ALGO")
-
-      required_values = [
-        webhook_id,
-        transmission_id,
-        transmission_time,
-        transmission_sig,
-        cert_url,
-        auth_algo
-      ]
-
-      return false if required_values.any?(&:blank?)
-
-      uri = URI("#{paypal_api_base}/v1/notifications/verify-webhook-signature")
-
-      http = Net::HTTP.new(uri.host, uri.port)
-      http.use_ssl = true
-      http.open_timeout = 5
-      http.read_timeout = 10
-
-      verification_request = Net::HTTP::Post.new(uri)
-      verification_request["Authorization"] = "Bearer #{paypal_access_token}"
-      verification_request["Content-Type"] = "application/json"
-
-      verification_request.body = {
-        auth_algo: auth_algo,
-        cert_url: cert_url,
-        transmission_id: transmission_id,
-        transmission_sig: transmission_sig,
-        transmission_time: transmission_time,
-        webhook_id: webhook_id,
-        webhook_event: event
-      }.to_json
-
-      response = http.request(verification_request)
-
-      return false unless response.is_a?(Net::HTTPSuccess)
-
-      result = JSON.parse(response.body)
-
-      result["verification_status"] == "SUCCESS"
+      case type
+      when "PAYMENT.CAPTURE.COMPLETED" then mark_paid(event)
+      when "PAYMENT.CAPTURE.REFUNDED", "PAYMENT.CAPTURE.REVERSED" then mark_refunded(event)
+      end
     end
 
-    def paypal_access_token
-      uri = URI("#{paypal_api_base}/v1/oauth2/token")
+    # `custom_id` carries the Rails order ids, set when the PayPal order was
+    # opened, so the notification maps back without a second API call.
+    def orders_for(event)
+      resource = event["resource"].to_h
+      ids = resource["custom_id"].to_s.split(",").map(&:to_i).reject(&:zero?)
+      return Order.where(id: ids) if ids.any?
 
-      http = Net::HTTP.new(uri.host, uri.port)
-      http.use_ssl = true
-      http.open_timeout = 5
-      http.read_timeout = 10
+      paypal_order_id = resource.dig("supplementary_data", "related_ids", "order_id")
+      return Order.none if paypal_order_id.blank?
 
-      token_request = Net::HTTP::Post.new(uri)
-      token_request.basic_auth(
-        ENV.fetch("PAYPAL_CLIENT_ID"),
-        ENV.fetch("PAYPAL_CLIENT_SECRET")
-      )
-
-      token_request["Accept"] = "application/json"
-      token_request["Accept-Language"] = "en_US"
-      token_request.set_form_data(
-        "grant_type" => "client_credentials"
-      )
-
-      response = http.request(token_request)
-
-      unless response.is_a?(Net::HTTPSuccess)
-        raise "PayPal OAuth failed: HTTP #{response.code}"
-      end
-
-      JSON.parse(response.body).fetch("access_token")
+      Order.where(paypal_order_id:)
     end
 
-    def paypal_api_base
-      if ENV.fetch("PAYPAL_ENV", "sandbox") == "live"
-        "https://api-m.paypal.com"
-      else
-        "https://api-m.sandbox.paypal.com"
+    def mark_paid(event)
+      orders = orders_for(event).to_a
+      return Rails.logger.warn("[PayPal] capture sans commande correspondante") if orders.empty?
+
+      capture_id = event.dig("resource", "id")
+      orders.each { |order| order.update!(paypal_capture_id: capture_id) if order.paypal_capture_id.blank? }
+
+      Payments::MarkOrdersPaid.call(
+        intent_id: nil, orders:, metadata: { "paypal_capture_id" => capture_id }
+      )
+    end
+
+    def mark_refunded(event)
+      orders_for(event).find_each do |order|
+        next if order.refunded?
+
+        order.update!(status: :refunded, refunded_at: Time.current)
       end
+    end
+
+    def signature_valid?(event)
+      webhook_id = ENV["PAYPAL_WEBHOOK_ID"].presence
+      headers = {
+        auth_algo: request.get_header("HTTP_PAYPAL_AUTH_ALGO"),
+        cert_url: request.get_header("HTTP_PAYPAL_CERT_URL"),
+        transmission_id: request.get_header("HTTP_PAYPAL_TRANSMISSION_ID"),
+        transmission_sig: request.get_header("HTTP_PAYPAL_TRANSMISSION_SIG"),
+        transmission_time: request.get_header("HTTP_PAYPAL_TRANSMISSION_TIME")
+      }
+
+      return false if webhook_id.blank? || headers.values.any?(&:blank?)
+
+      body = Payments::Paypal::Client.post(
+        "/v1/notifications/verify-webhook-signature",
+        headers.merge(webhook_id:, webhook_event: event)
+      )
+      body["verification_status"] == "SUCCESS"
+    rescue Payments::Paypal::Client::Error => e
+      Rails.logger.error("[PayPal] verification impossible: #{e.message}")
+      false
     end
   end
 end

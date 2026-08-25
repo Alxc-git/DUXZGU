@@ -80,6 +80,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_25_180000) do
     t.string "last_name"
     t.jsonb "metadata", default: {}, null: false
     t.datetime "paid_at"
+    t.string "paypal_capture_id"
+    t.string "paypal_order_id"
     t.string "phone"
     t.string "postal_code"
     t.bigint "product_id", null: false
@@ -105,6 +107,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_25_180000) do
     t.bigint "variant_id"
     t.index ["customer_id"], name: "index_orders_on_customer_id"
     t.index ["email"], name: "index_orders_on_email"
+    t.index ["paypal_order_id"], name: "index_orders_on_paypal_order_id"
     t.index ["product_id"], name: "index_orders_on_product_id"
     t.index ["store_id", "created_at"], name: "index_orders_on_store_id_and_created_at"
     t.index ["store_id", "status"], name: "index_orders_on_store_id_and_status"

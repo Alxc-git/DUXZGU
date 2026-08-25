@@ -21,7 +21,10 @@ Rails.application.routes.draw do
   # payment integration and stay as they are.
   get "checkout/success", to: "storefront#success", as: :checkout_success
   get "checkout/cancel", to: "storefront#cancel", as: :checkout_cancel
-  
+
+  post "paiement/paypal", to: "paypal_checkouts#create", as: :paypal_checkout
+  post "paiement/paypal/capture", to: "paypal_checkouts#capture", as: :paypal_capture
+
   post "/webhooks/paypal", to: "webhooks/paypal#create"
 
   namespace :webhooks do
@@ -56,7 +59,7 @@ Rails.application.routes.draw do
   get "up" => "rails/health#show", as: :rails_health_check
 
   # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)
-  # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
+  get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
   # Defines the root path route ("/")

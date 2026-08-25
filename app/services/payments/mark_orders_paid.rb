@@ -37,10 +37,15 @@ module Payments
 
         enqueue = !order.metadata["fulfillment_job_enqueued"]
         order.update!(
-          status: :paid,
-          paid_at: order.paid_at || Time.current,
-          stripe_payment_intent_id: intent_id,
-          metadata: order.metadata.merge("fulfillment_job_enqueued" => true)
+          {
+            status: :paid,
+            paid_at: order.paid_at || Time.current,
+            metadata: order.metadata.merge(metadata).merge("fulfillment_job_enqueued" => true)
+          }.merge(
+            # A PayPal capture passes no intent id; writing nil here would erase
+            # the reference of a Stripe attempt the customer made first.
+            intent_id.present? ? { stripe_payment_intent_id: intent_id } : {}
+          )
         )
       end
 

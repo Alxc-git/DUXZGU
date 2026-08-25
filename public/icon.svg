@@ -1,3 +1,25 @@
-<svg width="512" height="512" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="256" cy="256" r="256" fill="red"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="LUXTIME">
+  <title>LUXTIME</title>
+  <defs>
+    <linearGradient id="gold" x1="0.12" y1="0.05" x2="0.88" y2="0.95">
+      <stop offset="0" stop-color="#F7E27A"/>
+      <stop offset="0.28" stop-color="#E4B838"/>
+      <stop offset="0.55" stop-color="#C9922A"/>
+      <stop offset="0.78" stop-color="#E8C64F"/>
+      <stop offset="1" stop-color="#A9761C"/>
+    </linearGradient>
+  </defs>
+
+  <!-- The tab favicon is drawn at 16 to 32 pixels. At that size the inner ring
+       and the four hour markers of the full mark close up into a smudge, so this
+       variant keeps only what survives: one thick bezel, the crown, and letters
+       big enough to read. icon-full.svg carries the detailed version. -->
+  <g fill="url(#gold)">
+    <rect x="466" y="222" width="40" height="68" rx="10"/>
+    <path d="M256 16a240 240 0 100 480 240 240 0 000-480zm0 62a178 178 0 110 356 178 178 0 010-356z"/>
+    <text x="254" y="320"
+          font-family="Georgia, 'Times New Roman', serif"
+          font-size="188" font-weight="700" letter-spacing="-6"
+          text-anchor="middle">LT</text>
+  </g>
 </svg>
