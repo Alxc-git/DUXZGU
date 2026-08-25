@@ -3,7 +3,12 @@ require "digest/md5"
 # Idempotent seeds: safe to re-run. Store configuration is re-applied on every run
 # so an existing store picks up new defaults; product content is only written on
 # creation so prices and copy edited in the admin are never overwritten.
-store = Store.find_or_initialize_by(domain: "localhost")
+# APP_HOST lets a deployment claim its own hostname without editing this file;
+# it falls back to localhost so `bin/dev` keeps working untouched.
+STORE_DOMAIN = ENV.fetch("APP_HOST", "localhost").split("//").last.split("/").first.downcase.freeze
+
+store = Store.find_by(domain: STORE_DOMAIN) || Store.find_by(domain: "localhost") || Store.new
+store.domain = STORE_DOMAIN
 store.name = "LUXTIME" if store.new_record?
 store.slug ||= "luxtime"
 store.supplier_type ||= "cj"

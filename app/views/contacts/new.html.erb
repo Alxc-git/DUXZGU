@@ -154,11 +154,7 @@
         </div>
 
         <div class="contact__card contact__card--trust">
-          <ul class="cart-summary__perks" role="list">
-            <li><%= icon "truck", size: 17 %><span>Livraison suivie, expedition 24/48h</span></li>
-            <li><%= icon "refresh", size: 17 %><span>Retour 30 jours, satisfait ou rembourse</span></li>
-            <li><%= icon "award", size: 17 %><span>Garantie 2 ans sur le mouvement</span></li>
-          </ul>
+          <%= render "shared/order_perks", list_class: "cart-summary__perks" %>
         </div>
       </aside>
     </div>

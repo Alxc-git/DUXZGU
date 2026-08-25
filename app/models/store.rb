@@ -29,12 +29,26 @@ class Store < ApplicationRecord
   end
 
   def self.development_fallback(host)
-    return unless Rails.env.development? || Rails.env.test?
+    return single_store_fallback(host) unless Rails.env.development? || Rails.env.test?
     return active.first if Rails.env.development?
     return active.first if host.in?(%w[localhost 127.0.0.1 0.0.0.0])
 
     nil
   end
+
+  # A freshly deployed shop answers on a hostname nobody has recorded yet, and
+  # returning nothing there takes the whole storefront down. With exactly one
+  # active store the intent is unambiguous, so it is served and the mismatch is
+  # logged. From the second store on, the domain has to match: guessing would
+  # show one shop's prices under another's name.
+  def self.single_store_fallback(host)
+    return unless active.count == 1
+
+    store = active.first
+    Rails.logger.warn("[Store] no store matches host #{host.inspect}; falling back to #{store.domain.inspect}")
+    store
+  end
+  private_class_method :single_store_fallback
 
   def template
     settings.fetch("template", "default")

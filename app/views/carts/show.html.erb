@@ -192,11 +192,7 @@
             <%= payment_marks(class: "payment-marks--sm") %>
           </div>
 
-          <ul class="cart-summary__perks" role="list">
-            <li><%= icon "truck", size: 17 %><span>Livraison suivie</span></li>
-            <li><%= icon "refresh", size: 17 %><span>Retour 30 jours</span></li>
-            <li><%= icon "award", size: 17 %><span>Garantie 2 ans</span></li>
-          </ul>
+          <%= render "shared/order_perks", list_class: "cart-summary__perks" %>
         </aside>
       </div>
     <% end %>

@@ -54,9 +54,5 @@
 
   <p class="order-summary__taxes">Taxes incluses.</p>
 
-  <ul class="order-summary__perks" role="list">
-    <li><%= icon "truck", size: 16 %><span>Expedition sous 24/48h</span></li>
-    <li><%= icon "refresh", size: 16 %><span>Retour 30 jours</span></li>
-    <li><%= icon "award", size: 16 %><span>Garantie 2 ans</span></li>
-  </ul>
+  <%= render "shared/order_perks", list_class: "order-summary__perks" %>
 </aside>
