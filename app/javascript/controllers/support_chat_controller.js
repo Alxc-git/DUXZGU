@@ -2,17 +2,25 @@ import { Controller } from "@hotwired/stimulus"
 
 // Versioned: bumping it retires conversations stored under the previous
 // greeting, which would otherwise keep showing the old opening line forever.
-const STORAGE_KEY = "luxtime.support-chat.v2"
-// Says who it is, sets the expectation, and states the one thing the customer
-// cannot guess: an order lookup needs the reference AND the email, because that
-// pair is what the server verifies before showing anything.
+const STORAGE_KEY = "luxtime.support-chat.v4"
+// A welcome, not a set of rules. What an order lookup needs is asked for at the
+// moment someone actually asks about an order, which is where it helps.
 const GREETING =
-  "Bonjour ! Je suis l'assistant LUXTIME, disponible 24/7. " +
-  "Pour suivre une commande, donnez-moi sa reference (LX-XXXXXXXX) et le courriel utilise a l'achat. " +
-  "Sinon, choisissez une question ci-dessous."
+  "Bonjour ! \u{1F44B} Moi c'est l'assistant LUXTIME. " +
+  "Livraison, retours, couleurs ou suivi de commande : posez votre question, je reponds tout de suite ! \u{231A}"
 
 export default class extends Controller {
-  static targets = ["panel", "messages", "input", "toggle", "submit", "badge", "suggestions"]
+  static targets = [
+    "panel",
+    "messages",
+    "input",
+    "toggle",
+    "submit",
+    "badge",
+    "suggestions",
+    "trackerReference",
+    "trackerEmail"
+  ]
   static values = { url: String }
   static classes = ["open"]
 
@@ -84,6 +92,21 @@ export default class extends Controller {
 
   useSuggestion(event) {
     this.inputTarget.value = event.params.prompt
+    this.submit(event)
+  }
+
+  trackOrder(event) {
+    event.preventDefault()
+
+    const reference = this.trackerReferenceTarget.value.trim()
+    const email = this.trackerEmailTarget.value.trim()
+
+    if (!reference || !email) {
+      this.append("assistant", "Entrez votre reference de commande et le courriel utilise au paiement pour que je puisse verifier le suivi.")
+      return
+    }
+
+    this.inputTarget.value = `Suivi commande ${reference} ${email}`
     this.submit(event)
   }
 

@@ -80,7 +80,7 @@
   box-shadow: 0 26px 70px rgba(8, 8, 10, 0.26);
   color: $color-text;
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr) auto auto;
+  grid-template-rows: auto auto minmax(0, 1fr) auto auto;
   // `dvh` follows the visible area, so the panel shrinks with the on-screen
   // keyboard instead of being pushed off the bottom of the screen.
   height: min(640px, calc(100dvh - 7rem));
@@ -152,6 +152,99 @@
   border: 1px solid $color-border;
   color: $color-text;
   cursor: pointer;
+}
+
+// --------------------------------------------------------------- order lookup
+
+.support-chat__tracker {
+  border-bottom: 1px solid $color-border-subtle;
+  display: grid;
+}
+
+.support-chat__tracker summary {
+  align-items: center;
+  cursor: pointer;
+  display: grid;
+  gap: 0.65rem;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  list-style: none;
+  padding: 0.75rem 0.9rem;
+
+  &::-webkit-details-marker {
+    display: none;
+  }
+
+  strong {
+    display: block;
+    font-size: 0.88rem;
+    line-height: 1.2;
+  }
+
+  small {
+    color: $color-muted;
+    display: block;
+    font-size: 0.76rem;
+  }
+}
+
+.support-chat__tracker-icon {
+  align-items: center;
+  background: $color-surface;
+  border: 1px solid $color-border-subtle;
+  border-radius: $radius-md;
+  color: $color-ink;
+  display: inline-flex;
+  height: 2.1rem;
+  justify-content: center;
+  width: 2.1rem;
+}
+
+.support-chat__tracker-chevron {
+  color: $color-muted;
+  transition: transform 0.18s ease;
+}
+
+.support-chat__tracker[open] .support-chat__tracker-chevron {
+  transform: rotate(180deg);
+}
+
+.support-chat__tracker-form {
+  display: grid;
+  gap: 0.55rem;
+  padding: 0 0.9rem 0.85rem;
+
+  label {
+    display: grid;
+    gap: 0.25rem;
+  }
+
+  label span {
+    color: $color-muted;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  input {
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    font: inherit;
+    min-height: 2.45rem;
+    padding: 0.55rem 0.65rem;
+    width: 100%;
+  }
+
+  button {
+    background: $color-ink;
+    border: 1px solid $color-ink;
+    border-radius: $radius-md;
+    color: #ffffff;
+    cursor: pointer;
+    font: inherit;
+    font-weight: 600;
+    min-height: 2.45rem;
+  }
 }
 
 // ------------------------------------------------------------------- messages
@@ -269,7 +362,10 @@
 }
 
 .support-chat__chip {
+  align-items: center;
   background: $color-background;
+  display: inline-flex;
+  gap: 0.35rem;
   border: 1px solid $color-border;
   border-radius: $radius-pill;
   color: $color-text;
