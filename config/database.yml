@@ -11,20 +11,6 @@ test:
   <<: *default
   database: e_commerce_test
 
-# A hosted Postgres add-on gives one database and one URL, so Solid Cache, Solid
-# Queue and Solid Cable share the primary rather than each expecting a database
-# of their own. Their tables do not collide, and each keeps its own migration
-# path so `db:prepare` still installs them separately.
 production:
-  primary: &primary_production
-    <<: *default
-    url: <%= ENV["DATABASE_URL"] %>
-  cache:
-    <<: *primary_production
-    migrations_paths: db/cache_migrate
-  queue:
-    <<: *primary_production
-    migrations_paths: db/queue_migrate
-  cable:
-    <<: *primary_production
-    migrations_paths: db/cable_migrate
+  <<: *default
+  url: <%= ENV["DATABASE_URL"] %>
