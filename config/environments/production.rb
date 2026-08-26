@@ -65,6 +65,21 @@ Rails.application.configure do
   # environment variables, rather than baked into the image.
   config.action_mailer.default_url_options = { host: ENV.fetch("APP_HOST", "example.com"), protocol: "https" }
 
+  # Order confirmations only reach customers once these are set. Delivery errors
+  # are raised so a misconfigured mailer shows up in the logs instead of failing
+  # silently, and the senders are wrapped so a mail outage never breaks checkout.
+  config.action_mailer.raise_delivery_errors = true
+  config.action_mailer.perform_deliveries = ENV["SMTP_ADDRESS"].present?
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+    address: ENV["SMTP_ADDRESS"],
+    port: ENV.fetch("SMTP_PORT", 587).to_i,
+    user_name: ENV["SMTP_USERNAME"],
+    password: ENV["SMTP_PASSWORD"],
+    authentication: :plain,
+    enable_starttls_auto: true
+  }
+
   # Specify outgoing SMTP server. Remember to add smtp/* credentials via bin/rails credentials:edit.
   # config.action_mailer.smtp_settings = {
   #   user_name: Rails.application.credentials.dig(:smtp, :user_name),

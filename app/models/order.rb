@@ -69,6 +69,31 @@ class Order < ApplicationRecord
     total_cents.to_i / 100.0
   end
 
+  # The delivery window quoted by the carrier at checkout. Falls back to the
+  # store's generic promise when CJ could not be reached that day, so a customer
+  # is never left without an answer.
+  DEFAULT_DELIVERY_DAYS = (7..14).freeze
+
+  def delivery_window_days
+    return DEFAULT_DELIVERY_DAYS if delivery_min_days.blank? || delivery_max_days.blank?
+
+    (delivery_min_days..delivery_max_days)
+  end
+
+  def estimated_delivery_on
+    from = (paid_at || created_at || Time.current).to_date
+
+    (from + delivery_window_days.first)..(from + delivery_window_days.last)
+  end
+
+  def tracked?
+    tracking_number.present?
+  end
+
+  def reference
+    metadata["checkout_reference"].presence || "ORD-#{id}"
+  end
+
   def formatted_total
     MoneyFormatter.format(total_cents, currency)
   end

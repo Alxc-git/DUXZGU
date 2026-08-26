@@ -66,21 +66,16 @@ module Support
       }.compact_blank
     end
 
+    # Uses the window the carrier quoted for this address at checkout, so the
+    # assistant repeats the promise the customer was actually given.
     def estimated_delivery(order)
-      base = order.paid_at || order.created_at || Time.current
-      start_date = business_days_after(base.to_date, 7)
-      end_date = business_days_after(base.to_date, 14)
+      window = order.estimated_delivery_on
+      start_date = window.first
+      end_date = window.last
 
       "#{format_date(start_date)} - #{format_date(end_date)}"
     end
 
-    def business_days_after(date, count)
-      count.times do
-        date = date.next_day
-        date = date.next_day while date.saturday? || date.sunday?
-      end
-      date
-    end
 
     def format_date(date)
       I18n.l(date, format: "%-d %b")

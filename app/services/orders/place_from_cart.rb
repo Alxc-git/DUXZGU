@@ -15,12 +15,13 @@ module Orders
 
     def call
       reference = self.class.build_reference
+      estimate = delivery_estimate
 
       ActiveRecord::Base.transaction do
         customer = upsert_customer
 
         cart.lines.each_with_index.map do |line, index|
-          create_order(line, reference:, customer:, first: index.zero?)
+          create_order(line, reference:, customer:, estimate:, first: index.zero?)
         end
       end
     end
@@ -33,7 +34,7 @@ module Orders
 
     attr_reader :store, :cart, :details
 
-    def create_order(line, reference:, customer:, first:)
+    def create_order(line, reference:, customer:, estimate:, first:)
       order = store.orders.new(
         product: line.product,
         variant: line.variant,
@@ -43,12 +44,34 @@ module Orders
         shipping_cents: first ? store.shipping_cents : 0,
         discount_cents: cart.discount_for(line),
         customer:,
+        # Frozen at checkout: the customer is always shown the promise that was
+        # made to them, not whatever the carrier quotes weeks later.
+        delivery_min_days: estimate&.min_days,
+        delivery_max_days: estimate&.max_days,
+        shipping_carrier: estimate&.carrier,
         metadata: { "checkout_reference" => reference }
       )
       order.assign_attributes(details.attributes_for_order)
       order.recalculate_totals!
       order.save!
       order
+    end
+
+    # One quote per checkout rather than one per line: the parcel ships together.
+    def delivery_estimate
+      first = cart.lines.first
+      return if first.blank? || details.country.blank?
+
+      Suppliers::Cj::DeliveryEstimate.call(
+        client: Suppliers.for(store),
+        country: details.country,
+        postal_code: details.postal_code,
+        variant_ids: cart.lines.filter_map { |line| line.variant.supplier_variant_id },
+        quantity: cart.count
+      )
+    rescue Suppliers::UnsupportedSupplier, StandardError => e
+      Rails.logger.warn("[Commande] estimation ignoree: #{e.class} #{e.message[0, 90]}")
+      nil
     end
 
     def upsert_customer

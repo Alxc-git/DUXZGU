@@ -1,0 +1,66 @@
+<% window = @first.estimated_delivery_on %>
+<div style="font-family: -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #111111; max-width: 560px; margin: 0 auto; padding: 24px;">
+  <p style="font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: #6b6b6b; margin: 0 0 6px;">
+    <%= @store.name %>
+  </p>
+  <h1 style="font-size: 24px; margin: 0 0 8px;">Merci, votre commande est confirmee</h1>
+  <p style="color: #4a4a4a; line-height: 1.55; margin: 0 0 24px;">
+    Nous preparons votre colis. Vous recevrez un second courriel avec le numero de suivi
+    des qu'il quittera l'entrepot.
+  </p>
+
+  <div style="border: 1px solid #e3e3de; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+    <p style="margin: 0 0 4px; font-size: 13px; color: #6b6b6b;">Livraison estimee</p>
+    <p style="margin: 0; font-size: 20px; font-weight: 700;">
+      <%= l(window.first, format: "%-d %B") rescue window.first.to_s %>
+      &ndash;
+      <%= l(window.last, format: "%-d %B %Y") rescue window.last.to_s %>
+    </p>
+    <% if @first.shipping_carrier.present? %>
+      <p style="margin: 6px 0 0; font-size: 13px; color: #6b6b6b;">
+        Transporteur : <%= @first.shipping_carrier %>
+      </p>
+    <% end %>
+  </div>
+
+  <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+    <tr>
+      <td colspan="2" style="padding: 0 0 8px; font-size: 13px; color: #6b6b6b;">
+        Commande <strong style="color: #111111;"><%= @first.reference %></strong>
+      </td>
+    </tr>
+    <% @orders.each do |order| %>
+      <tr>
+        <td style="padding: 10px 0; border-top: 1px solid #ececE7;">
+          <%= order.line_item_name %>
+          <span style="color: #6b6b6b;">&times; <%= order.quantity %></span>
+        </td>
+        <td style="padding: 10px 0; border-top: 1px solid #ececE7; text-align: right; white-space: nowrap;">
+          <%= MoneyFormatter.format(order.total_cents, order.currency) %>
+        </td>
+      </tr>
+    <% end %>
+    <tr>
+      <td style="padding: 12px 0 0; border-top: 2px solid #111111; font-weight: 700;">Total</td>
+      <td style="padding: 12px 0 0; border-top: 2px solid #111111; text-align: right; font-weight: 700;">
+        <%= MoneyFormatter.format(@total_cents, @first.currency) %>
+      </td>
+    </tr>
+  </table>
+
+  <div style="border: 1px solid #e3e3de; border-radius: 8px; padding: 16px; margin-bottom: 24px;">
+    <p style="margin: 0 0 6px; font-size: 13px; color: #6b6b6b;">Adresse de livraison</p>
+    <p style="margin: 0; line-height: 1.5;">
+      <%= @first.customer_name %><br>
+      <%= @first.address_line1 %><% if @first.address_line2.present? %><br><%= @first.address_line2 %><% end %><br>
+      <%= [ @first.city, @first.province, @first.postal_code ].compact_blank.join(", ") %><br>
+      <%= @first.country %>
+    </p>
+  </div>
+
+  <p style="color: #6b6b6b; font-size: 13px; line-height: 1.6; margin: 0;">
+    Une question ? Repondez simplement a ce courriel<% if @store.support_email.present? %>
+    ou ecrivez a <%= @store.support_email %><% end %>.
+    Retour possible sous 30 jours.
+  </p>
+</div>

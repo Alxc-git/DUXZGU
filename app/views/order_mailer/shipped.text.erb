@@ -1,0 +1,13 @@
+<% window = @first.estimated_delivery_on -%>
+<%= @store.name %> — votre montre est en route
+
+Commande <%= @first.reference %> expediee.
+<% if @first.tracked? -%>
+Numero de suivi : <%= @first.tracking_number %>
+<% if @first.tracking_url.present? -%>
+Suivre : <%= @first.tracking_url %>
+<% end -%>
+<% end -%>
+
+Arrivee estimee entre le <%= window.first %> et le <%= window.last %>.
+Le suivi peut mettre 24 a 48h avant d'afficher un premier scan.

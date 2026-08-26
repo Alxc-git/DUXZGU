@@ -12,12 +12,28 @@ module Payments
     end
 
     def call
-      scope.each { |order| mark(order) }
+      orders = scope.to_a
+      orders.each { |order| mark(order) }
+      notify(orders)
+      orders
     end
 
     private
 
     attr_reader :intent_id, :metadata
+
+    # One confirmation for the whole checkout, not one per line, and only once:
+    # the webhook and the browser both land here for the same payment.
+    def notify(orders)
+      first = orders.find { |order| order.paid? && order.email.present? }
+      return if first.blank? || first.metadata["confirmation_sent"]
+
+      OrderMailer.confirmation(orders.map(&:id)).deliver_later
+      orders.each { |order| order.update_column(:metadata, order.metadata.merge("confirmation_sent" => true)) }
+    rescue StandardError => e
+      # A mail outage must never leave a paid order unrecorded.
+      Rails.logger.error("[Commande] confirmation non envoyee: #{e.class} #{e.message}")
+    end
 
     def scope
       return @orders if @orders.present?

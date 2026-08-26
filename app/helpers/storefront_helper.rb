@@ -47,6 +47,16 @@ module StorefrontHelper
     "livraison estimee #{delivery_window(from_days:, to_days:, today:)}"
   end
 
+  # The window a placed order was actually quoted, rather than the generic promise
+  # shown before an address is known. Formatted like `delivery_window`, which the
+  # rest of the storefront already uses.
+  def order_delivery_window(order)
+    first, last = order.estimated_delivery_on.minmax
+    opening = first.month == last.month ? first.day.to_s : "#{first.day} #{MONTHS_FR[first.month - 1]}"
+
+    "#{opening} - #{last.day} #{MONTHS_FR[last.month - 1]}"
+  end
+
   # The bare date range, for places that already carry a "Livraison estimee" label.
   def delivery_window(from_days: 7, to_days: 14, today: Date.current)
     first = business_days_after(today, from_days)

@@ -29,10 +29,23 @@ class UpdateTrackingJob < ApplicationJob
     return if attributes.blank?
 
     order.update!(attributes)
+    notify_shipped(order)
   rescue Suppliers::Cj::Client::Error => e
     # One failing order must not stop the sweep for every other order.
     Rails.logger.error("[Tracking] order #{order.id}: #{e.message}")
     raise e if raise_on_error
+  end
+
+  # The tracking number is what the customer is actually waiting for, so the mail
+  # goes out the first time one appears, never twice.
+  def notify_shipped(order)
+    return unless order.tracked? && order.email.present?
+    return if order.metadata["shipped_email_sent"]
+
+    OrderMailer.shipped([ order.id ]).deliver_later
+    order.update_column(:metadata, order.metadata.merge("shipped_email_sent" => true))
+  rescue StandardError => e
+    Rails.logger.error("[Tracking] avis d expedition non envoye pour #{order.id}: #{e.message}")
   end
 
   def tracking_attributes(tracking)

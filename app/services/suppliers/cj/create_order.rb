@@ -54,7 +54,10 @@ module Suppliers
           email: order.email,
           remark: order.store.name,
           fromCountryCode: setting("from_country_code", DEFAULT_FROM_COUNTRY),
-          logisticName: setting("logistic_name", nil),
+          # The carrier quoted at checkout, so the parcel ships the way the
+          # customer was promised. Falls back to the store setting, then to CJ's
+          # own choice when neither is set.
+          logisticName: order.shipping_carrier.presence || setting("logistic_name", nil),
           payType: setting("pay_type", DEFAULT_PAY_TYPE).to_i,
           products: [ { vid: order.supplier_variant_id, quantity: order.quantity } ]
         }.compact_blank
