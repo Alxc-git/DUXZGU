@@ -6,7 +6,7 @@
       <span class="site-footer__wordmark"><%= current_store&.name %></span>
       <p><%= t("footer.tagline") %></p>
 
-      <div class="site-footer__social" aria-label=t("footer.social")>
+      <div class="site-footer__social" aria-label="<%= t("footer.social") %>">
         <a href="https://www.instagram.com" class="site-footer__social-link" rel="noopener noreferrer" target="_blank" aria-label="Instagram">
           <%= icon "instagram", size: 18 %>
         </a>
@@ -19,7 +19,7 @@
       </div>
     </div>
 
-    <nav class="site-footer__column" aria-label=t("footer.shop")>
+    <nav class="site-footer__column" aria-label="<%= t("footer.shop") %>">
       <h2><%= t("footer.shop") %></h2>
       <% if featured.present? %>
         <%= link_to featured.display_name, product_path %>
@@ -29,7 +29,7 @@
       <% end %>
     </nav>
 
-    <nav class="site-footer__column" aria-label=t("footer.help")>
+    <nav class="site-footer__column" aria-label="<%= t("footer.help") %>">
       <h2><%= t("footer.help") %></h2>
       <%= link_to t("footer.faq"), "#{product_path}#faq" %>
       <%= link_to t("footer.contact_us"), contact_path %>

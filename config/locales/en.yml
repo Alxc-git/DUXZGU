@@ -198,6 +198,7 @@ en:
     update: "Update"
     decrease: "Decrease quantity"
     increase: "Increase quantity"
+    add_colour: "Add another colour"
     need_one_more: "You need one more to get it."
     suggest_offer: "%{label}, shipped in the same parcel."
     suggest_lead: "Same watch, same price — shipped in the same parcel."

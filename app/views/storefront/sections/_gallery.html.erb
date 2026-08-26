@@ -25,7 +25,7 @@
                 data-gallery-src="<%= packshot_url %>"
                 data-gallery-alt="<%= product.display_name %>"
                 data-gallery-fit="contain"
-                aria-label=t("sections.whole_watch")>
+                aria-label="<%= t("sections.whole_watch") %>">
           <span class="gallery__thumb-media">
             <%= variant_image_tag variant, alt: "#{product.display_name} - #{variant&.display_name}", thumb: 130,
                   data: { variant_target: "image" }, loading: "lazy", decoding: "async" %>
@@ -61,7 +61,7 @@
           fetchpriority: "high", decoding: "async" %>
 
     <div class="gallery__tools">
-      <button type="button" class="gallery__tool" data-action="gallery#zoom" aria-label=t("sections.zoom_photo")>
+      <button type="button" class="gallery__tool" data-action="gallery#zoom" aria-label="<%= t("sections.zoom_photo") %>">
         <%= icon "zoom", size: 18 %>
       </button>
     </div>
@@ -71,7 +71,7 @@
     <% end %>
 
     <% if parts.any? %>
-      <div class="gallery__dots" role="tablist" aria-label=t("sections.product_photos")>
+      <div class="gallery__dots" role="tablist" aria-label="<%= t("sections.product_photos") %>">
         <% (parts.length + 1).times do |index| %>
           <button type="button"
                   class="gallery__dot <%= "is-active" if index.zero? %>"
@@ -88,7 +88,7 @@
 
   <%# Lightbox, so the customer can inspect the dial before buying. %>
   <div class="lightbox" data-gallery-target="lightbox" data-action="click->gallery#closeZoom" hidden>
-    <button type="button" class="lightbox__close" aria-label=t("common.close")>
+    <button type="button" class="lightbox__close" aria-label="<%= t("common.close") %>">
       <%= icon "close", size: 20 %>
     </button>
     <img class="lightbox__image"

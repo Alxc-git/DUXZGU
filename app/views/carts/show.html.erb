@@ -2,7 +2,7 @@
 
 <section class="cart">
   <div class="page-container">
-    <nav class="breadcrumb" aria-label=t("common.breadcrumb")>
+    <nav class="breadcrumb" aria-label="<%= t("common.breadcrumb") %>">
       <%= link_to t("common.home"), root_path %>
       <%= icon "chevron-right", size: 14 %>
       <span aria-current="page"><%= t("common.cart") %></span>
@@ -73,7 +73,7 @@
                     class: "cart-line__quantity" do |form| %>
                 <div class="stepper" role="group" aria-label="<%= t("common.quantity") %> <%= line.variant.display_name %>">
                   <button type="button" class="stepper__button" data-action="quantity#decrement"
-                          aria-label=t("cart.decrease")>
+                          aria-label="<%= t("cart.decrease") %>">
                     <%= icon "minus", size: 16 %>
                   </button>
                   <%= form.number_field :quantity, value: line.quantity, min: 1, max: Cart::MAX_QUANTITY,
@@ -81,7 +81,7 @@
                         inputmode: "numeric", "aria-label": t("common.quantity"),
                         data: { quantity_target: "input", action: "change->quantity#clamp" } %>
                   <button type="button" class="stepper__button" data-action="quantity#increment"
-                          aria-label=t("cart.increase")>
+                          aria-label="<%= t("cart.increase") %>">
                     <%= icon "plus", size: 16 %>
                   </button>
                 </div>

@@ -18,7 +18,14 @@ store.settings = store.settings.merge(
   "checkout_locale" => "fr-CA",
   "shipping_countries" => %w[CA],
   "shipping_cents" => 0,
-  "support_email" => "contact@luxtime.ca"
+  # The address every order mail is sent from and replied to. It has to sit on the
+  # domain the SMTP provider has verified -- a confirmation sent from a domain the
+  # provider cannot sign is what lands in a spam folder -- so it is read from the
+  # environment rather than written here. An address already chosen wins over the
+  # fallback, so re-seeding never overwrites a deliberate change.
+  "support_email" => ENV["SUPPORT_EMAIL"].presence ||
+                     store.settings["support_email"].presence ||
+                     "contact@#{STORE_DOMAIN}"
 )
 store.supplier_settings = store.supplier_settings.merge(
   "pay_type" => store.supplier_settings["pay_type"].presence || 2,
@@ -86,6 +93,17 @@ COLOURS = [
   }
 ].freeze
 
+# A blob row outlives its bytes whenever the storage directory is not on a
+# persistent volume: the container comes back empty after a deploy while Postgres
+# still holds the attachment. Asking the service, and not only the database, is
+# what lets a plain `db:seed` put the photos back rather than compare checksums,
+# find them equal and decide there is nothing to do.
+stored = lambda do |blob|
+  blob.service.exist?(blob.key)
+rescue StandardError
+  false
+end
+
 attach_photo = lambda do |attachment, folder, filename|
   path = Rails.root.join("montres_images", folder, filename)
   next Rails.logger.warn("[seeds] missing photo #{folder}/#{filename}") unless File.exist?(path)
@@ -93,7 +111,8 @@ attach_photo = lambda do |attachment, folder, filename|
   source_checksum = Digest::MD5.file(path).base64digest
   if attachment.attached? &&
       attachment.filename.to_s == filename &&
-      attachment.blob.checksum == source_checksum
+      attachment.blob.checksum == source_checksum &&
+      stored.call(attachment.blob)
     next
   end
 
@@ -110,7 +129,7 @@ sync_photos = lambda do |attachments, folder|
   paths = Dir[Rails.root.join("montres_images", folder, "*.webp")].sort
   expected = paths.map { |path| [File.basename(path), Digest::MD5.file(path).base64digest] }
   current = attachments.map { |attachment| [attachment.filename.to_s, attachment.blob.checksum] }
-  next if current == expected
+  next if current == expected && attachments.all? { |attachment| stored.call(attachment.blob) }
 
   attachments.purge
   paths.each do |path|

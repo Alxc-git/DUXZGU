@@ -16,21 +16,21 @@
           data-support-chat-target="toggle"
           data-action="support-chat#toggle"
           aria-expanded="false"
-          aria-label=t("chat.open")>
+          aria-label="<%= t("chat.open") %>">
     <span class="support-chat__toggle-icon"><%= icon "sparkles", size: 22 %></span>
     <%# Sits above the button so a waiting reply is visible without opening it. %>
     <span class="support-chat__badge" data-support-chat-target="badge" aria-hidden="true">1</span>
   </button>
 
   <section class="support-chat__panel" data-support-chat-target="panel"
-           role="dialog" aria-label=t("chat.title") hidden>
+           role="dialog" aria-label="<%= t("chat.title") %>" hidden>
     <header class="support-chat__head">
       <span class="support-chat__avatar"><%= icon "sparkles", size: 18 %></span>
       <span class="support-chat__identity">
         <strong><%= t("chat.title") %></strong>
         <small><span class="support-chat__pulse"></span><%= t("chat.online") %></small>
       </span>
-      <button type="button" class="support-chat__close" data-action="support-chat#close" aria-label=t("common.close")>
+      <button type="button" class="support-chat__close" data-action="support-chat#close" aria-label="<%= t("common.close") %>">
         <%= icon "close", size: 18 %>
       </button>
     </header>
@@ -96,7 +96,7 @@
                 maxlength="1000"
                 enterkeyhint="send"
                 placeholder="<%= t("chat.placeholder") %>"></textarea>
-      <button type="submit" class="support-chat__send" data-support-chat-target="submit" aria-label=t("chat.send")>
+      <button type="submit" class="support-chat__send" data-support-chat-target="submit" aria-label="<%= t("chat.send") %>">
         <%= icon "arrow-right", size: 18 %>
       </button>
     </form>

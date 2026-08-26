@@ -198,6 +198,7 @@ fr:
     update: "Mettre a jour"
     decrease: "Diminuer la quantite"
     increase: "Augmenter la quantite"
+    add_colour: "Ajouter une couleur"
     need_one_more: "Il vous en manque une pour en profiter."
     suggest_offer: "%{label}, livree dans le meme colis."
     suggest_lead: "Meme montre, meme prix — livree dans le meme colis."

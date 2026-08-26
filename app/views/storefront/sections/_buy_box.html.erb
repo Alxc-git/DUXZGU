@@ -59,14 +59,14 @@
     <% end %>
 
     <div class="buy-box__actions">
-      <div class="stepper" role="group" aria-label=t("common.quantity")>
-        <button type="button" class="stepper__button" data-action="quantity#decrement" aria-label=t("cart.decrease")>
+      <div class="stepper" role="group" aria-label="<%= t("common.quantity") %>">
+        <button type="button" class="stepper__button" data-action="quantity#decrement" aria-label="<%= t("cart.decrease") %>">
           <%= icon "minus", size: 18 %>
         </button>
         <%= form.number_field :quantity, value: 1, min: 1, max: 99, class: "stepper__input",
               inputmode: "numeric", "aria-label": t("common.quantity"),
               data: { quantity_target: "input", action: "change->quantity#clamp" } %>
-        <button type="button" class="stepper__button" data-action="quantity#increment" aria-label=t("cart.increase")>
+        <button type="button" class="stepper__button" data-action="quantity#increment" aria-label="<%= t("cart.increase") %>">
           <%= icon "plus", size: 18 %>
         </button>
       </div>
@@ -78,7 +78,7 @@
               data-wishlist-saved-class="is-saved"
               data-action="wishlist#toggle"
               aria-pressed="false"
-              aria-label=t("product.add_to_favourites")>
+              aria-label="<%= t("product.add_to_favourites") %>">
         <%= icon "heart", size: 20 %>
       </button>
 

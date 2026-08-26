@@ -12,8 +12,8 @@ class ContactMailer < ApplicationMailer
     mail(
       to: store.support_email,
       from: store.support_email,
-      reply_to: message.email,
-      subject: "[#{store.name}] #{message.subject_or_default} - #{message.name}"
+      reply_to: @message.email,
+      subject: "[#{store.name}] #{@message.subject_or_default} - #{@message.name}"
     )
   end
 end
