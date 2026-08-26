@@ -2,18 +2,18 @@
   <div class="page-container footer-cta__inner">
     <div class="footer-cta__media">
       <%# The editorial shot, not the white packshot: this section is lit dark. %>
-      <%= variant_hero_image_tag product.default_variant, alt: product.name, thumb: 280,
+      <%= variant_hero_image_tag product.default_variant, alt: product.display_name, thumb: 280,
             class: "footer-cta__image", loading: "lazy", decoding: "async" %>
     </div>
 
     <div class="footer-cta__content">
-      <p class="footer-cta__eyebrow">Pret a commander</p>
-      <h2 class="footer-cta__title">Choisissez votre couleur et finalisez en 30 secondes.</h2>
+      <p class="footer-cta__eyebrow"><%= t("sections.ready_to_order") %></p>
+      <h2 class="footer-cta__title"><%= t("sections.cta_title") %></h2>
       <div class="footer-cta__price">
         <strong><%= (product.default_variant || product).formatted_price %></strong>
         <% if product.discount_percentage.present? %>
           <span class="footer-cta__compare"><%= product.formatted_compare_at_price %></span>
-          <span class="tag tag--sale">Liquidation -<%= product.discount_percentage %>%</span>
+          <span class="tag tag--sale"><%= t("sections.clearance") %> -<%= product.discount_percentage %>%</span>
         <% end %>
       </div>
 
@@ -25,12 +25,12 @@
     </div>
 
     <div class="footer-cta__action">
-      <%= link_to "Commander maintenant", "#{storefront_product_path(product.slug)}#formulaire-achat",
+      <%= link_to t("sections.order_now"), "#{storefront_product_path(product.slug)}#formulaire-achat",
             class: "button button--lg button--invert" %>
       <div class="payment-note payment-note--dark">
         <span class="payment-note__label">
           <%= icon "lock", size: 15 %>
-          <span>Paiement securise par Stripe</span>
+          <span><%= t("footer.secure_by_stripe") %></span>
         </span>
         <%= payment_marks(class: "payment-marks--sm payment-marks--dark") %>
       </div>

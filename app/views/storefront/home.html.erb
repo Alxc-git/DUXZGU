@@ -1,10 +1,10 @@
-<% content_for :title, [ current_store.name, @product&.name ].compact_blank.join(" | ") %>
+<% content_for :title, [ current_store.name, @product&.display_name ].compact_blank.join(" | ") %>
 <% content_for :description, @product&.description %>
 
 <% if @product.present? %>
   <%= render "storefront/sections/hero", product: @product %>
   <%= render "storefront/sections/highlights", product: @product %>
-  <%= render "storefront/sections/colours", product: @product, heading: "Toutes les couleurs", id: "couleurs" %>
+  <%= render "storefront/sections/colours", product: @product, heading: t("product.all_colours_heading"), id: "couleurs" %>
   <%= render "storefront/sections/trust", product: @product %>
   <%= render "storefront/sections/craft", product: @product, variant: :fabrication %>
   <%= render "storefront/sections/reviews", product: @product %>

@@ -1,7 +1,7 @@
 <section class="reviews" id="avis">
   <div class="page-container">
     <div class="reviews__header">
-      <h2 class="section-heading">Ce qu'en disent nos clients</h2>
+      <h2 class="section-heading"><%= t("sections.reviews_title") %></h2>
       <p class="reviews__summary">
         <%= star_rating product.rating, size: 18 %>
         <strong><%= number_with_precision(product.rating, precision: 1, separator: ",") %></strong>

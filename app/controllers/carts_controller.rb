@@ -12,7 +12,7 @@ class CartsController < ApplicationController
     variant = requested_variant
 
     if variant.blank?
-      return redirect_back fallback_location: root_path, alert: "Cette couleur n'est plus disponible"
+      return redirect_back fallback_location: root_path, alert: t("cart.expired")
     end
 
     current_cart.add(variant, quantity: quantity_param)
@@ -22,7 +22,7 @@ class CartsController < ApplicationController
       redirect_to checkout_path
     else
       redirect_to cart_path,
-        notice: "✨ #{variant.product.name} (#{variant.name}) ajoutée au panier."
+        notice: t("cart.added", product: variant.product.display_name, colour: variant.display_name)
     end
   end
 
@@ -33,7 +33,7 @@ class CartsController < ApplicationController
 
   def destroy
     current_cart.remove(params[:variant_id])
-    redirect_to cart_path, notice: "Article retire du panier"
+    redirect_to cart_path, notice: t("cart.removed")
   end
 
   private

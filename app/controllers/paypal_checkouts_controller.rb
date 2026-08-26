@@ -40,6 +40,6 @@ class PaypalCheckoutsController < ApplicationController
 
     return if @orders.any?
 
-    render json: { error: "Votre commande a expire, recommencez votre panier" }, status: :gone
+    render json: { error: t("checkout.expired") }, status: :gone
   end
 end

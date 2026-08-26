@@ -4,9 +4,9 @@
   <div class="page-container site-footer__inner">
     <div class="site-footer__brand">
       <span class="site-footer__wordmark"><%= current_store&.name %></span>
-      <p>Montres chronographes pensees pour durer, expediees partout au Canada.</p>
+      <p><%= t("footer.tagline") %></p>
 
-      <div class="site-footer__social" aria-label="Reseaux sociaux">
+      <div class="site-footer__social" aria-label=t("footer.social")>
         <a href="https://www.instagram.com" class="site-footer__social-link" rel="noopener noreferrer" target="_blank" aria-label="Instagram">
           <%= icon "instagram", size: 18 %>
         </a>
@@ -19,36 +19,36 @@
       </div>
     </div>
 
-    <nav class="site-footer__column" aria-label="Boutique">
-      <h2>Boutique</h2>
+    <nav class="site-footer__column" aria-label=t("footer.shop")>
+      <h2><%= t("footer.shop") %></h2>
       <% if featured.present? %>
-        <%= link_to featured.name, product_path %>
-        <%= link_to "Toutes les couleurs", "#{product_path}#couleurs" %>
-        <%= link_to "Specifications", "#{product_path}#specifications" %>
-        <%= link_to "Avis clients", "#{product_path}#avis" %>
+        <%= link_to featured.display_name, product_path %>
+        <%= link_to t("footer.all_colours"), "#{product_path}#couleurs" %>
+        <%= link_to t("footer.specifications"), "#{product_path}#specifications" %>
+        <%= link_to t("footer.customer_reviews"), "#{product_path}#avis" %>
       <% end %>
     </nav>
 
-    <nav class="site-footer__column" aria-label="Aide">
-      <h2>Aide</h2>
-      <%= link_to "Questions frequentes", "#{product_path}#faq" %>
-      <%= link_to "Nous contacter", contact_path %>
+    <nav class="site-footer__column" aria-label=t("footer.help")>
+      <h2><%= t("footer.help") %></h2>
+      <%= link_to t("footer.faq"), "#{product_path}#faq" %>
+      <%= link_to t("footer.contact_us"), contact_path %>
       <span class="site-footer__note">
         <%= icon "headset", size: 15 %>
-        Reponse sous 24h
+        <%= t("footer.reply_24h") %>
       </span>
     </nav>
 
     <div class="site-footer__column">
-      <h2>Paiement</h2>
+      <h2><%= t("footer.payment") %></h2>
       <%= payment_marks(class: "payment-marks--sm site-footer__marks") %>
       <span class="site-footer__note">
         <%= icon "lock", size: 15 %>
-        Paiement securise par Stripe
+        <%= t("footer.secure_by_stripe") %>
       </span>
       <span class="site-footer__note">
         <%= icon "refresh", size: 15 %>
-        Retour 30 jours
+        <%= t("common.returns_30") %>
       </span>
     </div>
   </div>

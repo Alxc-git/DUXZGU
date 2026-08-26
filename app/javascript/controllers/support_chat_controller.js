@@ -2,12 +2,9 @@ import { Controller } from "@hotwired/stimulus"
 
 // Versioned: bumping it retires conversations stored under the previous
 // greeting, which would otherwise keep showing the old opening line forever.
-const STORAGE_KEY = "luxtime.support-chat.v4"
-// A welcome, not a set of rules. What an order lookup needs is asked for at the
-// moment someone actually asks about an order, which is where it helps.
-const GREETING =
-  "Bonjour ! \u{1F44B} Moi c'est l'assistant LUXTIME. " +
-  "Livraison, retours, couleurs ou suivi de commande : posez votre question, je reponds tout de suite ! \u{231A}"
+// Versioned and namespaced by language: switching languages must not replay a
+// conversation that opened with the other one's greeting.
+const STORAGE_ROOT = "luxtime.support-chat.v5"
 
 export default class extends Controller {
   static targets = [
@@ -21,14 +18,23 @@ export default class extends Controller {
     "trackerReference",
     "trackerEmail"
   ]
-  static values = { url: String }
+  static values = {
+    url: String,
+    greeting: String,
+    unavailable: String,
+    noAnswer: String,
+    trackerMissing: String,
+    openLabel: String,
+    locale: String
+  }
   static classes = ["open"]
 
   connect() {
+    this.storageKey = `${STORAGE_ROOT}.${this.localeValue || "fr"}`
     this.history = this.restore()
 
     if (this.history.length === 0) {
-      this.history = [{ role: "assistant", content: GREETING }]
+      this.history = [{ role: "assistant", content: this.greetingValue }]
       this.persist()
     }
 
@@ -102,7 +108,7 @@ export default class extends Controller {
     const email = this.trackerEmailTarget.value.trim()
 
     if (!reference || !email) {
-      this.append("assistant", "Entrez votre reference de commande et le courriel utilise au paiement pour que je puisse verifier le suivi.")
+      this.append("assistant", this.trackerMissingValue)
       return
     }
 
@@ -133,9 +139,9 @@ export default class extends Controller {
         body: JSON.stringify({ message, history: this.history.slice(-6) })
       })
       const data = await response.json()
-      this.append("assistant", data.reply || "Je n'ai pas pu repondre pour le moment.")
+      this.append("assistant", data.reply || this.noAnswerValue)
     } catch (_error) {
-      this.append("assistant", "Le chat est indisponible pour le moment. Reessayez dans quelques instants.")
+      this.append("assistant", this.unavailableValue)
     } finally {
       this.setBusy(false)
     }
@@ -221,7 +227,7 @@ export default class extends Controller {
     this.badgeTarget.textContent = String(Math.min(this.unread, 9))
     this.toggleTarget.setAttribute(
       "aria-label",
-      this.unread > 0 ? `Ouvrir l'assistant, ${this.unread} message non lu` : "Ouvrir l'assistant"
+      this.unread > 0 ? `${this.openLabelValue} (${this.unread})` : this.openLabelValue
     )
   }
 
@@ -235,7 +241,7 @@ export default class extends Controller {
 
   restore() {
     try {
-      const raw = sessionStorage.getItem(STORAGE_KEY)
+      const raw = sessionStorage.getItem(this.storageKey)
       const parsed = raw ? JSON.parse(raw) : null
       return Array.isArray(parsed) ? parsed.slice(-20) : []
     } catch (_error) {
@@ -245,7 +251,7 @@ export default class extends Controller {
 
   persist() {
     try {
-      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(this.history))
+      sessionStorage.setItem(this.storageKey, JSON.stringify(this.history))
     } catch (_error) {
       // A full or blocked storage must never stop the chat working.
     }
@@ -253,7 +259,7 @@ export default class extends Controller {
 
   readUnread() {
     try {
-      return Number(sessionStorage.getItem(`${STORAGE_KEY}.unread`) || "1")
+      return Number(sessionStorage.getItem(`${this.storageKey}.unread`) || "1")
     } catch (_error) {
       return 1
     }
@@ -261,7 +267,7 @@ export default class extends Controller {
 
   writeUnread() {
     try {
-      sessionStorage.setItem(`${STORAGE_KEY}.unread`, String(this.unread))
+      sessionStorage.setItem(`${this.storageKey}.unread`, String(this.unread))
     } catch (_error) {
       // ignored, see persist()
     }

@@ -22,6 +22,13 @@ module ECommerce
     # Common ones are `templates`, `generators`, or `middleware`, for example.
     config.autoload_lib(ignore: %w[assets tasks])
 
+    # The shop sells in Quebec: French is the default, English is offered from the
+    # header, and anything missing from one falls back to the other rather than
+    # showing a raw translation key to a customer.
+    config.i18n.available_locales = %i[fr en]
+    config.i18n.default_locale = :fr
+    config.i18n.fallbacks = { en: :fr, fr: :en }
+
     # Configuration for the application, engines, and railties goes here.
     #
     # These settings can be overridden in specific environments using the files

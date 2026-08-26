@@ -2,6 +2,8 @@ Rails.application.routes.draw do
   root "storefront#home"
   get "montre/:slug", to: "storefront#show", as: :storefront_product
 
+  post "langue", to: "locales#update", as: :locale_switch
+
   get "contact", to: "contacts#new", as: :contact
   post "contact", to: "contacts#create"
   post "support/chat", to: "support_chats#create", as: :support_chat

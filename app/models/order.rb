@@ -52,8 +52,10 @@ class Order < ApplicationRecord
     variant&.price_cents || product.price_cents
   end
 
+  # Follows the reader's language, which is what makes the confirmation email
+  # name the watch the way the customer saw it when they bought it.
   def line_item_name
-    [ product.name, variant&.name ].compact_blank.join(" - ")
+    [ product.display_name, variant&.display_name ].compact_blank.join(" - ")
   end
 
   # The supplier identifiers actually shipped, variant first.

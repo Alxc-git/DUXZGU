@@ -11,7 +11,7 @@ class ContactsController < ApplicationController
     return render :new, status: :unprocessable_entity unless @message.valid?
 
     deliver(@message)
-    redirect_to contact_path, notice: "Message envoye. Nous repondons sous 24h ouvrables."
+    redirect_to contact_path, notice: t("contact.sent")
   end
 
   private

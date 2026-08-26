@@ -1,4 +1,6 @@
 class Variant < ApplicationRecord
+  include TranslatableName
+
   belongs_to :product
   has_many :orders, dependent: :restrict_with_error
   # `image` is the white-background packshot used by the pickers, where a uniform

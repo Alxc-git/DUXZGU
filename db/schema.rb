@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_25_190000) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_26_140000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -80,6 +80,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_25_190000) do
     t.string "email"
     t.string "first_name"
     t.string "last_name"
+    t.string "locale", default: "fr", null: false
     t.jsonb "metadata", default: {}, null: false
     t.datetime "paid_at"
     t.string "paypal_capture_id"
@@ -137,6 +138,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_25_190000) do
     t.string "supplier_product_id"
     t.string "supplier_sku"
     t.string "supplier_variant_id"
+    t.jsonb "translations", default: {}, null: false
     t.datetime "updated_at", null: false
     t.index ["store_id", "active"], name: "index_products_on_store_id_and_active"
     t.index ["store_id", "slug"], name: "index_products_on_store_id_and_slug", unique: true
@@ -346,6 +348,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_25_190000) do
     t.integer "supplier_cost_cents"
     t.string "supplier_sku"
     t.string "supplier_variant_id"
+    t.jsonb "translations", default: {}, null: false
     t.datetime "updated_at", null: false
     t.index ["product_id", "active"], name: "index_variants_on_product_id_and_active"
     t.index ["product_id", "position"], name: "index_variants_on_product_id_and_position"

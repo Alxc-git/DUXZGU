@@ -1,7 +1,7 @@
 <section class="specs" id="specifications">
   <div class="page-container specs__grid">
     <div class="specs__panel specs__features">
-      <h2 class="section-heading section-heading--sm">Pourquoi cette montre</h2>
+      <h2 class="section-heading section-heading--sm"><%= t("sections.why_this_watch") %></h2>
       <ul class="specs__feature-list">
         <% product.content["features"].each do |feature| %>
           <li>
@@ -16,7 +16,7 @@
     </div>
 
     <div class="specs__panel specs__table">
-      <h2 class="section-heading section-heading--sm">Specifications</h2>
+      <h2 class="section-heading section-heading--sm"><%= t("sections.specifications") %></h2>
       <dl class="spec-list">
         <% product.content["specs"].each do |spec| %>
           <div class="spec-list__row">

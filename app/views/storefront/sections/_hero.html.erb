@@ -35,13 +35,13 @@
         </strong>
         <% if product.discount_percentage.present? %>
           <s><%= product.formatted_compare_at_price %></s>
-          <span class="tag tag--sale">Liquidation -<%= product.discount_percentage %>%</span>
+          <span class="tag tag--sale"><%= t("sections.clearance") %> -<%= product.discount_percentage %>%</span>
         <% end %>
       </p>
 
       <div class="hero__actions">
-        <%= link_to "Decouvrir la montre", storefront_product_path(product.slug), class: "button button--lg button--invert" %>
-        <%= link_to "Voir les couleurs", root_path(anchor: "couleurs"), class: "button button--lg button--ghost-light" %>
+        <%= link_to t("sections.discover"), storefront_product_path(product.slug), class: "button button--lg button--invert" %>
+        <%= link_to t("sections.see_colours"), root_path(anchor: "couleurs"), class: "button button--lg button--ghost-light" %>
       </div>
 
       <ul class="hero__trust">
@@ -55,7 +55,7 @@
     </div>
 
     <div class="hero__media">
-      <%= variant_hero_image_tag showcase, alt: product.name, thumb: 760,
+      <%= variant_hero_image_tag showcase, alt: product.display_name, thumb: 760,
             class: "hero__image", fetchpriority: "high", decoding: "async" %>
     </div>
   </div>

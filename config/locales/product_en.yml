@@ -1,0 +1,89 @@
+en:
+  product_content:
+    eyebrow: Sport Chronograph Watch
+    headline_lead: Sports precision.
+    headline_trail: Premium style.
+    subhead: Quartz  |  Silicone  |  30M water resistant
+    highlights:
+      - icon: drop
+        label: 30M water resistant
+      - icon: clock
+        label: Quartz
+      - icon: strap
+        label: Silicone
+      - icon: truck
+        label: Tracked delivery
+    features:
+      - icon: shield
+        title: 30M water resistant
+        body: Withstands splashes, rain and washing your hands.
+      - icon: gauge
+        title: Precise chronograph
+        body: High-precision quartz movement with a chronograph function.
+      - icon: spark
+        title: Luminous details
+        body: Luminous hands and markers for easy reading in the dark.
+    specs:
+      - icon: clock
+        label: Movement
+        value: Quartz chronograph
+      - icon: shield
+        label: Case material
+        value: Alloy
+      - icon: spark
+        label: Glass
+        value: Mineral glass
+      - icon: drop
+        label: Water resistance
+        value: 30M
+      - icon: strap
+        label: Strap
+        value: Silicone
+      - icon: gauge
+        label: Functions
+        value: Chronograph, date, luminous
+    reassurance:
+      - icon: lock
+        title: Secure payment
+        body: Card, PayPal, Apple Pay
+      - icon: refresh
+        title: 30-day returns
+        body: Satisfied or refunded
+      - icon: truck
+        title: Ships in 24-48h
+        body: Tracked delivery
+      - icon: award
+        title: 2-year warranty
+        body: Premium quality
+    reviews:
+      - author: Maxime L.
+        rating: 5
+        title: It really stands out
+        body: It looks far more high-end than the price suggests. The dial is crisp
+          and the strap stays comfortable all day.
+      - author: Sophie T.
+        rating: 5
+        title: The perfect gift
+        body: I gave it to my partner for his birthday and he has not taken it off
+          since. The box is well made, it really feels like a gift.
+      - author: Karim B.
+        rating: 4
+        title: Great value for money
+        body: Solid and easy to read, even in bright sunlight. Half a point off
+          because delivery took a few days longer than expected.
+    faq:
+      - question: How long until I receive my watch?
+        answer: Your order is packed within 24 to 48 hours. Tracked delivery then
+          takes between 7 and 14 business days depending on your region.
+      - question: Is the watch really water resistant?
+        answer: It withstands splashes, rain and washing your hands (30M). Avoid
+          the shower, the pool and diving.
+      - question: Can I change the colour after ordering?
+        answer: Yes, as long as the order has not shipped. Write to us and we will
+          switch the colour before it leaves.
+      - question: How do returns work?
+        answer: You have 30 days to change your mind. The watch must be unworn and
+          in its original box.
+      - question: Is the battery included?
+        answer: Yes, the watch ships with its battery fitted and a 2-year warranty
+          on the movement.

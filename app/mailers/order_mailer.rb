@@ -5,14 +5,18 @@ class OrderMailer < ApplicationMailer
   def confirmation(order_ids)
     return unless load(order_ids)
 
-    mail(**headers("Commande #{@first.reference} confirmee"))
+    I18n.with_locale(@locale) do
+      mail(**headers(t("mailer.confirmation_subject", reference: @first.reference)))
+    end
   end
 
   # Sent once CJ hands the parcel to a carrier and a tracking number lands.
   def shipped(order_ids)
     return unless load(order_ids)
 
-    mail(**headers("Votre montre est en route"))
+    I18n.with_locale(@locale) do
+      mail(**headers(t("mailer.shipped_subject")))
+    end
   end
 
   private
@@ -24,6 +28,7 @@ class OrderMailer < ApplicationMailer
 
     @store = @first.store
     @total_cents = @orders.sum(&:total_cents)
+    @locale = @first.locale.presence || I18n.default_locale
     true
   end
 

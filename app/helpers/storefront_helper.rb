@@ -46,12 +46,22 @@ module StorefrontHelper
 
   # Month names live here rather than in a locale file: the app runs on the default
   # :en locale and this is the only date the storefront ever spells out.
+  # Kept for the admin, which stays in French whatever the storefront shows.
   MONTHS_FR = %w[janv. fevr. mars avril mai juin juil. aout sept. oct. nov. dec.].freeze
+
+  # An abbreviated day in the reader's language: French puts the day first,
+  # English puts the month first.
+  def short_day(date)
+    month = I18n.t("date.abbr_month_names", default: [])[date.month].presence ||
+            MONTHS_FR[date.month - 1]
+
+    I18n.locale.to_s.start_with?("fr") ? "#{date.day} #{month}" : "#{month} #{date.day}"
+  end
 
   # Delivery promise built from the same 7-14 business day window the FAQ quotes,
   # so the two can never contradict each other.
   def estimated_delivery_range(from_days: 7, to_days: 14, today: Date.current)
-    "livraison estimee #{delivery_window(from_days:, to_days:, today:)}"
+    I18n.t("checkout.estimated_range", window: delivery_window(from_days:, to_days:, today:))
   end
 
   # The window a placed order was actually quoted, rather than the generic promise
@@ -59,25 +69,21 @@ module StorefrontHelper
   # rest of the storefront already uses.
   def order_delivery_window(order)
     first, last = order.estimated_delivery_on.minmax
-    opening = first.month == last.month ? first.day.to_s : "#{first.day} #{MONTHS_FR[first.month - 1]}"
-
-    "#{opening} - #{last.day} #{MONTHS_FR[last.month - 1]}"
+    "#{delivery_bound(first, last)} - #{short_day(last)}"
   end
 
   # The bare date range, for places that already carry a "Livraison estimee" label.
   def delivery_window(from_days: 7, to_days: 14, today: Date.current)
     first = business_days_after(today, from_days)
     last = business_days_after(today, to_days)
-    opening = first.month == last.month ? first.day.to_s : "#{first.day} #{MONTHS_FR[first.month - 1]}"
-
-    "#{opening} - #{last.day} #{MONTHS_FR[last.month - 1]}"
+    "#{delivery_bound(first, last)} - #{short_day(last)}"
   end
 
   # Data attributes read by the variant Stimulus controller to repaint the page.
   def variant_data(variant)
     {
       variant_id: variant.id,
-      name: variant.name,
+      name: variant.display_name,
       price: variant.formatted_price,
       compare_at: variant.formatted_compare_at_price,
       image: variant_image_url(variant),
@@ -85,13 +91,19 @@ module StorefrontHelper
       details: variant.detail_images.first(4).map { |image|
         {
           src: attached_url(image),
-          alt: "#{variant.name} - #{variant_detail_label(image).downcase}"
+          alt: "#{variant.display_name} - #{variant_detail_label(image).downcase}"
         }
       }.to_json
     }.compact
   end
 
   private
+
+  # Within one month the opening bound needs no month name: "1 - 4 sept." reads
+  # better than "1 sept. - 4 sept.".
+  def delivery_bound(first, last)
+    first.month == last.month && I18n.locale.to_s.start_with?("fr") ? first.day.to_s : short_day(first)
+  end
 
   def business_days_after(date, count)
     count.times { date = date.next_day; date = date.next_day while date.saturday? || date.sunday? }

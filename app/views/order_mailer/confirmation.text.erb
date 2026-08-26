@@ -1,19 +1,19 @@
 <% window = @first.estimated_delivery_on -%>
-<%= @store.name %> — commande <%= @first.reference %> confirmee
+<%= @store.name %> — <%= t("mailer.confirmation_subject", reference: @first.reference) %>
 
-Merci, nous preparons votre colis.
-Livraison estimee : <%= window.first %> au <%= window.last %><% if @first.shipping_carrier.present? %> (<%= @first.shipping_carrier %>)<% end %>
+<%= t("mailer.text_intro") %>
+<%= t("mailer.estimated_delivery") %> : <%= window.first %> <%= t("mailer.to") %> <%= window.last %><% if @first.shipping_carrier.present? %> (<%= @first.shipping_carrier %>)<% end %>
 
 <% @orders.each do |order| -%>
 - <%= order.line_item_name %> x<%= order.quantity %> : <%= MoneyFormatter.format(order.total_cents, order.currency) %>
 <% end -%>
 Total : <%= MoneyFormatter.format(@total_cents, @first.currency) %>
 
-Livraison :
+<%= t("mailer.shipping_address") %> :
 <%= @first.customer_name %>
 <%= @first.address_line1 %>
 <%= [ @first.city, @first.province, @first.postal_code ].compact_blank.join(", ") %>
 <%= @first.country %>
 
-Vous recevrez le numero de suivi des l'expedition.
-Retour possible sous 30 jours.
+<%= t("mailer.text_tracking_next") %>
+<%= t("mailer.returns") %>

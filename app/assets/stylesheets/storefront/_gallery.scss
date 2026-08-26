@@ -102,9 +102,9 @@
 }
 
 .gallery__stage {
-  background:
-    radial-gradient(circle at 50% 68%, rgba(15, 15, 15, 0.06), transparent 38%),
-    #ffffff;
+  // Flat white, like the backdrop `script/rebuild_display_images` bakes into every
+  // photo. Any tint here would outline the inset image as a grey square.
+  background: #ffffff;
   border: 1px solid $color-border;
   border-radius: $radius-xl;
   box-shadow: $shadow-card;

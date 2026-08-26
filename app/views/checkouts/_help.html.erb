@@ -1,8 +1,8 @@
 <aside class="checkout-help">
   <span class="checkout-help__icon"><%= icon "headset", size: 20 %></span>
   <div>
-    <strong>Une question ?</strong>
-    <span>Notre equipe repond sous 24h, du lundi au vendredi.</span>
+    <strong><%= t("checkout.help_title") %></strong>
+    <span><%= t("checkout.help_body") %></span>
     <% if current_store&.support_email.present? %>
       <%= mail_to current_store.support_email, class: "checkout-help__link" do %>
         <span><%= current_store.support_email %></span>

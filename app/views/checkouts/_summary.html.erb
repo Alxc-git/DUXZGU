@@ -1,9 +1,9 @@
 <%# lines: [{variant:, product:, quantity:, amount:}], totals: {subtotal:, shipping_cents:, total:} %>
 <aside class="order-summary">
   <h2 class="order-summary__title">
-    <span>Votre commande</span>
+    <span><%= t("checkout.your_order") %></span>
     <% if local_assigns[:edit_path].present? %>
-      <%= link_to "Modifier", edit_path, class: "order-summary__edit" %>
+      <%= link_to t("common.edit"), edit_path, class: "order-summary__edit" %>
     <% end %>
   </h2>
 
@@ -11,13 +11,13 @@
     <% lines.each do |line| %>
       <li class="order-summary__line">
         <span class="order-summary__media">
-          <%= variant_image_tag line[:variant], alt: "#{line[:product].name} #{line[:variant]&.name}",
+          <%= variant_image_tag line[:variant], alt: "#{line[:product].display_name} #{line[:variant]&.display_name}",
                 thumb: 90, loading: "lazy", decoding: "async" %>
           <span class="order-summary__badge"><%= line[:quantity] %></span>
         </span>
         <span class="order-summary__info">
-          <strong><%= line[:product].name %></strong>
-          <span><%= line[:variant]&.name %></span>
+          <strong><%= line[:product].display_name %></strong>
+          <span><%= line[:variant]&.display_name %></span>
         </span>
         <span class="order-summary__price"><%= line[:amount] %></span>
       </li>
@@ -26,7 +26,7 @@
 
   <dl class="order-summary__rows">
     <div class="order-summary__row">
-      <dt>Sous-total</dt>
+      <dt><%= t("cart.subtotal") %></dt>
       <dd><%= totals[:subtotal] %></dd>
     </div>
     <% if totals[:discount_cents].to_i.positive? %>
@@ -37,22 +37,22 @@
     <% end %>
 
     <div class="order-summary__row">
-      <dt>Livraison</dt>
+      <dt><%= t("cart.shipping") %></dt>
       <dd>
         <% if totals[:shipping_cents].to_i.zero? %>
-          <span class="order-summary__free">Offerte</span>
+          <span class="order-summary__free"><%= t("common.free") %></span>
         <% else %>
           <%= MoneyFormatter.format(totals[:shipping_cents], current_store.currency) %>
         <% end %>
       </dd>
     </div>
     <div class="order-summary__row order-summary__row--total">
-      <dt>Total</dt>
+      <dt><%= t("cart.total") %></dt>
       <dd><%= totals[:total] %></dd>
     </div>
   </dl>
 
-  <p class="order-summary__taxes">Taxes incluses.</p>
+  <p class="order-summary__taxes"><%= t("common.taxes_included") %></p>
 
   <%= render "shared/order_perks", list_class: "order-summary__perks" %>
 </aside>

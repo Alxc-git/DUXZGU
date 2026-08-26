@@ -2,27 +2,35 @@
 <div class="support-chat"
      data-controller="support-chat"
      data-support-chat-url-value="<%= support_chat_path %>"
+     <%# The controller draws these itself, so they are handed over rather than
+         hardcoded in a file that cannot read the locale. %>
+     data-support-chat-greeting-value="<%= t("chat.greeting") %>"
+     data-support-chat-unavailable-value="<%= t("chat.unavailable") %>"
+     data-support-chat-no-answer-value="<%= t("chat.no_answer") %>"
+     data-support-chat-tracker-missing-value="<%= t("chat.tracker_missing") %>"
+     data-support-chat-open-label-value="<%= t("chat.open") %>"
+     data-support-chat-locale-value="<%= I18n.locale %>"
      data-support-chat-open-class="is-open">
   <button type="button"
           class="support-chat__toggle"
           data-support-chat-target="toggle"
           data-action="support-chat#toggle"
           aria-expanded="false"
-          aria-label="Ouvrir l'assistant">
+          aria-label=t("chat.open")>
     <span class="support-chat__toggle-icon"><%= icon "sparkles", size: 22 %></span>
     <%# Sits above the button so a waiting reply is visible without opening it. %>
     <span class="support-chat__badge" data-support-chat-target="badge" aria-hidden="true">1</span>
   </button>
 
   <section class="support-chat__panel" data-support-chat-target="panel"
-           role="dialog" aria-label="Assistant LUXTIME" hidden>
+           role="dialog" aria-label=t("chat.title") hidden>
     <header class="support-chat__head">
       <span class="support-chat__avatar"><%= icon "sparkles", size: 18 %></span>
       <span class="support-chat__identity">
-        <strong>Assistant LUXTIME</strong>
-        <small><span class="support-chat__pulse"></span>En ligne 24/7</small>
+        <strong><%= t("chat.title") %></strong>
+        <small><span class="support-chat__pulse"></span><%= t("chat.online") %></small>
       </span>
-      <button type="button" class="support-chat__close" data-action="support-chat#close" aria-label="Fermer">
+      <button type="button" class="support-chat__close" data-action="support-chat#close" aria-label=t("common.close")>
         <%= icon "close", size: 18 %>
       </button>
     </header>
@@ -31,28 +39,28 @@
       <summary>
         <span class="support-chat__tracker-icon"><%= icon "package", size: 17 %></span>
         <span>
-          <strong>Suivi commande</strong>
-          <small>Reference + courriel d'achat</small>
+          <strong><%= t("chat.tracker_title") %></strong>
+          <small><%= t("chat.tracker_hint") %></small>
         </span>
         <%= icon "chevron-down", size: 17, class: "support-chat__tracker-chevron" %>
       </summary>
 
       <form class="support-chat__tracker-form" data-action="submit->support-chat#trackOrder">
         <label>
-          <span>Reference</span>
+          <span><%= t("confirmation.reference") %></span>
           <input type="text"
                  data-support-chat-target="trackerReference"
                  placeholder="LX-AB12CD34 ou ORD-123"
                  autocomplete="off">
         </label>
         <label>
-          <span>Courriel</span>
+          <span><%= t("checkout.email") %></span>
           <input type="email"
                  data-support-chat-target="trackerEmail"
                  placeholder="vous@exemple.com"
                  autocomplete="email">
         </label>
-        <button type="submit">Verifier</button>
+        <button type="submit"><%= t("chat.tracker_check") %></button>
       </form>
     </details>
 
@@ -63,11 +71,11 @@
       <%# The emoji is decoration on the button; the plain sentence is what gets
           sent, so the assistant reads a clean question. %>
       <% [
-        [ "\u{1F4E6}", "Ou en est ma commande ?" ],
-        [ "\u{1F3E0}", "Puis-je modifier mon adresse ?" ],
-        [ "\u{21A9}\u{FE0F}", "Comment faire un retour ?" ],
-        featured.present? ? [ "\u{1F3A8}", "Quelles couleurs sont disponibles ?" ] : nil,
-        [ "\u{1F69A}", "Combien de temps pour la livraison ?" ]
+        [ "\u{1F4E6}", t("chat.suggestions.order") ],
+        [ "\u{1F3E0}", t("chat.suggestions.address") ],
+        [ "\u{21A9}\u{FE0F}", t("chat.suggestions.returns") ],
+        featured.present? ? [ "\u{1F3A8}", t("chat.suggestions.colours") ] : nil,
+        [ "\u{1F69A}", t("chat.suggestions.delivery") ]
       ].compact.each do |emoji, prompt| %>
         <button type="button" class="support-chat__chip"
                 data-action="support-chat#useSuggestion"
@@ -79,7 +87,7 @@
     </div>
 
     <form class="support-chat__form" data-support-chat-target="form" data-action="submit->support-chat#submit">
-      <label class="support-chat__label" for="support-chat-message">Votre message</label>
+      <label class="support-chat__label" for="support-chat-message"><%= t("chat.your_message") %></label>
       <textarea id="support-chat-message"
                 class="support-chat__input"
                 data-support-chat-target="input"
@@ -87,8 +95,8 @@
                 rows="1"
                 maxlength="1000"
                 enterkeyhint="send"
-                placeholder="Ecrivez votre question..."></textarea>
-      <button type="submit" class="support-chat__send" data-support-chat-target="submit" aria-label="Envoyer">
+                placeholder="<%= t("chat.placeholder") %>"></textarea>
+      <button type="submit" class="support-chat__send" data-support-chat-target="submit" aria-label=t("chat.send")>
         <%= icon "arrow-right", size: 18 %>
       </button>
     </form>

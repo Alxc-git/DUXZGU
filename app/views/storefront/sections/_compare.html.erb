@@ -32,7 +32,7 @@
                   data-action="compare#toggle"
                   aria-pressed="<%= index < 2 %>">
             <span class="compare__chip-dot" style="background: <%= item.swatch_color %>"></span>
-            <span><%= item.name %></span>
+            <span><%= item.display_name %></span>
           </button>
         </li>
       <% end %>
@@ -43,12 +43,12 @@
         <article class="compare__card" data-compare-target="card" data-compare-id="<%= item.id %>"
                  <%= "hidden" if index >= 2 %>>
           <span class="compare__media">
-            <%= variant_image_tag item, alt: "#{product.name} - #{item.name}", thumb: 320,
+            <%= variant_image_tag item, alt: "#{product.display_name} - #{item.display_name}", thumb: 320,
                   loading: "lazy", decoding: "async" %>
           </span>
 
           <div class="compare__body">
-            <h3><%= item.name %></h3>
+            <h3><%= item.display_name %></h3>
             <p class="compare__price"><%= item.formatted_price %></p>
           </div>
 

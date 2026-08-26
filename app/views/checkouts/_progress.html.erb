@@ -1,9 +1,9 @@
 <%# step: :address, :payment or :done %>
 <% steps = [
-     { key: :cart,    label: "Panier" },
-     { key: :address, label: "Livraison" },
-     { key: :payment, label: "Paiement" },
-     { key: :done,    label: "Confirmation" }
+     { key: :cart,    label: t("checkout.steps.cart") },
+     { key: :address, label: t("checkout.steps.address") },
+     { key: :payment, label: t("checkout.steps.payment") },
+     { key: :done,    label: t("checkout.steps.confirmation") }
    ] %>
 <% order = steps.map { |s| s[:key] } %>
 <% current = order.index(step) %>

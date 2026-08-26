@@ -1,0 +1,102 @@
+#!/usr/bin/env bash
+
+# Rebuilds every WebP the storefront serves from the PNG originals kept in
+# montres_images/sources/display.
+#
+# The supplier shot the six colours in six separate sessions, so two things are
+# normalised here rather than left to the source files:
+#
+#   * The backdrop. Each original sits on its own shade of near-white, from 218
+#     to 254, and several are vignetted on top of that. The gallery stage behind
+#     the photo is pure #ffffff and the image is inset from it, so any backdrop
+#     darker than white reads as a grey square floating inside a white frame. The
+#     white point of every file is measured and lifted so its backdrop lands on
+#     255 and the photo melts into the stage.
+#
+#   * The scale of the packshot, measured across the widest point of the watch,
+#     case plus crown. Three of the six colours already agree on 705px, so that
+#     is the width the other three are resized to. Only the packshot is aligned:
+#     the four detail poses are framed independently of one another, so there is
+#     no shared scale to align them on.
+
+set -euo pipefail
+
+CANVAS=1254         # every source is square at this size and every output stays there
+PACKSHOT_WIDTH=705  # target width of the watch in the packshot, in pixels
+TRIM_FUZZ=14%       # tolerance that reads the backdrop and its soft shadow as empty
+CORNER=100          # side of the corner patch the backdrop is measured in
+
+# The most common tone of one square patch, as an integer whatever depth IM picks.
+patch_tone() {
+  convert "$1" -colorspace gray -depth 8 -crop "${CORNER}x${CORNER}$2" +repage \
+          -format %c histogram:info:- \
+    | sed -nE 's/^ *([0-9]+):.*#([0-9A-Fa-f]{2})[0-9A-Fa-f]{4} .*/\1 \2/p' \
+    | sort -rn | head -1 | cut -d' ' -f2 \
+    | { read -r hex; printf '%d\n' "0x${hex}"; }
+}
+
+# Read from the four corners, darkest one wins. The corners are the only region
+# no pose reaches -- the watch runs off the bottom edge in several of them -- and
+# several originals are vignetted, so the corners are also where the backdrop is
+# darkest. Taking the darkest lands the whole backdrop on white rather than only
+# its lightest part, which is what left a grey square in the frame before.
+backdrop_tone() {
+  local far=$((CANVAS - CORNER)) lowest=255 tone
+
+  for corner in "+0+0" "+${far}+0" "+0+${far}" "+${far}+${far}"; do
+    tone=$(patch_tone "$1" "$corner")
+    [ "$tone" -lt "$lowest" ] && lowest=$tone
+  done
+
+  echo "$lowest"
+}
+
+watch_width() {
+  convert "$1" -background white -flatten -fuzz "$TRIM_FUZZ" -trim -format %w info:
+}
+
+percent() {
+  awk "BEGIN { printf \"%.4f\", $1 * 100 / $2 }"
+}
+
+write_webp() {
+  local input="$1" output="$2" scale="${3:-100}"
+
+  # Lifting the white point rather than flood-filling the corners keeps the drop
+  # shadow a gradient: a fill would clip it and leave a hard ring around the watch.
+  convert "$input" -strip \
+          -level "0%,$(percent "$(backdrop_tone "$input")" 255)%" \
+          -resize "${scale}%" \
+          -background white -gravity center -extent "${CANVAS}x${CANVAS}" \
+          -quality 88 "$output"
+}
+
+while IFS=: read -r slug; do
+  source_dir="montres_images/sources/display/${slug}"
+  catalogue_dir="montres_images/catalogue/${slug}"
+  detail_dir="${catalogue_dir}/details"
+
+  for filename in 01-face 02-angle 03-vue-eclatee 04-profil 05-fond; do
+    test -f "${source_dir}/${filename}.png"
+  done
+
+  mkdir -p "$detail_dir"
+  find "$detail_dir" -maxdepth 1 -type f -name "*.webp" -delete
+
+  scale=$(percent "$PACKSHOT_WIDTH" "$(watch_width "${source_dir}/01-face.png")")
+
+  write_webp "${source_dir}/01-face.png" "${catalogue_dir}/packshot.webp" "$scale"
+  write_webp "${source_dir}/02-angle.png" "${detail_dir}/01-angle.webp"
+  write_webp "${source_dir}/03-vue-eclatee.png" "${detail_dir}/02-vue-eclatee.webp"
+  write_webp "${source_dir}/04-profil.png" "${detail_dir}/03-profil.webp"
+  write_webp "${source_dir}/05-fond.png" "${detail_dir}/04-fond.webp"
+
+  printf '%-22s packshot scaled to %s%%\n' "$slug" "$scale"
+done <<'VARIANTS'
+argent-bracelet-noir
+argent-noir
+noir-integral
+or-bleu
+or-noir
+rose-gold-noir
+VARIANTS

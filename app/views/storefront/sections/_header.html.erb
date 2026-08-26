@@ -7,15 +7,15 @@
   <div class="page-container announce__inner">
     <span class="announce__item announce__item--primary">
       <%= icon "truck", size: 15 %>
-      <span>Livraison suivie <%= current_store&.free_shipping? ? "offerte" : "24/48h" %></span>
+      <span><%= current_store&.free_shipping? ? t("header.announce_shipping_free") : t("header.announce_shipping_fast") %></span>
     </span>
     <span class="announce__item">
       <%= icon "shield-check", size: 15 %>
-      <span>Garantie 2 ans</span>
+      <span><%= t("common.warranty_2y") %></span>
     </span>
     <span class="announce__item">
       <%= icon "refresh", size: 15 %>
-      <span>Retour 30 jours</span>
+      <span><%= t("common.returns_30") %></span>
     </span>
   </div>
 </div>
@@ -38,7 +38,7 @@
               aria-controls="menu-panel">
         <span class="site-header__control-icon" data-menu-target="openIcon"><%= icon "menu", size: 19 %></span>
         <span class="site-header__control-icon" data-menu-target="closeIcon" hidden><%= icon "close", size: 19 %></span>
-        <span class="site-header__control-label">Menu</span>
+        <span class="site-header__control-label"><%= t("common.menu") %></span>
       </button>
 
       <% if featured.present? %>
@@ -46,27 +46,50 @@
             carries the search entry there instead. %>
         <button type="button" class="site-header__control site-header__control--search" data-action="search#open">
           <span class="site-header__control-icon"><%= icon "search", size: 19 %></span>
-          <span class="site-header__control-label">Rechercher</span>
+          <span class="site-header__control-label"><%= t("common.search") %></span>
         </button>
       <% end %>
     </div>
 
-    <%= link_to "LUXTIME", root_path, class: "site-header__brand", aria: { label: "#{current_store&.name} accueil" } %>
+    <%= link_to "LUXTIME", root_path, class: "site-header__brand", aria: { label: t("header.brand_home", store: current_store&.name) } %>
 
     <div class="site-header__side site-header__side--end">
-      <%= link_to cart_path, class: "site-header__control site-header__cart",
-            aria: { label: "Voir le panier" } do %>
+      <%# A sliding switch, not a link: the change is a POST so Turbo's link
+          prefetching cannot trip it, and the knob shows which side is active. %>
+      <%= form_with url: locale_switch_path, method: :post, class: "lang-switch",
+                    data: { turbo: false } do |form| %>
+        <%= form.hidden_field :locale, value: alternate_locale %>
+        <button type="submit" class="lang-switch__button"
+                role="switch"
+                aria-checked="<%= current_locale == :en %>"
+                aria-label="<%= t("language.label") %>"
+                title="<%= t("language.label") %>">
+          <span class="lang-switch__track" aria-hidden="true">
+            <span class="lang-switch__knob lang-switch__knob--<%= current_locale %>"></span>
+            <span class="lang-switch__side lang-switch__side--fr">FR</span>
+            <span class="lang-switch__side lang-switch__side--en">EN</span>
+          </span>
+        </button>
+      <% end %>
+
+      <%# On a phone an empty cart only crowds the language switch, so it waits
+          until there is a line to go and look at. The menu panel keeps a way in
+          either way, and from tablet up the bar has room for both. %>
+      <%= link_to cart_path,
+            class: class_names("site-header__control", "site-header__cart",
+                               "site-header__cart--empty" => current_cart.empty?),
+            aria: { label: t("header.view_cart") } do %>
         <span class="site-header__control-icon">
           <%= icon "bag", size: 19 %>
           <% if current_cart.any? %>
             <span class="site-header__cart-count"><%= current_cart.count %></span>
           <% end %>
         </span>
-        <span class="site-header__control-label">Panier</span>
+        <span class="site-header__control-label"><%= t("common.cart") %></span>
       <% end %>
 
       <% if featured.present? %>
-        <%= link_to "Acheter", "#{product_path}#formulaire-achat", class: "site-header__buy" %>
+        <%= link_to t("common.buy"), "#{product_path}#formulaire-achat", class: "site-header__buy" %>
       <% end %>
     </div>
   </div>
@@ -77,26 +100,26 @@
     <nav class="site-header__drawer-nav" aria-label="Menu">
       <% if featured.present? %>
         <button type="button" class="site-header__drawer-search" data-action="menu#close search#open">
-          <span>Rechercher</span>
+          <span><%= t("common.search") %></span>
           <%= icon "search", size: 18 %>
         </button>
       <% end %>
       <%= link_to root_path, data: { action: "menu#close" } do %>
-        <span>Accueil</span>
+        <span><%= t("common.home") %></span>
         <%= icon "chevron-right", size: 18 %>
       <% end %>
       <% if featured.present? %>
         <%= link_to product_path, data: { action: "menu#close" } do %>
-          <span>La montre</span>
+          <span><%= t("common.the_watch") %></span>
           <%= icon "chevron-right", size: 18 %>
         <% end %>
       <% end %>
       <%= link_to contact_path, data: { action: "menu#close" } do %>
-        <span>Contact</span>
+        <span><%= t("common.contact") %></span>
         <%= icon "chevron-right", size: 18 %>
       <% end %>
       <%= link_to cart_path, data: { action: "menu#close" } do %>
-        <span>Panier<%= " (#{current_cart.count})" if current_cart.any? %></span>
+        <span><%= t("common.cart") %><%= " (#{current_cart.count})" if current_cart.any? %></span>
         <%= icon "chevron-right", size: 18 %>
       <% end %>
     </nav>
@@ -104,14 +127,14 @@
     <% if featured.present? %>
       <%= link_to product_path, class: "drawer-product", data: { action: "menu#close" } do %>
         <span class="drawer-product__media">
-          <%= variant_image_tag featured.default_variant, alt: featured.name, thumb: 130, loading: "lazy" %>
+          <%= variant_image_tag featured.default_variant, alt: featured.display_name, thumb: 130, loading: "lazy" %>
         </span>
         <span class="drawer-product__body">
-          <span class="drawer-product__eyebrow">Notre modele</span>
-          <strong class="drawer-product__name"><%= featured.name %></strong>
+          <span class="drawer-product__eyebrow"><%= t("header.our_model") %></span>
+          <strong class="drawer-product__name"><%= featured.display_name %></strong>
           <span class="drawer-product__rating">
             <%= star_rating featured.rating, size: 13 %>
-            <span><%= number_with_precision(featured.rating, precision: 1, separator: ",") %> &middot; <%= featured.reviews_count %> avis</span>
+            <span><%= number_with_precision(featured.rating, precision: 1, separator: ",") %> &middot; <%= t("product.reviews_count", count: featured.reviews_count) %></span>
           </span>
           <span class="drawer-product__price">
             <strong><%= featured.formatted_price %></strong>
@@ -125,13 +148,13 @@
 
     <div class="site-header__drawer-foot">
       <% if featured.present? %>
-        <%= link_to "Acheter maintenant", "#{product_path}#formulaire-achat",
+        <%= link_to t("common.buy_now"), "#{product_path}#formulaire-achat",
               class: "button button--lg button--block", data: { action: "menu#close" } %>
       <% end %>
       <div class="payment-note">
         <span class="payment-note__label">
           <%= icon "lock", size: 15 %>
-          <span>Paiement securise</span>
+          <span><%= t("common.secure_payment") %></span>
         </span>
         <%= payment_marks(class: "payment-marks--sm") %>
       </div>

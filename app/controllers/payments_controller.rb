@@ -29,7 +29,7 @@ class PaymentsController < ApplicationController
 
     return if @orders.any?
 
-    redirect_to cart_path, alert: "Votre commande a expire, recommencez votre panier"
+    redirect_to cart_path, alert: t("checkout.expired")
   end
 
   # Reuses the intent already created for these orders, so a page reload does not

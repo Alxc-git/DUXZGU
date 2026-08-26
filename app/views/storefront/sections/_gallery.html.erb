@@ -23,11 +23,11 @@
                 data-action="gallery#show"
                 data-gallery-index-param="0"
                 data-gallery-src="<%= packshot_url %>"
-                data-gallery-alt="<%= product.name %>"
+                data-gallery-alt="<%= product.display_name %>"
                 data-gallery-fit="contain"
-                aria-label="Voir la montre entiere">
+                aria-label=t("sections.whole_watch")>
           <span class="gallery__thumb-media">
-            <%= variant_image_tag variant, alt: "#{product.name} - #{variant&.name}", thumb: 130,
+            <%= variant_image_tag variant, alt: "#{product.display_name} - #{variant&.display_name}", thumb: 130,
                   data: { variant_target: "image" }, loading: "lazy", decoding: "async" %>
           </span>
         </button>
@@ -42,11 +42,11 @@
                   data-action="gallery#show"
                   data-gallery-index-param="<%= index + 1 %>"
                   data-gallery-src="<%= url_for(image) %>"
-                  data-gallery-alt="<%= product.name %> - <%= detail_label.downcase %>"
+                  data-gallery-alt="<%= product.display_name %> - <%= detail_label.downcase %>"
                   data-gallery-fit="contain"
-                  aria-label="Voir le detail : <%= detail_label.downcase %>">
+                  aria-label="<%= t("sections.see_detail", label: detail_label.downcase) %>">
             <span class="gallery__thumb-media">
-              <%= product_part_image_tag image, alt: "#{product.name} - #{detail_label}", thumb: 130,
+              <%= product_part_image_tag image, alt: "#{product.display_name} - #{detail_label}", thumb: 130,
                     loading: "lazy", decoding: "async" %>
             </span>
           </button>
@@ -56,22 +56,22 @@
   </div>
 
   <figure class="gallery__stage">
-    <%= variant_image_tag variant, alt: product.name, class: "gallery__image", thumb: 620,
+    <%= variant_image_tag variant, alt: product.display_name, class: "gallery__image", thumb: 620,
           data: { variant_target: "heroImage", gallery_target: "stage" },
           fetchpriority: "high", decoding: "async" %>
 
     <div class="gallery__tools">
-      <button type="button" class="gallery__tool" data-action="gallery#zoom" aria-label="Agrandir la photo">
+      <button type="button" class="gallery__tool" data-action="gallery#zoom" aria-label=t("sections.zoom_photo")>
         <%= icon "zoom", size: 18 %>
       </button>
     </div>
 
     <% if product.discount_percentage.present? %>
-      <figcaption class="tag tag--sale gallery__badge">Liquidation -<%= product.discount_percentage %>%</figcaption>
+      <figcaption class="tag tag--sale gallery__badge"><%= t("sections.clearance") %> -<%= product.discount_percentage %>%</figcaption>
     <% end %>
 
     <% if parts.any? %>
-      <div class="gallery__dots" role="tablist" aria-label="Photos du produit">
+      <div class="gallery__dots" role="tablist" aria-label=t("sections.product_photos")>
         <% (parts.length + 1).times do |index| %>
           <button type="button"
                   class="gallery__dot <%= "is-active" if index.zero? %>"
@@ -80,7 +80,7 @@
                   data-gallery-index-param="<%= index %>"
                   role="tab"
                   aria-selected="<%= index.zero? %>"
-                  aria-label="Photo <%= index + 1 %>"></button>
+                  aria-label="<%= t("sections.photo_n", n: index + 1) %>"></button>
         <% end %>
       </div>
     <% end %>
@@ -88,7 +88,7 @@
 
   <%# Lightbox, so the customer can inspect the dial before buying. %>
   <div class="lightbox" data-gallery-target="lightbox" data-action="click->gallery#closeZoom" hidden>
-    <button type="button" class="lightbox__close" aria-label="Fermer">
+    <button type="button" class="lightbox__close" aria-label=t("common.close")>
       <%= icon "close", size: 20 %>
     </button>
     <img class="lightbox__image"

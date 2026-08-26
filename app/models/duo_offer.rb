@@ -55,6 +55,6 @@ class DuoOffer
   end
 
   def label
-    "La deuxieme a -#{percent} %"
+    I18n.t("offer.label", percent:)
   end
 end

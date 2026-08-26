@@ -30,7 +30,7 @@ class CheckoutsController < ApplicationController
   def require_filled_cart!
     return if current_cart.any?
 
-    redirect_to cart_path, alert: "Votre panier est vide"
+    redirect_to cart_path, alert: t("cart.empty_alert")
   end
 
   def default_country

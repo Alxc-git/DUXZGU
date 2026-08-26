@@ -49,6 +49,9 @@ module Orders
         delivery_min_days: estimate&.min_days,
         delivery_max_days: estimate&.max_days,
         shipping_carrier: estimate&.carrier,
+        # Frozen with the order: the emails must speak the language the customer
+        # was reading, not whatever the next request happens to set.
+        locale: I18n.locale.to_s,
         metadata: { "checkout_reference" => reference }
       )
       order.assign_attributes(details.attributes_for_order)

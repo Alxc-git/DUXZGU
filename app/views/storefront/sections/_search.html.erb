@@ -1,31 +1,31 @@
 <%# Client-side search over what the store actually sells: the product and its
     colours. No index to maintain, and it never promises a result that does not exist. %>
 <div class="search-overlay" data-search-target="overlay" data-action="click->search#backdrop" hidden>
-  <div class="search-panel" role="dialog" aria-modal="true" aria-label="Rechercher">
+  <div class="search-panel" role="dialog" aria-modal="true" aria-label="<%= t("common.search") %>">
     <div class="search-panel__field">
       <%= icon "search", size: 20 %>
       <input type="search"
              class="search-panel__input"
-             placeholder="Rechercher une montre, une couleur..."
+             placeholder="<%= t("search.placeholder") %>"
              autocomplete="off"
-             aria-label="Rechercher"
+             aria-label="<%= t("common.search") %>"
              data-search-target="input"
              data-action="input->search#filter keydown->search#keydown">
-      <button type="button" class="search-panel__close" data-action="search#close" aria-label="Fermer la recherche">
+      <button type="button" class="search-panel__close" data-action="search#close" aria-label="<%= t("common.close") %>">
         <%= icon "close", size: 18 %>
       </button>
     </div>
 
     <div class="search-panel__results">
-      <p class="search-panel__label">Produit</p>
+      <p class="search-panel__label"><%= t("search.product") %></p>
       <ul class="search-results" role="list">
-        <li data-search-target="result" data-search-terms="<%= [ product.name, product.description ].join(" ").downcase %>">
+        <li data-search-target="result" data-search-terms="<%= [ product.display_name, product.description ].join(" ").downcase %>">
           <%= link_to storefront_product_path(product.slug), class: "search-result" do %>
             <span class="search-result__media">
-              <%= variant_image_tag product.default_variant, alt: product.name, thumb: 90, loading: "lazy" %>
+              <%= variant_image_tag product.default_variant, alt: product.display_name, thumb: 90, loading: "lazy" %>
             </span>
             <span class="search-result__body">
-              <strong><%= product.name %></strong>
+              <strong><%= product.display_name %></strong>
               <small><%= (product.default_variant || product).formatted_price %></small>
             </span>
             <%= icon "chevron-right", size: 18 %>
@@ -34,16 +34,16 @@
       </ul>
 
       <% if product.variants? %>
-        <p class="search-panel__label">Couleurs</p>
+        <p class="search-panel__label"><%= t("search.colours") %></p>
         <ul class="search-results" role="list">
           <% product.available_variants.each do |variant| %>
-            <li data-search-target="result" data-search-terms="<%= "#{product.name} #{variant.name}".downcase %>">
+            <li data-search-target="result" data-search-terms="<%= "#{product.display_name} #{variant.display_name}".downcase %>">
               <%= link_to storefront_product_path(product.slug, couleur: variant.id), class: "search-result" do %>
                 <span class="search-result__media">
-                  <%= variant_image_tag variant, alt: variant.name, loading: "lazy" %>
+                  <%= variant_image_tag variant, alt: variant.display_name, loading: "lazy" %>
                 </span>
                 <span class="search-result__body">
-                  <strong><%= variant.name %></strong>
+                  <strong><%= variant.display_name %></strong>
                   <small><%= variant.formatted_price %></small>
                 </span>
                 <%= icon "chevron-right", size: 18 %>
@@ -54,7 +54,7 @@
       <% end %>
 
       <p class="search-panel__empty" data-search-target="empty" hidden>
-        Aucun resultat. Essayez « chronographe » ou une couleur.
+        <%= t("search.empty") %>
       </p>
     </div>
   </div>

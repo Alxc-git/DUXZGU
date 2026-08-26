@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="<%= I18n.locale %>">
   <head>
     <title><%= content_for(:title) || current_store&.name || "Boutique" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -8,6 +8,10 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="description" content="<%= content_for(:description) || current_store&.settings&.dig("tagline") %>">
     <meta name="theme-color" content="#111111">
+    <%# Tells a search engine the same page exists in the other language. %>
+    <link rel="alternate" hreflang="<%= I18n.locale %>" href="<%= request.original_url %>">
+    <link rel="alternate" hreflang="<%= alternate_locale %>" href="<%= alternate_locale_url %>">
+
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 

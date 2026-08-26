@@ -1,12 +1,12 @@
 <% priced = variant || product %>
 <div class="buy-box">
   <div class="buy-box__head">
-    <h1 class="buy-box__title"><%= product.name %></h1>
+    <h1 class="buy-box__title"><%= product.display_name %></h1>
 
     <p class="buy-box__rating">
       <%= star_rating product.rating, size: 16 %>
       <strong><%= number_with_precision(product.rating, precision: 1, separator: ",") %></strong>
-      <%= link_to "(#{product.reviews_count} avis)", "#avis", class: "buy-box__reviews-link" %>
+      <%= link_to "(#{t("product.reviews_count", count: product.reviews_count)})", "#avis", class: "buy-box__reviews-link" %>
     </p>
   </div>
 
@@ -15,15 +15,15 @@
     <% compare_at = priced.formatted_compare_at_price %>
     <span class="buy-box__compare" data-variant-target="compareAt" <%= "hidden" if compare_at.blank? %>><%= compare_at %></span>
     <% if product.discount_percentage.present? %>
-      <span class="tag tag--sale">Liquidation -<%= product.discount_percentage %>%</span>
+      <span class="tag tag--sale"><%= t("sections.clearance") %> -<%= product.discount_percentage %>%</span>
     <% end %>
   </div>
 
   <p class="buy-box__taxes">
-    Taxes incluses<%= ". Livraison gratuite" if current_store.free_shipping? %>.
+    <%= current_store.free_shipping? ? t("common.taxes_and_shipping") : t("common.taxes_included") %>
     <span class="buy-box__stock">
       <span class="buy-box__dot"></span>
-      En stock
+      <%= t("common.in_stock") %>
     </span>
   </p>
 
@@ -34,8 +34,8 @@
     <% if product.variants? %>
       <fieldset class="swatches" id="couleurs">
         <legend class="swatches__legend">
-          <span>Couleur</span>
-          <strong data-variant-target="name"><%= variant&.name %></strong>
+          <span><%= t("common.colour") %></span>
+          <strong data-variant-target="name"><%= variant&.display_name %></strong>
         </legend>
 
         <div class="swatches__grid">
@@ -43,15 +43,15 @@
             <label class="swatch <%= "is-active" if item == variant %>"
                    data-variant-target="swatch"
                    data-variant-id="<%= item.id %>"
-                   title="<%= item.name %>">
+                   title="<%= item.display_name %>">
               <%= form.radio_button :variant_id, item.id,
                     checked: item == variant,
                     class: "swatch__input",
                     data: { action: "change->variant#select" }.merge(variant_data(item)) %>
               <span class="swatch__media">
-                <%= variant_image_tag item, alt: item.name, thumb: 150, loading: "lazy", decoding: "async" %>
+                <%= variant_image_tag item, alt: item.display_name, thumb: 150, loading: "lazy", decoding: "async" %>
               </span>
-              <span class="swatch__name"><%= item.name %></span>
+              <span class="swatch__name"><%= item.display_name %></span>
             </label>
           <% end %>
         </div>
@@ -59,14 +59,14 @@
     <% end %>
 
     <div class="buy-box__actions">
-      <div class="stepper" role="group" aria-label="Quantite">
-        <button type="button" class="stepper__button" data-action="quantity#decrement" aria-label="Diminuer la quantite">
+      <div class="stepper" role="group" aria-label=t("common.quantity")>
+        <button type="button" class="stepper__button" data-action="quantity#decrement" aria-label=t("cart.decrease")>
           <%= icon "minus", size: 18 %>
         </button>
         <%= form.number_field :quantity, value: 1, min: 1, max: 99, class: "stepper__input",
-              inputmode: "numeric", "aria-label": "Quantite",
+              inputmode: "numeric", "aria-label": t("common.quantity"),
               data: { quantity_target: "input", action: "change->quantity#clamp" } %>
-        <button type="button" class="stepper__button" data-action="quantity#increment" aria-label="Augmenter la quantite">
+        <button type="button" class="stepper__button" data-action="quantity#increment" aria-label=t("cart.increase")>
           <%= icon "plus", size: 18 %>
         </button>
       </div>
@@ -78,18 +78,18 @@
               data-wishlist-saved-class="is-saved"
               data-action="wishlist#toggle"
               aria-pressed="false"
-              aria-label="Ajouter aux favoris">
+              aria-label=t("product.add_to_favourites")>
         <%= icon "heart", size: 20 %>
       </button>
 
       <%= form.button type: "submit", class: "button button--lg button--block buy-box__submit" do %>
         <%= icon "bag", size: 20 %>
-        <span>Ajouter au panier</span>
+        <span><%= t("common.add_to_cart") %></span>
       <% end %>
     </div>
 
     <%# Same form, but this button carries the customer straight to the address step. %>
-    <%= button_tag "Acheter maintenant", type: "submit", name: "then", value: "checkout",
+    <%= button_tag t("common.buy_now"), type: "submit", name: "then", value: "checkout",
           class: "button button--lg button--ghost button--block" %>
   <% end %>
 

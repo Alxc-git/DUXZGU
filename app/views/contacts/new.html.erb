@@ -1,17 +1,17 @@
-<% content_for :title, "Nous contacter | #{current_store.name}" %>
-<% content_for :description, "Une question sur votre commande, la livraison ou un retour ? Notre equipe repond sous 24h ouvrables." %>
+<% content_for :title, "#{t("contact.title")} | #{current_store.name}" %>
+<% content_for :description, t("contact.lead") %>
 
 <section class="contact">
   <div class="page-container">
-    <nav class="breadcrumb" aria-label="Fil d'Ariane">
-      <%= link_to "Accueil", root_path %>
+    <nav class="breadcrumb" aria-label=t("common.breadcrumb")>
+      <%= link_to t("common.home"), root_path %>
       <%= icon "chevron-right", size: 14 %>
-      <span aria-current="page">Contact</span>
+      <span aria-current="page"><%= t("common.contact") %></span>
     </nav>
 
     <header class="contact__header">
-      <p class="contact__eyebrow">Service client</p>
-      <h1 class="contact__title">Nous contacter</h1>
+      <p class="contact__eyebrow"><%= t("contact.eyebrow") %></p>
+      <h1 class="contact__title"><%= t("contact.title") %></h1>
       <p class="contact__lead">
         Une question sur votre commande, la livraison ou un retour ? Ecrivez-nous,
         notre equipe repond sous 24h ouvrables.
@@ -26,7 +26,7 @@
           <div class="checkout__errors" role="alert">
             <strong>
               <%= icon "close", size: 16 %>
-              Verifiez les champs suivants
+              <%= t("checkout.errors_title") %>
             </strong>
             <ul>
               <% @message.errors.each do |error| %>
@@ -39,19 +39,19 @@
         <section class="checkout__panel">
           <header class="checkout__panel-head">
             <span class="checkout__panel-mark"><%= icon "mail", size: 16 %></span>
-            <h2>Votre message</h2>
+            <h2><%= t("contact.your_message") %></h2>
           </header>
 
           <div class="field-row">
             <div class="field">
-              <%= form.label :name, "Nom" %>
+              <%= form.label :name, t("contact.name") %>
               <%= form.text_field :name, autocomplete: "name", required: true,
                     class: field_class(@message, :name) %>
               <%= checkout_field_error(@message, :name) %>
             </div>
 
             <div class="field">
-              <%= form.label :email, "Courriel" %>
+              <%= form.label :email, t("checkout.email") %>
               <%= form.email_field :email, autocomplete: "email", placeholder: "vous@exemple.ca",
                     required: true, class: field_class(@message, :email) %>
               <%= checkout_field_error(@message, :email) %>
@@ -60,26 +60,26 @@
 
           <div class="field-row">
             <div class="field">
-              <%= form.label :subject, "Sujet" %>
+              <%= form.label :subject, t("contact.subject") %>
               <%= form.select :subject,
-                    ContactMessage::SUBJECTS,
-                    { include_blank: "Choisissez un sujet" },
+                    ContactMessage.subjects,
+                    { include_blank: t("contact.choose_subject") },
                     class: field_class(@message, :subject) %>
               <%= checkout_field_error(@message, :subject) %>
             </div>
 
             <div class="field">
-              <%= form.label :order_reference, "Numero de commande" %>
-              <%= form.text_field :order_reference, placeholder: "LX-XXXXXXXX (facultatif)",
+              <%= form.label :order_reference, t("contact.order_number") %>
+              <%= form.text_field :order_reference, placeholder: "LX-XXXXXXXX",
                     class: field_class(@message, :order_reference) %>
-              <p class="field__hint">Il figure sur votre courriel de confirmation.</p>
+              <p class="field__hint"><%= t("contact.order_number_hint") %></p>
             </div>
           </div>
 
           <div class="field">
-            <%= form.label :body, "Message" %>
+            <%= form.label :body, t("contact.message") %>
             <%= form.text_area :body, rows: 7, required: true,
-                  placeholder: "Decrivez votre demande en quelques lignes.",
+                  placeholder: t("contact.message_placeholder"),
                   class: "#{field_class(@message, :body)} input--area" %>
             <%= checkout_field_error(@message, :body) %>
           </div>
@@ -88,23 +88,23 @@
         <div class="checkout__submit">
           <%= form.button type: "submit", class: "button button--lg button--block" do %>
             <%= icon "mail", size: 18 %>
-            <span>Envoyer le message</span>
+            <span><%= t("contact.send") %></span>
           <% end %>
           <p class="checkout__terms">
-            Nous utilisons votre courriel uniquement pour repondre a cette demande.
+            <%= t("contact.privacy") %>
           </p>
         </div>
       <% end %>
 
       <aside class="contact__side">
         <div class="contact__card">
-          <h2 class="contact__card-title">Reponse rapide</h2>
+          <h2 class="contact__card-title"><%= t("contact.quick_reply") %></h2>
           <ul class="contact__facts" role="list">
             <li>
               <span class="contact__fact-icon"><%= icon "clock", size: 17 %></span>
               <span>
-                <strong>Sous 24h ouvrables</strong>
-                <small>Du lundi au vendredi</small>
+                <strong><%= t("contact.within_24h") %></strong>
+                <small><%= t("contact.weekdays") %></small>
               </span>
             </li>
             <% if current_store&.support_email.present? %>
@@ -112,41 +112,41 @@
                 <span class="contact__fact-icon"><%= icon "mail", size: 17 %></span>
                 <span>
                   <strong><%= mail_to current_store.support_email %></strong>
-                  <small>Ecrivez-nous directement</small>
+                  <small><%= t("contact.write_directly") %></small>
                 </span>
               </li>
             <% end %>
             <li>
               <span class="contact__fact-icon"><%= icon "globe", size: 17 %></span>
               <span>
-                <strong>Expedition au Canada</strong>
-                <small>Prix en <%= current_store&.currency.to_s.upcase %></small>
+                <strong><%= t("contact.ships_to") %></strong>
+                <small><%= t("contact.prices_in", currency: current_store&.currency.to_s.upcase) %></small>
               </span>
             </li>
           </ul>
         </div>
 
         <div class="contact__card">
-          <h2 class="contact__card-title">Reponses immediates</h2>
-          <p class="contact__card-lead">La plupart des questions sont deja traitees ici.</p>
+          <h2 class="contact__card-title"><%= t("contact.instant_answers") %></h2>
+          <p class="contact__card-lead"><%= t("contact.instant_lead") %></p>
           <ul class="contact__links" role="list">
             <% if current_product.present? %>
               <li>
                 <%= link_to "#{storefront_product_path(current_product.slug)}#faq" do %>
-                  <span>Questions frequentes</span>
+                  <span><%= t("footer.faq") %></span>
                   <%= icon "chevron-right", size: 16 %>
                 <% end %>
               </li>
               <li>
                 <%= link_to "#{storefront_product_path(current_product.slug)}#specifications" do %>
-                  <span>Specifications de la montre</span>
+                  <span><%= t("footer.specifications") %></span>
                   <%= icon "chevron-right", size: 16 %>
                 <% end %>
               </li>
             <% end %>
             <li>
               <%= link_to cart_path do %>
-                <span>Voir mon panier</span>
+                <span><%= t("contact.see_cart") %></span>
                 <%= icon "chevron-right", size: 16 %>
               <% end %>
             </li>

@@ -138,6 +138,17 @@
   }
 }
 
+// A phone bar fits the language switch or the cart, not both, and an empty cart
+// is nothing to go and look at. It joins the bar the moment a line lands in it;
+// until then the menu panel is the way in. Always shown from tablet up.
+.site-header__cart--empty {
+  display: none;
+
+  @include tablet {
+    display: inline-flex;
+  }
+}
+
 .site-header__control-icon {
   align-items: center;
   display: inline-flex;
@@ -516,5 +527,107 @@
   s {
     color: $color-muted;
     font-size: 0.82rem;
+  }
+}
+
+// The language switch names the language it takes you to, not the one you are
+// reading: "English" while browsing in French. Its label is kept on small
+// screens where the other controls drop theirs, because a lone globe is
+// ambiguous.
+.site-header__lang .site-header__control-label {
+  display: inline;
+}
+
+@media (max-width: 520px) {
+  .site-header__lang .site-header__control-label {
+    font-size: 0.78rem;
+  }
+}
+
+// ------------------------------------------------------- language switch
+//
+// A sliding switch rather than a link, matching the shape of a theme toggle:
+// both languages stay visible and the knob shows which one is active.
+
+.lang-switch {
+  display: flex;
+}
+
+.lang-switch__button {
+  background: none;
+  border: 0;
+  cursor: pointer;
+  display: block;
+  font: inherit;
+  padding: 0;
+}
+
+.lang-switch__track {
+  align-items: center;
+  background: $color-surface;
+  border: 1px solid $color-border;
+  border-radius: $radius-pill;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  height: 2.35rem;
+  position: relative;
+  width: 5.4rem;
+}
+
+// The inactive side sits on the light track and has to stay readable, so it is
+// ink rather than grey; the active side is white on the knob.
+.lang-switch__side {
+  color: $color-ink;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  position: relative;
+  text-align: center;
+  transition: color 0.2s ease;
+  z-index: 1;
+}
+
+// The knob sits under the labels and slides between the two halves.
+.lang-switch__knob {
+  background: $color-ink;
+  border-radius: $radius-pill;
+  bottom: 3px;
+  left: 3px;
+  position: absolute;
+  top: 3px;
+  transition: transform 0.22s ease;
+  width: calc(50% - 3px);
+}
+
+.lang-switch__knob--en {
+  transform: translateX(100%);
+}
+
+// Named rather than positional: the knob is a span too, so `nth-of-type` counted
+// it and the rule never matched.
+.lang-switch__knob--fr ~ .lang-switch__side--fr,
+.lang-switch__knob--en ~ .lang-switch__side--en {
+  color: #ffffff;
+}
+
+.lang-switch__button:hover .lang-switch__track {
+  border-color: $color-border-strong;
+}
+
+.lang-switch__button:focus-visible .lang-switch__track {
+  outline: 2px solid $color-accent;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lang-switch__knob {
+    transition: none;
+  }
+}
+
+@media (max-width: 560px) {
+  .lang-switch__track {
+    height: 2.1rem;
+    width: 4.6rem;
   }
 }

@@ -1,4 +1,4 @@
-<% content_for :title, "Paiement | #{current_store.name}" %>
+<% content_for :title, "#{t("checkout.payment_title")} | #{current_store.name}" %>
 <% first = @orders.first %>
 
 <% if @client_secret.present? %>
@@ -12,9 +12,9 @@
   <div class="page-container">
     <header class="checkout__header">
       <div>
-        <p class="checkout__eyebrow">Etape 3 sur 4</p>
-        <h1 class="checkout__title">Paiement</h1>
-        <p class="checkout__lead">Derniere etape &mdash; votre montre part ensuite en preparation.</p>
+        <p class="checkout__eyebrow"><%= t("checkout.step_of", step: 3, total: 4) %></p>
+        <h1 class="checkout__title"><%= t("checkout.payment_title") %></h1>
+        <p class="checkout__lead"><%= t("checkout.payment_lead") %></p>
       </div>
       <%= render "checkouts/progress", step: :payment %>
     </header>
@@ -24,8 +24,8 @@
         <section class="checkout__panel">
           <header class="checkout__panel-head">
             <span class="checkout__panel-mark"><%= icon "truck", size: 16 %></span>
-            <h2>Livraison</h2>
-            <%= link_to "Modifier", checkout_path, class: "checkout__panel-edit" %>
+            <h2><%= t("checkout.address_title") %></h2>
+            <%= link_to t("common.edit"), checkout_path, class: "checkout__panel-edit" %>
           </header>
 
           <%# Icon, label, value on three rows separated by hairlines: the flat
@@ -33,13 +33,13 @@
           <dl class="recap">
             <div class="recap__row">
               <span class="recap__icon"><%= icon "mail", size: 16 %></span>
-              <dt>Contact</dt>
+              <dt><%= t("checkout.contact") %></dt>
               <dd><%= first.email %></dd>
             </div>
 
             <div class="recap__row">
               <span class="recap__icon"><%= icon "package", size: 16 %></span>
-              <dt>Livrer a</dt>
+              <dt><%= t("checkout.deliver_to") %></dt>
               <dd>
                 <span class="recap__name"><%= first.customer_name %></span>
                 <%= first.address_line1 %><% if first.address_line2.present? %><br><%= first.address_line2 %><% end %><br>
@@ -50,10 +50,10 @@
 
             <div class="recap__row">
               <span class="recap__icon"><%= icon "truck", size: 16 %></span>
-              <dt>Livraison estimee</dt>
+              <dt><%= t("checkout.estimated_delivery") %></dt>
               <dd>
                 <span class="recap__date"><%= order_delivery_window(first) %></span>
-                <span class="recap__note">Livraison suivie, numero de suivi par courriel</span>
+                <span class="recap__note"><%= t("checkout.tracked_note") %></span>
               </dd>
             </div>
           </dl>
@@ -62,10 +62,10 @@
         <section class="checkout__panel checkout__panel--pay">
           <header class="checkout__panel-head">
             <span class="checkout__panel-mark"><%= icon "credit-card", size: 16 %></span>
-            <h2>Paiement</h2>
+            <h2><%= t("checkout.payment_title") %></h2>
             <span class="checkout__panel-secure">
               <%= icon "lock", size: 14 %>
-              <span>Chiffre</span>
+              <span><%= t("checkout.encrypted") %></span>
             </span>
           </header>
 
@@ -83,7 +83,7 @@
             </div>
 
             <% if @client_secret.present? %>
-              <p class="paypal-block__divider"><span>ou payer par carte</span></p>
+              <p class="paypal-block__divider"><span><%= t("checkout.or_pay_by_card") %></span></p>
             <% end %>
           <% end %>
 
@@ -101,7 +101,7 @@
               <div class="payment-form__element" data-stripe-payment-target="element">
                 <div class="payment-form__loading">
                   <span class="payment-form__spinner" aria-hidden="true"></span>
-                  <span>Chargement du paiement securise&hellip;</span>
+                  <span><%= t("checkout.loading_payment") %></span>
                 </div>
               </div>
 
@@ -119,7 +119,7 @@
             <div class="payment-notice payment-notice--error" role="alert">
               <strong><%= icon "close", size: 16 %> Le paiement n'a pas pu demarrer</strong>
               <p><%= @payment_error %></p>
-              <%= link_to "Revenir a la livraison", checkout_path, class: "button button--secondary" %>
+              <%= link_to t("checkout.back_to_address"), checkout_path, class: "button button--secondary" %>
             </div>
           <% else %>
             <div class="payment-notice">
@@ -143,8 +143,8 @@
           <% end %>
 
           <ul class="payment-form__trust" role="list">
-            <li><%= icon "lock", size: 15 %><span>Connexion chiffree, coordonnees jamais stockees</span></li>
-            <li><%= icon "refresh", size: 15 %><span>Rembourse sous 30 jours</span></li>
+            <li><%= icon "lock", size: 15 %><span><%= t("checkout.trust_encrypted") %></span></li>
+            <li><%= icon "refresh", size: 15 %><span><%= t("checkout.trust_refund") %></span></li>
           </ul>
         </section>
       </div>

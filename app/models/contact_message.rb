@@ -4,13 +4,13 @@ class ContactMessage
   include ActiveModel::Model
   include ActiveModel::Attributes
 
-  SUBJECTS = [
-    "Ma commande",
-    "Livraison et suivi",
-    "Retour ou echange",
-    "Question sur le produit",
-    "Autre"
-  ].freeze
+  # Keyed rather than listed literally, so the options follow the reader's
+  # language and the value that reaches the mailer stays comparable.
+  SUBJECT_KEYS = %w[order delivery returns product other].freeze
+
+  def self.subjects
+    SUBJECT_KEYS.map { |key| I18n.t("forms.subjects.#{key}") }
+  end
 
   attribute :name, :string
   attribute :email, :string
@@ -18,16 +18,16 @@ class ContactMessage
   attribute :body, :string
   attribute :order_reference, :string
 
-  validates :name, presence: { message: "Indiquez votre nom" }
-  validates :email, presence: { message: "Indiquez votre courriel" }
-  validates :body, presence: { message: "Ecrivez votre message" }
+  validates :name, presence: { message: ->(*) { I18n.t("forms.errors.name") } }
+  validates :email, presence: { message: ->(*) { I18n.t("forms.errors.email") } }
+  validates :body, presence: { message: ->(*) { I18n.t("forms.errors.message") } }
   validates :email,
-    format: { with: URI::MailTo::EMAIL_REGEXP, message: "Ce courriel n'est pas valide" },
+    format: { with: URI::MailTo::EMAIL_REGEXP, message: ->(*) { I18n.t("forms.errors.email_invalid") } },
     allow_blank: true
-  validates :body, length: { maximum: 4000, message: "Votre message est trop long" }
-  validates :subject, inclusion: { in: SUBJECTS, message: "Choisissez un sujet" }, allow_blank: true
+  validates :body, length: { maximum: 4000, message: ->(*) { I18n.t("forms.errors.message_long") } }
+  validates :subject, inclusion: { in: ->(*) { subjects }, message: ->(*) { I18n.t("forms.errors.subject") } }, allow_blank: true
 
   def subject_or_default
-    subject.presence || "Question generale"
+    subject.presence || I18n.t("forms.general_question")
   end
 end

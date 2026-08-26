@@ -15,15 +15,15 @@ class CheckoutForm
 
   FIELDS.each { |field| attribute field, :string }
 
-  validates :email, presence: { message: "Indiquez votre courriel" }
-  validates :first_name, presence: { message: "Indiquez votre prenom" }
-  validates :last_name, presence: { message: "Indiquez votre nom" }
-  validates :address_line1, presence: { message: "Indiquez votre adresse" }
-  validates :city, presence: { message: "Indiquez votre ville" }
-  validates :postal_code, presence: { message: "Indiquez votre code postal" }
-  validates :country, presence: { message: "Choisissez un pays" }
+  validates :email, presence: { message: ->(*) { I18n.t("forms.errors.email") } }
+  validates :first_name, presence: { message: ->(*) { I18n.t("forms.errors.first_name") } }
+  validates :last_name, presence: { message: ->(*) { I18n.t("forms.errors.last_name") } }
+  validates :address_line1, presence: { message: ->(*) { I18n.t("forms.errors.address") } }
+  validates :city, presence: { message: ->(*) { I18n.t("forms.errors.city") } }
+  validates :postal_code, presence: { message: ->(*) { I18n.t("forms.errors.postal_code") } }
+  validates :country, presence: { message: ->(*) { I18n.t("forms.errors.country") } }
   validates :email,
-    format: { with: URI::MailTo::EMAIL_REGEXP, message: "Ce courriel n'est pas valide" },
+    format: { with: URI::MailTo::EMAIL_REGEXP, message: ->(*) { I18n.t("forms.errors.email_invalid") } },
     allow_blank: true
 
   # Rebuilds the shipping details from an order already placed, so the payment

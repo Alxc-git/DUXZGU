@@ -10,7 +10,7 @@ module Support
     end
 
     def call
-      return fallback("Posez-moi votre question sur la commande, la livraison ou les retours.") if message.blank?
+      return fallback(I18n.t("support.fallback.empty")) if message.blank?
 
       reply = Groq::Client.new.chat(messages: messages(context))
       Result.new(reply: reply.presence || fallback_reply(context), provider: "groq")
@@ -40,7 +40,7 @@ module Support
 
     def system_prompt
       <<~PROMPT.squish
-        Tu es l'assistant support de LUXTIME. Reponds en francais canadien, sur un ton chaleureux et
+        Tu es l'assistant support de LUXTIME. Reponds #{language_instruction}, sur un ton chaleureux et
         naturel, en vouvoyant: trois phrases au maximum, sans liste a puces ni markdown. Un emoji au
         maximum par reponse, jamais dans une phrase qui annonce un probleme. Termine par une question
         utile quand il manque une information pour aider.
@@ -51,6 +51,11 @@ module Support
         Pour une modification d'adresse, explique qu'elle est possible seulement avant l'envoi a CJ et
         qu'un humain/admin doit confirmer; ne promets jamais que l'adresse est modifiee.
       PROMPT
+    end
+
+    # The customer reads the page in one language; the reply has to match it.
+    def language_instruction
+      I18n.locale.to_s.start_with?("en") ? "en anglais canadien" : "en francais canadien"
     end
 
     def verified_context(context)
@@ -116,11 +121,11 @@ module Support
     def fallback_reply(context)
       orders = context&.orders || []
       return order_reply(orders) if orders.any?
-      return "Pour retrouver votre commande, envoyez votre reference de commande et le courriel utilise lors de l'achat." if order_question?
-      return "Une modification d'adresse doit etre confirmee par l'equipe. Envoyez votre reference de commande et le courriel utilise lors de l'achat; c'est seulement possible avant l'envoi a CJ." if address_question?
-      return "La preparation prend 24 a 48h. La livraison suivie est estimee entre 7 et 14 jours ouvrables selon la region." if delivery_question?
+      return I18n.t("support.fallback.ask_order") if order_question?
+      return I18n.t("support.fallback.address") if address_question?
+      return I18n.t("support.fallback.delivery") if delivery_question?
 
-      "Je peux aider avec la livraison, les retours, les couleurs disponibles et le suivi de commande. Pour une commande precise, envoyez la reference et le courriel d'achat."
+      I18n.t("support.fallback.generic")
     end
 
     def fallback(reply)
@@ -130,11 +135,11 @@ module Support
     def order_reply(orders)
       order = orders.first
       parts = [
-        "Commande #{order[:reference]}: statut #{order[:status]}.",
-        "Produit: #{order[:product]}."
+        I18n.t("support.fallback.order_status", reference: order[:reference], status: order[:status]),
+        I18n.t("support.fallback.product", product: order[:product])
       ]
-      parts << "Livraison estimee: #{order[:estimated_delivery]}." if order[:estimated_delivery].present?
-      parts << "Suivi: #{order[:tracking_url].presence || order[:tracking_number]}." if order[:tracking_number].present?
+      parts << I18n.t("support.fallback.estimated", window: order[:estimated_delivery]) if order[:estimated_delivery].present?
+      parts << I18n.t("support.fallback.tracking", tracking: order[:tracking_url].presence || order[:tracking_number]) if order[:tracking_number].present?
       parts << "Changement d'adresse: #{order[:address_change_allowed] ? 'possible avant validation admin' : 'non disponible'} (#{order[:address_change_reason]})."
       parts.join(" ")
     end
