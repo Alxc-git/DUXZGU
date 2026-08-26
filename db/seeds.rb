@@ -51,33 +51,31 @@ product.supplier_sku = "CJYD118430701AZ" if product.supplier_sku.blank?
 product.supplier_cost_cents ||= 1260
 product.save!
 
-# Every colour carries two photos: a packshot from montres_images/optimized/ (white
-# background, all trimmed to one optical scale) for the pickers, and an editorial
-# shot from montres_images/lifestyle/ for the hero and gallery. The CJ `vid` still
-# has to be filled in from the admin before a colour can actually be fulfilled.
+# Every colour has its own media directory. Keeping the detail photos on the
+# variant prevents a blue bracelet or case back from appearing on a black watch.
 COLOURS = [
   {
-    name: "Or Noir", hex: "#c69747", file: "or-noir.webp",
+    name: "Or Noir", hex: "#c69747", slug: "or-noir",
     cj_vid: "1406875580481277952", cj_sku: "CJYD118430703CX"
   },
   {
-    name: "Or Bleu", hex: "#173a77", file: "or-bleu.webp",
+    name: "Or Bleu", hex: "#173a77", slug: "or-bleu",
     cj_vid: "1406875580464500736", cj_sku: "CJYD118430701AZ"
   },
   {
-    name: "Argent Noir", hex: "#b8bcc0", file: "argent-noir.webp",
+    name: "Argent Noir", hex: "#b8bcc0", slug: "argent-noir",
     cj_vid: "1406875580472889344", cj_sku: "CJYD118430702BY"
   },
   {
-    name: "Noir Integral", hex: "#111111", file: "noir-integral.webp",
+    name: "Noir Integral", hex: "#111111", slug: "noir-integral",
     cj_vid: "1406875580493860864", cj_sku: "CJYD118430704DW"
   },
   {
-    name: "Rose Gold Noir", hex: "#b76e79", file: "rose-gold-noir.webp",
+    name: "Rose Gold Noir", hex: "#b76e79", slug: "rose-gold-noir",
     cj_vid: "1406875580502249472", cj_sku: "CJYD118430705EV"
   },
   {
-    name: "Argent Bracelet Noir", hex: "#d7d9dc", file: "argent-bracelet-noir.webp",
+    name: "Argent Bracelet Noir", hex: "#d7d9dc", slug: "argent-bracelet-noir",
     cj_vid: "1406875580510638080", cj_sku: "CJYD118430706FU"
   }
 ].freeze
@@ -95,29 +93,28 @@ attach_photo = lambda do |attachment, folder, filename|
 
   attachment.purge if attachment.attached?
 
-  attachment.attach(io: File.open(path), filename: filename, content_type: "image/webp")
+  content_type = File.extname(filename).casecmp?(".png") ? "image/png" : "image/webp"
+  attachment.attach(io: File.open(path), filename:, content_type:)
 end
 
-attach_photo.call(product.craft_image, "lifestyle", "eclate.webp")
-attach_photo.call(product.collection_image, "lifestyle", "collection.webp")
+sync_photos = lambda do |attachments, folder|
+  paths = Dir[Rails.root.join("montres_images", folder, "*.webp")].sort
+  expected = paths.map { |path| File.basename(path) }
+  current = attachments.map { |attachment| attachment.filename.to_s }
+  next if current == expected
 
-PART_IMAGES = [
-  "ChatGPT Image 24 août 2026, 01_17_23 (2).png",
-  "ChatGPT Image 24 août 2026, 01_17_23 (3).png",
-  "ChatGPT Image 24 août 2026, 01_17_23 (4).png",
-  "ChatGPT Image 24 août 2026, 01_17_24 (9).png"
-].freeze
-
-current_part_filenames = product.part_images.map { |attachment| attachment.filename.to_s }
-product.part_images.purge if current_part_filenames.sort != PART_IMAGES.sort
-
-PART_IMAGES.each do |filename|
-  path = Rails.root.join("separer", filename)
-  next Rails.logger.warn("[seeds] missing part photo #{filename}") unless File.exist?(path)
-  next if product.part_images.any? { |attachment| attachment.filename.to_s == filename }
-
-  product.part_images.attach(io: File.open(path), filename:, content_type: "image/png")
+  attachments.purge
+  paths.each do |path|
+    attachments.attach(io: File.open(path), filename: File.basename(path), content_type: "image/webp")
+  end
 end
+
+attach_photo.call(product.craft_image, "catalogue/editorial", "fabrication.webp")
+attach_photo.call(product.collection_image, "catalogue/editorial", "collection.webp")
+
+# Detail photos used to live on the product and were therefore shared by every
+# colour. Purge that obsolete global rail after the per-variant galleries exist.
+product.part_images.purge if product.part_images.attached?
 
 COLOURS.each_with_index do |colour, index|
   variant = product.variants.find_or_initialize_by(name: colour[:name])
@@ -130,8 +127,10 @@ COLOURS.each_with_index do |colour, index|
   variant[:supplier_cost_cents] ||= 1310
   variant.save!
 
-  attach_photo.call(variant.image, "optimized", colour[:file])
-  attach_photo.call(variant.lifestyle_image, "lifestyle", colour[:file])
+  media_folder = "catalogue/#{colour[:slug]}"
+  attach_photo.call(variant.image, media_folder, "packshot.webp")
+  attach_photo.call(variant.lifestyle_image, media_folder, "lifestyle.webp")
+  sync_photos.call(variant.detail_images, "#{media_folder}/details")
 end
 
 # Retire colours that are no longer offered, but never one a customer has ordered.

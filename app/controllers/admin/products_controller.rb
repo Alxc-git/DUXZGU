@@ -59,9 +59,10 @@ module Admin
         :store_id, :name, :slug, :description, :price_cents, :compare_at_price_cents, :currency,
         :active, :supplier_product_id, :supplier_variant_id, :supplier_sku, :supplier_cost_cents,
         images: [],
-        variants_attributes: %i[
-          id name color color_hex position active price_cents compare_at_price_cents
-          supplier_cost_cents supplier_variant_id supplier_sku image _destroy
+        variants_attributes: [
+          :id, :name, :color, :color_hex, :position, :active, :price_cents, :compare_at_price_cents,
+          :supplier_cost_cents, :supplier_variant_id, :supplier_sku, :image, :lifestyle_image, :_destroy,
+          { detail_images: [] }
         ]
       )
     end

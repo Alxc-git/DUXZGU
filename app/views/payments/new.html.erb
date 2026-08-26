@@ -28,23 +28,33 @@
             <%= link_to "Modifier", checkout_path, class: "checkout__panel-edit" %>
           </header>
 
+          <%# Icon, label, value on three rows separated by hairlines: the flat
+              two-column list gave the eye nothing to land on. %>
           <dl class="recap">
             <div class="recap__row">
+              <span class="recap__icon"><%= icon "mail", size: 16 %></span>
               <dt>Contact</dt>
               <dd><%= first.email %></dd>
             </div>
+
             <div class="recap__row">
+              <span class="recap__icon"><%= icon "package", size: 16 %></span>
               <dt>Livrer a</dt>
               <dd>
-                <%= first.customer_name %><br>
+                <span class="recap__name"><%= first.customer_name %></span>
                 <%= first.address_line1 %><% if first.address_line2.present? %><br><%= first.address_line2 %><% end %><br>
                 <%= [ first.city, first.province, first.postal_code ].compact_blank.join(", ") %><br>
                 <%= country_name(first.country) %>
               </dd>
             </div>
+
             <div class="recap__row">
-              <dt>Mode</dt>
-              <dd>Livraison suivie &mdash; <%= order_delivery_window(first) %></dd>
+              <span class="recap__icon"><%= icon "truck", size: 16 %></span>
+              <dt>Livraison estimee</dt>
+              <dd>
+                <span class="recap__date"><%= order_delivery_window(first) %></span>
+                <span class="recap__note">Livraison suivie, numero de suivi par courriel</span>
+              </dd>
             </div>
           </dl>
         </section>

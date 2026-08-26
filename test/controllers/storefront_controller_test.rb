@@ -33,6 +33,22 @@ class StorefrontControllerTest < ActionDispatch::IntegrationTest
     assert_select ".buy-box__price", text: variants(:black).formatted_price
   end
 
+  test "the product gallery uses detail photos from the selected colour" do
+    variants(:blue).detail_images.attach(
+      io: StringIO.new("blue angle"), filename: "01-angle.webp", content_type: "image/webp"
+    )
+    products(:demo_product).part_images.attach(
+      io: StringIO.new("black strap"), filename: "01-bracelet-noir.png", content_type: "image/png"
+    )
+
+    get storefront_product_path(products(:demo_product).slug, couleur: variants(:blue).id)
+
+    assert_response :success
+    assert_select ".gallery__thumb", 2
+    assert_select ".gallery__thumb[data-gallery-alt*=?]", "angle", 1
+    assert_select ".gallery__thumb[data-gallery-alt*=?]", "bracelet noir", 0
+  end
+
   test "the product page preselects the colour given in the URL" do
     get storefront_product_path(products(:demo_product).slug, couleur: variants(:blue).id)
 

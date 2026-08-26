@@ -29,12 +29,19 @@ module StorefrontHelper
   end
 
   # The editorial shot, for the hero and the gallery stage.
-  def variant_hero_image_tag(variant, alt:, **options)
-    attached_image_tag(variant&.hero_image, alt:, **options)
+  def variant_hero_image_tag(variant, alt:, thumb: nil, **options)
+    attached_image_tag(resized(variant&.hero_image, thumb), alt:, **options)
   end
 
-  def product_part_image_tag(image, alt:, **options)
-    attached_image_tag(image, alt:, **options)
+  def product_part_image_tag(image, alt:, thumb: nil, **options)
+    attached_image_tag(resized(image, thumb), alt:, **options)
+  end
+
+  def variant_detail_label(image)
+    File.basename(image.filename.to_s, ".*")
+        .sub(/\A\d+-/, "")
+        .tr("-", " ")
+        .capitalize
   end
 
   # Month names live here rather than in a locale file: the app runs on the default
@@ -74,7 +81,13 @@ module StorefrontHelper
       price: variant.formatted_price,
       compare_at: variant.formatted_compare_at_price,
       image: variant_image_url(variant),
-      hero: variant_image_url(variant)
+      hero: variant_image_url(variant),
+      details: variant.detail_images.first(4).map { |image|
+        {
+          src: attached_url(image),
+          alt: "#{variant.name} - #{variant_detail_label(image).downcase}"
+        }
+      }.to_json
     }.compact
   end
 

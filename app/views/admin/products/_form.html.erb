@@ -34,7 +34,15 @@
         <div class="form__field"><%= variant_form.label :price_cents, "Price (cents)" %><%= variant_form.number_field :price_cents, class: "form__input" %></div>
         <div class="form__field"><%= variant_form.label :supplier_cost_cents, "Cost (cents)" %><%= variant_form.number_field :supplier_cost_cents, class: "form__input" %></div>
         <div class="form__field"><%= variant_form.label :position, "Position" %><%= variant_form.number_field :position, class: "form__input" %></div>
-        <div class="form__field"><%= variant_form.label :image, "Photo" %><%= variant_form.file_field :image, class: "form__input" %></div>
+        <div class="form__field"><%= variant_form.label :image, "Packshot principal" %><%= variant_form.file_field :image, class: "form__input", accept: "image/*" %></div>
+        <div class="form__field"><%= variant_form.label :lifestyle_image, "Photo lifestyle" %><%= variant_form.file_field :lifestyle_image, class: "form__input", accept: "image/*" %></div>
+        <div class="form__field">
+          <%= variant_form.label :detail_images, "Photos de detail" %>
+          <%= variant_form.file_field :detail_images, multiple: true, class: "form__input", accept: "image/*" %>
+          <% if variant_form.object.detail_images.attached? %>
+            <small><%= variant_form.object.detail_images.map { |image| image.filename.to_s }.join(", ") %></small>
+          <% end %>
+        </div>
         <div class="variant-row__flags">
           <label><%= variant_form.check_box :active %> Active</label>
           <% if variant_form.object.persisted? %>

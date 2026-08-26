@@ -1,13 +1,13 @@
 <%# One rail for every photo of the watch: the selected colour first, then the
     detail shots. The stage, the thumbnails and the dots are three views of the
     same index, so they can never drift apart. %>
-<% detail_labels = [
-  { label: "Bracelet", icon: "strap" },
-  { label: "Boucle", icon: "lock" },
-  { label: "Fond", icon: "shield" },
-  { label: "Couronne", icon: "gauge" }
-] %>
-<% parts = product.part_images.attached? ? product.part_images.first(4) : [] %>
+<% parts = if variant&.detail_images&.attached?
+             variant.detail_images.first(4)
+           elsif product.part_images.attached?
+             product.part_images.first(4)
+           else
+             []
+           end %>
 <% packshot_url = variant_image_url(variant) %>
 
 <div class="gallery"
@@ -27,14 +27,14 @@
                 data-gallery-fit="contain"
                 aria-label="Voir la montre entiere">
           <span class="gallery__thumb-media">
-            <%= variant_image_tag variant, alt: "#{product.name} - #{variant&.name}",
+            <%= variant_image_tag variant, alt: "#{product.name} - #{variant&.name}", thumb: 130,
                   data: { variant_target: "image" }, loading: "lazy", decoding: "async" %>
           </span>
         </button>
       </li>
 
       <% parts.each_with_index do |image, index| %>
-        <% detail = detail_labels[index] || { label: "Detail", icon: "zoom" } %>
+        <% detail_label = variant_detail_label(image) %>
         <li>
           <button type="button"
                   class="gallery__thumb"
@@ -42,11 +42,11 @@
                   data-action="gallery#show"
                   data-gallery-index-param="<%= index + 1 %>"
                   data-gallery-src="<%= url_for(image) %>"
-                  data-gallery-alt="<%= product.name %> - <%= detail[:label].downcase %>"
+                  data-gallery-alt="<%= product.name %> - <%= detail_label.downcase %>"
                   data-gallery-fit="contain"
-                  aria-label="Voir le detail : <%= detail[:label].downcase %>">
+                  aria-label="Voir le detail : <%= detail_label.downcase %>">
             <span class="gallery__thumb-media">
-              <%= product_part_image_tag image, alt: "#{product.name} - #{detail[:label]}",
+              <%= product_part_image_tag image, alt: "#{product.name} - #{detail_label}", thumb: 130,
                     loading: "lazy", decoding: "async" %>
             </span>
           </button>
@@ -56,7 +56,7 @@
   </div>
 
   <figure class="gallery__stage">
-    <%= variant_image_tag variant, alt: product.name, class: "gallery__image",
+    <%= variant_image_tag variant, alt: product.name, class: "gallery__image", thumb: 620,
           data: { variant_target: "heroImage", gallery_target: "stage" },
           fetchpriority: "high", decoding: "async" %>
 

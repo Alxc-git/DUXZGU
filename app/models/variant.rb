@@ -6,6 +6,7 @@ class Variant < ApplicationRecord
   # product is presented rather than chosen.
   has_one_attached :image
   has_one_attached :lifestyle_image
+  has_many_attached :detail_images
 
   before_validation :set_position, if: -> { position.blank? || position.zero? }
 

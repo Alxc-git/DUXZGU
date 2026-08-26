@@ -21,7 +21,7 @@ export default class extends Controller {
   }
 
   apply(radio) {
-    const { variantId, name, price, compareAt, image, hero } = radio.dataset
+    const { variantId, name, price, compareAt, image, hero, details } = radio.dataset
 
     this.nameTargets.forEach((target) => { if (name) target.textContent = name })
     this.priceTargets.forEach((target) => { if (price) target.textContent = price })
@@ -47,8 +47,18 @@ export default class extends Controller {
     this.dispatch("change", {
       target: window,
       prefix: "variant",
-      detail: { variantId, name, hero, image }
+      detail: { variantId, name, hero, image, details: this.parseDetails(details) }
     })
+  }
+
+  parseDetails(value) {
+    if (!value) return []
+
+    try {
+      return JSON.parse(value)
+    } catch (_error) {
+      return []
+    }
   }
 
   markActive(elements, variantId) {

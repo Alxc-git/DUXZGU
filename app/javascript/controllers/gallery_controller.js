@@ -55,9 +55,36 @@ export default class extends Controller {
     const first = this.thumbTargets[0]
     if (!first) return
 
-    const { hero, name } = event.detail || {}
+    const { hero, name, details = [] } = event.detail || {}
     if (hero) first.dataset.gallerySrc = hero
     if (name) first.dataset.galleryAlt = name
+
+    const firstImage = first.querySelector("img")
+    if (firstImage) {
+      if (hero) firstImage.src = hero
+      if (name) firstImage.alt = name
+    }
+
+    this.thumbTargets.slice(1).forEach((thumb, index) => {
+      const detail = details[index]
+      const item = thumb.closest("li")
+
+      if (item) item.hidden = !detail
+      if (!detail) return
+
+      thumb.dataset.gallerySrc = detail.src
+      thumb.dataset.galleryAlt = detail.alt || name || ""
+
+      const image = thumb.querySelector("img")
+      if (image) {
+        image.src = detail.src
+        image.alt = detail.alt || ""
+      }
+    })
+
+    this.dotTargets.slice(1).forEach((dot, index) => {
+      dot.hidden = !details[index]
+    })
 
     this.select(0)
   }

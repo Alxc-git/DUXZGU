@@ -37,7 +37,9 @@
   <section class="craft">
     <div class="page-container craft__grid">
       <div class="craft__media">
-        <%= image_tag section_image, alt: section_alt,
+        <%# Capped at 540px tall by the stylesheet, so it is served at that size
+            rather than as the full exploded-view original. %>
+        <%= product_part_image_tag section_image, alt: section_alt, thumb: 560,
               class: "craft__image", loading: "lazy", decoding: "async" %>
       </div>
 
