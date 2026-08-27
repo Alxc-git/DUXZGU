@@ -1,5 +1,90 @@
+@use "../abstracts/variables" as *;
+
 .order-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 0.6rem;
+}
+
+// ------------------------------------------------- commande manuelle chez CJ
+//
+// Folded away by default: the table is for scanning, and the address only
+// matters for the one order being retyped into CJ's form. `<details>` keeps it
+// working with no JavaScript, which the admin does not load.
+
+.manual-order td {
+  background: $color-surface;
+  padding-top: 0;
+}
+
+.manual-order summary {
+  color: $color-muted;
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 0.5rem 0;
+
+  &:hover {
+    color: $color-ink-deep;
+  }
+}
+
+.manual-order__grid {
+  display: grid;
+  gap: $spacing-md;
+  padding: 0.5rem 0 0.25rem;
+
+  @media (min-width: 900px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.manual-order__block h3 {
+  color: $color-muted;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  margin: 0 0 0.5rem;
+  text-transform: uppercase;
+}
+
+// Selectable as one block, so the whole address copies in a single drag.
+.manual-order__address {
+  background: #ffffff;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  line-height: 1.5;
+  margin: 0 0 0.6rem;
+  padding: 0.7rem 0.85rem;
+  user-select: all;
+}
+
+.manual-order__list {
+  display: grid;
+  gap: 0.3rem 0.9rem;
+  grid-template-columns: auto minmax(0, 1fr);
+  margin: 0;
+
+  dt {
+    color: $color-muted;
+    font-size: 0.85rem;
+  }
+
+  dd {
+    margin: 0;
+    font-size: 0.9rem;
+    overflow-wrap: anywhere;
+  }
+
+  code {
+    background: #ffffff;
+    border: 1px solid $color-border-subtle;
+    border-radius: 4px;
+    padding: 0.05rem 0.3rem;
+    user-select: all;
+  }
+}
+
+.manual-order__note {
+  color: $color-muted;
+  font-size: 0.82rem;
+  margin: 0.6rem 0 0.25rem;
 }

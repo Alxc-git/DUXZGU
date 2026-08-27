@@ -41,6 +41,29 @@ class Admin::FulfillmentControllerTest < ActionDispatch::IntegrationTest
     assert_match MoneyFormatter.format(5400, @order.currency), response.body
   end
 
+  # When the button cannot get an order through, the fallback is retyping it into
+  # CJ's own form. Everything that takes -- address, phone, and above all the CJ
+  # variant id that picks the right colour -- has to be on this page, or the
+  # parcel goes out wrong.
+  test "a blocked order carries everything needed to order it by hand" do
+    @order.update!(
+      first_name: "Marc", last_name: "Tremblay", phone: "+15145550142",
+      address_line1: "1250 rue Sainte-Catherine O", address_line2: "App 302",
+      city: "Montreal", province: "QC", postal_code: "H3G 1P5", country: "CA"
+    )
+
+    get admin_fulfillment_path
+
+    assert_response :success
+    assert_match "Marc Tremblay", response.body
+    assert_match "1250 rue Sainte-Catherine O", response.body
+    assert_match "App 302", response.body
+    assert_match "H3G 1P5", response.body
+    assert_match "+15145550142", response.body
+    assert_match @order.supplier_variant_id, response.body
+    assert_match "ORD-#{@order.id}", response.body
+  end
+
   test "an order already accepted by CJ is not counted as blocked" do
     @order.update!(supplier_order_id: "CJ-123", status: :submitted_to_supplier)
 

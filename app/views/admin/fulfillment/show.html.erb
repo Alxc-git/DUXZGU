@@ -88,6 +88,55 @@
             </td>
             <td><%= order.paid_at ? "#{time_ago_in_words(order.paid_at)}" : "&mdash;".html_safe %></td>
           </tr>
+          <%# Everything needed to place this order by hand on CJ, in one place:
+              when the button cannot get it through, the alternative is retyping
+              it into CJ's form, and hunting for the address across three screens
+              is how a parcel ends up at the wrong door. %>
+          <tr class="manual-order">
+            <td colspan="8">
+              <details>
+                <summary>Details pour commander a la main chez CJ</summary>
+
+                <div class="manual-order__grid">
+                  <section class="manual-order__block">
+                    <h3>Destinataire</h3>
+                    <p class="manual-order__address"><%=
+                      safe_join([
+                        order.customer_name.presence,
+                        order.address_line1.presence,
+                        order.address_line2.presence,
+                        [ order.city.presence, order.province.presence, order.postal_code.presence ].compact_blank.join(", ").presence,
+                        [ Suppliers::Cj::Countries.name_for(order.country.to_s.upcase), order.country.to_s.upcase ].compact_blank.join(" - ").presence
+                      ].compact, tag.br)
+                    %></p>
+
+                    <dl class="manual-order__list">
+                      <dt>Telephone</dt><dd><%= order.phone.presence || "non fourni" %></dd>
+                      <dt>Courriel</dt><dd><%= order.email %></dd>
+                    </dl>
+                  </section>
+
+                  <section class="manual-order__block">
+                    <h3>A commander chez CJ</h3>
+                    <dl class="manual-order__list">
+                      <dt>Numero a utiliser</dt><dd><code>ORD-<%= order.id %></code></dd>
+                      <dt>Article</dt><dd><%= order.line_item_name %></dd>
+                      <dt>Variant CJ (vid)</dt><dd><code><%= order.supplier_variant_id.presence || "MANQUANT" %></code></dd>
+                      <dt>SKU</dt><dd><code><%= order.variant&.supplier_sku.presence || order.product.supplier_sku.presence || "&mdash;".html_safe %></code></dd>
+                      <dt>Quantite</dt><dd><%= order.quantity %></dd>
+                      <dt>Transporteur promis</dt><dd><%= order.shipping_carrier.presence || "au choix de CJ" %></dd>
+                    </dl>
+                  </section>
+                </div>
+
+                <p class="manual-order__note">
+                  Reprenez bien <code>ORD-<%= order.id %></code> comme numero de commande :
+                  c'est celui que le site enverra aussi s'il retente, et CJ refuse un doublon,
+                  ce qui evite de payer deux fois le meme colis.
+                </p>
+              </details>
+            </td>
+          </tr>
         <% end %>
       </tbody>
     </table>
