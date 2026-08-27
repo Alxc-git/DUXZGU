@@ -86,6 +86,28 @@ class Store < ApplicationRecord
     [ minutes, 240 ].min
   end
 
+
+  # The CJ prepaid balance, as last recorded by hand.
+  #
+  # CJ exposes no balance endpoint, so this is what the shop typed in after its
+  # last top-up. It is deliberately a recorded figure and not a live one: the
+  # dashboard subtracts what has been spent since, and says when it was entered,
+  # rather than pretending to know the real balance.
+  def cj_balance_cents
+    supplier_settings["cj_balance_cents"].to_i
+  end
+
+  def cj_balance_recorded_at
+    value = supplier_settings["cj_balance_recorded_at"]
+    Time.zone.parse(value.to_s) if value.present?
+  end
+
+  def record_cj_balance!(cents)
+    update!(supplier_settings: supplier_settings.merge(
+      "cj_balance_cents" => cents.to_i,
+      "cj_balance_recorded_at" => Time.current.iso8601
+    ))
+  end
   private
 
   def normalize_domain

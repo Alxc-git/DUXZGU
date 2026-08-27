@@ -127,8 +127,8 @@ end
 # on serving the photo the rebuild was meant to replace.
 sync_photos = lambda do |attachments, folder|
   paths = Dir[Rails.root.join("montres_images", folder, "*.webp")].sort
-  expected = paths.map { |path| [File.basename(path), Digest::MD5.file(path).base64digest] }
-  current = attachments.map { |attachment| [attachment.filename.to_s, attachment.blob.checksum] }
+  expected = paths.map { |path| [ File.basename(path), Digest::MD5.file(path).base64digest ] }
+  current = attachments.map { |attachment| [ attachment.filename.to_s, attachment.blob.checksum ] }
   next if current == expected && attachments.all? { |attachment| stored.call(attachment.blob) }
 
   attachments.purge

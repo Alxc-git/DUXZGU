@@ -49,7 +49,10 @@ Rails.application.routes.draw do
     # is watching the orders list. This panel is where that shows up.
     resource :fulfillment, only: :show, controller: "fulfillment" do
       post :retry_all
+      patch :cj_balance
     end
+
+    resources :ad_spends, only: %i[index create destroy], path: "publicite"
 
     resources :orders, only: %i[index show] do
       member do

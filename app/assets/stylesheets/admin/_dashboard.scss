@@ -154,6 +154,17 @@
   }
 }
 
+// A row of three, which is what the supplier panel carries. Without this it
+// borrows the six-column track above and the three cards huddle in the left half
+// of the page with dead white beside them.
+// Two classes on purpose: it has to beat the six-column rule above whatever the
+// order the stylesheets end up concatenated in.
+.kpi-row.kpi-row--trio {
+  @media (min-width: 720px) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
 .kpi {
   background: #ffffff;
   border: 1px solid $color-border;
@@ -451,4 +462,287 @@
   color: $color-accent;
   font-size: 0.84rem;
   font-weight: 500;
+}
+
+// ================================================================ today strip
+//
+// Sits above the period KPIs and deliberately does not follow their styling: it
+// answers a different question. The period tells you how the shop is doing; this
+// tells you how the day is going, which is what someone opening the admin at
+// noon actually came to find out.
+
+.today {
+  background: #ffffff;
+  border: 1px solid $color-border;
+  border-radius: $radius-lg;
+  display: grid;
+  gap: $spacing-md;
+  margin-bottom: $spacing-md;
+  padding: clamp(1rem, 2.5vw, 1.5rem);
+
+  // A hairline of accent down the left edge is enough to set the day apart from
+  // the period cards below without breaking the white the whole admin is built
+  // on -- a black slab did, and read as a foreign object on the page.
+  border-left: 3px solid $color-ink;
+
+  @media (min-width: 900px) {
+    align-items: center;
+    grid-template-columns: minmax(0, auto) minmax(0, 1fr);
+    gap: clamp(1.5rem, 4vw, 3rem);
+  }
+}
+
+.today__head {
+  align-items: center;
+  display: flex;
+  gap: 0.7rem;
+
+  h2 {
+    font-family: $font-family-display;
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin: 0;
+  }
+
+  p {
+    color: $color-muted;
+    font-size: 0.78rem;
+    margin: 0.1rem 0 0;
+  }
+}
+
+// A quiet heartbeat: the figures are live, and a static panel does not say so.
+.today__pulse {
+  background: $color-success;
+  border-radius: $radius-pill;
+  box-shadow: 0 0 0 4px rgba(34, 168, 90, 0.22);
+  flex: none;
+  height: 9px;
+  width: 9px;
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: today-pulse 2.4s ease-in-out infinite;
+  }
+}
+
+@keyframes today-pulse {
+  0%, 100% { box-shadow: 0 0 0 4px rgba(34, 168, 90, 0.22); }
+  50% { box-shadow: 0 0 0 8px rgba(34, 168, 90, 0.06); }
+}
+
+.today__figures {
+  display: grid;
+  gap: 0.9rem clamp(1rem, 3vw, 2rem);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 0;
+
+  @media (min-width: 700px) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.today__figure {
+  border-left: 1px solid $color-border-subtle;
+  padding-left: clamp(0.7rem, 2vw, 1.1rem);
+
+  dt {
+    color: $color-muted;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  dd {
+    font-size: clamp(1.15rem, 2.4vw, 1.5rem);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin: 0.15rem 0 0.25rem;
+  }
+}
+
+.today__delta {
+  align-items: center;
+  display: inline-flex;
+  font-size: 0.76rem;
+  font-weight: 600;
+  gap: 0.2rem;
+
+  &--up { color: $color-success; }
+  &--down { color: $color-danger; }
+  &--none { color: $color-muted; font-weight: 400; }
+}
+
+// ===================================================================== funnel
+
+.funnel {
+  display: grid;
+  gap: 0.9rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.funnel__line {
+  align-items: baseline;
+  display: flex;
+  gap: 0.6rem;
+  margin-bottom: 0.3rem;
+}
+
+.funnel__label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-right: auto;
+}
+
+.funnel__count {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.funnel__share {
+  color: $color-muted;
+  font-size: 0.8rem;
+  min-width: 3.4rem;
+  text-align: right;
+}
+
+.funnel__track {
+  background: $color-surface-strong;
+  border-radius: $radius-pill;
+  height: 8px;
+  overflow: hidden;
+}
+
+// Each step is darker than the last, so the narrowing reads even in one glance
+// at the bar lengths alone.
+.funnel__bar {
+  background: $color-ink-deep;
+  border-radius: $radius-pill;
+  height: 100%;
+  transition: width 0.4s ease;
+}
+
+.funnel__drop {
+  color: $color-warning;
+  font-size: 0.76rem;
+  margin: 0.3rem 0 0;
+}
+
+.admin-table .is-positive {
+  color: $color-success;
+  font-weight: 600;
+}
+
+// ================================================================ ad spending
+
+.spend-form {
+  display: grid;
+  gap: $spacing-sm;
+
+  .button {
+    justify-self: start;
+  }
+}
+
+.spend-total {
+  font-size: clamp(1.8rem, 4vw, 2.4rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin: 0.2rem 0 0.3rem;
+}
+
+.spend-total__hint {
+  color: $color-muted;
+  font-size: 0.85rem;
+  margin: 0 0 $spacing-sm;
+}
+
+// A campaign losing money has to be readable as such at a glance, not worked out
+// from a minus sign buried in a column of figures.
+.admin-table .is-negative {
+  color: $color-danger;
+  font-weight: 600;
+}
+
+// ============================================================== CJ credit gauge
+//
+// Colour carries the urgency, but never alone: each state also changes the
+// wording, so the panel still reads correctly to someone who cannot tell the
+// border colours apart.
+
+.credit {
+  background: #ffffff;
+  border: 1px solid $color-border;
+  border-left: 3px solid $color-border-strong;
+  border-radius: $radius-lg;
+  display: grid;
+  gap: $spacing-md;
+  margin-bottom: $spacing-sm;
+  padding: $spacing-md;
+
+  @media (min-width: 900px) {
+    align-items: start;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr) minmax(240px, 0.9fr);
+    gap: clamp(1.5rem, 4vw, 2.5rem);
+  }
+}
+
+.credit--critical { border-left-color: $color-danger; }
+.credit--low { border-left-color: $color-warning; }
+.credit--ok { border-left-color: $color-success; }
+
+.credit__label {
+  color: $color-muted;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.credit__value {
+  font-size: clamp(1.6rem, 3.5vw, 2.1rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin: 0.15rem 0 0.25rem;
+}
+
+.credit__note {
+  color: $color-muted;
+  font-size: 0.8rem;
+  margin: 0;
+}
+
+.credit__headline {
+  align-items: center;
+  display: flex;
+  font-size: 1rem;
+  font-weight: 600;
+  gap: 0.4rem;
+  margin: 0 0 0.3rem;
+
+  svg { flex: none; }
+}
+
+.credit--critical .credit__headline { color: $color-danger; }
+.credit--low .credit__headline { color: $color-warning; }
+
+.credit__body {
+  color: $color-muted;
+  font-size: 0.87rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.credit__field-label {
+  color: $color-muted;
+  display: block;
+  font-size: 0.8rem;
+  margin-bottom: 0.35rem;
+}
+
+.credit__field {
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: minmax(0, 1fr) auto;
 }

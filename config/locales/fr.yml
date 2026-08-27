@@ -1,7 +1,26 @@
 fr:
+  # Without these, Rails falls back to English conventions: 1,103 instead of
+  # 1 103, and "aout 27, 2026" instead of "27 aout 2026". They apply everywhere
+  # the admin and the storefront format a number or a date.
+  number:
+    format:
+      delimiter: " "
+      separator: ","
+      precision: 2
   date:
-    abbr_month_names: [~, "janv.", "fevr.", "mars", "avril", "mai", "juin", "juil.", "aout", "sept.", "oct.", "nov.", "dec."]
-    month_names: [~, "janvier", "fevrier", "mars", "avril", "mai", "juin", "juillet", "aout", "septembre", "octobre", "novembre", "decembre"]
+    formats:
+      default: "%d/%m/%Y"
+      short: "%-d %b"
+      long: "%-d %B %Y"
+    month_names: [~, janvier, fevrier, mars, avril, mai, juin, juillet, aout, septembre, octobre, novembre, decembre]
+    abbr_month_names: [~, janv., fevr., mars, avril, mai, juin, juil., aout, sept., oct., nov., dec.]
+    day_names: [dimanche, lundi, mardi, mercredi, jeudi, vendredi, samedi]
+    abbr_day_names: [dim, lun, mar, mer, jeu, ven, sam]
+  time:
+    formats:
+      default: "%-d %B %Y %H:%M"
+      short: "%-d %b %H:%M"
+      long: "%-d %B %Y a %H:%M"
 
   language:
     switch: "English"
@@ -99,6 +118,7 @@ fr:
     reviews_title: "Ce qu'en disent nos clients"
     faq_eyebrow: "Besoin d'etre rassure ?"
     faq_title: "Questions frequentes"
+    faq_lead: "Les points importants avant de commander : livraison, etancheite, retours et garantie. Tout est clair avant le paiement."
     payment_protected: "Paiement protege"
     payment_protected_body: "Checkout securise, confirmation instantanee et suivi de commande."
     question_before: "Une question avant de commander ?"
@@ -251,7 +271,8 @@ fr:
   confirmation:
     title: "Merci, votre paiement est confirme"
     pending_title: "Commande enregistree"
-    lead: "Vous recevrez un courriel de confirmation. Votre montre est preparee sous 24 a 48h."
+    lead: "Vous allez recevoir un courriel de confirmation. Votre montre est preparee sous 24 a 48h, puis vous recevrez votre numero de suivi des l'expedition."
+    lead_with_email_html: "Une confirmation part vers <strong>%{email}</strong>. Votre montre est preparee sous 24 a 48h, puis vous recevrez votre numero de suivi."
     reference: "Reference"
     date: "Date"
     total_due: "Total a payer"
@@ -276,7 +297,6 @@ fr:
     subject: "Sujet"
     choose_subject: "Choisissez un sujet"
     order_number: "Numero de commande"
-    order_number_hint: "Il figure sur votre courriel de confirmation."
     message: "Message"
     message_placeholder: "Decrivez votre demande en quelques lignes."
     send: "Envoyer le message"

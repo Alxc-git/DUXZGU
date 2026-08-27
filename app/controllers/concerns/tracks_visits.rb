@@ -9,6 +9,7 @@ module TracksVisits
   TABLET_PATTERN = /ipad|tablet|playbook|silk|android(?!.*mobile)/i
   MOBILE_PATTERN = /mobile|iphone|ipod|android|blackberry|windows phone/i
   SESSION_KEY = "visitor_token".freeze
+  ATTRIBUTION_KEY = "attribution".freeze
 
   included do
     after_action :track_visit
@@ -18,6 +19,8 @@ module TracksVisits
 
   def track_visit
     return unless trackable?
+
+    remember_attribution
 
     Visit.create!(
       store: Current.store,
@@ -33,6 +36,22 @@ module TracksVisits
   rescue StandardError => e
     # Analytics must never take the storefront down with them.
     Rails.logger.warn("[Visits] not recorded: #{e.class} #{e.message}")
+  end
+
+  # First touch wins, and it is kept for the whole session: the ad that earned the
+  # visit is what deserves the sale, not the direct return an hour later. Only
+  # written when there is something to record, so a later organic page cannot
+  # erase the campaign that actually brought the customer in.
+  def remember_attribution
+    return if session[ATTRIBUTION_KEY].present?
+
+    recorded = {
+      "source" => utm(:utm_source).presence || external_referrer_host,
+      "medium" => utm(:utm_medium),
+      "campaign" => utm(:utm_campaign)
+    }.compact_blank
+
+    session[ATTRIBUTION_KEY] = recorded if recorded.present?
   end
 
   def trackable?
@@ -62,8 +81,11 @@ module TracksVisits
     nil
   end
 
+  # Lower-cased on the way in, so "Facebook" in one ad URL and "facebook" in the
+  # next are one campaign, and so the spend typed in the admin -- normalised the
+  # same way -- lines up with the traffic it paid for.
   def utm(key)
-    params[key].presence&.to_s&.first(120)
+    params[key].presence&.to_s&.downcase&.first(120)
   end
 
   def device_kind

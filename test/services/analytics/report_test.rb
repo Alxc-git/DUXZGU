@@ -104,6 +104,179 @@ class Analytics::ReportTest < ActiveSupport::TestCase
 
   private
 
+  # ------------------------------------------------------------------ margin
+
+  test "profit takes the supplier cost out of revenue, per unit ordered" do
+    paid_order(total_cents: 12_000, quantity: 2)
+
+    report = Analytics::Report.new(store: @store, days: 7)
+
+    # The product costs 1800 a unit and two were ordered.
+    assert_equal 12_000, report.revenue_cents
+    assert_equal 3_600, report.cost_cents
+    assert_equal 8_400, report.profit_cents
+    assert_in_delta 70.0, report.margin_rate, 0.1
+  end
+
+  test "a variant with its own cost overrides the product's" do
+    variants(:blue).update!(supplier_cost_cents: 900)
+    paid_order(total_cents: 5_400, quantity: 1, variant: variants(:blue))
+
+    assert_equal 900, Analytics::Report.new(store: @store, days: 7).cost_cents
+  end
+
+  test "an unpaid order costs nothing and earns nothing" do
+    order = paid_order(total_cents: 9_000, quantity: 1)
+    order.update!(paid_at: nil, status: :pending)
+
+    report = Analytics::Report.new(store: @store, days: 7)
+
+    assert_equal 0, report.revenue_cents
+    assert_equal 0, report.cost_cents
+  end
+
+  # ------------------------------------------------------------------ funnel
+
+  test "the funnel counts sessions per step, not page views" do
+    # One visitor who reloads the cart has still only reached the cart once.
+    Visit.create!(store: @store, visitor_token: "t1", path: "/", landing: true, device: "desktop")
+    Visit.create!(store: @store, visitor_token: "t1", path: "/panier", landing: false, device: "desktop")
+    Visit.create!(store: @store, visitor_token: "t1", path: "/panier", landing: false, device: "desktop")
+    Visit.create!(store: @store, visitor_token: "t2", path: "/", landing: true, device: "desktop")
+
+    steps = Analytics::Report.new(store: @store, days: 7).funnel.index_by { |step| step[:label] }
+
+    assert_equal 2, steps["Visites"][:count]
+    assert_equal 1, steps["Panier"][:count]
+    assert_in_delta 50.0, steps["Panier"][:share], 0.1
+  end
+
+  test "the funnel names the drop against the step before it" do
+    4.times { |n| Visit.create!(store: @store, visitor_token: "v#{n}", path: "/", landing: true, device: "desktop") }
+    Visit.create!(store: @store, visitor_token: "v0", path: "/panier", landing: false, device: "desktop")
+
+    steps = Analytics::Report.new(store: @store, days: 7).funnel.index_by { |step| step[:label] }
+
+    assert_nil steps["Visites"][:drop], "the first step has nothing to fall from"
+    assert_in_delta 100.0, steps["Fiche produit"][:drop], 0.1
+    assert_nil steps["Panier"][:drop], "no share can be computed from a step nobody reached"
+  end
+
+  # --------------------------------------------------------------- campaigns
+
+  test "a campaign shows its traffic beside the money it actually brought in" do
+    Visit.create!(store: @store, visitor_token: "c1", path: "/", landing: true, device: "desktop",
+                  utm_source: "facebook", utm_medium: "cpc", utm_campaign: "hiver")
+    Visit.create!(store: @store, visitor_token: "c2", path: "/", landing: true, device: "desktop",
+                  utm_source: "facebook", utm_medium: "cpc", utm_campaign: "hiver")
+    order = paid_order(total_cents: 10_000, quantity: 1)
+    order.update!(metadata: order.metadata.merge(
+      "attribution" => { "source" => "facebook", "medium" => "cpc", "campaign" => "hiver" }
+    ))
+
+    row = Analytics::Report.new(store: @store, days: 7).campaigns.first
+
+    assert_equal "facebook", row[:source]
+    assert_equal "hiver", row[:campaign]
+    assert_equal 2, row[:visits]
+    assert_equal 1, row[:orders]
+    assert_equal 10_000, row[:revenue_cents]
+    assert_equal 8_200, row[:profit_cents]
+    assert_in_delta 50.0, row[:conversion_rate], 0.1
+  end
+
+  test "untagged traffic stays out of the campaign table" do
+    session_of("plain", pages: 2)
+
+    assert_empty Analytics::Report.new(store: @store, days: 7).campaigns
+  end
+
+  # ------------------------------------------------------------------- today
+
+  test "today counts only today, whatever period the report covers" do
+    Order.delete_all
+    paid_order(total_cents: 5_000, quantity: 1, at: Time.current)
+    paid_order(total_cents: 7_000, quantity: 1, at: 3.days.ago)
+
+    figures = Analytics::Report.new(store: @store, days: 30).today
+
+    assert_equal 1, figures[:orders]
+    assert_equal 5_000, figures[:revenue_cents]
+    assert_equal 3_200, figures[:profit_cents]
+  end
+
+  # ----------------------------------------------------------- ad spending
+
+  test "net profit takes the advertising out of the margin" do
+    paid_order(total_cents: 12_000, quantity: 1)
+    AdSpend.create!(store: @store, spent_on: Date.current, source: "facebook", amount_cents: 5_000)
+
+    report = Analytics::Report.new(store: @store, days: 7)
+
+    assert_equal 10_200, report.profit_cents
+    assert_equal 5_000, report.ad_spend_cents
+    assert_equal 5_200, report.net_profit_cents
+    assert_in_delta 2.4, report.roas, 0.01
+  end
+
+  # The case the whole feature exists for: revenue looks healthy, the ads cost
+  # more than the margin, and profit before advertising hides it entirely.
+  test "a campaign can earn revenue and still lose money" do
+    paid_order(total_cents: 6_000, quantity: 1)
+    AdSpend.create!(store: @store, spent_on: Date.current, source: "facebook", amount_cents: 9_000)
+
+    report = Analytics::Report.new(store: @store, days: 7)
+
+    assert_operator report.profit_cents, :>, 0, "the margin alone looks fine"
+    assert_operator report.net_profit_cents, :<, 0, "once the ads are paid it is a loss"
+  end
+
+  test "spend is matched to its campaign and reported beside the revenue" do
+    Visit.create!(store: @store, visitor_token: "s1", path: "/", landing: true, device: "desktop",
+                  utm_source: "facebook", utm_campaign: "hiver")
+    order = paid_order(total_cents: 10_000, quantity: 1)
+    order.update!(metadata: order.metadata.merge(
+      "attribution" => { "source" => "facebook", "campaign" => "hiver" }
+    ))
+    AdSpend.create!(store: @store, spent_on: Date.current, source: "facebook",
+                    campaign: "hiver", amount_cents: 2_000)
+
+    row = Analytics::Report.new(store: @store, days: 7).campaigns.first
+
+    assert_equal 2_000, row[:spend_cents]
+    assert_equal 6_200, row[:net_profit_cents]
+    assert_in_delta 5.0, row[:roas], 0.01
+  end
+
+  # A campaign that was paid for and brought nothing is the most expensive line
+  # on the page; it has to appear even with no traffic and no sale against it.
+  test "a campaign that spent and brought nothing still shows up" do
+    AdSpend.create!(store: @store, spent_on: Date.current, source: "tiktok",
+                    campaign: "flop", amount_cents: 7_500)
+
+    row = Analytics::Report.new(store: @store, days: 7).campaigns.find { |c| c[:source] == "tiktok" }
+
+    assert row, "the spend must surface even with no visit attached"
+    assert_equal 0, row[:visits]
+    assert_equal(-7_500, row[:net_profit_cents])
+    assert_in_delta 0.0, row[:roas], 0.01
+  end
+
+  test "spend outside the period is left out" do
+    AdSpend.create!(store: @store, spent_on: 40.days.ago.to_date, source: "facebook", amount_cents: 9_900)
+
+    assert_equal 0, Analytics::Report.new(store: @store, days: 7).ad_spend_cents
+  end
+
+  def paid_order(total_cents:, quantity:, variant: variants(:black), at: 1.hour.ago)
+    order = @store.orders.create!(
+      product: products(:demo_product), variant:, quantity:, currency: @store.currency,
+      status: :paid, paid_at: at, created_at: at, total_cents:, subtotal_cents: total_cents,
+      email: "client@exemple.ca", metadata: {}
+    )
+    order
+  end
+
   def session_of(token, pages:, at: 1.hour.ago, store: @store, referrer: nil)
     pages.times do |index|
       Visit.create!(

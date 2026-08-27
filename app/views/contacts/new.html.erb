@@ -12,15 +12,12 @@
     <header class="contact__header">
       <p class="contact__eyebrow"><%= t("contact.eyebrow") %></p>
       <h1 class="contact__title"><%= t("contact.title") %></h1>
-      <p class="contact__lead">
-        Une question sur votre commande, la livraison ou un retour ? Ecrivez-nous,
-        notre equipe repond sous 24h ouvrables.
-      </p>
+      <p class="contact__lead"><%= t("contact.lead") %></p>
     </header>
 
     <div class="contact__grid">
       <%= form_with model: @message, url: contact_path, method: :post, scope: :contact_message,
-            class: "contact__form" do |form| %>
+            class: class_names("contact__form", "contact__form--invalid": @message.errors.any?) do |form| %>
 
         <% if @message.errors.any? %>
           <div class="checkout__errors" role="alert">
@@ -61,10 +58,14 @@
           <div class="field-row">
             <div class="field">
               <%= form.label :subject, t("contact.subject") %>
-              <%= form.select :subject,
-                    ContactMessage.subjects,
-                    { include_blank: t("contact.choose_subject") },
-                    class: field_class(@message, :subject) %>
+              <div class="contact-select">
+                <span class="contact-select__icon"><%= icon "sparkles", size: 17 %></span>
+                <%= form.select :subject,
+                      ContactMessage.subjects,
+                      { include_blank: t("contact.choose_subject") },
+                      class: "#{field_class(@message, :subject)} contact-select__input" %>
+                <span class="contact-select__chevron"><%= icon "chevron-down", size: 17 %></span>
+              </div>
               <%= checkout_field_error(@message, :subject) %>
             </div>
 
@@ -72,28 +73,27 @@
               <%= form.label :order_reference, t("contact.order_number") %>
               <%= form.text_field :order_reference, placeholder: "LX-XXXXXXXX",
                     class: field_class(@message, :order_reference) %>
-              <p class="field__hint"><%= t("contact.order_number_hint") %></p>
             </div>
           </div>
 
-          <div class="field">
+          <div class="field contact__message-field">
             <%= form.label :body, t("contact.message") %>
             <%= form.text_area :body, rows: 7, required: true,
                   placeholder: t("contact.message_placeholder"),
                   class: "#{field_class(@message, :body)} input--area" %>
             <%= checkout_field_error(@message, :body) %>
           </div>
-        </section>
 
-        <div class="checkout__submit">
-          <%= form.button type: "submit", class: "button button--lg button--block" do %>
-            <%= icon "mail", size: 18 %>
-            <span><%= t("contact.send") %></span>
-          <% end %>
-          <p class="checkout__terms">
-            <%= t("contact.privacy") %>
-          </p>
-        </div>
+          <%# Inside the panel, not after it: a single-panel form has nothing to
+              separate, and a button floating below the card reads as detached. %>
+          <div class="contact__actions">
+            <p class="contact__privacy"><%= t("contact.privacy") %></p>
+            <%= form.button type: "submit", class: "button button--lg button--block" do %>
+              <%= icon "mail", size: 18 %>
+              <span><%= t("contact.send") %></span>
+            <% end %>
+          </div>
+        </section>
       <% end %>
 
       <aside class="contact__side">
@@ -132,7 +132,7 @@
           <ul class="contact__links" role="list">
             <% if current_product.present? %>
               <li>
-                <%= link_to "#{storefront_product_path(current_product.slug)}#faq" do %>
+                <%= link_to "#faq" do %>
                   <span><%= t("footer.faq") %></span>
                   <%= icon "chevron-right", size: 16 %>
                 <% end %>
@@ -160,3 +160,12 @@
     </div>
   </div>
 </section>
+
+<%# The furniture every other page carries below its main content. The FAQ answers
+    a good share of what people were about to write in, so it belongs here more
+    than anywhere, and the product stays one click away instead of making someone
+    navigate back to find it. %>
+<% if current_product.present? %>
+  <%= render "storefront/sections/faq", product: current_product %>
+  <%= render "storefront/sections/footer_cta", product: current_product %>
+<% end %>

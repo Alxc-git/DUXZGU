@@ -83,6 +83,20 @@ class CheckoutsControllerTest < ActionDispatch::IntegrationTest
     assert_select ".confirmation__card", 0
   end
 
+
+  # Both leads on this page were written into the template in French, which an
+  # English customer read right after paying -- the worst moment to look broken.
+  test "the confirmation speaks the visitor's language" do
+    fill_cart
+    post checkout_path, params: { checkout_form: valid_details }
+
+    get checkout_success_path(locale: "en")
+
+    assert_response :success
+    assert_no_match "translation missing", response.body
+    assert_no_match "Votre montre est preparee", response.body
+    assert_select ".confirmation__lead"
+  end
   private
 
   def fill_cart(quantity: 1)

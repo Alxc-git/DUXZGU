@@ -26,6 +26,45 @@
   <% end %>
 </header>
 
+
+<%# Today, whatever period the rest of the page is set to. Someone opening the
+    admin at noon wants to know how the day is going; no thirty-day average can
+    answer that, and it is the first thing anyone looks for. %>
+<% today = report.today %>
+<% yesterday = report.yesterday %>
+<section class="today" aria-label="Chiffres du jour">
+  <div class="today__head">
+    <span class="today__pulse" aria-hidden="true"></span>
+    <div>
+      <h2>Aujourd'hui</h2>
+      <p><%= l(Date.current, format: :long) rescue Date.current.to_s %> &mdash; compare a la meme heure hier</p>
+    </div>
+  </div>
+
+  <dl class="today__figures">
+    <% [
+         [ "Visites", number_with_delimiter(today[:visits]), today[:visits], yesterday[:visits] ],
+         [ "Commandes", number_with_delimiter(today[:orders]), today[:orders], yesterday[:orders] ],
+         [ "Revenus", money.call(today[:revenue_cents]), today[:revenue_cents], yesterday[:revenue_cents] ],
+         [ "Profit", money.call(today[:profit_cents]), today[:profit_cents], yesterday[:profit_cents] ]
+       ].each do |label, shown, now, before| %>
+      <div class="today__figure">
+        <dt><%= label %></dt>
+        <dd><%= shown %></dd>
+        <%# No baseline means no percentage: "+100 %" against zero says nothing. %>
+        <% if before.to_i.zero? %>
+          <span class="today__delta today__delta--none">hier : <%= before.to_i.zero? ? "0" : before %></span>
+        <% else %>
+          <% change = ((now - before) * 100.0) / before %>
+          <span class="today__delta today__delta--<%= change.negative? ? "down" : "up" %>">
+            <%= icon(change.negative? ? "trend-down" : "trend-up", size: 13) %>
+            <%= "#{change.positive? ? "+" : ""}#{number_with_precision(change, precision: 0)} %" %>
+          </span>
+        <% end %>
+      </div>
+    <% end %>
+  </dl>
+</section>
 <%# The six numbers that answer "is the site working?", each against its own past. %>
 <div class="kpi-row">
   <%= render "admin/dashboard/kpi", label: "Visites", value: number_with_delimiter(report.visits),
@@ -41,9 +80,17 @@
   <%= render "admin/dashboard/kpi", label: "Revenus", value: money.call(report.revenue_cents),
         delta: report.delta(:revenue_cents),
         hint: "Panier moyen #{money.call(report.average_order_cents)}" %>
-  <%= render "admin/dashboard/kpi", label: "Conversion",
-        value: "#{number_with_precision(report.conversion_rate, precision: 2, separator: ',')} %",
-        delta: report.delta(:conversion_rate), hint: "Visites devenues commandes" %>
+  <%# One tile, always the truest number available: the margin after the supplier
+      until advertising is recorded, the result after both once it is. %>
+  <% if report.advertising? %>
+    <%= render "admin/dashboard/kpi", label: "Profit net", value: money.call(report.net_profit_cents),
+          delta: report.delta(:net_profit_cents),
+          hint: "Apres fournisseur et #{money.call(report.ad_spend_cents)} de pub" %>
+  <% else %>
+    <%= render "admin/dashboard/kpi", label: "Profit", value: money.call(report.profit_cents),
+          delta: report.delta(:profit_cents),
+          hint: "Marge #{number_with_precision(report.margin_rate, precision: 1, separator: ",")} % apres fournisseur" %>
+  <% end %>
 </div>
 
 <% unless report.any_traffic? %>
@@ -79,6 +126,118 @@
   </section>
 </div>
 
+
+<div class="admin-grid admin-grid--split">
+  <%# Where people leave. Counted in sessions rather than page views: someone who
+      reloads the cart three times has still only reached the cart once, and views
+      would invent a drop that is not there. %>
+  <section class="admin-card">
+    <header class="admin-card__head">
+      <h2>Parcours d'achat</h2>
+      <span class="admin-card__note">Sessions ayant atteint chaque etape</span>
+    </header>
+
+    <ol class="funnel" role="list">
+      <% report.funnel.each do |step| %>
+        <li class="funnel__step">
+          <div class="funnel__line">
+            <span class="funnel__label"><%= step[:label] %></span>
+            <span class="funnel__count"><%= number_with_delimiter(step[:count]) %></span>
+            <span class="funnel__share"><%= number_with_precision(step[:share], precision: 1, separator: ",") %> %</span>
+          </div>
+          <div class="funnel__track">
+            <div class="funnel__bar" style="width: <%= [ step[:share], 100 ].min.round(2) %>%"></div>
+          </div>
+          <% if step[:drop].present? && step[:drop] > 0 %>
+            <p class="funnel__drop">
+              <%= number_with_precision(step[:drop], precision: 0) %> % perdus a cette etape
+            </p>
+          <% end %>
+        </li>
+      <% end %>
+    </ol>
+  </section>
+
+  <%# Which colour actually sells: it decides the photo in the next ad. %>
+  <section class="admin-card">
+    <header class="admin-card__head">
+      <h2>Ventes par couleur</h2>
+      <span class="admin-card__note">Commandes payees sur la periode</span>
+    </header>
+
+    <% if report.top_variants.any? %>
+      <table class="admin-table admin-table--compact">
+        <thead>
+          <tr><th>Couleur</th><th class="is-numeric">Ventes</th><th class="is-numeric">Revenus</th><th class="is-numeric">Part</th></tr>
+        </thead>
+        <tbody>
+          <% report.top_variants.each do |row| %>
+            <tr>
+              <td><%= row[:label] %></td>
+              <td class="is-numeric"><%= row[:count] %></td>
+              <td class="is-numeric"><%= money.call(row[:revenue_cents]) %></td>
+              <td class="is-numeric"><%= number_with_precision(row[:share], precision: 1, separator: ",") %> %</td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <p class="admin-empty">Aucune vente sur la periode.</p>
+    <% end %>
+  </section>
+</div>
+
+<%# The table that decides where the next ad dollar goes. Traffic comes from the
+    UTM tags on the landing visit, the money from the campaign frozen onto the
+    order at checkout. Profit rather than revenue: a campaign can bring sales in
+    and still lose money once the supplier is paid. %>
+<section class="admin-card">
+  <header class="admin-card__head">
+    <h2>Campagnes</h2>
+    <span class="admin-card__note">Trafic balise UTM, revenus attribues a la commande</span>
+  </header>
+
+  <% if report.campaigns.any? %>
+    <table class="admin-table admin-table--compact">
+      <thead>
+        <tr>
+          <th>Source</th>
+          <th>Campagne</th>
+          <th class="is-numeric">Visites</th>
+          <th class="is-numeric">Commandes</th>
+          <th class="is-numeric">Conv.</th>
+          <th class="is-numeric">Revenus</th>
+          <th class="is-numeric">Pub</th>
+          <th class="is-numeric">ROAS</th>
+          <th class="is-numeric">Net</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% report.campaigns.each do |row| %>
+          <tr>
+            <td><strong><%= row[:source] %></strong></td>
+            <td><%= row[:campaign] || "&mdash;".html_safe %></td>
+            <td class="is-numeric"><%= number_with_delimiter(row[:visits]) %></td>
+            <td class="is-numeric"><%= row[:orders] %></td>
+            <td class="is-numeric"><%= number_with_precision(row[:conversion_rate], precision: 2, separator: ",") %> %</td>
+            <td class="is-numeric"><%= money.call(row[:revenue_cents]) %></td>
+            <td class="is-numeric"><%= row[:spend_cents].positive? ? money.call(row[:spend_cents]) : "&mdash;".html_safe %></td>
+            <%# Below 1 the campaign does not even earn back its own media. %>
+            <td class="is-numeric <%= row[:roas] && row[:roas] < 1 ? "is-negative" : nil %>">
+              <%= row[:roas] ? "#{number_with_precision(row[:roas], precision: 2, separator: ",")} x" : "&mdash;".html_safe %>
+            </td>
+            <td class="is-numeric <%= row[:net_profit_cents].negative? ? "is-negative" : "is-positive" %>"><%= money.call(row[:net_profit_cents]) %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p class="admin-empty">
+      Aucune visite balisee. Ajoutez <code>?utm_source=facebook&amp;utm_campaign=nom-de-la-pub</code>
+      a la fin de vos liens publicitaires : la source est figee sur la commande et remonte ici.
+    </p>
+  <% end %>
+</section>
 <div class="admin-grid admin-grid--thirds">
   <section class="admin-card">
     <header class="admin-card__head">
@@ -117,7 +276,6 @@
           <th class="is-numeric">Visites</th>
           <th class="is-numeric">Commandes</th>
           <th class="is-numeric">Revenus</th>
-          <th class="is-numeric">Conv.</th>
         </tr>
       </thead>
       <tbody>
@@ -130,7 +288,6 @@
             <td class="is-numeric"><%= number_with_delimiter(row[:visits]) %></td>
             <td class="is-numeric"><%= number_with_delimiter(row[:orders]) %></td>
             <td class="is-numeric"><%= MoneyFormatter.format(row[:revenue_cents], row[:store].currency) %></td>
-            <td class="is-numeric"><%= number_with_precision(row[:conversion_rate], precision: 1, separator: ",") %> %</td>
           </tr>
         <% end %>
       </tbody>

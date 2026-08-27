@@ -7,10 +7,11 @@ module Orders
   # Payment is deliberately not part of this: orders are left `pending` and the
   # payment handoff happens after this service returns.
   class PlaceFromCart < ApplicationService
-    def initialize(store:, cart:, details:)
+    def initialize(store:, cart:, details:, attribution: nil)
       @store = store
       @cart = cart
       @details = details
+      @attribution = attribution.presence
     end
 
     def call
@@ -32,7 +33,7 @@ module Orders
 
     private
 
-    attr_reader :store, :cart, :details
+    attr_reader :store, :cart, :details, :attribution
 
     def create_order(line, reference:, customer:, estimate:, first:)
       order = store.orders.new(
@@ -52,7 +53,12 @@ module Orders
         # Frozen with the order: the emails must speak the language the customer
         # was reading, not whatever the next request happens to set.
         locale: I18n.locale.to_s,
-        metadata: { "checkout_reference" => reference }
+        # Frozen with the order, like the locale and the delivery promise: the
+        # session that carried the campaign is gone long before the dashboard
+        # asks which ad paid for this sale.
+        metadata: { "checkout_reference" => reference }.merge(
+          attribution ? { "attribution" => attribution } : {}
+        )
       )
       order.assign_attributes(details.attributes_for_order)
       order.recalculate_totals!

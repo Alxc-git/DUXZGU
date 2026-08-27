@@ -1,0 +1,126 @@
+<% content_for :title, "Publicite | Admin" %>
+
+<header class="admin-page-head">
+  <div>
+    <p class="admin-page-head__eyebrow">Acquisition</p>
+    <h1>Depenses publicitaires</h1>
+    <p class="admin-page-head__lead">
+      Saisissez ce que chaque campagne coute. Le tableau de bord s'en sert pour
+      calculer le profit net et le ROAS, les deux seuls chiffres qui disent si une
+      pub merite de continuer.
+    </p>
+  </div>
+</header>
+
+<div class="admin-grid admin-grid--split">
+  <section class="admin-card">
+    <header class="admin-card__head">
+      <h2>Ajouter une depense</h2>
+      <span class="admin-card__note">Un jour, une campagne</span>
+    </header>
+
+    <%= form_with model: @entry, url: admin_ad_spends_path(store_id: params[:store_id]),
+          scope: :ad_spend, class: "spend-form" do |form| %>
+      <%= form.hidden_field :store_id, value: @entry.store_id %>
+
+      <div class="field-row">
+        <div class="field">
+          <%= form.label :spent_on, "Date" %>
+          <%= form.date_field :spent_on, value: Date.current, max: Date.current, required: true, class: "form__input" %>
+        </div>
+        <div class="field">
+          <%= form.label :amount, "Montant depense" %>
+          <%= form.text_field :amount, placeholder: "45,00", inputmode: "decimal", required: true, class: "form__input" %>
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <%= form.label :source, "Source" %>
+          <%= form.text_field :source, list: "sources-connues", placeholder: "facebook", required: true, class: "form__input" %>
+          <%# Suggestions taken from the traffic already tagged, so the spelling
+              matches the UTM tags and the two line up in the campaign table. %>
+          <datalist id="sources-connues">
+            <% @known_sources.each { |value| %><option value="<%= value %>"></option><% } %>
+          </datalist>
+          <p class="field__hint">Comme dans <code>utm_source</code>.</p>
+        </div>
+        <div class="field">
+          <%= form.label :campaign, "Campagne" %>
+          <%= form.text_field :campaign, list: "campagnes-connues", placeholder: "montre-hiver", class: "form__input" %>
+          <datalist id="campagnes-connues">
+            <% @known_campaigns.each { |value| %><option value="<%= value %>"></option><% } %>
+          </datalist>
+          <p class="field__hint">Comme dans <code>utm_campaign</code>. Laissez vide pour la source entiere.</p>
+        </div>
+      </div>
+
+      <%= form.submit "Enregistrer", class: "button button--lg" %>
+    <% end %>
+  </section>
+
+  <section class="admin-card">
+    <header class="admin-card__head">
+      <h2>Ce mois-ci</h2>
+      <span class="admin-card__note">Depuis le 1er</span>
+    </header>
+
+    <p class="spend-total"><%= MoneyFormatter.format(@month_cents, (@store || Store.first)&.currency || Store::DEFAULT_CURRENCY) %></p>
+    <p class="spend-total__hint">
+      Total sature en publicite ce mois-ci. Le tableau de bord le retire du profit
+      pour donner le resultat reel.
+    </p>
+
+    <ul class="attention" role="list">
+      <li class="attention__row">
+        <span class="attention__count"><%= @spends.size %></span>
+        <span>
+          <strong>Lignes saisies</strong>
+          <small>60 dernieres affichees</small>
+        </span>
+        <%= link_to "Tableau de bord", admin_root_path, class: "attention__link" %>
+      </li>
+    </ul>
+  </section>
+</div>
+
+<section class="admin-card">
+  <header class="admin-card__head">
+    <h2>Historique</h2>
+    <span class="admin-card__note">Retapez une date pour la corriger, elle remplace la ligne</span>
+  </header>
+
+  <% if @spends.any? %>
+    <table class="admin-table admin-table--compact">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Source</th>
+          <th>Campagne</th>
+          <th class="is-numeric">Montant</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @spends.each do |spend| %>
+          <tr>
+            <td><%= l(spend.spent_on, format: :long) %></td>
+            <td><strong><%= spend.source %></strong></td>
+            <td><%= spend.campaign.presence || "&mdash;".html_safe %></td>
+            <td class="is-numeric"><%= spend.formatted_amount %></td>
+            <td class="is-numeric">
+              <%= button_to "Supprimer", admin_ad_spend_path(spend, store_id: params[:store_id]),
+                    method: :delete, class: "button button--ghost button--sm",
+                    form: { data: { turbo_confirm: "Supprimer cette depense ?" } } %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p class="admin-empty">
+      Aucune depense saisie. Ajoutez-en une ci-dessus et le tableau de bord
+      affichera votre profit net plutot que votre profit avant publicite.
+    </p>
+  <% end %>
+</section>

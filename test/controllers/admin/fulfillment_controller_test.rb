@@ -94,4 +94,59 @@ class Admin::FulfillmentControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to admin_login_path
   end
+
+  # ------------------------------------------------------------ CJ balance
+
+  test "the countdown says nothing until a balance has been recorded" do
+    forecast = Fulfillment::CreditForecast.new(store: @order.store)
+
+    assert_nil forecast.remaining_cents
+    assert_equal :unknown, forecast.level
+  end
+
+  test "what has gone to CJ since the top-up comes off the balance" do
+    store = @order.store
+    # Recorded first, spent after: an order sent before the top-up was paid for
+    # out of the previous balance and must not be counted twice.
+    travel_to(2.hours.ago) { store.record_cj_balance!(20_000) }
+    @order.update!(supplier_order_id: "CJ-1", submitted_to_supplier_at: 1.hour.ago,
+                   status: :submitted_to_supplier, quantity: 2)
+
+    forecast = Fulfillment::CreditForecast.new(store: store)
+
+    # The fixture product costs 1800 a unit and two units were sent.
+    assert_equal 3_600, forecast.spent_since_recording_cents
+    assert_equal 16_400, forecast.remaining_cents
+  end
+
+  # The state the whole panel exists for: money is in the account, but not enough
+  # to release what customers have already paid for.
+  test "a balance too small for the paid backlog is critical whatever the daily rate" do
+    store = @order.store
+    store.record_cj_balance!(100)
+    @order.update!(status: :paid, supplier_order_id: nil, paid_at: 1.hour.ago)
+
+    forecast = Fulfillment::CreditForecast.new(store: store)
+
+    assert_not forecast.covers_pending?
+    assert_equal :critical, forecast.level
+  end
+
+  test "a balance nothing is drawing on has no end date" do
+    store = @order.store
+    store.record_cj_balance!(50_000)
+    @order.update!(status: :shipped, supplier_order_id: "CJ-9", submitted_to_supplier_at: 60.days.ago)
+
+    forecast = Fulfillment::CreditForecast.new(store: store)
+
+    assert_equal 0, forecast.daily_burn_cents
+    assert_nil forecast.days_left, "no spending means no countdown to invent"
+  end
+
+  test "the panel records a balance typed with a comma" do
+    patch cj_balance_admin_fulfillment_path, params: { balance: "250,50" }
+
+    assert_equal 25_050, @order.store.reload.cj_balance_cents
+    assert @order.store.cj_balance_recorded_at.present?
+  end
 end

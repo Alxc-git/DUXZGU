@@ -41,7 +41,7 @@
 
   @include desktop {
     align-items: start;
-    grid-template-columns: minmax(0, 1fr) minmax(300px, 350px);
+    grid-template-columns: minmax(0, 1fr) minmax(320px, 380px);
   }
 }
 
@@ -49,6 +49,60 @@
   display: grid;
   gap: $spacing-sm;
   min-width: 0;
+}
+
+.contact-select {
+  display: grid;
+  position: relative;
+}
+
+.contact-select__icon,
+.contact-select__chevron {
+  align-items: center;
+  display: inline-flex;
+  pointer-events: none;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+}
+
+.contact-select__icon {
+  background: $color-surface;
+  border: 1px solid $color-border-subtle;
+  border-radius: $radius-md;
+  color: $color-ink;
+  height: 2rem;
+  justify-content: center;
+  left: 0.5rem;
+  transition: background 0.15s ease, border-color 0.15s ease;
+  width: 2rem;
+}
+
+.contact-select__chevron {
+  color: $color-muted;
+  right: 0.85rem;
+  transition: color 0.15s ease, transform 0.15s ease;
+}
+
+.contact-select__input {
+  background-image: none !important;
+  cursor: pointer;
+  font-weight: 500;
+  padding-left: 3rem;
+  padding-right: 2.75rem;
+}
+
+.contact-select:focus-within {
+  .contact-select__icon {
+    background: $color-background;
+    border-color: $color-border-strong;
+  }
+
+  .contact-select__chevron {
+    color: $color-ink;
+    transform: translateY(-50%) rotate(180deg);
+  }
 }
 
 .contact__side {
@@ -166,5 +220,83 @@
   .cart-summary__perks {
     border-top: 0;
     padding-top: 0;
+  }
+}
+
+// ------------------------------------------------------- desktop composition
+//
+// On a phone the two columns stack. Wide, both columns share one closing edge;
+// whichever side is shorter expands its flexible content rather than leaving a
+// strip of dead space under the form or the reassurance cards.
+
+// The card's own footer, not a strip parked underneath it. The panel insets
+// everything after its head, so this is pulled back out to the card edge.
+.contact .checkout__panel > .contact__actions {
+  align-items: center;
+  background: linear-gradient(180deg, $color-surface, #ffffff);
+  border-top: 1px solid $color-border-subtle;
+  border-radius: 0 0 $radius-lg $radius-lg;
+  display: grid;
+  gap: 0.85rem;
+  margin-block: 0;
+  margin-inline: 0;
+  padding: clamp(0.9rem, 2.5vw, 1.35rem) clamp(0.85rem, 3vw, #{$spacing-md});
+
+  @include tablet {
+    gap: $spacing-md;
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+}
+
+.contact__privacy {
+  color: $color-muted;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  margin: 0;
+}
+
+// Full width on a phone, where it is alone on its row; its natural width beside
+// the privacy line as soon as there is room for both.
+.contact__actions .button {
+  @include tablet {
+    width: auto;
+  }
+}
+
+@include desktop {
+  .contact__grid {
+    align-items: stretch;
+  }
+
+  .contact__form {
+    align-self: stretch;
+    grid-template-rows: minmax(0, 1fr);
+  }
+
+  .contact__form--invalid {
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+
+  .contact__form .checkout__panel {
+    grid-template-rows: auto auto auto minmax(0, 1fr) auto;
+    height: 100%;
+  }
+
+  .contact__message-field,
+  .contact__message-field .input--area {
+    height: 100%;
+  }
+
+  .contact__side {
+    align-self: stretch;
+    grid-template-rows: auto auto minmax(0, 1fr);
+  }
+
+  .contact__card--trust {
+    align-content: center;
+  }
+
+  .contact__form .input--area {
+    min-height: 10rem;
   }
 }

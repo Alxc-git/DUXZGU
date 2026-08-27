@@ -17,15 +17,11 @@
         <span class="confirmation__icon"><%= icon "check", size: 30 %></span>
         <h1 class="confirmation__title"><%= t("confirmation.title") %></h1>
         <% if first_order&.email.present? %>
-          <p class="confirmation__lead">
-            Une confirmation part vers <strong><%= first_order.email %></strong>.
-            Votre montre est preparee sous 24 a 48h, puis vous recevrez votre numero de suivi.
-          </p>
+          <%# The `_html` suffix is what lets the address be bold and still be
+              escaped: Rails marks the phrase safe and the interpolation not. %>
+          <p class="confirmation__lead"><%= t("confirmation.lead_with_email_html", email: first_order.email) %></p>
         <% else %>
-          <p class="confirmation__lead">
-            Vous allez recevoir un courriel de confirmation. Votre montre est preparee sous 24 a 48h,
-            puis vous recevrez votre numero de suivi des l'expedition.
-          </p>
+          <p class="confirmation__lead"><%= t("confirmation.lead") %></p>
         <% end %>
       <% end %>
     </header>

@@ -15,7 +15,8 @@ class CheckoutsController < ApplicationController
     # leaving a second set of unpaid orders behind.
     discard_unpaid_orders
 
-    orders = Orders::PlaceFromCart.call(store: Current.store, cart: current_cart, details: @form)
+    orders = Orders::PlaceFromCart.call(store: Current.store, cart: current_cart, details: @form,
+                                        attribution: session[TracksVisits::ATTRIBUTION_KEY])
     session[:checkout_order_ids] = orders.map(&:id)
 
     redirect_to payment_path

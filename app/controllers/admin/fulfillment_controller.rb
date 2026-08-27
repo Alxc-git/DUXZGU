@@ -15,6 +15,7 @@ module Admin
 
       # The supplier cost, not the revenue: this is the figure the CJ balance has
       # to cover before any of these orders can move.
+      @forecast = Fulfillment::CreditForecast.new(store: @store || Store.first)
       @credit_needed_cents = @blocked.sum(&:supplier_cost_cents)
       @collected_cents = @blocked.sum(&:total_cents)
       @currency = @blocked.first&.currency || Store::DEFAULT_CURRENCY
@@ -29,6 +30,16 @@ module Admin
 
       redirect_to admin_fulfillment_path(store_id: params[:store_id]),
         notice: notice_for(orders.size)
+    end
+
+    # CJ publishes no balance endpoint, so the figure is recorded by hand after a
+    # top-up and the panel counts down from there.
+    def cj_balance
+      store = Store.find_by(id: params[:store_id]) || Store.first
+      store.record_cj_balance!((params[:balance].to_s.tr(",", ".").to_f * 100).round)
+
+      redirect_to admin_fulfillment_path(store_id: params[:store_id]),
+        notice: "Solde CJ enregistre. Le decompte repart de ce montant."
     end
 
     private

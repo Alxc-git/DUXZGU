@@ -1,18 +1,23 @@
 @use "../abstracts/variables" as *;
 
 .admin-sidebar {
+  align-content: start;
   background: $color-ink-deep;
   color: #ffffff;
   display: grid;
   gap: $spacing-md;
-  align-content: start;
   padding: $spacing-md $spacing-sm;
 
+  // Flex rather than grid once the rail is full height: it is the only way the
+  // footer can claim the leftover space and sit at the bottom instead of
+  // trailing the last menu group up the column.
   @media (min-width: 900px) {
+    display: flex;
+    flex-direction: column;
     height: 100vh;
+    overflow-y: auto;
     position: sticky;
     top: 0;
-    overflow-y: auto;
   }
 }
 
@@ -115,6 +120,11 @@
   display: grid;
   gap: 0.6rem;
   padding-top: $spacing-sm;
+
+  // Pushed to the bottom of the rail, keeping its rule as the separator.
+  @media (min-width: 900px) {
+    margin-top: auto;
+  }
 }
 
 .admin-sidebar__user {

@@ -20,8 +20,80 @@
   <% end %>
 </header>
 
+
+<%# CJ stops fulfilling the moment its balance runs dry, and it stops after the
+    customer has been charged. Nobody catches that by watching a number: they
+    catch it when orders start failing. A countdown does the watching instead. %>
+<% forecast = @forecast %>
+<section class="credit credit--<%= forecast.level %>">
+  <div class="credit__state">
+    <p class="credit__label">Solde CJ estime</p>
+    <% if forecast.remaining_cents %>
+      <p class="credit__value"><%= money.call(forecast.remaining_cents) %></p>
+      <p class="credit__note">
+        Enregistre le <%= l(@store&.cj_balance_recorded_at || Store.first.cj_balance_recorded_at, format: :short) %>,
+        moins ce qui est parti chez CJ depuis.
+      </p>
+    <% else %>
+      <p class="credit__value">&mdash;</p>
+      <p class="credit__note">Aucun solde enregistre. Saisissez-le apres votre prochain credit.</p>
+    <% end %>
+  </div>
+
+  <div class="credit__forecast">
+    <% case forecast.level %>
+    <% when :unknown %>
+      <p class="credit__headline">Decompte indisponible</p>
+      <p class="credit__body">
+        Saisissez le montant credite chez CJ et cette case vous dira combien de
+        jours il tient au rythme actuel.
+      </p>
+    <% when :critical %>
+      <p class="credit__headline">
+        <%= icon "alert", size: 17 %>
+        <% if forecast.covers_pending? %>
+          Il reste environ <%= pluralize(forecast.days_left, "jour") %>
+        <% else %>
+          Solde insuffisant pour les commandes en attente
+        <% end %>
+      </p>
+      <p class="credit__body">
+        <% unless forecast.covers_pending? %>
+          Il faut <strong><%= money.call(forecast.pending_cents) %></strong> pour ecouler
+          ce qui est deja paye, et le solde estime ne les couvre pas.
+        <% end %>
+        Creditez CJ maintenant : chaque commande encaissee sans credit reste bloquee.
+      </p>
+    <% when :low %>
+      <p class="credit__headline">Il reste environ <%= pluralize(forecast.days_left, "jour") %></p>
+      <p class="credit__body">
+        Au rythme des <%= Fulfillment::CreditForecast::BURN_WINDOW %> derniers jours,
+        soit <%= money.call(forecast.daily_burn_cents) %> par jour. Prevoyez le prochain credit.
+      </p>
+    <% else %>
+      <p class="credit__headline">
+        <%= forecast.days_left ? "Environ #{pluralize(forecast.days_left, "jour")} de marge" : "Aucune consommation recente" %>
+      </p>
+      <p class="credit__body">
+        <%= forecast.daily_burn_cents.positive? ?
+              "#{money.call(forecast.daily_burn_cents)} par jour en moyenne sur #{Fulfillment::CreditForecast::BURN_WINDOW} jours." :
+              "Rien n'a ete envoye a CJ recemment, donc rien a decompter." %>
+      </p>
+    <% end %>
+  </div>
+
+  <%= form_with url: cj_balance_admin_fulfillment_path(store_id: params[:store_id]),
+        method: :patch, class: "credit__form" do |form| %>
+    <%= form.label :balance, "Nouveau solde apres credit", class: "credit__field-label" %>
+    <div class="credit__field">
+      <%= form.text_field :balance, placeholder: "200,00", inputmode: "decimal",
+            required: true, class: "form__input" %>
+      <%= form.submit "Enregistrer", class: "button button--secondary" %>
+    </div>
+  <% end %>
+</section>
 <%# The three numbers that decide whether action is needed right now. %>
-<div class="kpi-row">
+<div class="kpi-row kpi-row--trio">
   <article class="kpi">
     <p class="kpi__label">Commandes bloquees</p>
     <p class="kpi__value"><%= @blocked.size %></p>
