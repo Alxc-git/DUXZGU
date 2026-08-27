@@ -380,6 +380,18 @@
   }
 }
 
+.checkout__privacy {
+  color: $color-muted;
+  font-size: 0.78rem;
+  line-height: 1.5;
+  text-align: center;
+
+  a {
+    color: $color-text;
+    text-underline-offset: 3px;
+  }
+}
+
 .checkout__back {
   align-items: center;
   color: $color-muted;

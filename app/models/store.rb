@@ -3,6 +3,11 @@ class Store < ApplicationRecord
   DEFAULT_CURRENCY = "cad".freeze
   DEFAULT_LOCALE = "fr-CA".freeze
   DEFAULT_SHIPPING_COUNTRIES = %w[CA].freeze
+  DEFAULT_SUPPORT_EMAIL = "contact@luxtimestyle.com".freeze
+  PUBLIC_SETTING_KEYS = %w[
+    legal_business_name business_address business_phone privacy_officer_name
+    instagram_url tiktok_url facebook_url
+  ].freeze
 
   has_many :products, dependent: :destroy
   has_many :orders, dependent: :restrict_with_error
@@ -76,7 +81,16 @@ class Store < ApplicationRecord
   end
 
   def support_email
-    settings["support_email"].presence
+    settings["support_email"].presence || (DEFAULT_SUPPORT_EMAIL if luxtime_store?)
+  end
+
+  def support_email=(value)
+    write_public_setting("support_email", value)
+  end
+
+  PUBLIC_SETTING_KEYS.each do |key|
+    define_method(key) { settings[key].presence }
+    define_method("#{key}=") { |value| write_public_setting(key, value) }
   end
 
   def fulfillment_delay_minutes
@@ -109,6 +123,17 @@ class Store < ApplicationRecord
     ))
   end
   private
+
+  def write_public_setting(key, value)
+    updated = settings.deep_dup
+    normalized = value.to_s.strip.presence
+    normalized ? updated[key] = normalized : updated.delete(key)
+    self.settings = updated
+  end
+
+  def luxtime_store?
+    slug == "luxtime" || name.to_s.casecmp?("LUXTIME") || domain.to_s.end_with?("luxtimestyle.com")
+  end
 
   def normalize_domain
     self.domain = self.class.normalize_host(domain)

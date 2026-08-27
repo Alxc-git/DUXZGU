@@ -13,7 +13,8 @@ class ApplicationController < ActionController::Base
 
   before_action :set_current_store
 
-  helper_method :current_store, :current_cart, :current_locale, :alternate_locale, :alternate_locale_url, :current_product
+  helper_method :current_store, :current_cart, :current_locale, :alternate_locale, :alternate_locale_url,
+    :current_product, :analytics_consent_granted?, :privacy_consent_decided?
 
   private
 
@@ -101,6 +102,18 @@ class ApplicationController < ActionController::Base
     return @current_product if defined?(@current_product)
 
     @current_product = Current.store&.products&.active&.includes(:variants)&.order(:created_at)&.first
+  end
+
+  def privacy_consent_choice
+    cookies.encrypted[PrivacyConsent::COOKIE_NAME]
+  end
+
+  def analytics_consent_granted?
+    PrivacyConsent.accepted?(privacy_consent_choice)
+  end
+
+  def privacy_consent_decided?
+    PrivacyConsent.decided?(privacy_consent_choice)
   end
 
   def require_current_store!

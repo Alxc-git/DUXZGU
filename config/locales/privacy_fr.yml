@@ -1,0 +1,105 @@
+fr:
+  footer:
+    privacy_policy: "Politique de confidentialite"
+
+  checkout:
+    privacy_notice: "En continuant, vous acceptez que vos renseignements soient utilises pour traiter et livrer votre commande."
+
+  chat:
+    privacy_note: "Assistant propulse par Groq. N'inscrivez jamais de numero de carte ou de mot de passe."
+
+  privacy_preferences:
+    title: "Vos choix de confidentialite"
+    body: "Nous utilisons des temoins essentiels au panier et au paiement. Avec votre accord, des statistiques limitees, sans adresse IP, nous aident a ameliorer le site."
+    learn_more: "En savoir plus"
+    decline: "Essentiels seulement"
+    accept: "Accepter les statistiques"
+
+  privacy:
+    title: "Politique de confidentialite"
+    meta_description: "Comment %{store} recueille, utilise, conserve et protege vos renseignements personnels."
+    eyebrow: "Confidentialite et transparence"
+    lead: "%{store} limite la collecte aux renseignements necessaires pour vendre, livrer et soutenir ses produits. Cette politique explique clairement nos pratiques et vos choix."
+    updated: "Derniere mise a jour : %{date}"
+    on_this_page: "Sur cette page"
+    officer_title: "Responsable de la protection des renseignements personnels"
+    summary_title: "L'essentiel"
+    summary: "%{store} ne vend pas vos renseignements personnels. Nous les utilisons pour executer vos commandes, assurer le service client, securiser le site et, seulement avec votre accord, mesurer son utilisation."
+    organization: "Organisation"
+    contact_label: "Confidentialite"
+    phone_label: "Telephone"
+    address_label: "Adresse"
+    preferences_title: "Gerer les statistiques"
+    preferences_body: "Les temoins essentiels restent actifs pour le panier, la langue, la securite et le paiement. Vous pouvez modifier ici votre choix concernant les statistiques internes."
+    preferences_enabled: "Statistiques autorisees"
+    preferences_disabled: "Statistiques desactivees"
+    sections:
+      collection:
+        title: "Renseignements recueillis"
+        paragraphs:
+          - "Nous recueillons directement les renseignements que vous fournissez au panier, au paiement, dans le formulaire de contact ou dans l'assistant."
+        items:
+          - "Commande et livraison : nom, courriel, telephone, adresse, produits, quantites, montants, statut du paiement et numero de suivi."
+          - "Service client : sujet, message, reference de commande et historique utile pour repondre a votre demande."
+          - "Donnees techniques : session, langue, pages consultees, referent, parametres UTM et type d'appareil. Nos journaux de securite peuvent aussi contenir une adresse IP."
+          - "Nous ne stockons pas les numeros complets de carte. Ils sont traites par le fournisseur de paiement choisi."
+      purposes:
+        title: "Pourquoi nous les utilisons"
+        paragraphs:
+          - "Chaque utilisation est limitee a un objectif necessaire ou clairement annonce."
+        items:
+          - "Creer le panier, encaisser le paiement, confirmer la commande et prevenir la fraude."
+          - "Transmettre la commande au fournisseur et au transporteur, livrer le colis et fournir le suivi."
+          - "Repondre aux demandes, traiter les retours et appliquer les garanties."
+          - "Proteger les comptes, diagnostiquer les erreurs et respecter nos obligations legales et comptables."
+          - "Mesurer les visites et les campagnes uniquement lorsque vous acceptez les statistiques."
+      sharing:
+        title: "Fournisseurs et transferts"
+        paragraphs:
+          - "Nous communiquons seulement les renseignements necessaires aux fournisseurs qui executent une fonction pour nous. Certains traitent les donnees hors du Quebec ou du Canada, ou utilisent des infrastructures internationales."
+        items:
+          - "Railway et ses sous-traitants, pour l'hebergement de l'application, de la base de donnees et des sauvegardes."
+          - "Stripe ou PayPal, selon votre choix, pour le paiement et la prevention de la fraude."
+          - "CJdropshipping, les fournisseurs et les transporteurs, pour preparer, expedier et suivre la commande."
+          - "Notre fournisseur de courriel, pour les confirmations, le suivi et le service client."
+          - "Groq, uniquement lorsque vous utilisez l'assistant, pour produire une reponse."
+          - "Google Fonts peut recevoir des donnees techniques lorsque les polices du site sont chargees."
+          - "Nous pouvons aussi communiquer des renseignements si la loi l'exige, pour proteger nos droits ou dans le cadre d'une transaction d'entreprise encadree."
+      ai:
+        title: "Assistant avec intelligence artificielle"
+        paragraphs:
+          - "Les messages envoyes a l'assistant sont transmis a Groq avec l'historique recent de la conversation. Si vous fournissez une reference et le courriel d'achat, une fiche limitee et verifiee de la commande peut etre ajoutee pour repondre au suivi."
+          - "L'assistant ne peut pas effectuer un paiement, passer une commande ou modifier seul une adresse. Une demande sensible doit etre confirmee par notre service client. N'y inscrivez jamais un numero de carte, un mot de passe ou un renseignement medical."
+      cookies:
+        title: "Temoins et statistiques"
+        paragraphs:
+          - "Les temoins essentiels permettent de garder le panier, la session securisee, la langue et votre choix de confidentialite. Ils sont necessaires au fonctionnement du site."
+          - "Les statistiques internes sont desactivees par defaut. Apres votre accord, nous enregistrons un identifiant aleatoire de visite, les pages consultees, le referent, les parametres de campagne et le type d'appareil. Aucun pixel publicitaire n'est actuellement active."
+          - "Vous pouvez retirer votre accord en tout temps dans la section Gerer les statistiques de cette page. Le retrait n'affecte pas l'utilisation anterieure permise."
+      retention:
+        title: "Conservation et suppression"
+        paragraphs:
+          - "Nous conservons les renseignements seulement pendant la periode necessaire a l'objectif annonce, puis nous les supprimons ou les anonymisons de facon securitaire, sous reserve d'une obligation legale ou d'un litige."
+        items:
+          - "Les commandes et pieces comptables sont generalement conservees pendant six ans apres la derniere annee a laquelle elles se rapportent."
+          - "Les messages de service client sont conserves le temps necessaire pour traiter la demande et documenter le suivi."
+          - "Les donnees brutes de statistiques internes sont supprimees apres un maximum de 13 mois."
+          - "L'historique local de l'assistant est temporaire et peut etre efface dans le navigateur; Groq applique aussi ses propres durees de conservation."
+      security:
+        title: "Mesures de securite"
+        paragraphs:
+          - "Nous utilisons notamment le chiffrement HTTPS, des acces administratifs restreints, des controles de session et des fournisseurs de paiement specialises. L'acces interne est limite aux personnes qui en ont besoin."
+          - "Aucune mesure n'elimine completement les risques. En cas d'incident presentant un risque de prejudice serieux, nous suivrons les obligations applicables de notification et de tenue de registre."
+      rights:
+        title: "Vos droits et vos demandes"
+        paragraphs:
+          - "Vous pouvez demander l'acces a vos renseignements, leur rectification, le retrait de votre consentement et, lorsque la loi le prevoit, leur portabilite ou leur suppression. Vous pouvez aussi poser une question ou deposer une plainte aupres de notre responsable de la confidentialite."
+          - "Ecrivez a l'adresse indiquee dans cette page. Pour proteger votre dossier, nous pourrons verifier votre identite avant de repondre. Si notre reponse ne vous satisfait pas, vous pouvez communiquer avec la Commission d'acces a l'information du Quebec ou le Commissariat a la protection de la vie privee du Canada."
+      children:
+        title: "Renseignements concernant les mineurs"
+        paragraphs:
+          - "Le site ne s'adresse pas aux enfants de moins de 14 ans et nous ne cherchons pas sciemment a recueillir leurs renseignements sans le consentement requis. Un parent ou tuteur peut nous demander de supprimer un renseignement transmis par erreur."
+      changes:
+        title: "Modifications a cette politique"
+        paragraphs:
+          - "Nous pouvons mettre cette politique a jour lorsque nos pratiques, nos fournisseurs ou la loi changent. La date ci-dessus sera modifiee et tout changement important sera signale de facon appropriee sur le site."

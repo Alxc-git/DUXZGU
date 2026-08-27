@@ -87,7 +87,10 @@
           <%# Inside the panel, not after it: a single-panel form has nothing to
               separate, and a button floating below the card reads as detached. %>
           <div class="contact__actions">
-            <p class="contact__privacy"><%= t("contact.privacy") %></p>
+            <p class="contact__privacy">
+              <%= t("contact.privacy") %>
+              <%= link_to t("privacy_preferences.learn_more"), privacy_policy_path %>
+            </p>
             <%= form.button type: "submit", class: "button button--lg button--block" do %>
               <%= icon "mail", size: 18 %>
               <span><%= t("contact.send") %></span>

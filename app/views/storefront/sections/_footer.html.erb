@@ -1,22 +1,25 @@
 <% featured = current_product %>
 <% product_path = featured.present? ? storefront_product_path(featured.slug) : root_path %>
+<% social_links = {
+     "instagram" => current_store&.instagram_url,
+     "tiktok" => current_store&.tiktok_url,
+     "facebook" => current_store&.facebook_url
+   }.compact_blank %>
 <footer class="site-footer">
   <div class="page-container site-footer__inner">
     <div class="site-footer__brand">
       <span class="site-footer__wordmark"><%= current_store&.name %></span>
       <p><%= t("footer.tagline") %></p>
 
-      <div class="site-footer__social" aria-label="<%= t("footer.social") %>">
-        <a href="https://www.instagram.com" class="site-footer__social-link" rel="noopener noreferrer" target="_blank" aria-label="Instagram">
-          <%= icon "instagram", size: 18 %>
-        </a>
-        <a href="https://www.tiktok.com" class="site-footer__social-link" rel="noopener noreferrer" target="_blank" aria-label="TikTok">
-          <%= icon "tiktok", size: 18 %>
-        </a>
-        <a href="https://www.facebook.com" class="site-footer__social-link" rel="noopener noreferrer" target="_blank" aria-label="Facebook">
-          <%= icon "facebook", size: 18 %>
-        </a>
-      </div>
+      <% if social_links.any? %>
+        <div class="site-footer__social" aria-label="<%= t("footer.social") %>">
+          <% social_links.each do |network, url| %>
+            <%= link_to url, class: "site-footer__social-link", rel: "noopener noreferrer", target: "_blank", aria: { label: network.titleize } do %>
+              <%= icon network, size: 18 %>
+            <% end %>
+          <% end %>
+        </div>
+      <% end %>
     </div>
 
     <nav class="site-footer__column" aria-label="<%= t("footer.shop") %>">
@@ -33,6 +36,12 @@
       <h2><%= t("footer.help") %></h2>
       <%= link_to t("footer.faq"), "#{product_path}#faq" %>
       <%= link_to t("footer.contact_us"), contact_path %>
+      <% if current_store.support_email.present? %>
+        <%= mail_to current_store.support_email, current_store.support_email, class: "site-footer__email" %>
+      <% end %>
+      <% if current_store.business_phone.present? %>
+        <%= link_to current_store.business_phone, "tel:#{current_store.business_phone.gsub(/[^+\d]/, "")}" %>
+      <% end %>
       <span class="site-footer__note">
         <%= icon "headset", size: 15 %>
         <%= t("footer.reply_24h") %>
@@ -54,7 +63,16 @@
   </div>
 
   <div class="page-container site-footer__legal">
-    <span>&copy; <%= Date.current.year %> <%= current_store&.name %></span>
+    <div class="site-footer__merchant">
+      <span>&copy; <%= Date.current.year %> <%= current_store&.name %></span>
+      <% if current_store.legal_business_name.present? %>
+        <span><%= current_store.legal_business_name %></span>
+      <% end %>
+      <% if current_store.business_address.present? %>
+        <address><%= current_store.business_address %></address>
+      <% end %>
+    </div>
+    <%= link_to t("footer.privacy_policy"), privacy_policy_path, class: "site-footer__legal-link" %>
     <span class="site-footer__legal-meta">
       <%= icon "globe", size: 14 %>
       Canada &mdash; prix en <%= current_store&.currency.to_s.upcase %>

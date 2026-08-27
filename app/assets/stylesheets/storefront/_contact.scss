@@ -253,6 +253,11 @@
   font-size: 0.82rem;
   line-height: 1.45;
   margin: 0;
+
+  a {
+    color: $color-text;
+    text-underline-offset: 2px;
+  }
 }
 
 // Full width on a phone, where it is alone on its row; its natural width beside

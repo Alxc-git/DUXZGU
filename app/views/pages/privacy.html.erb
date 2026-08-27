@@ -1,0 +1,86 @@
+<% content_for :title, "#{t("privacy.title")} | #{current_store.name}" %>
+<% content_for :description, t("privacy.meta_description", store: current_store.name) %>
+<% sections = %i[collection purposes sharing ai cookies retention security rights children changes] %>
+
+<section class="legal-page">
+  <div class="page-container legal-page__shell">
+    <nav class="breadcrumb" aria-label="<%= t("common.breadcrumb") %>">
+      <%= link_to t("common.home"), root_path %>
+      <%= icon "chevron-right", size: 14 %>
+      <span><%= t("privacy.title") %></span>
+    </nav>
+
+    <header class="legal-page__header">
+      <p class="legal-page__eyebrow"><%= t("privacy.eyebrow") %></p>
+      <h1><%= t("privacy.title") %></h1>
+      <p class="legal-page__lead"><%= t("privacy.lead", store: current_store.name) %></p>
+      <p class="legal-page__date"><%= t("privacy.updated", date: l(Date.new(2026, 8, 27), format: :long)) %></p>
+    </header>
+
+    <div class="legal-page__layout">
+      <aside class="legal-page__aside">
+        <nav aria-label="<%= t("privacy.on_this_page") %>">
+          <strong><%= t("privacy.on_this_page") %></strong>
+          <% sections.each do |section| %>
+            <%= link_to t("privacy.sections.#{section}.title"), "##{section}" %>
+          <% end %>
+        </nav>
+
+        <div class="legal-page__contact">
+          <span class="legal-page__contact-icon"><%= icon "lock", size: 18 %></span>
+          <div>
+            <strong><%= current_store.privacy_officer_name.presence || t("privacy.officer_title") %></strong>
+            <%= mail_to current_store.support_email, current_store.support_email %>
+          </div>
+        </div>
+      </aside>
+
+      <article class="legal-page__content">
+        <section class="legal-page__summary">
+          <h2><%= t("privacy.summary_title") %></h2>
+          <p><%= t("privacy.summary", store: current_store.name) %></p>
+          <dl>
+            <div><dt><%= t("privacy.organization") %></dt><dd><%= current_store.legal_business_name.presence || current_store.name %></dd></div>
+            <div><dt><%= t("privacy.contact_label") %></dt><dd><%= mail_to current_store.support_email %></dd></div>
+            <% if current_store.business_phone.present? %>
+              <div><dt><%= t("privacy.phone_label") %></dt><dd><%= link_to current_store.business_phone, "tel:#{current_store.business_phone.gsub(/[^+\d]/, "")}" %></dd></div>
+            <% end %>
+            <% if current_store.business_address.present? %>
+              <div><dt><%= t("privacy.address_label") %></dt><dd><%= simple_format(current_store.business_address) %></dd></div>
+            <% end %>
+          </dl>
+        </section>
+
+        <% sections.each do |section| %>
+          <section class="legal-page__section" id="<%= section %>">
+            <h2><%= t("privacy.sections.#{section}.title") %></h2>
+            <% Array(t("privacy.sections.#{section}.paragraphs", default: [])).each do |paragraph| %>
+              <p><%= paragraph %></p>
+            <% end %>
+            <% items_key = "privacy.sections.#{section}.items" %>
+            <% items = I18n.exists?(items_key, I18n.locale) ? Array(t(items_key)) : [] %>
+            <% if items.any? %>
+              <ul>
+                <% items.each do |item| %><li><%= item %></li><% end %>
+              </ul>
+            <% end %>
+          </section>
+        <% end %>
+
+        <section class="legal-page__preferences" id="preferences">
+          <div>
+            <h2><%= t("privacy.preferences_title") %></h2>
+            <p><%= t("privacy.preferences_body") %></p>
+            <strong><%= analytics_consent_granted? ? t("privacy.preferences_enabled") : t("privacy.preferences_disabled") %></strong>
+          </div>
+          <div class="legal-page__preference-actions">
+            <%= button_to t("privacy_preferences.decline"), privacy_preferences_path,
+                  params: { analytics: PrivacyConsent::DECLINED }, class: "button button--secondary" %>
+            <%= button_to t("privacy_preferences.accept"), privacy_preferences_path,
+                  params: { analytics: PrivacyConsent::ACCEPTED }, class: "button" %>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+</section>

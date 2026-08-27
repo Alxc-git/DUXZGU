@@ -122,3 +122,27 @@
     opacity: 0.7;
   }
 }
+
+.site-footer__merchant {
+  display: grid;
+  gap: 0.1rem;
+
+  address {
+    font-style: normal;
+  }
+}
+
+.site-footer__email,
+.site-footer__legal-link {
+  overflow-wrap: anywhere;
+}
+
+.site-footer__legal-link {
+  color: $color-muted;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+
+  &:hover {
+    color: $color-text;
+  }
+}

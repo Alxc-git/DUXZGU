@@ -43,7 +43,11 @@ module Admin
     end
 
     def store_params
-      params.require(:store).permit(:name, :domain, :slug, :currency, :supplier_type, :active, :stripe_account_id)
+      params.require(:store).permit(
+        :name, :domain, :slug, :currency, :supplier_type, :active, :stripe_account_id,
+        :support_email, :legal_business_name, :business_address, :business_phone, :privacy_officer_name,
+        :instagram_url, :tiktok_url, :facebook_url
+      )
     end
   end
 end

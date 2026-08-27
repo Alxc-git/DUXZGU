@@ -4,6 +4,16 @@ class VisitTrackingTest < ActionDispatch::IntegrationTest
   setup do
     host! "localhost"
     Visit.delete_all
+    post privacy_preferences_path, params: { analytics: PrivacyConsent::ACCEPTED }
+  end
+
+  test "records nothing until analytics consent is granted" do
+    reset!
+    host! "localhost"
+
+    assert_no_difference "Visit.count" do
+      get root_path
+    end
   end
 
   test "records a storefront page view" do
@@ -73,6 +83,7 @@ class VisitTrackingTest < ActionDispatch::IntegrationTest
 
     reset!
     host! "localhost"
+    post privacy_preferences_path, params: { analytics: PrivacyConsent::ACCEPTED }
     get root_path, headers: { "HTTP_USER_AGENT" => "Mozilla/5.0 (iPad; CPU OS 17_0) Safari" }
     assert_equal "tablet", Visit.last.device
   end

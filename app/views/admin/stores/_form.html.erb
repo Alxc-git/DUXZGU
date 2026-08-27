@@ -8,6 +8,14 @@
   <div class="form__field"><%= form.label :currency %><%= form.text_field :currency, class: "form__input" %></div>
   <div class="form__field"><%= form.label :supplier_type %><%= form.select :supplier_type, Store::SUPPLIER_TYPES, {}, class: "form__select" %></div>
   <div class="form__field"><%= form.label :stripe_account_id %><%= form.text_field :stripe_account_id, class: "form__input" %></div>
+  <div class="form__field"><%= form.label :support_email %><%= form.email_field :support_email, class: "form__input" %></div>
+  <div class="form__field"><%= form.label :legal_business_name %><%= form.text_field :legal_business_name, class: "form__input" %></div>
+  <div class="form__field"><%= form.label :business_address %><%= form.text_area :business_address, class: "form__textarea", rows: 3 %></div>
+  <div class="form__field"><%= form.label :business_phone %><%= form.telephone_field :business_phone, class: "form__input" %></div>
+  <div class="form__field"><%= form.label :privacy_officer_name %><%= form.text_field :privacy_officer_name, class: "form__input" %></div>
+  <div class="form__field"><%= form.label :instagram_url %><%= form.url_field :instagram_url, class: "form__input" %></div>
+  <div class="form__field"><%= form.label :tiktok_url %><%= form.url_field :tiktok_url, class: "form__input" %></div>
+  <div class="form__field"><%= form.label :facebook_url %><%= form.url_field :facebook_url, class: "form__input" %></div>
   <label><%= form.check_box :active %> Active</label>
   <div class="form__actions"><%= form.submit class: "button" %></div>
 <% end %>

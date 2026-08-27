@@ -443,6 +443,18 @@
   opacity: 0.55;
 }
 
+.support-chat__privacy {
+  color: $color-muted;
+  font-size: 0.68rem;
+  grid-column: 1 / -1;
+  line-height: 1.4;
+
+  a {
+    color: $color-text;
+    text-underline-offset: 2px;
+  }
+}
+
 // ----------------------------------------------------------------- phone sheet
 
 @media (max-width: 560px) {

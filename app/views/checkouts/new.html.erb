@@ -121,6 +121,11 @@
             <%= icon "arrow-right", size: 18 %>
           <% end %>
 
+          <p class="checkout__privacy">
+            <%= t("checkout.privacy_notice") %>
+            <%= link_to t("footer.privacy_policy"), privacy_policy_path, target: "_blank", rel: "noopener" %>
+          </p>
+
           <div class="checkout__submit-note">
             <%= payment_marks(class: "payment-marks--sm") %>
             <span>

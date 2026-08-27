@@ -1,0 +1,105 @@
+en:
+  footer:
+    privacy_policy: "Privacy policy"
+
+  checkout:
+    privacy_notice: "By continuing, you agree that your information may be used to process and deliver your order."
+
+  chat:
+    privacy_note: "Assistant powered by Groq. Never enter a card number or password."
+
+  privacy_preferences:
+    title: "Your privacy choices"
+    body: "We use essential cookies for the cart and checkout. With your permission, limited analytics without an IP address help us improve the site."
+    learn_more: "Learn more"
+    decline: "Essential only"
+    accept: "Accept analytics"
+
+  privacy:
+    title: "Privacy policy"
+    meta_description: "How %{store} collects, uses, retains and protects your personal information."
+    eyebrow: "Privacy and transparency"
+    lead: "%{store} limits collection to the information needed to sell, deliver and support its products. This policy clearly explains our practices and your choices."
+    updated: "Last updated: %{date}"
+    on_this_page: "On this page"
+    officer_title: "Privacy officer"
+    summary_title: "At a glance"
+    summary: "%{store} does not sell your personal information. We use it to fulfill orders, provide customer service, secure the site and, only with your permission, measure site usage."
+    organization: "Organization"
+    contact_label: "Privacy contact"
+    phone_label: "Phone"
+    address_label: "Address"
+    preferences_title: "Manage analytics"
+    preferences_body: "Essential cookies remain active for the cart, language, security and checkout. You can change your choice about internal analytics here."
+    preferences_enabled: "Analytics allowed"
+    preferences_disabled: "Analytics disabled"
+    sections:
+      collection:
+        title: "Information we collect"
+        paragraphs:
+          - "We collect information you provide directly at checkout, in the contact form or while using the assistant."
+        items:
+          - "Order and delivery: name, email, phone, address, products, quantities, amounts, payment status and tracking number."
+          - "Customer service: subject, message, order reference and the history needed to answer your request."
+          - "Technical data: session, language, pages viewed, referrer, UTM parameters and device type. Security logs may also contain an IP address."
+          - "We do not store full card numbers. They are processed by the payment provider you select."
+      purposes:
+        title: "Why we use it"
+        paragraphs:
+          - "Each use is limited to a necessary or clearly stated purpose."
+        items:
+          - "Create the cart, collect payment, confirm the order and prevent fraud."
+          - "Send the order to the supplier and carrier, deliver the parcel and provide tracking."
+          - "Answer requests, process returns and honour warranties."
+          - "Protect accounts, diagnose errors and meet legal and accounting obligations."
+          - "Measure visits and campaigns only when you accept analytics."
+      sharing:
+        title: "Service providers and transfers"
+        paragraphs:
+          - "We disclose only the information needed by providers performing a service for us. Some process data outside Quebec or Canada or use international infrastructure."
+        items:
+          - "Railway and its subprocessors, for application, database and backup hosting."
+          - "Stripe or PayPal, depending on your choice, for payment and fraud prevention."
+          - "CJdropshipping, suppliers and carriers, to prepare, ship and track the order."
+          - "Our email provider, for confirmations, tracking and customer service."
+          - "Groq, only when you use the assistant, to generate a response."
+          - "Google Fonts may receive technical information when the site's fonts load."
+          - "We may also disclose information when required by law, to protect our rights or as part of a properly managed business transaction."
+      ai:
+        title: "Artificial intelligence assistant"
+        paragraphs:
+          - "Messages sent to the assistant are shared with Groq along with the recent conversation history. If you provide an order reference and purchase email, a limited verified order summary may be added to answer a tracking question."
+          - "The assistant cannot take payment, place an order or change an address on its own. Sensitive requests must be confirmed by customer service. Never enter a card number, password or medical information."
+      cookies:
+        title: "Cookies and analytics"
+        paragraphs:
+          - "Essential cookies keep the cart, secure session, language and privacy choice working. They are necessary for the site to operate."
+          - "Internal analytics are disabled by default. After you agree, we record a random visit identifier, pages viewed, referrer, campaign parameters and device type. No advertising pixel is currently enabled."
+          - "You can withdraw permission at any time in the Manage analytics section of this page. Withdrawal does not affect earlier permitted use."
+      retention:
+        title: "Retention and deletion"
+        paragraphs:
+          - "We keep information only as long as needed for its stated purpose, then securely delete or anonymize it, subject to a legal obligation or dispute."
+        items:
+          - "Orders and accounting records are generally retained for six years after the last year to which they relate."
+          - "Customer service messages are retained as needed to resolve and document the request."
+          - "Raw internal analytics are deleted after a maximum of 13 months."
+          - "Local assistant history is temporary and can be cleared in the browser; Groq also applies its own retention periods."
+      security:
+        title: "Security safeguards"
+        paragraphs:
+          - "We use HTTPS encryption, restricted administrative access, session controls and specialized payment providers. Internal access is limited to people who need it."
+          - "No safeguard removes all risk. If an incident creates a real risk of significant harm, we will follow applicable notification and record-keeping requirements."
+      rights:
+        title: "Your rights and requests"
+        paragraphs:
+          - "You may request access to or correction of your information, withdraw consent and, where provided by law, request portability or deletion. You may also ask a question or submit a complaint to our privacy officer."
+          - "Write to the address listed on this page. To protect your file, we may verify your identity before responding. If you are not satisfied with our response, you may contact the Commission d'acces a l'information du Quebec or the Office of the Privacy Commissioner of Canada."
+      children:
+        title: "Children's information"
+        paragraphs:
+          - "The site is not directed to children under 14 and we do not knowingly seek their information without the required consent. A parent or guardian may ask us to delete information submitted by mistake."
+      changes:
+        title: "Changes to this policy"
+        paragraphs:
+          - "We may update this policy when our practices, providers or applicable law change. The date above will be revised and material changes will be highlighted appropriately on the site."

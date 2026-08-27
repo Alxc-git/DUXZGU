@@ -99,6 +99,10 @@
       <button type="submit" class="support-chat__send" data-support-chat-target="submit" aria-label="<%= t("chat.send") %>">
         <%= icon "arrow-right", size: 18 %>
       </button>
+      <p class="support-chat__privacy">
+        <%= t("chat.privacy_note") %>
+        <%= link_to t("privacy_preferences.learn_more"), privacy_policy_path, target: "_blank", rel: "noopener" %>
+      </p>
     </form>
   </section>
 </div>

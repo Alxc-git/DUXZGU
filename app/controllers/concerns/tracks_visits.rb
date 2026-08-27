@@ -56,6 +56,7 @@ module TracksVisits
 
   def trackable?
     Current.store.present? &&
+      PrivacyConsent.accepted?(cookies.encrypted[PrivacyConsent::COOKIE_NAME]) &&
       request.get? &&
       response.successful? &&
       request.format.html? &&

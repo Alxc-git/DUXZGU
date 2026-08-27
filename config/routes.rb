@@ -6,6 +6,8 @@ Rails.application.routes.draw do
 
   get "contact", to: "contacts#new", as: :contact
   post "contact", to: "contacts#create"
+  get "politique-de-confidentialite", to: "pages#privacy", as: :privacy_policy
+  post "preferences-confidentialite", to: "privacy_preferences#update", as: :privacy_preferences
   post "support/chat", to: "support_chats#create", as: :support_chat
 
   get "panier", to: "carts#show", as: :cart

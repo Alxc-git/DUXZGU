@@ -58,5 +58,6 @@
 
     <%= render "storefront/sections/footer" %>
     <%= render "storefront/sections/support_chat" %>
+    <%= render "shared/privacy_banner" unless privacy_consent_decided? %>
   </body>
 </html>

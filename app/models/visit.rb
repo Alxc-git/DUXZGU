@@ -4,6 +4,7 @@
 # figures need no consent banner.
 class Visit < ApplicationRecord
   DEVICES = %w[mobile tablet desktop].freeze
+  RETENTION_PERIOD = 13.months
 
   belongs_to :store
 

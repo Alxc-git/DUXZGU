@@ -8,5 +8,10 @@
   <p><strong>Slug:</strong> <%= @store.slug %></p>
   <p><strong>Currency:</strong> <%= @store.currency.upcase %></p>
   <p><strong>Supplier:</strong> <%= @store.supplier_type %></p>
+  <p><strong>Support email:</strong> <%= @store.support_email %></p>
+  <p><strong>Legal business name:</strong> <%= @store.legal_business_name.presence || "Not configured" %></p>
+  <p><strong>Business address:</strong> <%= @store.business_address.presence || "Not configured" %></p>
+  <p><strong>Business phone:</strong> <%= @store.business_phone.presence || "Not configured" %></p>
+  <p><strong>Privacy officer:</strong> <%= @store.privacy_officer_name.presence || "Not configured" %></p>
   <p><strong>Active:</strong> <%= @store.active? %></p>
 </section>

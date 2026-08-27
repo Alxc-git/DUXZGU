@@ -25,6 +25,26 @@ class StoreTest < ActiveSupport::TestCase
     assert_nil resolved, "with two shops the domain has to match, guessing would show the wrong prices"
   end
 
+  test "Luxtime uses the official support email by default" do
+    store = stores(:demo)
+    store.update!(name: "LUXTIME", slug: "luxtime", settings: store.settings.except("support_email"))
+
+    assert_equal "contact@luxtimestyle.com", store.support_email
+  end
+
+  test "public contact settings can be managed through the store" do
+    store = stores(:demo)
+
+    store.support_email = " boutique@example.com "
+    store.legal_business_name = " Example Watches Inc. "
+    store.business_phone = " +1 514 555-0100 "
+    store.save!
+
+    assert_equal "boutique@example.com", store.reload.support_email
+    assert_equal "Example Watches Inc.", store.legal_business_name
+    assert_equal "+1 514 555-0100", store.business_phone
+  end
+
   private
 
   # The fallback only applies outside development and test, which is exactly the

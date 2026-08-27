@@ -25,7 +25,7 @@ store.settings = store.settings.merge(
   # fallback, so re-seeding never overwrites a deliberate change.
   "support_email" => ENV["SUPPORT_EMAIL"].presence ||
                      store.settings["support_email"].presence ||
-                     "contact@#{STORE_DOMAIN}"
+                     Store::DEFAULT_SUPPORT_EMAIL
 )
 store.supplier_settings = store.supplier_settings.merge(
   "pay_type" => store.supplier_settings["pay_type"].presence || 2,
