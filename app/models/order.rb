@@ -30,6 +30,12 @@ class Order < ApplicationRecord
   scope :recent, -> { order(created_at: :desc) }
   scope :supplier_errors, -> { where(status: :failed).or(where(supplier_status: "failed")) }
   scope :created_since, ->(time) { where(created_at: time..) }
+  # Paid for and not yet accepted by the supplier. The pipeline stalls here every
+  # time the CJ balance runs dry, so this one scope is what the hourly sweep, the
+  # dashboard counter and the fulfillment panel all read.
+  scope :awaiting_supplier, -> { where(status: :paid, supplier_order_id: nil) }
+  scope :at_supplier, -> { where(status: :submitted_to_supplier) }
+  scope :on_its_way, -> { where(status: %i[shipped delivered]) }
 
   def recalculate_totals!
     self.subtotal_cents = unit_price_cents * quantity
@@ -102,6 +108,13 @@ class Order < ApplicationRecord
 
   def customer_name
     [ first_name, last_name ].compact_blank.join(" ")
+  end
+
+  # What CJ deducts from the balance to ship this order. It is deliberately not
+  # what the customer paid: the panel has to answer "how much credit do I need to
+  # clear the backlog", and that figure is the supplier cost, never the revenue.
+  def supplier_cost_cents
+    (variant&.supplier_cost_cents || product&.supplier_cost_cents).to_i * quantity
   end
 
   def fulfillable?

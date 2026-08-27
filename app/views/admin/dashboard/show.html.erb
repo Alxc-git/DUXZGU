@@ -149,7 +149,7 @@
           <strong>Erreurs fournisseur</strong>
           <small>Commandes que le fournisseur a refusees</small>
         </span>
-        <%= link_to "Voir", admin_orders_path, class: "attention__link" %>
+        <%= link_to "Voir", admin_fulfillment_path, class: "attention__link" %>
       </li>
       <li class="attention__row <%= "attention__row--warn" if @attention[:awaiting_fulfillment].positive? %>">
         <span class="attention__count"><%= @attention[:awaiting_fulfillment] %></span>
@@ -157,7 +157,7 @@
           <strong>En attente d'expedition</strong>
           <small>Payees, pas encore transmises</small>
         </span>
-        <%= link_to "Voir", admin_orders_path, class: "attention__link" %>
+        <%= link_to "Voir", admin_fulfillment_path, class: "attention__link" %>
       </li>
       <li class="attention__row">
         <span class="attention__count"><%= @attention[:unpaid] %></span>

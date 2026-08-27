@@ -34,7 +34,10 @@
   list-style: none;
   margin: 0;
   overflow-x: auto;
-  padding: 0 0 0.4rem;
+  // Leave room for the selected thumbnail's outer ring. Without this inset,
+  // mobile overflow clips its top and side borders.
+  padding: 0.2rem 0.2rem 0.55rem;
+  scroll-padding-inline: 0.2rem;
   scrollbar-width: thin;
 
   @include tablet {
@@ -115,6 +118,9 @@
   overflow: hidden;
   place-items: center;
   position: relative;
+  // Thumbnail taps can move the stage to the top of the viewport. Keep it below
+  // the sticky 60px mobile header rather than hiding the top of the photo.
+  scroll-margin-top: 4.75rem;
 
   @include tablet {
     order: 0;

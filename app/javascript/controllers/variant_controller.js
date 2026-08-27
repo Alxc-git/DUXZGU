@@ -41,6 +41,7 @@ export default class extends Controller {
 
     this.markActive(this.thumbTargets, variantId)
     this.markActive(this.swatchTargets, variantId)
+    this.rememberVariant(variantId)
 
     // The gallery sits inside this controller's element, so the event goes through
     // window rather than bubbling, which only ever travels upwards.
@@ -65,5 +66,13 @@ export default class extends Controller {
     elements.forEach((element) => {
       element.classList.toggle("is-active", element.dataset.variantId === variantId)
     })
+  }
+
+  rememberVariant(variantId) {
+    if (!variantId || !this.element.querySelector("[data-controller~='gallery']")) return
+
+    const url = new URL(window.location.href)
+    url.searchParams.set("couleur", variantId)
+    window.history.replaceState(window.history.state, "", url)
   }
 }

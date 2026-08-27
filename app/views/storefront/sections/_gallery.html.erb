@@ -1,17 +1,12 @@
 <%# One rail for every photo of the watch: the selected colour first, then the
     detail shots. The stage, the thumbnails and the dots are three views of the
     same index, so they can never drift apart. %>
-<% parts = if variant&.detail_images&.attached?
-             variant.detail_images.first(4)
-           elsif product.part_images.attached?
-             product.part_images.first(4)
-           else
-             []
-           end %>
+<% parts = variant_gallery_details(variant, product) %>
 <% packshot_url = variant_image_url(variant) %>
 
 <div class="gallery"
      data-controller="gallery"
+     data-gallery-variant-id="<%= variant&.id %>"
      data-gallery-active-class="is-active">
 
   <div class="gallery__rail">
@@ -33,21 +28,20 @@
         </button>
       </li>
 
-      <% parts.each_with_index do |image, index| %>
-        <% detail_label = variant_detail_label(image) %>
+      <% parts.each_with_index do |detail, index| %>
+        <% detail_label = detail[:label] %>
         <li>
           <button type="button"
                   class="gallery__thumb"
                   data-gallery-target="thumb"
                   data-action="gallery#show"
                   data-gallery-index-param="<%= index + 1 %>"
-                  data-gallery-src="<%= url_for(image) %>"
-                  data-gallery-alt="<%= product.display_name %> - <%= detail_label.downcase %>"
+                  data-gallery-src="<%= detail[:src] %>"
+                  data-gallery-alt="<%= detail[:alt] %>"
                   data-gallery-fit="contain"
                   aria-label="<%= t("sections.see_detail", label: detail_label.downcase) %>">
             <span class="gallery__thumb-media">
-              <%= product_part_image_tag image, alt: "#{product.display_name} - #{detail_label}", thumb: 130,
-                    loading: "lazy", decoding: "async" %>
+              <%= image_tag detail[:src], alt: detail[:alt], loading: "lazy", decoding: "async" %>
             </span>
           </button>
         </li>

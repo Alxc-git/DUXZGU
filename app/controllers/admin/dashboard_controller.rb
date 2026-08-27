@@ -8,7 +8,7 @@ module Admin
       @recent_orders = order_scope.recent.includes(:product, :variant).limit(8)
       @attention = {
         supplier_errors: order_scope.supplier_errors.count,
-        awaiting_fulfillment: order_scope.paid.where(supplier_order_id: nil).count,
+        awaiting_fulfillment: order_scope.awaiting_supplier.count,
         unpaid: order_scope.where(paid_at: nil).where(created_at: 2.days.ago..).count
       }
     end

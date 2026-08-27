@@ -1,6 +1,7 @@
 <%# Home and product pages use the same visual section with different editorial angles. %>
 <% section_variant = local_assigns.fetch(:variant, :fabrication).to_sym %>
 <% if section_variant == :collection %>
+  <% section_image_url = catalogue_editorial_asset_url("collection.webp") %>
   <% section_image = product.collection_image %>
   <% section_alt = t("craft.collection_alt", product: product.display_name) %>
   <% section_eyebrow = t("craft.collection_eyebrow") %>
@@ -17,6 +18,7 @@
       body: t("craft.trust_desc") }
   ] %>
 <% else %>
+  <% section_image_url = catalogue_editorial_asset_url("fabrication.webp") %>
   <% section_image = product.craft_image %>
   <% section_alt = t("craft.detail_alt", product: product.display_name) %>
   <% section_eyebrow = t("craft.eyebrow") %>
@@ -34,14 +36,18 @@
   end %>
 <% end %>
 
-<% if section_image.attached? %>
+<% if section_image_url.present? || section_image.attached? %>
   <section class="craft">
     <div class="page-container craft__grid">
       <div class="craft__media">
         <%# Capped at 540px tall by the stylesheet, so it is served at that size
             rather than as the full exploded-view original. %>
-        <%= product_part_image_tag section_image, alt: section_alt, thumb: 560,
-              class: "craft__image", loading: "lazy", decoding: "async" %>
+        <% if section_image_url.present? %>
+          <%= image_tag section_image_url, alt: section_alt, class: "craft__image", loading: "lazy", decoding: "async" %>
+        <% else %>
+          <%= product_part_image_tag section_image, alt: section_alt, thumb: 560,
+                class: "craft__image", loading: "lazy", decoding: "async" %>
+        <% end %>
       </div>
 
       <div class="craft__content">

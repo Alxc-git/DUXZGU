@@ -10,6 +10,13 @@
 #     schedule: at 5am every day
 
 production:
+  # Paid orders that never reached CJ, re-offered until they land. See the job
+  # for why FulfillOrderJob own retries are not enough on their own.
+  retry_supplier_failures:
+    class: RetryFailedFulfillmentJob
+    queue: default
+    schedule: every hour at minute 24
+
   sync_supplier_tracking:
     class: UpdateTrackingJob
     queue: default

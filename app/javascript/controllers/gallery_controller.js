@@ -7,11 +7,13 @@ export default class extends Controller {
   static classes = ["active"]
 
   connect() {
+    this.variantId = this.element.dataset.galleryVariantId || "default"
     this.index = 0
     this.onVariantChange = this.onVariantChange.bind(this)
     this.onKeydown = this.onKeydown.bind(this)
     window.addEventListener("variant:change", this.onVariantChange)
     window.addEventListener("keydown", this.onKeydown)
+    this.select(this.storedIndex(), { persist: false })
   }
 
   disconnect() {
@@ -22,9 +24,10 @@ export default class extends Controller {
 
   show(event) {
     this.select(Number(event.params.index))
+    this.revealStage()
   }
 
-  select(index) {
+  select(index, { persist = true } = {}) {
     const thumb = this.thumbTargets[index]
     if (!thumb) return
 
@@ -47,6 +50,8 @@ export default class extends Controller {
       dot.classList.toggle(this.activeClass, position === index)
       dot.setAttribute("aria-selected", String(position === index))
     })
+
+    if (persist) this.storeIndex(index)
   }
 
   // The colour picker owns the first slide's photo, so it has to be re-pointed
@@ -55,7 +60,9 @@ export default class extends Controller {
     const first = this.thumbTargets[0]
     if (!first) return
 
-    const { hero, name, details = [] } = event.detail || {}
+    const { variantId, hero, name, details = [] } = event.detail || {}
+    this.variantId = variantId || "default"
+    this.element.dataset.galleryVariantId = this.variantId
     if (hero) first.dataset.gallerySrc = hero
     if (name) first.dataset.galleryAlt = name
 
@@ -86,7 +93,38 @@ export default class extends Controller {
       dot.hidden = !details[index]
     })
 
-    this.select(0)
+    this.select(this.storedIndex(), { persist: false })
+  }
+
+  revealStage() {
+    if (!this.hasStageTarget || !window.matchMedia("(max-width: 767px)").matches) return
+
+    const stage = this.stageTarget.closest(".gallery__stage")
+    if (!stage) return
+
+    const behavior = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"
+    requestAnimationFrame(() => stage.scrollIntoView({ behavior, block: "start" }))
+  }
+
+  storedIndex() {
+    try {
+      const value = Number.parseInt(window.sessionStorage.getItem(this.storageKey()), 10)
+      return Number.isInteger(value) && this.thumbTargets[value] ? value : 0
+    } catch (_error) {
+      return 0
+    }
+  }
+
+  storeIndex(index) {
+    try {
+      window.sessionStorage.setItem(this.storageKey(), String(index))
+    } catch (_error) {
+      // Safari private mode may disable session storage; the gallery still works.
+    }
+  }
+
+  storageKey() {
+    return `luxtime:gallery:${window.location.pathname}:${this.variantId}`
   }
 
   zoom() {

@@ -18,7 +18,7 @@
           <p class="review__author">
             <span class="review__avatar" aria-hidden="true"><%= review["author"].to_s.first %></span>
             <span class="review__name"><%= review["author"] %></span>
-            <span class="review__verified"><%= icon "check", size: 14 %> Achat verifie</span>
+            <span class="review__verified"><%= icon "check", size: 14 %> <%= t("product.verified_purchase") %></span>
           </p>
         </li>
       <% end %>

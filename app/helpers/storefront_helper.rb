@@ -1,4 +1,12 @@
 module StorefrontHelper
+  CATALOGUE_ROOT = Rails.root.join("montres_images", "catalogue")
+  CATALOGUE_DETAILS = [
+    [ "details/01-angle.webp", "Angle" ],
+    [ "details/02-vue-eclatee.webp", "Vue eclatee" ],
+    [ "details/03-profil.webp", "Profil" ],
+    [ "details/04-fond.webp", "Fond" ]
+  ].freeze
+
   # The packshots are 1600px files. Drawing one into an 80px thumbnail leaves the
   # browser to downscale 20:1, which speckles the dial and the bracelet, so a
   # resized copy is served instead wherever the image is displayed small.
@@ -14,22 +22,35 @@ module StorefrontHelper
   end
 
   def variant_image_url(variant)
-    attached_url(variant&.display_image)
+    catalogue_variant_asset_url(variant, "packshot.webp") || attached_url(variant&.display_image)
   end
 
   def variant_hero_image_url(variant)
-    attached_url(variant&.hero_image)
+    catalogue_variant_asset_url(variant, "lifestyle.webp") || attached_url(variant&.hero_image)
+  end
+
+  def catalogue_editorial_asset_url(filename)
+    relative_path = File.join("editorial", filename)
+    return unless CATALOGUE_ROOT.join(relative_path).file?
+
+    asset_path(relative_path)
   end
 
   # The white-background packshot, for pickers and thumbnails. `thumb` is the
   # longest edge in CSS pixels; it is doubled so the image stays sharp on a
   # retina screen.
   def variant_image_tag(variant, alt:, thumb: nil, **options)
+    source = catalogue_variant_asset_url(variant, "packshot.webp")
+    return image_tag(source, alt:, **options) if source
+
     attached_image_tag(resized(variant&.display_image, thumb), alt:, **options)
   end
 
   # The editorial shot, for the hero and the gallery stage.
   def variant_hero_image_tag(variant, alt:, thumb: nil, **options)
+    source = catalogue_variant_asset_url(variant, "lifestyle.webp")
+    return image_tag(source, alt:, **options) if source
+
     attached_image_tag(resized(variant&.hero_image, thumb), alt:, **options)
   end
 
@@ -42,6 +63,32 @@ module StorefrontHelper
         .sub(/\A\d+-/, "")
         .tr("-", " ")
         .capitalize
+  end
+
+  # The six catalogue colours ship with the application, so their photos survive
+  # Railway restarts even when Active Storage has no persistent volume. Products
+  # added from the admin continue to use their attached images as a fallback.
+  def variant_gallery_details(variant, product = nil)
+    catalogue_details = CATALOGUE_DETAILS.filter_map do |path, label|
+      src = catalogue_variant_asset_url(variant, path)
+      next unless src
+
+      {
+        src:,
+        label:,
+        alt: "#{product&.display_name || variant&.product&.display_name || variant&.display_name} - #{label.downcase}"
+      }
+    end
+    return catalogue_details if catalogue_details.any?
+
+    fallback_gallery_images(variant, product).map do |image|
+      label = variant_detail_label(image)
+      {
+        src: attached_url(image),
+        label:,
+        alt: "#{product&.display_name || variant&.display_name} - #{label.downcase}"
+      }
+    end
   end
 
   # Month names live here rather than in a locale file: the app runs on the default
@@ -88,11 +135,8 @@ module StorefrontHelper
       compare_at: variant.formatted_compare_at_price,
       image: variant_image_url(variant),
       hero: variant_image_url(variant),
-      details: variant.detail_images.first(4).map { |image|
-        {
-          src: attached_url(image),
-          alt: "#{variant.display_name} - #{variant_detail_label(image).downcase}"
-        }
+      details: variant_gallery_details(variant).map { |detail|
+        detail.slice(:src, :alt)
       }.to_json
     }.compact
   end
@@ -112,6 +156,23 @@ module StorefrontHelper
 
   def resized(attachment, _thumb)
     attachment
+  end
+
+  def fallback_gallery_images(variant, product)
+    return variant.detail_images.first(4) if variant&.detail_images&.attached?
+    return product.part_images.first(4) if product&.part_images&.attached?
+
+    []
+  end
+
+  def catalogue_variant_asset_url(variant, path)
+    slug = variant&.name.to_s.parameterize
+    return if slug.blank?
+
+    relative_path = File.join(slug, path)
+    return unless CATALOGUE_ROOT.join(relative_path).file?
+
+    asset_path(relative_path)
   end
 
   def attached_url(attachment)

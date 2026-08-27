@@ -1,0 +1,145 @@
+<% content_for :title, "Approvisionnement CJ | Admin" %>
+<% money = ->(cents) { MoneyFormatter.format(cents, @currency) } %>
+
+<header class="admin-page-head">
+  <div>
+    <p class="admin-page-head__eyebrow">Fournisseur</p>
+    <h1>Approvisionnement CJ</h1>
+    <p class="admin-page-head__lead">
+      CJ preleve sur un solde prepaye. Quand ce solde tombe a zero, les commandes
+      restent payees par le client mais ne partent pas : elles s'accumulent ici.
+    </p>
+  </div>
+
+  <%= form_with url: admin_fulfillment_path, method: :get, class: "admin-filters", data: { turbo_frame: "_top" } do |form| %>
+    <%= form.select :store_id,
+          options_from_collection_for_select(@stores, :id, :name, @store&.id),
+          { include_blank: "Toutes les boutiques" },
+          class: "admin-select", onchange: "this.form.requestSubmit()" %>
+    <noscript><%= form.submit "Appliquer", class: "button button--secondary" %></noscript>
+  <% end %>
+</header>
+
+<%# The three numbers that decide whether action is needed right now. %>
+<div class="kpi-row">
+  <article class="kpi">
+    <p class="kpi__label">Commandes bloquees</p>
+    <p class="kpi__value"><%= @blocked.size %></p>
+    <p class="kpi__foot"><span class="kpi__hint">Payees, pas encore acceptees par CJ</span></p>
+  </article>
+
+  <article class="kpi">
+    <p class="kpi__label">Credit CJ necessaire</p>
+    <p class="kpi__value"><%= money.call(@credit_needed_cents) %></p>
+    <p class="kpi__foot"><span class="kpi__hint">Cout fournisseur pour tout ecouler</span></p>
+  </article>
+
+  <article class="kpi">
+    <p class="kpi__label">Deja encaisse</p>
+    <p class="kpi__value"><%= money.call(@collected_cents) %></p>
+    <p class="kpi__foot"><span class="kpi__hint">Ce que ces clients ont deja paye</span></p>
+  </article>
+</div>
+
+<section class="admin-card">
+  <div class="admin-card__head">
+    <h2>Commandes bloquees</h2>
+    <% if @blocked.any? %>
+      <%= button_to "Tout renvoyer a CJ",
+            retry_all_admin_fulfillment_path(store_id: params[:store_id]),
+            class: "button", form: { data: { turbo_confirm: "Renvoyer #{@blocked.size} commande(s) a CJ ?" } } %>
+    <% end %>
+  </div>
+
+  <% if @blocked.empty? %>
+    <p class="admin-empty">Rien en attente : tout ce qui a ete paye est parti chez CJ.</p>
+  <% else %>
+    <p class="admin-card__note">
+      Creditez votre compte CJ d'au moins <strong><%= money.call(@credit_needed_cents) %></strong>,
+      puis appuyez sur &laquo;&nbsp;Tout renvoyer a CJ&nbsp;&raquo;. Un balayage automatique
+      retente aussi ces commandes toutes les heures.
+    </p>
+
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>#</th><th>Client</th><th>Produit</th><th>Qte</th>
+          <th>Paye</th><th>Cout CJ</th><th>Etat CJ</th><th>Paye depuis</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @blocked.each do |order| %>
+          <tr>
+            <td><%= link_to order.id, admin_order_path(order) %></td>
+            <td>
+              <%= order.customer_name.presence || "&mdash;".html_safe %><br>
+              <small><%= order.email %></small>
+            </td>
+            <td><%= order.product.name %><br><small><%= order.variant&.name %></small></td>
+            <td><%= order.quantity %></td>
+            <td><%= order.formatted_total %></td>
+            <td><%= MoneyFormatter.format(order.supplier_cost_cents, order.currency) %></td>
+            <td>
+              <% if order.supplier_status == "failed" %>
+                <span class="status status--failed">Refusee</span>
+              <% else %>
+                <span class="status status--paid">En attente</span>
+              <% end %>
+            </td>
+            <td><%= order.paid_at ? "#{time_ago_in_words(order.paid_at)}" : "&mdash;".html_safe %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+</section>
+
+<div class="admin-grid admin-grid--split">
+  <section class="admin-card">
+    <div class="admin-card__head"><h2>Chez CJ</h2></div>
+    <% if @at_supplier.empty? %>
+      <p class="admin-empty">Aucune commande en preparation.</p>
+    <% else %>
+      <table class="admin-table">
+        <thead><tr><th>#</th><th>Client</th><th>Commande CJ</th><th>Envoyee</th></tr></thead>
+        <tbody>
+          <% @at_supplier.each do |order| %>
+            <tr>
+              <td><%= link_to order.id, admin_order_path(order) %></td>
+              <td><small><%= order.email %></small></td>
+              <td><small><%= order.supplier_order_id %></small></td>
+              <td><%= order.submitted_to_supplier_at ? l(order.submitted_to_supplier_at, format: :short) : "&mdash;".html_safe %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% end %>
+  </section>
+
+  <section class="admin-card">
+    <div class="admin-card__head"><h2>Expediees</h2></div>
+    <% if @on_its_way.empty? %>
+      <p class="admin-empty">Aucun colis en route.</p>
+    <% else %>
+      <table class="admin-table">
+        <thead><tr><th>#</th><th>Client</th><th>Suivi</th><th>Etat</th></tr></thead>
+        <tbody>
+          <% @on_its_way.each do |order| %>
+            <tr>
+              <td><%= link_to order.id, admin_order_path(order) %></td>
+              <td><small><%= order.email %></small></td>
+              <td>
+                <% if order.tracking_url.present? %>
+                  <%= link_to order.tracking_number, order.tracking_url, target: "_blank", rel: "noopener" %>
+                <% else %>
+                  <small><%= order.tracking_number.presence || "&mdash;".html_safe %></small>
+                <% end %>
+              </td>
+              <td><span class="status status--<%= order.delivered? ? "delivered" : "shipped" %>"><%= order.delivered? ? "Livree" : "Expediee" %></span></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% end %>
+  </section>
+</div>

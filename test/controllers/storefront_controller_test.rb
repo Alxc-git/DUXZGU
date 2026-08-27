@@ -4,10 +4,14 @@ class StorefrontControllerTest < ActionDispatch::IntegrationTest
   setup { host! "localhost" }
 
   test "the landing page shows the hero and one card per active colour" do
+    variants(:black).update!(name: "Or Noir")
+
     get root_path
 
     assert_response :success
     assert_select ".hero__title"
+    assert_select ".hero__image[src*=?]", "or-noir/lifestyle", 1
+    assert_select ".craft__image[src*=?]", "editorial/fabrication", 1
     assert_select ".colour-card", 2
     assert_select ".colour-card__name", text: "Bleu"
   end
@@ -55,6 +59,20 @@ class StorefrontControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "input[name=variant_id][value=?][checked=checked]", variants(:blue).id.to_s
     assert_select ".buy-box__price", text: variants(:blue).formatted_price
+  end
+
+  test "the catalogue gallery uses deploy-safe assets for a known colour" do
+    variants(:blue).update!(name: "Or Bleu")
+
+    get storefront_product_path(products(:demo_product).slug, couleur: variants(:blue).id)
+
+    assert_response :success
+    assert_select ".gallery[data-gallery-variant-id=?]", variants(:blue).id.to_s
+    assert_select ".gallery__thumb", 5
+    assert_select ".gallery__thumb[data-gallery-src*=?]", "or-bleu/packshot", 1
+    assert_select ".gallery__thumb[data-gallery-src*=?]", "or-bleu/details/02-vue-eclatee", 1
+    assert_select ".gallery__stage img[src*=?]", "or-bleu/packshot", 1
+    assert_select ".craft__image[src*=?]", "editorial/collection", 1
   end
 
   test "an unknown colour in the URL falls back to the default instead of failing" do

@@ -45,6 +45,12 @@ Rails.application.routes.draw do
     resources :customers, only: %i[index show]
     resource :settings, only: :show
 
+    # The CJ balance runs out on the busiest days, which is exactly when nobody
+    # is watching the orders list. This panel is where that shows up.
+    resource :fulfillment, only: :show, controller: "fulfillment" do
+      post :retry_all
+    end
+
     resources :orders, only: %i[index show] do
       member do
         post :retry_fulfillment
