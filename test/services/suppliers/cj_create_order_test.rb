@@ -3,6 +3,10 @@ require "test_helper"
 module Suppliers
   module Cj
     class CreateOrderTest < ActiveSupport::TestCase
+      setup do
+        stores(:demo).update!(supplier_settings: stores(:demo).supplier_settings.merge("pay_type" => 1))
+      end
+
       test "does not create duplicate supplier orders" do
         order = orders(:paid_order)
         calls = 0
@@ -34,6 +38,23 @@ module Suppliers
         assert_equal "Canada", payload[:shippingCountry]
         assert_equal "H3G 1P1", payload[:shippingZip]
         assert_equal [ { vid: "cj-variant-black", quantity: 1 } ], payload[:products]
+        assert_equal 1, payload[:payType]
+      end
+
+      test "keeps the CJ manual payment link on the order" do
+        order = orders(:paid_order)
+        order.update!(supplier_order_id: nil)
+        client = stub_client(response: {
+          "orderId" => "cj-manual",
+          "orderStatus" => "UNPAID",
+          "cjPayUrl" => "https://www.cjdropshipping.com/mine/payment?pid=PAY-1",
+          "payId" => "PAY-1"
+        })
+
+        Suppliers::Cj::CreateOrder.call(client:, order:)
+
+        assert_equal "https://www.cjdropshipping.com/mine/payment?pid=PAY-1", order.reload.supplier_payment_url
+        assert_equal 1, order.metadata.dig("cj_order", "payType")
       end
 
       test "reads pay type, warehouse and carrier from supplier settings" do
@@ -73,11 +94,11 @@ module Suppliers
 
       private
 
-      def stub_client(&recorder)
+      def stub_client(response: nil, &recorder)
         client = Object.new
         client.define_singleton_method(:post) do |path, payload|
           recorder&.call(path, payload)
-          { "data" => { "orderId" => "cj-new", "orderStatus" => "CREATED" } }
+          { "data" => response || { "orderId" => "cj-new", "orderStatus" => "CREATED" } }
         end
         client
       end

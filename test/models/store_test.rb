@@ -45,6 +45,14 @@ class StoreTest < ActiveSupport::TestCase
     assert_equal "+1 514 555-0100", store.business_phone
   end
 
+  test "CJ uses manual payment when no pay type is configured" do
+    store = stores(:demo)
+    store.update!(supplier_settings: store.supplier_settings.except("pay_type"))
+
+    assert_equal 1, store.cj_pay_type
+    assert_predicate store, :manual_cj_payment?
+  end
+
   private
 
   # The fallback only applies outside development and test, which is exactly the

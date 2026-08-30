@@ -28,7 +28,7 @@ store.settings = store.settings.merge(
                      Store::DEFAULT_SUPPORT_EMAIL
 )
 store.supplier_settings = store.supplier_settings.merge(
-  "pay_type" => store.supplier_settings["pay_type"].presence || 2,
+  "pay_type" => store.supplier_settings["pay_type"].presence || 1,
   "fulfillment_delay_minutes" => store.supplier_settings["fulfillment_delay_minutes"].presence || 30
 )
 store.save!

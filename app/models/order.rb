@@ -98,6 +98,10 @@ class Order < ApplicationRecord
     tracking_number.present?
   end
 
+  def supplier_payment_url
+    metadata.dig("cj_order", "cjPayUrl").presence
+  end
+
   def reference
     metadata["checkout_reference"].presence || "ORD-#{id}"
   end

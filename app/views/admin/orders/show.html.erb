@@ -7,6 +7,9 @@
     <% if @order.stripe_payment_intent_id.present? %>
       <%= link_to "Open Stripe payment", "https://dashboard.stripe.com/payments/#{@order.stripe_payment_intent_id}", class: "button button--secondary", target: "_blank", rel: "noopener" %>
     <% end %>
+    <% if @order.supplier_payment_url.present? %>
+      <%= link_to "Payer chez CJ", @order.supplier_payment_url, class: "button", target: "_blank", rel: "noopener" %>
+    <% end %>
   </div>
 </div>
 
@@ -23,5 +26,6 @@
   <p><strong>Stripe payment:</strong> <%= @order.stripe_payment_intent_id %></p>
   <p><strong>Supplier order:</strong> <%= @order.supplier_order_id %></p>
   <p><strong>Supplier status:</strong> <%= @order.supplier_status %></p>
+  <p><strong>Paiement CJ:</strong> <%= @order.supplier_payment_url.present? ? "En attente de paiement manuel" : "Aucun lien disponible" %></p>
   <p><strong>Tracking:</strong> <%= link_to_if @order.tracking_url.present?, @order.tracking_number, @order.tracking_url, target: "_blank", rel: "noopener" %></p>
 </section>

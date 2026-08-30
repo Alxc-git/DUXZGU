@@ -16,6 +16,7 @@ module Admin
       # The supplier cost, not the revenue: this is the figure the CJ balance has
       # to cover before any of these orders can move.
       @forecast = Fulfillment::CreditForecast.new(store: @store || Store.first)
+      @manual_cj_payment = (@store || Store.first)&.manual_cj_payment?
       @credit_needed_cents = @blocked.sum(&:supplier_cost_cents)
       @collected_cents = @blocked.sum(&:total_cents)
       @currency = @blocked.first&.currency || Store::DEFAULT_CURRENCY

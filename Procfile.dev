@@ -1,3 +1,4 @@
 web: bin/rails server
+jobs: bin/jobs
 tailwind: bin/rails tailwindcss:watch
 sass: bin/rails dartsass:watch

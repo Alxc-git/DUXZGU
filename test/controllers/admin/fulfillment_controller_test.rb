@@ -18,6 +18,17 @@ class Admin::FulfillmentControllerTest < ActionDispatch::IntegrationTest
     assert_match @order.email, response.body
   end
 
+  test "manual CJ mode explains that orders are paid one by one" do
+    @order.store.update!(supplier_settings: @order.store.supplier_settings.merge("pay_type" => 1))
+
+    get admin_fulfillment_path
+
+    assert_response :success
+    assert_match "Mode de paiement CJ", response.body
+    assert_match "Chaque commande se paie separement", response.body
+    assert_no_match "Nouveau solde apres credit", response.body
+  end
+
   # The whole point of the panel: knowing how much to top the CJ balance up by,
   # which is the supplier cost and never the revenue the customer paid.
   test "the credit needed is the supplier cost, not what the customer paid" do

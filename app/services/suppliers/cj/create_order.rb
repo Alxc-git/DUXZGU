@@ -2,9 +2,10 @@ module Suppliers
   module Cj
     class CreateOrder < ApplicationService
       ENDPOINT = "/shopping/order/createOrderV2".freeze
-      # 1 = pay on CJ's page, 2 = deduct from CJ balance, 3 = create only.
-      # Balance keeps fulfillment hands-off, which is the point of the pipeline.
-      DEFAULT_PAY_TYPE = 2
+      # 1 = create the order and return CJ's hosted payment page. The merchant
+      # pays each order manually because CJ balance deposits are not available
+      # in every country. 2 would deduct from the prepaid CJ balance.
+      DEFAULT_PAY_TYPE = 1
       DEFAULT_FROM_COUNTRY = "CN".freeze
 
       def initialize(client:, order:)
@@ -23,7 +24,11 @@ module Suppliers
             supplier_order_id: data["orderId"].presence || data["orderNum"].presence,
             supplier_status: data["orderStatus"].presence || "CREATED",
             submitted_to_supplier_at: Time.current,
-            metadata: order.metadata.merge("cj_order" => data.slice("orderNumber", "orderAmount", "shipmentOrderId").compact)
+            metadata: order.metadata.merge(
+              "cj_order" => data.slice(
+                "orderNumber", "orderAmount", "shipmentOrderId", "cjPayUrl", "payId"
+              ).compact.merge("payType" => setting("pay_type", DEFAULT_PAY_TYPE).to_i)
+            )
           )
         end
 

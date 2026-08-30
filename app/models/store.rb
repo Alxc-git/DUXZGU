@@ -100,6 +100,14 @@ class Store < ApplicationRecord
     [ minutes, 240 ].min
   end
 
+  def cj_pay_type
+    supplier_settings["pay_type"].presence&.to_i || 1
+  end
+
+  def manual_cj_payment?
+    cj_pay_type == 1
+  end
+
 
   # The CJ prepaid balance, as last recorded by hand.
   #

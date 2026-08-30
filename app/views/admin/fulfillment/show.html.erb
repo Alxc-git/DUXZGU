@@ -6,8 +6,13 @@
     <p class="admin-page-head__eyebrow">Fournisseur</p>
     <h1>Approvisionnement CJ</h1>
     <p class="admin-page-head__lead">
-      CJ preleve sur un solde prepaye. Quand ce solde tombe a zero, les commandes
-      restent payees par le client mais ne partent pas : elles s'accumulent ici.
+      <% if @manual_cj_payment %>
+        Les commandes sont creees chez CJ sans debit automatique. Ouvrez ensuite
+        leur page de paiement CJ et reglez-les une par une.
+      <% else %>
+        CJ preleve sur un solde prepaye. Quand ce solde tombe a zero, les commandes
+        restent payees par le client mais ne partent pas : elles s'accumulent ici.
+      <% end %>
     </p>
   </div>
 
@@ -25,6 +30,23 @@
     customer has been charged. Nobody catches that by watching a number: they
     catch it when orders start failing. A countdown does the watching instead. %>
 <% forecast = @forecast %>
+<% if @manual_cj_payment %>
+  <section class="credit credit--unknown">
+    <div class="credit__state">
+      <p class="credit__label">Mode de paiement CJ</p>
+      <p class="credit__value">Manuel</p>
+      <p class="credit__note">Aucun prelevement ne sera tente sur le wallet CJ.</p>
+    </div>
+
+    <div class="credit__forecast">
+      <p class="credit__headline">Chaque commande se paie separement</p>
+      <p class="credit__body">
+        Une fois la commande acceptee par CJ, utilisez le bouton
+        &laquo;&nbsp;Payer chez CJ&nbsp;&raquo; dans la liste ci-dessous.
+      </p>
+    </div>
+  </section>
+<% else %>
 <section class="credit credit--<%= forecast.level %>">
   <div class="credit__state">
     <p class="credit__label">Solde CJ estime</p>
@@ -92,6 +114,7 @@
     </div>
   <% end %>
 </section>
+<% end %>
 <%# The three numbers that decide whether action is needed right now. %>
 <div class="kpi-row kpi-row--trio">
   <article class="kpi">
@@ -101,9 +124,9 @@
   </article>
 
   <article class="kpi">
-    <p class="kpi__label">Credit CJ necessaire</p>
+    <p class="kpi__label"><%= @manual_cj_payment ? "Cout CJ estime" : "Credit CJ necessaire" %></p>
     <p class="kpi__value"><%= money.call(@credit_needed_cents) %></p>
-    <p class="kpi__foot"><span class="kpi__hint">Cout fournisseur pour tout ecouler</span></p>
+    <p class="kpi__foot"><span class="kpi__hint"><%= @manual_cj_payment ? "A payer manuellement apres creation" : "Cout fournisseur pour tout ecouler" %></span></p>
   </article>
 
   <article class="kpi">
@@ -127,9 +150,14 @@
     <p class="admin-empty">Rien en attente : tout ce qui a ete paye est parti chez CJ.</p>
   <% else %>
     <p class="admin-card__note">
-      Creditez votre compte CJ d'au moins <strong><%= money.call(@credit_needed_cents) %></strong>,
-      puis appuyez sur &laquo;&nbsp;Tout renvoyer a CJ&nbsp;&raquo;. Un balayage automatique
-      retente aussi ces commandes toutes les heures.
+      <% if @manual_cj_payment %>
+        Appuyez sur &laquo;&nbsp;Tout renvoyer a CJ&nbsp;&raquo;. Apres creation, la commande
+        apparaitra dans la section &laquo;&nbsp;Chez CJ&nbsp;&raquo; avec son bouton de paiement.
+      <% else %>
+        Creditez votre compte CJ d'au moins <strong><%= money.call(@credit_needed_cents) %></strong>,
+        puis appuyez sur &laquo;&nbsp;Tout renvoyer a CJ&nbsp;&raquo;.
+      <% end %>
+      Un balayage automatique retente aussi ces commandes toutes les heures.
     </p>
 
     <table class="admin-table">
@@ -222,13 +250,21 @@
       <p class="admin-empty">Aucune commande en preparation.</p>
     <% else %>
       <table class="admin-table">
-        <thead><tr><th>#</th><th>Client</th><th>Commande CJ</th><th>Envoyee</th></tr></thead>
+        <thead><tr><th>#</th><th>Client</th><th>Commande CJ</th><th>Paiement</th><th>Envoyee</th></tr></thead>
         <tbody>
           <% @at_supplier.each do |order| %>
             <tr>
               <td><%= link_to order.id, admin_order_path(order) %></td>
               <td><small><%= order.email %></small></td>
               <td><small><%= order.supplier_order_id %></small></td>
+              <td>
+                <% if order.supplier_payment_url.present? %>
+                  <%= link_to "Payer chez CJ", order.supplier_payment_url,
+                        class: "button button--secondary", target: "_blank", rel: "noopener" %>
+                <% else %>
+                  <small>&mdash;</small>
+                <% end %>
+              </td>
               <td><%= order.submitted_to_supplier_at ? l(order.submitted_to_supplier_at, format: :short) : "&mdash;".html_safe %></td>
             </tr>
           <% end %>

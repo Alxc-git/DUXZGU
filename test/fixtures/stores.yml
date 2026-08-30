@@ -5,7 +5,8 @@ demo:
   active: true
   currency: cad
   supplier_type: cj
-  supplier_settings: {}
+  supplier_settings:
+    pay_type: 2
   settings: {}
 
 other:
@@ -15,5 +16,6 @@ other:
   active: true
   currency: usd
   supplier_type: cj
-  supplier_settings: {}
+  supplier_settings:
+    pay_type: 2
   settings: {}
