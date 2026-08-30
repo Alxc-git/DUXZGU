@@ -88,3 +88,24 @@
   font-size: 0.82rem;
   margin: 0.6rem 0 0.25rem;
 }
+
+.manual-order__repair {
+  display: grid;
+  gap: 0.4rem;
+  margin-top: 1rem;
+}
+
+.manual-order__repair label {
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.manual-order__repair-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.manual-order__repair-row .form__input {
+  flex: 1 1 180px;
+}

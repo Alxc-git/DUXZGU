@@ -159,6 +159,8 @@ en:
       subject: "Please choose a subject"
       first_name: "Please enter your first name"
       last_name: "Please enter your last name"
+      phone: "Please enter your phone number"
+      phone_invalid: "Please enter a valid phone number"
       address: "Please enter your address"
       city: "Please enter your city"
       postal_code: "Please enter your postal code"

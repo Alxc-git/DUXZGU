@@ -84,6 +84,7 @@ module Payments
         email: "alexis@exemple.ca",
         first_name: "Alexis",
         last_name: "Giard",
+        phone: "+1 514 555 0123",
         address_line1: "123 rue Sainte-Catherine",
         city: "Montreal",
         province: "QC",

@@ -37,6 +37,7 @@ class FulfillOrderJobTest < ActiveJob::TestCase
     order.reload
     assert_predicate order, :paid?
     assert_equal "failed", order.supplier_status
+    assert_match "supplier variant", order.metadata["fulfillment_error"]
     assert_not_nil order.paid_at
   end
 

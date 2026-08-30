@@ -1,6 +1,6 @@
 module Admin
   class OrdersController < BaseController
-    before_action :set_order, only: %i[show retry_fulfillment mark_shipped refund]
+    before_action :set_order, only: %i[show retry_fulfillment repair_fulfillment mark_shipped refund]
 
     def index
       @stores = Store.order(:name)
@@ -19,6 +19,26 @@ module Admin
     def retry_fulfillment
       FulfillOrderJob.perform_later(@order.id)
       redirect_to admin_order_path(@order), notice: "Fulfillment retry queued"
+    end
+
+    def repair_fulfillment
+      phone = params.dig(:order, :phone).to_s
+      unless ShippingPhone.valid?(phone)
+        redirect_to admin_fulfillment_path, alert: "Entrez un numero de telephone valide (6 a 32 chiffres)."
+        return
+      end
+
+      normalized = ShippingPhone.normalize(phone)
+      @order.update!(
+        phone: normalized,
+        supplier_status: nil,
+        metadata: @order.metadata.except("fulfillment_error", "fulfillment_failed_at")
+      )
+      @order.customer&.update!(phone: normalized)
+      FulfillOrderJob.perform_later(@order.id)
+
+      redirect_to admin_fulfillment_path,
+        notice: "Telephone enregistre. La commande ##{@order.id} est renvoyee a CJ."
     end
 
     def mark_shipped

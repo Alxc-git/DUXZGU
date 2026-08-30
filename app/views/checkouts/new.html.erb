@@ -46,7 +46,8 @@
             <div class="field">
               <%= form.label :phone, t("checkout.phone") %>
               <%= form.telephone_field :phone, autocomplete: "tel", placeholder: "514 555 0123",
-                    class: field_class(@form, :phone) %>
+                    required: true, class: field_class(@form, :phone) %>
+              <%= checkout_field_error(@form, :phone) %>
             </div>
           </div>
         </section>

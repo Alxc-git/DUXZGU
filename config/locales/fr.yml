@@ -178,6 +178,8 @@ fr:
       subject: "Choisissez un sujet"
       first_name: "Indiquez votre prenom"
       last_name: "Indiquez votre nom"
+      phone: "Indiquez votre numero de telephone"
+      phone_invalid: "Indiquez un numero de telephone valide"
       address: "Indiquez votre adresse"
       city: "Indiquez votre ville"
       postal_code: "Indiquez votre code postal"

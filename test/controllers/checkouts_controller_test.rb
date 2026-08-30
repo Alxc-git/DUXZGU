@@ -47,6 +47,17 @@ class CheckoutsControllerTest < ActionDispatch::IntegrationTest
     assert_select ".checkout__errors", text: /courriel/i
   end
 
+  test "requires a valid shipping phone before payment" do
+    fill_cart
+
+    assert_no_difference "Order.count" do
+      post checkout_path, params: { checkout_form: valid_details.merge(phone: "") }
+    end
+
+    assert_response :unprocessable_entity
+    assert_select ".checkout__errors", text: /telephone/i
+  end
+
   test "places the order, empties the cart and confirms" do
     fill_cart
 
@@ -112,6 +123,7 @@ class CheckoutsControllerTest < ActionDispatch::IntegrationTest
       email: "alexis@exemple.ca",
       first_name: "Alexis",
       last_name: "Giard",
+      phone: "+1 514 555 0123",
       address_line1: "123 rue Sainte-Catherine",
       city: "Montreal",
       province: "QC",

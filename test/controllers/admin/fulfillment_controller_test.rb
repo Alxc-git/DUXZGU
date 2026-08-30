@@ -99,6 +99,19 @@ class Admin::FulfillmentControllerTest < ActionDispatch::IntegrationTest
     assert_match "Aucune commande en attente", flash[:notice]
   end
 
+  test "an admin can add the missing phone and retry the blocked order" do
+    @order.update!(phone: nil, metadata: { "fulfillment_error" => "Phone required" })
+
+    assert_enqueued_with(job: FulfillOrderJob, args: [ @order.id ]) do
+      patch repair_fulfillment_admin_order_path(@order), params: { order: { phone: "+1 (514) 555-0142" } }
+    end
+
+    assert_redirected_to admin_fulfillment_path
+    assert_equal "+15145550142", @order.reload.phone
+    assert_nil @order.supplier_status
+    assert_nil @order.metadata["fulfillment_error"]
+  end
+
   test "the panel needs a signed-in admin" do
     delete admin_logout_path
     get admin_fulfillment_path

@@ -182,11 +182,14 @@
             <td>
               <% if order.supplier_status == "failed" %>
                 <span class="status status--failed">Refusee</span>
+                <% if order.metadata["fulfillment_error"].present? %>
+                  <small class="admin-table__sub"><%= order.metadata["fulfillment_error"] %></small>
+                <% end %>
               <% else %>
                 <span class="status status--paid">En attente</span>
               <% end %>
             </td>
-            <td><%= order.paid_at ? "#{time_ago_in_words(order.paid_at)}" : "&mdash;".html_safe %></td>
+            <td><%= order.paid_at ? admin_short_datetime(order.paid_at) : "&mdash;".html_safe %></td>
           </tr>
           <%# Everything needed to place this order by hand on CJ, in one place:
               when the button cannot get it through, the alternative is retyping
@@ -214,6 +217,18 @@
                       <dt>Telephone</dt><dd><%= order.phone.presence || "non fourni" %></dd>
                       <dt>Courriel</dt><dd><%= order.email %></dd>
                     </dl>
+
+                    <% unless ShippingPhone.valid?(order.phone) %>
+                      <%= form_with url: repair_fulfillment_admin_order_path(order), method: :patch,
+                            scope: :order, class: "manual-order__repair" do |form| %>
+                        <%= form.label :phone, "Telephone requis par CJ" %>
+                        <div class="manual-order__repair-row">
+                          <%= form.telephone_field :phone, value: order.phone, autocomplete: "tel",
+                                placeholder: "+1 514 555 0123", required: true, class: "form__input" %>
+                          <%= form.submit "Enregistrer et renvoyer a CJ", class: "button button--compact" %>
+                        </div>
+                      <% end %>
+                    <% end %>
                   </section>
 
                   <section class="manual-order__block">

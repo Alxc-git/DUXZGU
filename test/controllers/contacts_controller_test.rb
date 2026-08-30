@@ -102,6 +102,7 @@ class ContactsControllerTest < ActionDispatch::IntegrationTest
     post checkout_path, params: {
       checkout_form: {
         email: "client@exemple.ca", first_name: "Ada", last_name: "Lovelace",
+        phone: "+1 514 555 0123",
         address_line1: "1 rue Test", city: "Montreal", postal_code: "H2X 1Y6", country: "CA"
       }
     }

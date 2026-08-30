@@ -17,9 +17,23 @@ class FulfillOrderJob < ApplicationJob
     # would erase that. `supplier_status` records the problem instead, and the
     # admin's `supplier_errors` scope reads that field too.
     Rails.logger.error("[Fulfillment] #{e.message}")
-    order&.update!(supplier_status: "failed")
+    record_failure(order, e)
   rescue Suppliers::Cj::Client::Error => e
-    order&.update!(supplier_status: "failed")
+    record_failure(order, e)
     raise e
+  end
+
+  private
+
+  def record_failure(order, error)
+    return if order.blank?
+
+    order.update!(
+      supplier_status: "failed",
+      metadata: order.metadata.merge(
+        "fulfillment_error" => error.message.to_s.first(500),
+        "fulfillment_failed_at" => Time.current.iso8601
+      )
+    )
   end
 end

@@ -31,6 +31,7 @@ module Suppliers
         assert_equal "/shopping/order/createOrderV2", path
         assert_equal "ORD-#{order.id}", payload[:orderNumber]
         assert_equal "Ada Lovelace", payload[:shippingCustomerName]
+        assert_equal "+15145550142", payload[:shippingPhone]
         assert_equal "1250 rue Sainte-Catherine O", payload[:shippingAddress]
         assert_equal "Montreal", payload[:shippingCity]
         assert_equal "QC", payload[:shippingProvince]
@@ -76,6 +77,15 @@ module Suppliers
       test "refuses an order without a shipping address instead of retrying forever" do
         order = orders(:paid_order)
         order.update!(supplier_order_id: nil, address_line1: nil)
+
+        assert_raises(Suppliers::InvalidOrder) do
+          Suppliers::Cj::CreateOrder.call(client: stub_client, order:)
+        end
+      end
+
+      test "refuses an order without the phone CJ requires" do
+        order = orders(:paid_order)
+        order.update!(supplier_order_id: nil, phone: nil)
 
         assert_raises(Suppliers::InvalidOrder) do
           Suppliers::Cj::CreateOrder.call(client: stub_client, order:)

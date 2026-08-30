@@ -87,7 +87,7 @@ module Orders
       customer = store.customers.find_or_initialize_by(email: details.email.to_s.strip.downcase)
       customer.first_name = details.first_name
       customer.last_name = details.last_name
-      customer.phone = details.phone.presence || customer.phone
+      customer.phone = details.normalized_phone.presence || customer.phone
       customer.save!
       customer
     end

@@ -59,6 +59,7 @@ Rails.application.routes.draw do
     resources :orders, only: %i[index show] do
       member do
         post :retry_fulfillment
+        patch :repair_fulfillment
         post :mark_shipped
         post :refund
       end
