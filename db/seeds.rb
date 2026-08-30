@@ -34,8 +34,9 @@ store.supplier_settings = store.supplier_settings.merge(
 store.save!
 
 PRODUCT_SLUG = "montre-chronographe-sport".freeze
-SALE_PRICE_CENTS = 5499
+SALE_PRICE_CENTS = 7999
 COMPARE_AT_PRICE_CENTS = 12000
+SUPPLIER_COST_CENTS = 2700
 
 product = store.products.find_by(slug: PRODUCT_SLUG) || store.products.new
 if product.new_record?
@@ -48,7 +49,7 @@ if product.new_record?
   product.active = true
   # Fill in from the CJ dashboard before going live.
   product.supplier_product_id = ""
-  product.supplier_cost_cents = 1200
+  product.supplier_cost_cents = SUPPLIER_COST_CENTS
 end
 # English names for the catalogue. French stays in the `name` column; anything a
 # shop renames in the admin keeps winning, because these only fill in a blank.
@@ -61,7 +62,7 @@ product.price_cents = SALE_PRICE_CENTS
 product.compare_at_price_cents = COMPARE_AT_PRICE_CENTS
 product.supplier_product_id = "1406875579055214592" if product.supplier_product_id.blank?
 product.supplier_sku = "CJYD118430701AZ" if product.supplier_sku.blank?
-product.supplier_cost_cents ||= 1260
+product.supplier_cost_cents = SUPPLIER_COST_CENTS
 product.save!
 
 # Every colour has its own media directory. Keeping the detail photos on the
@@ -156,7 +157,9 @@ COLOURS.each_with_index do |colour, index|
   variant.active = true
   variant.supplier_variant_id = colour[:cj_vid] if variant.supplier_variant_id.blank?
   variant[:supplier_sku] = colour[:cj_sku] if variant[:supplier_sku].blank?
-  variant[:supplier_cost_cents] ||= 1310
+  variant[:price_cents] = SALE_PRICE_CENTS
+  variant[:compare_at_price_cents] = COMPARE_AT_PRICE_CENTS
+  variant[:supplier_cost_cents] = SUPPLIER_COST_CENTS
   variant.save!
 
   media_folder = "catalogue/#{colour[:slug]}"

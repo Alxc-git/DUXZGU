@@ -26,6 +26,24 @@ module Payments
       assert_equal "cad", params[:currency]
     end
 
+    test "charges a repriced single watch at 79.99 dollars" do
+      variant = variants(:black)
+      variant.update!(price_cents: 7_999)
+
+      cart = Cart.new(store: @store, session: {})
+      cart.add(variant)
+      orders = Orders::PlaceFromCart.call(store: @store, cart:, details: details)
+      captured = nil
+      double = intent_double
+
+      with_intent_stub(->(params, _opts) { captured = params; double }) do
+        Payments::CreatePaymentIntent.call(store: @store, orders:, details: details)
+      end
+
+      assert_equal 7_999, orders.sum(&:total_cents)
+      assert_equal 7_999, captured[:amount]
+    end
+
     test "turns on cards and wallets through automatic payment methods" do
       assert_equal({ enabled: true }, capture_intent_params[:automatic_payment_methods])
     end
