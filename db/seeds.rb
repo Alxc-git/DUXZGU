@@ -82,11 +82,11 @@ COLOURS = [
   },
   {
     name: "Noir Integral", name_en: "All Black", hex: "#111111", slug: "noir-integral",
-    cj_vid: "1406875580493860864", cj_sku: "CJYD118430704DW"
+    cj_vid: "1406875580502249472", cj_sku: "CJYD118430705EV"
   },
   {
     name: "Rose Gold Noir", name_en: "Rose Gold Black", hex: "#b76e79", slug: "rose-gold-noir",
-    cj_vid: "1406875580502249472", cj_sku: "CJYD118430705EV"
+    cj_vid: "1406875580493860864", cj_sku: "CJYD118430704DW"
   },
   {
     name: "Argent Bracelet Noir", name_en: "Silver Black Strap", hex: "#d7d9dc", slug: "argent-bracelet-noir",
