@@ -7,11 +7,12 @@ module Orders
   # Payment is deliberately not part of this: orders are left `pending` and the
   # payment handoff happens after this service returns.
   class PlaceFromCart < ApplicationService
-    def initialize(store:, cart:, details:, attribution: nil)
+    def initialize(store:, cart:, details:, attribution: nil, meta_context: nil)
       @store = store
       @cart = cart
       @details = details
       @attribution = attribution.presence
+      @meta_context = meta_context.presence
     end
 
     def call
@@ -33,7 +34,7 @@ module Orders
 
     private
 
-    attr_reader :store, :cart, :details, :attribution
+    attr_reader :store, :cart, :details, :attribution, :meta_context
 
     def create_order(line, reference:, customer:, estimate:, first:)
       order = store.orders.new(
@@ -53,11 +54,14 @@ module Orders
         # Frozen with the order: the emails must speak the language the customer
         # was reading, not whatever the next request happens to set.
         locale: I18n.locale.to_s,
-        # Frozen with the order, like the locale and the delivery promise: the
-        # session that carried the campaign is gone long before the dashboard
-        # asks which ad paid for this sale.
+        # Frozen with the order, like the locale and the delivery promise. The
+        # Meta context is here for the same reason: the cookies, the address the
+        # request came from and the consent the customer had given are all gone by
+        # the time a webhook confirms the payment hours later.
         metadata: { "checkout_reference" => reference }.merge(
           attribution ? { "attribution" => attribution } : {}
+        ).merge(
+          meta_context ? { Meta::UserData::CONTEXT_KEY => meta_context } : {}
         )
       )
       order.assign_attributes(details.attributes_for_order)

@@ -16,6 +16,10 @@ class CartsController < ApplicationController
     end
 
     current_cart.add(variant, quantity: quantity_param)
+    # Recorded here rather than on the click: the variant has been resolved and the
+    # line is in the cart, so this can only ever report an add that happened. It
+    # rides the flash because both branches below redirect.
+    track_meta_event_after_redirect("AddToCart", Meta::Content.for_variant(variant, quantity: added_quantity))
 
     # "Acheter maintenant" adds the line then goes straight to the address form.
     if params[:then] == "checkout"
@@ -49,5 +53,10 @@ class CartsController < ApplicationController
 
   def quantity_param
     params[:quantity].presence || 1
+  end
+
+  # What the cart actually took, which is what the event should say.
+  def added_quantity
+    quantity_param.to_i.clamp(1, Cart::MAX_QUANTITY)
   end
 end

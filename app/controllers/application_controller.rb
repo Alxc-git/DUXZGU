@@ -8,6 +8,8 @@ class ApplicationController < ActionController::Base
   # Storefront traffic is recorded for the admin dashboard; the admin itself opts
   # out below so browsing your own orders never shows up as customer visits.
   include TracksVisits
+  # Decides which Meta Pixel events the page it is about to render should raise.
+  include TracksMetaEvents
 
   around_action :switch_locale
 

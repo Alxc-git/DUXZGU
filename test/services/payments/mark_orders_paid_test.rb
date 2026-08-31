@@ -50,6 +50,45 @@ module Payments
       assert_predicate @orders.last.reload, :paid?
     end
 
+    # ---------------------------------------------------------------- Meta
+
+    META_CONFIGURED = {
+      "META_PIXEL_ID" => "2010109929639061",
+      "META_CONVERSIONS_API_TOKEN" => "SECRET-TOKEN"
+    }.freeze
+
+    test "reports one Purchase to Meta for the whole payment" do
+      with_env(META_CONFIGURED) do
+        assert_enqueued_jobs 1, only: MetaPurchaseJob do
+          Payments::MarkOrdersPaid.call(intent_id: "pi_test")
+        end
+      end
+    end
+
+    test "reports nothing more to Meta when the webhook is replayed" do
+      with_env(META_CONFIGURED) do
+        Payments::MarkOrdersPaid.call(intent_id: "pi_test")
+
+        assert_no_enqueued_jobs only: MetaPurchaseJob do
+          Payments::MarkOrdersPaid.call(intent_id: "pi_test")
+        end
+      end
+    end
+
+    test "records the payment and queues fulfillment even when Meta blows up" do
+      with_env(META_CONFIGURED) do
+        exploding = ->(*) { raise "Meta is down" }
+
+        stubbing(MetaPurchaseJob, :perform_later, exploding) do
+          assert_enqueued_jobs @orders.size, only: FulfillOrderJob do
+            assert_nothing_raised { Payments::MarkOrdersPaid.call(intent_id: "pi_test") }
+          end
+        end
+      end
+
+      assert @orders.all? { |order| order.reload.paid? }
+    end
+
     private
 
     def details

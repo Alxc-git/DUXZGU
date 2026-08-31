@@ -1,0 +1,23 @@
+<%# Meta Pixel base code, in the head so Turbo keeps it across navigations and it
+    initialises exactly once per visit.
+
+    `fbq('track', 'PageView')` is deliberately not here. Turbo swaps the body
+    without reloading the page, so a PageView fired from this snippet would only
+    ever count the first page of a visit. The meta-pixel Stimulus controller
+    raises it once per navigation instead, the first one included.
+
+    Only the pixel id is written here. It is public by design; the Conversions API
+    token is a server secret and never reaches a view. %>
+<script>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window,document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', '<%= j Meta.pixel_id %>');
+</script>
+<noscript><img height="1" width="1" style="display:none" alt=""
+  src="https://www.facebook.com/tr?id=<%= u Meta.pixel_id %>&ev=PageView&noscript=1"></noscript>

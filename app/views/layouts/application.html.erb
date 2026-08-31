@@ -34,6 +34,26 @@
 
     <%= stylesheet_link_tag "tailwind", "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
+
+    <!-- Meta Pixel Code -->
+    <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '2010109929639061');
+    fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=2010109929639061&ev=PageView&noscript=1"
+    /></noscript>
+    <!-- End Meta Pixel Code -->
+
+    <%= render "shared/meta_pixel" if meta_pixel_enabled? %>
   </head>
 
   <body>
@@ -59,5 +79,6 @@
     <%= render "storefront/sections/footer" %>
     <%= render "storefront/sections/support_chat" %>
     <%= render "shared/privacy_banner" unless privacy_consent_decided? %>
+    <%= render "shared/meta_pixel_events" if meta_pixel_enabled? %>
   </body>
 </html>

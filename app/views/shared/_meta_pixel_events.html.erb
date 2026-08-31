@@ -1,0 +1,8 @@
+<%# Part of the body, so Turbo replaces it on every navigation and the controller
+    reconnects — which is what makes PageView land once per page. The events are
+    whatever the controller for this request recorded. %>
+<%= tag.div hidden: true,
+      data: {
+        controller: "meta-pixel",
+        meta_pixel_events_value: meta_pixel_events.to_json
+      } %>

@@ -15,6 +15,10 @@ module Payments
       orders = scope.to_a
       orders.each { |order| mark(order) }
       notify(orders)
+      # After the marking, never before: this is the first moment the payment is
+      # known to have gone through. Meta::TrackPurchase swallows its own failures,
+      # so a Facebook outage cannot reach the order.
+      Meta::TrackPurchase.call(orders: orders)
       orders
     end
 

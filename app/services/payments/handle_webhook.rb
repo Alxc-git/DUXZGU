@@ -61,6 +61,9 @@ module Payments
       end
 
       Fulfillment::EnqueueOrder.call(order:) if enqueue_fulfillment
+      # This branch marks the order paid itself rather than going through
+      # MarkOrdersPaid, so it has to report the Purchase itself too.
+      Meta::TrackPurchase.call(orders: [ order ])
     end
 
     # Shipping address moved to collected_information in recent API versions; older

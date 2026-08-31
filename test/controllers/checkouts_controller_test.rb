@@ -25,6 +25,19 @@ class CheckoutsControllerTest < ActionDispatch::IntegrationTest
     assert_select ".order-summary", text: /Demo Product/
   end
 
+  # Captured while there is still a request to read it from: a webhook confirming
+  # the payment hours later has none of these.
+  test "freezes the Meta browser context onto the orders it places" do
+    fill_cart
+    post checkout_path, params: { checkout_form: valid_details }
+
+    context = Order.order(:id).last.metadata["meta"]
+
+    assert_equal "127.0.0.1", context["client_ip_address"]
+    assert_equal checkout_url, context["source_url"]
+    assert_not context.key?("fbp"), "no pixel cookie was set, so none must be invented"
+  end
+
   # The dropdown only appears if propshaft can resolve the controller: a stale
   # public/assets manifest drops the pin from the importmap without a word, and
   # the address field silently goes back to being an ordinary text box.
