@@ -1,0 +1,82 @@
+@use "../abstracts/variables" as *;
+
+// Dropdown under the shipping address field. It has to sit above the summary
+// card beside it and above the sticky bar under it, hence the z-index.
+.autocomplete {
+  position: relative;
+}
+
+.autocomplete__list {
+  background: $color-background;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  box-shadow: $shadow-md;
+  left: 0;
+  list-style: none;
+  margin: 0.3rem 0 0;
+  max-height: 17rem;
+  overflow-y: auto;
+  padding: 0.25rem;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  z-index: 40;
+
+  &[hidden] {
+    display: none;
+  }
+}
+
+.autocomplete__option {
+  border-radius: $radius-sm;
+  cursor: pointer;
+  font-size: 0.92rem;
+  line-height: 1.45;
+  // Long addresses wrap rather than being cut off: the house number the customer
+  // is checking for is often the part that would be lost.
+  overflow-wrap: anywhere;
+  padding: 0.55rem 0.65rem;
+
+  &:hover,
+  &[aria-selected="true"] {
+    background: $color-surface;
+  }
+}
+
+.autocomplete__attribution {
+  border-top: 1px solid $color-border;
+  color: $color-muted;
+  font-size: 0.72rem;
+  line-height: 1;
+  margin-top: 0.2rem;
+  padding: 0.5rem 0.65rem 0.35rem;
+  text-align: right;
+}
+
+// Announced to screen readers only; sighted customers see the list itself.
+.autocomplete__status {
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
+// A short tint on the fields the dropdown just filled in, so the customer sees
+// the city and postal code arrive instead of scrolling back to check them.
+@media (prefers-reduced-motion: no-preference) {
+  .input--autofilled {
+    animation: autocomplete-filled 1.1s ease-out;
+  }
+}
+
+@keyframes autocomplete-filled {
+  from {
+    background: rgba(31, 78, 216, 0.12);
+  }
+
+  to {
+    background: $color-background;
+  }
+}

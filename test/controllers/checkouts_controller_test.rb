@@ -25,6 +25,23 @@ class CheckoutsControllerTest < ActionDispatch::IntegrationTest
     assert_select ".order-summary", text: /Demo Product/
   end
 
+  # The dropdown only appears if propshaft can resolve the controller: a stale
+  # public/assets manifest drops the pin from the importmap without a word, and
+  # the address field silently goes back to being an ordinary text box.
+  test "wires the address field to the autocomplete controller" do
+    fill_cart
+    get checkout_path
+
+    assert_response :success
+    assert_select "[data-controller='address-autocomplete']"
+    assert_select "input[role='combobox'][data-address-autocomplete-target~='query']", count: 2
+    assert_select "input[data-autocomplete-kind='address']"
+    assert_select "input[data-autocomplete-kind='postal']"
+    assert_select "ul#address-suggestions[role='listbox']"
+    assert_select "ul#postal-suggestions[role='listbox']"
+    assert_includes response.body, "controllers/address_autocomplete_controller"
+  end
+
   test "refuses an incomplete form without creating an order" do
     fill_cart
 

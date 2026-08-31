@@ -63,6 +63,7 @@ fr:
           - "CJdropshipping, les fournisseurs et les transporteurs, pour preparer, expedier et suivre la commande."
           - "Notre fournisseur de courriel, pour les confirmations, le suivi et le service client."
           - "Groq, uniquement lorsque vous utilisez l'assistant, pour produire une reponse."
+          - "Google Maps Platform, lorsque la saisie d'adresse est activee, recoit le texte saisi et des donnees techniques de requete afin de proposer et completer une adresse. Cette utilisation est soumise aux conditions de Google Maps Platform et a la politique de confidentialite de Google (policies.google.com/privacy)."
           - "Google Fonts peut recevoir des donnees techniques lorsque les polices du site sont chargees."
           - "Nous pouvons aussi communiquer des renseignements si la loi l'exige, pour proteger nos droits ou dans le cadre d'une transaction d'entreprise encadree."
       ai:

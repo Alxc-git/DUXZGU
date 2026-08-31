@@ -63,6 +63,7 @@ en:
           - "CJdropshipping, suppliers and carriers, to prepare, ship and track the order."
           - "Our email provider, for confirmations, tracking and customer service."
           - "Groq, only when you use the assistant, to generate a response."
+          - "Google Maps Platform, when address autocomplete is enabled, receives the text entered and technical request data to suggest and complete an address. This use is subject to the Google Maps Platform terms and Google's Privacy Policy (policies.google.com/privacy)."
           - "Google Fonts may receive technical information when the site's fonts load."
           - "We may also disclose information when required by law, to protect our rights or as part of a properly managed business transaction."
       ai:

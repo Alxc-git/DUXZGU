@@ -18,6 +18,10 @@ Rails.application.routes.draw do
   get "commande", to: "checkouts#new", as: :checkout
   post "commande", to: "checkouts#create"
 
+  # Search-as-you-type on the shipping address field.
+  get "adresses/suggestions", to: "address_suggestions#index", as: :address_suggestions
+  get "adresses/details", to: "address_suggestions#details", as: :address_details
+
   get "paiement", to: "payments#new", as: :payment
   post "paiement", to: "payments#create"
 

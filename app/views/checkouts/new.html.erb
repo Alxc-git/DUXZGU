@@ -52,7 +52,11 @@
           </div>
         </section>
 
-        <section class="checkout__panel">
+        <section class="checkout__panel"
+                 data-controller="address-autocomplete"
+                 data-address-autocomplete-url-value="<%= address_suggestions_path %>"
+                 data-address-autocomplete-details-url-value="<%= address_details_path %>"
+                 data-address-autocomplete-status-label-value="<%= t("checkout.address_suggestions_status") %>">
           <header class="checkout__panel-head">
             <span class="checkout__panel-mark"><%= icon "truck", size: 16 %></span>
             <h2><%= t("checkout.shipping_address") %></h2>
@@ -76,44 +80,88 @@
 
           <div class="field">
             <%= form.label :address_line1, t("checkout.address") %>
-            <%= form.text_field :address_line1, autocomplete: "address-line1", required: true,
-                  placeholder: "123 rue Sainte-Catherine", class: field_class(@form, :address_line1) %>
+
+            <div class="autocomplete">
+              <%= form.text_field :address_line1, autocomplete: "address-line1", required: true,
+                    placeholder: "123 rue Sainte-Catherine", class: field_class(@form, :address_line1),
+                    role: "combobox", aria: { autocomplete: "list", expanded: false, controls: "address-suggestions" },
+                    data: {
+                      address_autocomplete_target: "query",
+                      autocomplete_kind: "address",
+                      action: "input->address-autocomplete#search " \
+                              "keydown->address-autocomplete#navigate " \
+                              "focus->address-autocomplete#search " \
+                              "blur->address-autocomplete#blur"
+                    } %>
+
+              <ul id="address-suggestions" role="listbox" class="autocomplete__list" hidden
+                  aria-label="<%= t("checkout.address_suggestions_label") %>"
+                  data-autocomplete-kind="address"
+                  data-address-autocomplete-target="list"></ul>
+            </div>
+
+            <p class="field__hint"><%= t("checkout.address_hint") %></p>
             <%= checkout_field_error(@form, :address_line1) %>
           </div>
 
           <div class="field">
             <%= form.label :address_line2, t("checkout.address2") %>
             <%= form.text_field :address_line2, autocomplete: "address-line2",
-                  placeholder: t("common.optional"), class: field_class(@form, :address_line2) %>
+                  placeholder: t("common.optional"), class: field_class(@form, :address_line2),
+                  data: { address_autocomplete_target: "next" } %>
           </div>
 
           <div class="field-row field-row--three">
             <div class="field">
               <%= form.label :city, t("checkout.city") %>
               <%= form.text_field :city, autocomplete: "address-level2", required: true,
-                    class: field_class(@form, :city) %>
+                    class: field_class(@form, :city),
+                    data: { address_autocomplete_target: "city" } %>
               <%= checkout_field_error(@form, :city) %>
             </div>
 
             <div class="field">
               <%= form.label :province, t("checkout.province") %>
               <%= form.text_field :province, autocomplete: "address-level1",
-                    class: field_class(@form, :province) %>
+                    class: field_class(@form, :province),
+                    data: { address_autocomplete_target: "province" } %>
             </div>
 
             <div class="field">
               <%= form.label :postal_code, t("checkout.postal_code") %>
-              <%= form.text_field :postal_code, autocomplete: "postal-code", required: true,
-                    placeholder: "H2X 1Y6", class: field_class(@form, :postal_code) %>
+
+              <div class="autocomplete">
+                <%= form.text_field :postal_code, autocomplete: "postal-code", required: true,
+                      placeholder: "H2X 1Y6", class: field_class(@form, :postal_code),
+                      role: "combobox", aria: { autocomplete: "list", expanded: false, controls: "postal-suggestions" },
+                      data: {
+                        address_autocomplete_target: "query postalCode",
+                        autocomplete_kind: "postal",
+                        action: "input->address-autocomplete#search " \
+                                "keydown->address-autocomplete#navigate " \
+                                "focus->address-autocomplete#search " \
+                                "blur->address-autocomplete#blur"
+                      } %>
+
+                <ul id="postal-suggestions" role="listbox" class="autocomplete__list" hidden
+                    aria-label="<%= t("checkout.postal_suggestions_label") %>"
+                    data-autocomplete-kind="postal"
+                    data-address-autocomplete-target="list"></ul>
+              </div>
+
               <%= checkout_field_error(@form, :postal_code) %>
             </div>
           </div>
 
           <div class="field">
             <%= form.label :country, t("checkout.country") %>
-            <%= form.select :country, shipping_country_options, {}, class: field_class(@form, :country) %>
+            <%= form.select :country, shipping_country_options, {}, class: field_class(@form, :country),
+                  data: { address_autocomplete_target: "country" } %>
             <%= checkout_field_error(@form, :country) %>
           </div>
+
+          <p class="autocomplete__status" role="status" aria-live="polite"
+             data-address-autocomplete-target="status"></p>
         </section>
 
         <div class="checkout__submit">
