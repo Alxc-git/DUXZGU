@@ -28,6 +28,9 @@ Run this checklist before sending paid traffic to the store.
 ## Email and payment checks
 
 - Configure SPF, DKIM and DMARC for `luxtimestyle.com` with the SMTP provider.
+- In **Stripe > Settings > Business > Public details**, set the public support
+  email to `contact@luxtimestyle.com`. Stripe prints this separate account-level
+  value on receipts and otherwise falls back to the Stripe account email.
 - Place one low-value live order and verify payment, confirmation email, admin
   status, CJ submission, tracking update and refund.
 - Confirm the Stripe webhook endpoint is

@@ -21,11 +21,9 @@ store.settings = store.settings.merge(
   # The address every order mail is sent from and replied to. It has to sit on the
   # domain the SMTP provider has verified -- a confirmation sent from a domain the
   # provider cannot sign is what lands in a spam folder -- so it is read from the
-  # environment rather than written here. An address already chosen wins over the
-  # fallback, so re-seeding never overwrites a deliberate change.
-  "support_email" => ENV["SUPPORT_EMAIL"].presence ||
-                     store.settings["support_email"].presence ||
-                     Store::DEFAULT_SUPPORT_EMAIL
+  # environment rather than written here. The official domain address wins over
+  # stale database values so a re-seed cannot restore an old support mailbox.
+  "support_email" => ENV["SUPPORT_EMAIL"].presence || Store::DEFAULT_SUPPORT_EMAIL
 )
 store.supplier_settings = store.supplier_settings.merge(
   "pay_type" => store.supplier_settings["pay_type"].presence || 1,

@@ -4,6 +4,10 @@
 // No browser: the controller is loaded as it ships, with the Stimulus base class
 // and the two globals it touches replaced by stubs. What is under test is its own
 // guard logic, which is where a duplicate PageView would come from.
+//
+// The guards live on `window`, so a fresh window is what a full page reload is
+// here — and loading the module twice stands for two copies of the controller
+// ending up on the same page.
 import { test } from "node:test"
 import assert from "node:assert/strict"
 import { readFileSync, writeFileSync, mkdtempSync } from "node:fs"
@@ -12,33 +16,32 @@ import { join } from "node:path"
 
 const SOURCE = "app/javascript/controllers/meta_pixel_controller.js"
 const scratch = mkdtempSync(join(tmpdir(), "meta-pixel-"))
-let loads = 0
+let copies = 0
 
-// A fresh import stands for a full page load: the module scope, and so the
-// guards, start over. Turbo navigations reuse one import.
 async function loadController() {
   const source = readFileSync(SOURCE, "utf8")
     .replace(/^import \{ Controller \}.*$/m, "class Controller {}")
-  const path = join(scratch, `controller-${loads++}.mjs`)
+  const path = join(scratch, `controller-${copies++}.mjs`)
   writeFileSync(path, source)
 
   return (await import(`file://${path}`)).default
 }
 
-function browser() {
+// A fresh window: a first visit, or a full reload.
+function load(href = "https://luxtimestyle.com/") {
   const calls = []
   let preview = false
 
   globalThis.document = {
     documentElement: { hasAttribute: (name) => preview && name === "data-turbo-preview" }
   }
-  globalThis.window = { location: { href: "https://luxtimestyle.com/" }, fbq: (...args) => calls.push(args) }
+  globalThis.window = { location: { href }, fbq: (...args) => calls.push(args) }
 
   return {
     calls,
     pageViews: () => calls.filter(([verb, name]) => verb === "track" && name === "PageView").length,
     named: (name) => calls.filter(([, event]) => event === name),
-    visit: (href) => { globalThis.window.location.href = href },
+    visit: (to) => { globalThis.window.location.href = to },
     preview: (value) => { preview = value },
     removeFbq: () => { delete globalThis.window.fbq }
   }
@@ -50,9 +53,10 @@ function render(Controller, events = []) {
   controller.connect()
 }
 
-test("a full page load raises exactly one PageView", async () => {
-  const page = browser()
-  const Controller = await loadController()
+const Controller = await loadController()
+
+test("a full page load raises exactly one PageView", () => {
+  const page = load()
 
   render(Controller)
 
@@ -60,9 +64,8 @@ test("a full page load raises exactly one PageView", async () => {
   assert.deepEqual(page.calls[0], [ "track", "PageView" ])
 })
 
-test("a Turbo preview followed by the real render raises one PageView", async () => {
-  const page = browser()
-  const Controller = await loadController()
+test("a Turbo preview followed by the real render raises one PageView", () => {
+  const page = load()
 
   page.preview(true)
   render(Controller)
@@ -72,9 +75,8 @@ test("a Turbo preview followed by the real render raises one PageView", async ()
   assert.equal(page.pageViews(), 1)
 })
 
-test("two connects for the same url raise one PageView even with no preview flag", async () => {
-  const page = browser()
-  const Controller = await loadController()
+test("repeated connects for the same url raise one PageView", () => {
+  const page = load()
 
   render(Controller)
   render(Controller)
@@ -83,9 +85,8 @@ test("two connects for the same url raise one PageView even with no preview flag
   assert.equal(page.pageViews(), 1)
 })
 
-test("two controller instances in the same DOM raise one PageView", async () => {
-  const page = browser()
-  const Controller = await loadController()
+test("two controller instances on one page raise one PageView", () => {
+  const page = load()
 
   const first = new Controller()
   const second = new Controller()
@@ -97,9 +98,18 @@ test("two controller instances in the same DOM raise one PageView", async () => 
   assert.equal(page.pageViews(), 1)
 })
 
-test("each Turbo navigation raises its own PageView", async () => {
-  const page = browser()
-  const Controller = await loadController()
+test("even two copies of the controller module raise one PageView", async () => {
+  const page = load()
+  const other = await loadController()
+
+  render(Controller)
+  render(other)
+
+  assert.equal(page.pageViews(), 1)
+})
+
+test("each Turbo navigation raises its own PageView", () => {
+  const page = load()
 
   render(Controller)
   page.visit("https://luxtimestyle.com/panier")
@@ -110,9 +120,8 @@ test("each Turbo navigation raises its own PageView", async () => {
   assert.equal(page.pageViews(), 3)
 })
 
-test("navigating back to a page already seen raises a PageView again", async () => {
-  const page = browser()
-  const Controller = await loadController()
+test("navigating back to a page already seen raises a PageView again", () => {
+  const page = load()
 
   render(Controller)
   page.visit("https://luxtimestyle.com/panier")
@@ -123,19 +132,20 @@ test("navigating back to a page already seen raises a PageView again", async () 
   assert.equal(page.pageViews(), 3)
 })
 
-test("a full reload of the same url raises a PageView again", async () => {
-  const page = browser()
+test("a full reload of the same url raises a PageView again", () => {
+  const first = load()
+  render(Controller)
 
-  render(await loadController(), [])
-  // A reload re-imports the module, which is what resets the guard.
-  render(await loadController(), [])
+  // A reload builds a new window, which is where the guards live.
+  const second = load()
+  render(Controller)
 
-  assert.equal(page.pageViews(), 2)
+  assert.equal(first.pageViews(), 1)
+  assert.equal(second.pageViews(), 1)
 })
 
-test("PageView is always tracked, never trackCustom", async () => {
-  const page = browser()
-  const Controller = await loadController()
+test("PageView is always tracked, never trackCustom", () => {
+  const page = load()
 
   render(Controller, [ { name: "ViewContent", data: { value: 79.99 } } ])
 
@@ -143,9 +153,8 @@ test("PageView is always tracked, never trackCustom", async () => {
   assert.ok(page.calls.every(([verb]) => verb === "track"))
 })
 
-test("page events ride along once, and repeat only when they really differ", async () => {
-  const page = browser()
-  const Controller = await loadController()
+test("page events ride along once, and repeat only when they really differ", () => {
+  const page = load()
   const viewContent = [ { name: "ViewContent", data: { value: 79.99 } } ]
 
   render(Controller, viewContent)
@@ -162,9 +171,8 @@ test("page events ride along once, and repeat only when they really differ", asy
   assert.equal(page.pageViews(), 1)
 })
 
-test("sends nothing when the pixel never loaded", async () => {
-  const page = browser()
-  const Controller = await loadController()
+test("sends nothing when the pixel never loaded", () => {
+  const page = load()
   page.removeFbq()
 
   assert.doesNotThrow(() => render(Controller, [ { name: "ViewContent", data: {} } ]))
