@@ -6,8 +6,8 @@ class OrderTest < ActiveSupport::TestCase
     order.quantity = 3
     order.recalculate_totals!
 
-    assert_equal 14_700, order.total_cents
-    assert_equal "147,00 $", order.formatted_total
+    assert_equal 7_497, order.total_cents
+    assert_equal "74,97 $", order.formatted_total
   end
 
   test "prices from the variant when one overrides the product price" do
@@ -16,7 +16,7 @@ class OrderTest < ActiveSupport::TestCase
     order.quantity = 2
     order.recalculate_totals!
 
-    assert_equal 10_800, order.total_cents
+    assert_equal 6_998, order.total_cents
   end
 
   test "rejects a product from another store" do
@@ -45,6 +45,6 @@ class OrderTest < ActiveSupport::TestCase
     order.variant = variants(:black)
 
     assert_equal "cj-variant-black", order.supplier_variant_id
-    assert_equal "CJ-SKU-BLACK", order.supplier_sku
+    assert_equal "CJ-SKU-300G", order.supplier_sku
   end
 end

@@ -1,6 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 
-// Single source of truth for the selected colour. The radios carry the data, the
+// Single source of truth for the selected option. The radios carry the data, the
 // thumbnails and swatches are just two views of the same choice, and every price,
 // name and image target on the page repaints from whichever one the visitor uses.
 export default class extends Controller {
@@ -72,7 +72,7 @@ export default class extends Controller {
     if (!variantId || !this.element.querySelector("[data-controller~='gallery']")) return
 
     const url = new URL(window.location.href)
-    url.searchParams.set("couleur", variantId)
+    url.searchParams.set("option", variantId)
     window.history.replaceState(window.history.state, "", url)
   }
 }

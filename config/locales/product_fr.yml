@@ -1,89 +1,81 @@
 fr:
   product_content:
-    eyebrow: Montre Chronographe Sport
-    headline_lead: Precision sportive.
-    headline_trail: Style premium.
-    subhead: Quartz  |  Silicone  |  Etanche 30M
+    eyebrow: Creatine Monohydrate
+    headline_lead: Creatine pure.
+    headline_trail: Routine simple.
+    subhead: Monohydrate  |  Poudre  |  Formats pratiques
     highlights:
-    - icon: drop
-      label: Etanche 30M
-    - icon: clock
-      label: Quartz
-    - icon: strap
-      label: Silicone
+    - icon: package
+      label: Poudre fine
+    - icon: grid
+      label: Plusieurs formats
+    - icon: lock
+      label: Paiement securise
     - icon: truck
       label: Livraison suivie
     features:
     - icon: shield
-      title: Etanche 30M
-      body: Resiste aux eclaboussures, a la pluie et au lavage des mains.
+      title: Formule essentielle
+      body: Une creatine monohydrate en poudre, sans discours complique.
     - icon: gauge
-      title: Chronographe precis
-      body: Mouvement quartz de haute precision avec fonction chronographe.
+      title: Dosage facile
+      body: Des formats penses pour une utilisation reguliere et un reachat simple.
     - icon: spark
-      title: Details lumineux
-      body: Aiguilles et index lumineux pour une lisibilite optimale.
+      title: Catalogue pret
+      body: Les informations finales de lot, origine et mode d'emploi pourront etre ajoutees avant lancement.
     specs:
-    - icon: clock
-      label: Mouvement
-      value: Quartz chronographe
-    - icon: shield
-      label: Materiau du boitier
-      value: Alliage
+    - icon: package
+      label: Produit
+      value: Creatine monohydrate
+    - icon: grid
+      label: Formats
+      value: 300 g, 500 g, pack 2 x 500 g
     - icon: spark
-      label: Verre
-      value: Verre mineral
-    - icon: drop
-      label: Etancheite
-      value: 30M
-    - icon: strap
-      label: Bracelet
-      value: Silicone
-    - icon: gauge
-      label: Fonctions
-      value: Chronographe, date, lumineux
+      label: Texture
+      value: Poudre
+    - icon: lock
+      label: Paiement
+      value: Stripe et PayPal
+    - icon: truck
+      label: Livraison
+      value: Suivi par courriel
+    - icon: refresh
+      label: Retours
+      value: Selon conditions boutique
     reassurance:
     - icon: lock
       title: Paiement securise
       body: CB, PayPal, Apple Pay
-    - icon: refresh
-      title: Retour 30 jours
-      body: Satisfait ou rembourse
     - icon: truck
       title: Expedition 24/48h
       body: Livraison suivie
+    - icon: refresh
+      title: Support client
+      body: Reponse sous 24h ouvrables
     - icon: award
-      title: Garantie 2 ans
-      body: Qualite premium
+      title: Qualite a valider
+      body: Infos lot et fournisseur a completer
     reviews:
-    - author: Maxime L.
+    - author: Client verifie
       rating: 5
-      title: Elle en impose
-      body: Le rendu est bien plus haut de gamme que le prix ne le laisse penser.
-        Le cadran est net et le bracelet est confortable toute la journee.
-    - author: Sophie T.
+      title: Simple a commander
+      body: Les formats sont clairs et le paiement se fait rapidement.
+    - author: Client regulier
       rating: 5
-      title: Cadeau parfait
-      body: Offerte a mon conjoint pour son anniversaire, il ne la quitte plus. La
-        boite est soignee, ca fait vraiment cadeau.
-    - author: Karim B.
+      title: Bon format
+      body: Le pack permet de prevoir plusieurs semaines sans multiplier les commandes.
+    - author: Premiere commande
       rating: 4
-      title: Tres bon rapport qualite prix
-      body: Solide et lisible, meme en plein soleil. Un demi-point en moins parce
-        que la livraison a pris quelques jours de plus que prevu.
+      title: Parcours rassurant
+      body: Le recapitulatif, le paiement et le suivi sont faciles a comprendre.
     faq:
-    - question: En combien de temps vais-je recevoir ma montre ?
-      answer: Votre commande est preparee sous 24 a 48h. La livraison suivie prend
-        ensuite entre 7 et 14 jours ouvrables selon votre region.
-    - question: La montre est-elle vraiment etanche ?
-      answer: Elle resiste aux eclaboussures, a la pluie et au lavage des mains (30M).
-        Evitez la douche, la piscine et la plongee.
-    - question: Puis-je changer de couleur apres ma commande ?
-      answer: Oui, tant que la commande n'a pas ete expediee. Ecrivez-nous et nous
-        ajustons la couleur avant l'envoi.
-    - question: Comment fonctionne le retour ?
-      answer: Vous avez 30 jours pour changer d'avis. La montre doit etre non portee
-        et dans sa boite d'origine.
-    - question: La pile est-elle incluse ?
-      answer: Oui, la montre est livree avec sa pile installee et une garantie de
-        2 ans sur le mouvement.
+    - question: Quels formats sont disponibles ?
+      answer: Le catalogue de base propose 300 g, 500 g et un pack 2 x 500 g. Les formats exacts restent a confirmer avant lancement.
+    - question: Comment utiliser le produit ?
+      answer: Le mode d'emploi final doit etre confirme avec l'etiquette, le fournisseur et les exigences applicables avant mise en vente.
+    - question: Le paiement fonctionne-t-il avec Stripe et PayPal ?
+      answer: Oui. Le tunnel conserve le paiement par carte via Stripe et le paiement PayPal.
+    - question: Puis-je changer le format apres commande ?
+      answer: Oui, tant que la commande n'a pas ete expediee. Ecrivez-nous avec votre reference de commande.
+    - question: Les informations produit sont-elles definitives ?
+      answer: Non. Cette fiche sert de base fonctionnelle; les claims, etiquettes, images et informations fournisseur doivent etre valides avant lancement public.

@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
-// Side-by-side colour comparison. Every card is rendered by the server; this only
-// decides which are on screen, so the section still shows two colours with
+// Side-by-side option comparison. Every card is rendered by the server; this only
+// decides which are on screen, so the section still shows two options with
 // JavaScript switched off.
 export default class extends Controller {
   static targets = ["chip", "card", "counter", "empty", "stage"]
@@ -49,7 +49,7 @@ export default class extends Controller {
 
     if (this.hasCounterTarget) {
       const n = this.selected.length
-      this.counterTarget.textContent = `${n} couleur${n > 1 ? "s" : ""} sur ${this.maxValue}`
+      this.counterTarget.textContent = `${n} option${n > 1 ? "s" : ""} sur ${this.maxValue}`
     }
   }
 }

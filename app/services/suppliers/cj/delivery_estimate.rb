@@ -20,7 +20,7 @@ module Suppliers
       # runs in a job, but this call sits in the middle of a checkout: past a few
       # seconds it is better to ship the generic promise than to make the customer
       # stare at a spinner.
-      BUDGET_SECONDS = 4
+      BUDGET_SECONDS = 2
 
       Result = Data.define(:min_days, :max_days, :carrier, :price_cents) do
         # Business days are what a customer counts, so the window is expressed in
@@ -45,7 +45,7 @@ module Suppliers
       def call
         return if country.blank? || variant_ids.empty?
 
-        response = Timeout.timeout(BUDGET_SECONDS) { client.post(ENDPOINT, payload) }
+        response = fetch_with_budget
         parsed = Array(response["data"]).filter_map { |option| parse(option) }
         return if parsed.empty?
 
@@ -64,6 +64,15 @@ module Suppliers
       private
 
       attr_reader :client, :country, :postal_code, :variant_ids, :quantity
+
+      def fetch_with_budget
+        thread = Thread.new { client.post(ENDPOINT, payload) }
+        thread.report_on_exception = false
+        return thread.value if thread.join(BUDGET_SECONDS)
+
+        thread.kill
+        raise Timeout::Error
+      end
 
       def payload
         {

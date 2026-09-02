@@ -54,7 +54,7 @@ module Addresses
     # Photon's public instance asks callers to identify themselves, so it can talk
     # to whoever is being noisy instead of just blocking the address bar.
     def user_agent
-      "LUXTIME-checkout/1.0 (+https://#{ENV.fetch('APP_HOST', 'localhost')})"
+      "Storefront-checkout/1.0 (+https://#{ENV.fetch('APP_HOST', 'localhost')})"
     end
 
     def language

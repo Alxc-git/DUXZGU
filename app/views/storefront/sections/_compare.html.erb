@@ -2,7 +2,7 @@
 <% return if variants.size < 2 %>
 <% offer = DuoOffer.new(current_store) %>
 
-<%# Picking a colour one swatch at a time means holding the previous one in your
+<%# Picking an option one swatch at a time means holding the previous one in your
     head. Here up to three sit side by side at full size. %>
 <section class="compare" id="comparateur"
          data-controller="compare"
@@ -14,7 +14,7 @@
         <p class="compare__eyebrow">Comparateur</p>
         <h2 class="compare__title">Voyez-les cote a cote</h2>
         <p class="compare__lead">
-          Choisissez jusqu'a trois couleurs pour les comparer en grand.
+          Choisissez jusqu'a trois options pour les comparer en grand.
           <% if offer.active? %><%= offer.label %> si vous en prenez deux.<% end %>
         </p>
       </div>
@@ -64,7 +64,7 @@
       <% end %>
 
       <p class="compare__empty" data-compare-target="empty" hidden>
-        Choisissez au moins une couleur ci-dessus.
+        Choisissez au moins une option ci-dessus.
       </p>
     </div>
   </div>

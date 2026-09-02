@@ -40,7 +40,7 @@ module Support
 
     def system_prompt
       <<~PROMPT.squish
-        Tu es l'assistant support de LUXTIME. Reponds #{language_instruction}, sur un ton chaleureux et
+        Tu es l'assistant support de #{store.name}. Reponds #{language_instruction}, sur un ton chaleureux et
         naturel, en vouvoyant: trois phrases au maximum, sans liste a puces ni markdown. Un emoji au
         maximum par reponse, jamais dans une phrase qui annonce un probleme. Termine par une question
         utile quand il manque une information pour aider.
@@ -66,7 +66,7 @@ module Support
         offer: offer_context,
         faq: faq_context,
         delivery_policy: "Preparation 24/48h, livraison suivie estimee 7 a 14 jours ouvrables.",
-        return_policy: "Retour possible sous 30 jours si la montre est non portee et dans sa boite.",
+        return_policy: "Retour possible sous 30 jours selon l'etat du produit et les conditions de la boutique.",
         order_verification: context.verification_hint,
         orders: context.orders
       }.to_json
@@ -78,7 +78,7 @@ module Support
       offer = DuoOffer.new(store)
       return { active: false } unless offer.active?
 
-      { active: true, label: offer.label, rule: "Pour deux montres achetees, la moins chere est remisee de #{offer.percent} %." }
+      { active: true, label: offer.label, rule: "Pour deux articles achetes, le moins cher recoit une remise de #{offer.percent} %." }
     end
 
     # The same answers the FAQ section shows, so the assistant and the page never
@@ -99,7 +99,7 @@ module Support
         price: product.formatted_price,
         compare_at: product.formatted_compare_at_price,
         discount: product.discount_percentage,
-        colours: product.available_variants.map(&:name),
+        options: product.available_variants.map(&:name),
         specs: Array(product.content["specs"]).map { |spec| [ spec["label"], spec["value"] ] }.to_h
       }
     end

@@ -32,8 +32,8 @@ class CartTest < ActiveSupport::TestCase
   test "a variant price overrides the product price" do
     @cart.add(variants(:blue), quantity: 2)
 
-    assert_equal 5400, @cart.lines.first.unit_price_cents
-    assert_equal 10_800, @cart.subtotal_cents
+    assert_equal 3499, @cart.lines.first.unit_price_cents
+    assert_equal 6_998, @cart.subtotal_cents
   end
 
   test "quantity is capped rather than accepted unbounded" do

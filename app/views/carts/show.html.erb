@@ -23,7 +23,7 @@
         <%= link_to current_product ? storefront_product_path(current_product.slug) : root_path,
               class: "button button--lg" do %>
           <%= icon "arrow-right", size: 18 %>
-          <span><%= t("cart.see_watch") %></span>
+          <span><%= t("cart.see_product") %></span>
         <% end %>
       </div>
     <% else %>
@@ -51,7 +51,7 @@
         <div class="cart__lines">
           <% current_cart.lines.each do |line| %>
             <article class="cart-line">
-              <%= link_to storefront_product_path(line.product.slug, couleur: line.variant.id),
+              <%= link_to storefront_product_path(line.product.slug, option: line.variant.id),
                     class: "cart-line__media" do %>
                 <%= variant_image_tag line.variant, alt: "#{line.product.display_name} #{line.variant.display_name}",
                       thumb: 120, loading: "lazy", decoding: "async" %>
@@ -59,7 +59,7 @@
 
               <div class="cart-line__info">
                 <h2 class="cart-line__name">
-                  <%= link_to line.product.display_name, storefront_product_path(line.product.slug, couleur: line.variant.id) %>
+                  <%= link_to line.product.display_name, storefront_product_path(line.product.slug, option: line.variant.id) %>
                 </h2>
                 <p class="cart-line__colour">
                   <span class="cart-line__dot" style="background: <%= line.variant.swatch_color %>"></span>

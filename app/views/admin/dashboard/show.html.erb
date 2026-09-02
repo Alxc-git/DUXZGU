@@ -158,17 +158,17 @@
     </ol>
   </section>
 
-  <%# Which colour actually sells: it decides the photo in the next ad. %>
+  <%# Which option actually sells: it decides the photo in the next ad. %>
   <section class="admin-card">
     <header class="admin-card__head">
-      <h2>Ventes par couleur</h2>
+      <h2>Ventes par option</h2>
       <span class="admin-card__note">Commandes payees sur la periode</span>
     </header>
 
     <% if report.top_variants.any? %>
       <table class="admin-table admin-table--compact">
         <thead>
-          <tr><th>Couleur</th><th class="is-numeric">Ventes</th><th class="is-numeric">Revenus</th><th class="is-numeric">Part</th></tr>
+          <tr><th>Option</th><th class="is-numeric">Ventes</th><th class="is-numeric">Revenus</th><th class="is-numeric">Part</th></tr>
         </thead>
         <tbody>
           <% report.top_variants.each do |row| %>

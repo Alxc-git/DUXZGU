@@ -87,7 +87,7 @@ module Payments
       }.compact
     end
 
-    # A cart with several colours becomes several orders behind one intent, so
+    # A cart with several variants becomes several orders behind one intent, so
     # every order of the checkout is marked, not just the first one found.
     def handle_payment_intent_succeeded(intent)
       data = metadata(intent)

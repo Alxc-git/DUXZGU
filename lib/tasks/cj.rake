@@ -1,10 +1,10 @@
 namespace :cj do
-  desc "List CJ variants for the storefront product so they can be mapped to local colours"
+  desc "List CJ variants for the storefront product so they can be mapped to local options"
   task variants: :environment do
     store = Store.find_by(domain: ENV.fetch("STORE_DOMAIN", "localhost"))
     abort "Store not found. Pass STORE_DOMAIN=your-domain if needed." if store.blank?
 
-    product = store.products.find_by(slug: ENV.fetch("PRODUCT_SLUG", "montre-chronographe-sport"))
+    product = store.products.find_by(slug: ENV.fetch("PRODUCT_SLUG", "creatine-monohydrate"))
     abort "Product not found. Pass PRODUCT_SLUG=your-slug if needed." if product.blank?
 
     if product.supplier_sku.blank? && product.supplier_product_id.blank?
@@ -37,7 +37,7 @@ namespace :cj do
     end
 
     puts
-    puts "Copy each vid into Admin > Products > Edit > matching colour > CJ vid."
+    puts "Copy each vid into Admin > Products > Edit > matching option > CJ vid."
   rescue Suppliers::Cj::Client::Error => e
     abort <<~MESSAGE
       CJ request failed: #{e.message}

@@ -22,7 +22,7 @@ class Admin::AdSpendsControllerTest < ActionDispatch::IntegrationTest
     assert_difference -> { AdSpend.count }, 1 do
       post admin_ad_spends_path, params: {
         ad_spend: { store_id: @store.id, spent_on: Date.current, source: "Facebook",
-                    campaign: "Montre-Hiver", amount: "45,90" }
+                    campaign: "Campagne-Hiver", amount: "45,90" }
       }
     end
 
@@ -30,7 +30,7 @@ class Admin::AdSpendsControllerTest < ActionDispatch::IntegrationTest
     assert_equal 4_590, spend.amount_cents
     # Lower-cased on the way in, so it matches the UTM tags the traffic carries.
     assert_equal "facebook", spend.source
-    assert_equal "montre-hiver", spend.campaign
+    assert_equal "campagne-hiver", spend.campaign
   end
 
   # Someone correcting yesterday's figure expects to replace it, not to end up

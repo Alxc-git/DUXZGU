@@ -2,7 +2,7 @@
 #
 # The server decides which events fire, not the page: an AddToCart is recorded
 # where the line is actually written to the cart, so a click that was refused —
-# a retired colour, a tampered id — never reports one.
+# a retired variant, a tampered id — never reports one.
 #
 # Only catalogue data ever reaches the browser this way. Nothing personal goes
 # into these payloads; the customer identifiers travel server side through the

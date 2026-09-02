@@ -132,7 +132,7 @@
   overflow: hidden;
 
   img {
-    // Same 4:5 crop as the cart: the packshots are square files whose watch only
+    // Same 4:5 crop as the cart: packshots are often square files whose product only
     // fills the middle, so a square frame would leave it floating.
     aspect-ratio: 4 / 5;
     display: block;

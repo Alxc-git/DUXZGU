@@ -3,17 +3,13 @@ require "test_helper"
 class StorefrontControllerTest < ActionDispatch::IntegrationTest
   setup { host! "localhost" }
 
-  test "the landing page shows the hero and one card per active colour" do
-    variants(:black).update!(name: "Or Noir")
-
+  test "the landing page shows the hero and one card per active option" do
     get root_path
 
     assert_response :success
     assert_select ".hero__title"
-    assert_select ".hero__image[src*=?]", "or-noir/lifestyle", 1
-    assert_select ".craft__image[src*=?]", "editorial/fabrication", 1
     assert_select ".colour-card", 2
-    assert_select ".colour-card__name", text: "Bleu"
+    assert_select ".colour-card__name", text: "500 g"
   end
 
   test "the landing page survives a store with no product" do
@@ -25,58 +21,44 @@ class StorefrontControllerTest < ActionDispatch::IntegrationTest
     assert_select ".empty-state"
   end
 
-  test "the product page renders a swatch per colour and a gallery rail" do
+  test "the product page renders a swatch per option and a gallery rail" do
     get storefront_product_path(products(:demo_product).slug)
 
     assert_response :success
     assert_select ".buy-box input[name=variant_id]", 2
-    # Colours live in the swatches; the rail is the photo strip, so a product with
-    # no detail shots attached still carries the watch itself as its only slide.
+    # Options live in the swatches; the rail is the photo strip, so a product with
+    # no detail shots attached still carries the product itself as its only slide.
     assert_select ".gallery__thumb", 1
     assert_select "input[name=variant_id][value=?][checked=checked]", variants(:black).id.to_s
     assert_select ".buy-box__price", text: variants(:black).formatted_price
   end
 
-  test "the product gallery uses detail photos from the selected colour" do
+  test "the product gallery uses detail photos from the selected option" do
     variants(:blue).detail_images.attach(
       io: StringIO.new("blue angle"), filename: "01-angle.webp", content_type: "image/webp"
     )
     products(:demo_product).part_images.attach(
-      io: StringIO.new("black strap"), filename: "01-bracelet-noir.png", content_type: "image/png"
+      io: StringIO.new("black detail"), filename: "01-detail-noir.png", content_type: "image/png"
     )
 
-    get storefront_product_path(products(:demo_product).slug, couleur: variants(:blue).id)
+    get storefront_product_path(products(:demo_product).slug, option: variants(:blue).id)
 
     assert_response :success
     assert_select ".gallery__thumb", 2
     assert_select ".gallery__thumb[data-gallery-alt*=?]", "angle", 1
-    assert_select ".gallery__thumb[data-gallery-alt*=?]", "bracelet noir", 0
+    assert_select ".gallery__thumb[data-gallery-alt*=?]", "detail noir", 0
   end
 
-  test "the product page preselects the colour given in the URL" do
-    get storefront_product_path(products(:demo_product).slug, couleur: variants(:blue).id)
+  test "the product page preselects the option given in the URL" do
+    get storefront_product_path(products(:demo_product).slug, option: variants(:blue).id)
 
     assert_response :success
     assert_select "input[name=variant_id][value=?][checked=checked]", variants(:blue).id.to_s
     assert_select ".buy-box__price", text: variants(:blue).formatted_price
   end
 
-  test "the catalogue gallery uses deploy-safe assets for a known colour" do
-    variants(:blue).update!(name: "Or Bleu")
-
-    get storefront_product_path(products(:demo_product).slug, couleur: variants(:blue).id)
-
-    assert_response :success
-    assert_select ".gallery[data-gallery-variant-id=?]", variants(:blue).id.to_s
-    assert_select ".gallery__thumb", 5
-    assert_select ".gallery__thumb[data-gallery-src*=?]", "or-bleu/packshot", 1
-    assert_select ".gallery__thumb[data-gallery-src*=?]", "or-bleu/details/02-vue-eclatee", 1
-    assert_select ".gallery__stage img[src*=?]", "or-bleu/packshot", 1
-    assert_select ".craft__image[src*=?]", "editorial/collection", 1
-  end
-
-  test "an unknown colour in the URL falls back to the default instead of failing" do
-    get storefront_product_path(products(:demo_product).slug, couleur: variants(:other_variant).id)
+  test "an unknown option in the URL falls back to the default instead of failing" do
+    get storefront_product_path(products(:demo_product).slug, option: variants(:other_variant).id)
 
     assert_response :success
     assert_select "input[name=variant_id][value=?][checked=checked]", variants(:black).id.to_s
@@ -102,7 +84,7 @@ class StorefrontControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "an unknown product slug redirects home instead of 500ing" do
-    get storefront_product_path("montre-inexistante")
+    get storefront_product_path("produit-inexistant")
 
     assert_redirected_to root_path
   end

@@ -7,23 +7,23 @@ class DuoOfferTest < ActiveSupport::TestCase
     prices.each_with_index.map { |price, index| DuoOffer::Unit.new("line-#{index}", price) }
   end
 
-  test "a single watch earns nothing" do
+  test "a single unit earns nothing" do
     assert_equal 0, DuoOffer.new(@store).apply(units(5499))[:total_cents]
   end
 
-  test "two watches discount one of them" do
+  test "two units discount one of them" do
     assert_equal 1100, DuoOffer.new(@store).apply(units(5499, 5499))[:total_cents]
   end
 
-  test "three watches still discount only one" do
+  test "three units still discount only one" do
     assert_equal 1100, DuoOffer.new(@store).apply(units(5499, 5499, 5499))[:total_cents]
   end
 
-  test "four watches discount two" do
+  test "four units discount two" do
     assert_equal 2200, DuoOffer.new(@store).apply(units(5499, 5499, 5499, 5499))[:total_cents]
   end
 
-  test "the cheaper watch is the discounted one" do
+  test "the cheaper unit is the discounted one" do
     result = DuoOffer.new(@store).apply(units(9000, 4000))
 
     assert_equal 800, result[:total_cents]

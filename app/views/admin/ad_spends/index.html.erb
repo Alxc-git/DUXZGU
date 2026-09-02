@@ -47,7 +47,7 @@
         </div>
         <div class="field">
           <%= form.label :campaign, "Campagne" %>
-          <%= form.text_field :campaign, list: "campagnes-connues", placeholder: "montre-hiver", class: "form__input" %>
+          <%= form.text_field :campaign, list: "campagnes-connues", placeholder: "campagne-hiver", class: "form__input" %>
           <datalist id="campagnes-connues">
             <% @known_campaigns.each { |value| %><option value="<%= value %>"></option><% } %>
           </datalist>

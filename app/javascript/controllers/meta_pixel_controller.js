@@ -28,9 +28,9 @@ export default class extends Controller {
     const url = window.location.href
 
     // GLOBAL à toute la page, même avec plusieurs instances/modules.
-    if (window.__luxtimeMetaLastPageViewUrl === url) return
+    if (window.__storefrontMetaLastPageViewUrl === url) return
 
-    window.__luxtimeMetaLastPageViewUrl = url
+    window.__storefrontMetaLastPageViewUrl = url
 
     window.fbq("track", "PageView")
   }
@@ -41,7 +41,7 @@ export default class extends Controller {
     if (!events || events.length === 0) return
 
     // Set global partagé entre toutes les instances du controller.
-    window.__luxtimeMetaEventKeys ||= new Set()
+    window.__storefrontMetaEventKeys ||= new Set()
 
     events.forEach((event) => {
       if (!event || !event.name) return
@@ -52,9 +52,9 @@ export default class extends Controller {
         JSON.stringify(event.data || {})
       ].join("|")
 
-      if (window.__luxtimeMetaEventKeys.has(key)) return
+      if (window.__storefrontMetaEventKeys.has(key)) return
 
-      window.__luxtimeMetaEventKeys.add(key)
+      window.__storefrontMetaEventKeys.add(key)
 
       window.fbq("track", event.name, event.data || {})
     })

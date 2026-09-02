@@ -6,7 +6,7 @@ module Meta
   # webhook — and this runs from there, after the money is confirmed and never
   # before. A page view, a click on pay, or a failed attempt reaches nothing here.
   #
-  # One Purchase per payment, not per order row: a two-colour cart is several Order
+  # One Purchase per payment, not per order row: a two-variant cart is several Order
   # records behind a single charge, and Meta is told about the charge.
   #
   # Nothing raises out of `call`. Advertising must never be able to hold up a paid

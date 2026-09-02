@@ -4,7 +4,7 @@ import { Controller } from "@hotwired/stimulus"
 // greeting, which would otherwise keep showing the old opening line forever.
 // Versioned and namespaced by language: switching languages must not replay a
 // conversation that opened with the other one's greeting.
-const STORAGE_ROOT = "luxtime.support-chat.v5"
+const STORAGE_ROOT = "storefront.support-chat.v1"
 
 export default class extends Controller {
   static targets = [

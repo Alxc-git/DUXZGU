@@ -1,14 +1,14 @@
 module StorefrontHelper
-  CATALOGUE_ROOT = Rails.root.join("montres_images", "catalogue")
+  CATALOGUE_ROOT = Rails.root.join("catalogue_images", "catalogue")
   CATALOGUE_DETAILS = [
     [ "details/01-angle.webp", "Angle" ],
-    [ "details/02-vue-eclatee.webp", "Vue eclatee" ],
+    [ "details/02-detail.webp", "Detail" ],
     [ "details/03-profil.webp", "Profil" ],
-    [ "details/04-fond.webp", "Fond" ]
+    [ "details/04-packaging.webp", "Packaging" ]
   ].freeze
 
-  # The packshots are 1600px files. Drawing one into an 80px thumbnail leaves the
-  # browser to downscale 20:1, which speckles the dial and the bracelet, so a
+  # The product photos can be large. Drawing one into an 80px thumbnail leaves the
+  # browser to downscale aggressively, which can soften details, so a
   # resized copy is served instead wherever the image is displayed small.
   #
   # Resizing needs libvips. It is installed in the Docker image, but a dev machine
@@ -65,8 +65,8 @@ module StorefrontHelper
         .capitalize
   end
 
-  # The six catalogue colours ship with the application, so their photos survive
-  # Railway restarts even when Active Storage has no persistent volume. Products
+  # Catalogue assets can ship with the application, so their photos survive
+  # restarts even when Active Storage has no persistent volume. Products
   # added from the admin continue to use their attached images as a fallback.
   def variant_gallery_details(variant, product = nil)
     catalogue_details = CATALOGUE_DETAILS.filter_map do |path, label|

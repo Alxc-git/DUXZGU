@@ -1,6 +1,6 @@
-# "The second one at -X%". For every pair of watches in the cart, the cheaper of
+# "The second one at -X%". For every pair of units in the cart, the cheaper of
 # the two is discounted, which is the reading a customer expects and the only one
-# that stays fair when colours carry different prices.
+# that stays fair when variants carry different prices.
 #
 # The percentage is a store setting, so a shop can change or switch off the offer
 # without a deploy.
@@ -32,7 +32,7 @@ class DuoOffer
   # How much comes off, and how much of it belongs to each line.
   #
   # `units` is a flat list of every unit in the cart. The cheapest half are the
-  # discounted ones: with two watches at the same price it makes no difference,
+  # discounted ones: with two units at the same price it makes no difference,
   # and with two different prices the customer gets the reading that favours them
   # only where it should — the discount never exceeds half the units.
   def apply(units)

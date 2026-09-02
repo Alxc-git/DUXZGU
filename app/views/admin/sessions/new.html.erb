@@ -4,19 +4,19 @@
   <div class="admin-login__panel">
     <div class="admin-login__brand">
       <span class="admin-login__mark"><%= icon "shield-check", size: 22 %></span>
-      <span>LUXTIME</span>
+      <span>Boutique</span>
     </div>
 
     <div class="admin-login__copy">
       <p class="admin-login__eyebrow">Acces securise</p>
       <h1>Connexion administrateur</h1>
-      <p>Gerez les commandes, les variantes CJ, les paiements Stripe et le suivi client depuis un espace protege.</p>
+      <p>Gerez les commandes, les variantes fournisseur, les paiements Stripe et le suivi client depuis un espace protege.</p>
     </div>
 
     <ul class="admin-login__checks" role="list">
       <li><%= icon "lock", size: 17 %><span>Session privee</span></li>
       <li><%= icon "credit-card", size: 17 %><span>Stripe configure</span></li>
-      <li><%= icon "truck", size: 17 %><span>Fulfillment CJ</span></li>
+      <li><%= icon "truck", size: 17 %><span>Fulfillment</span></li>
     </ul>
   </div>
 
@@ -32,7 +32,7 @@
         <span class="admin-login__input-wrap">
           <%= icon "mail", size: 18 %>
           <%= form.email_field :email, class: "admin-login__input", autocomplete: "email",
-                placeholder: "admin@luxtimestyle.com", required: true %>
+                placeholder: "admin@example.com", required: true %>
         </span>
       </div>
 

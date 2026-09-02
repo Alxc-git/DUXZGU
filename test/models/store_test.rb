@@ -13,7 +13,7 @@ class StoreTest < ActiveSupport::TestCase
     Store.where.not(id: stores(:demo).id).destroy_all
     stores(:demo).update!(domain: "localhost", active: true)
 
-    assert_equal stores(:demo), in_production { Store.resolve("luxtime.up.railway.app") }
+    assert_equal stores(:demo), in_production { Store.resolve("demo.up.railway.app") }
   end
 
   test "an unknown host is refused once a second store exists" do
@@ -25,23 +25,23 @@ class StoreTest < ActiveSupport::TestCase
     assert_nil resolved, "with two shops the domain has to match, guessing would show the wrong prices"
   end
 
-  test "Luxtime uses the official support email by default" do
+  test "stores use the generic support email by default" do
     store = stores(:demo)
-    store.update!(name: "LUXTIME", slug: "luxtime", settings: store.settings.except("support_email"))
+    store.update!(settings: store.settings.except("support_email"))
 
-    assert_equal "contact@luxtimestyle.com", store.support_email
+    assert_equal "contact@example.com", store.support_email
   end
 
   test "public contact settings can be managed through the store" do
     store = stores(:demo)
 
     store.support_email = " boutique@example.com "
-    store.legal_business_name = " Example Watches Inc. "
+    store.legal_business_name = " Example Store Inc. "
     store.business_phone = " +1 514 555-0100 "
     store.save!
 
     assert_equal "boutique@example.com", store.reload.support_email
-    assert_equal "Example Watches Inc.", store.legal_business_name
+    assert_equal "Example Store Inc.", store.legal_business_name
     assert_equal "+1 514 555-0100", store.business_phone
   end
 

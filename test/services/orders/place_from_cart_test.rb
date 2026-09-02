@@ -52,7 +52,7 @@ class Orders::PlaceFromCartTest < ActiveSupport::TestCase
 
     order = place.first
 
-    assert_equal 14_700, order.subtotal_cents
+    assert_equal 7_497, order.subtotal_cents
     assert_equal order.subtotal_cents - order.discount_cents + order.shipping_cents, order.total_cents
   end
 

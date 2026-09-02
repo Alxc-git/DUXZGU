@@ -1,89 +1,81 @@
 en:
   product_content:
-    eyebrow: Sport Chronograph Watch
-    headline_lead: Sports precision.
-    headline_trail: Premium style.
-    subhead: Quartz  |  Silicone  |  30M water resistant
+    eyebrow: Creatine Monohydrate
+    headline_lead: Pure creatine.
+    headline_trail: Simple routine.
+    subhead: Monohydrate  |  Powder  |  Practical sizes
     highlights:
-      - icon: drop
-        label: 30M water resistant
-      - icon: clock
-        label: Quartz
-      - icon: strap
-        label: Silicone
+      - icon: package
+        label: Fine powder
+      - icon: grid
+        label: Multiple sizes
+      - icon: lock
+        label: Secure payment
       - icon: truck
-        label: Tracked delivery
+        label: Tracked shipping
     features:
       - icon: shield
-        title: 30M water resistant
-        body: Withstands splashes, rain and washing your hands.
+        title: Essential formula
+        body: Creatine monohydrate powder, without complicated claims.
       - icon: gauge
-        title: Precise chronograph
-        body: High-precision quartz movement with a chronograph function.
+        title: Easy sizing
+        body: Formats built for regular use and simple reordering.
       - icon: spark
-        title: Luminous details
-        body: Luminous hands and markers for easy reading in the dark.
+        title: Catalogue ready
+        body: Final batch, origin and usage information can be added before launch.
     specs:
-      - icon: clock
-        label: Movement
-        value: Quartz chronograph
-      - icon: shield
-        label: Case material
-        value: Alloy
+      - icon: package
+        label: Product
+        value: Creatine monohydrate
+      - icon: grid
+        label: Sizes
+        value: 300 g, 500 g, 2 x 500 g pack
       - icon: spark
-        label: Glass
-        value: Mineral glass
-      - icon: drop
-        label: Water resistance
-        value: 30M
-      - icon: strap
-        label: Strap
-        value: Silicone
-      - icon: gauge
-        label: Functions
-        value: Chronograph, date, luminous
+        label: Texture
+        value: Powder
+      - icon: lock
+        label: Payment
+        value: Stripe and PayPal
+      - icon: truck
+        label: Shipping
+        value: Tracking by email
+      - icon: refresh
+        label: Returns
+        value: According to store conditions
     reassurance:
       - icon: lock
         title: Secure payment
         body: Card, PayPal, Apple Pay
-      - icon: refresh
-        title: 30-day returns
-        body: Satisfied or refunded
       - icon: truck
         title: Ships in 24-48h
-        body: Tracked delivery
+        body: Tracked shipping
+      - icon: refresh
+        title: Customer support
+        body: Reply within one business day
       - icon: award
-        title: 2-year warranty
-        body: Premium quality
+        title: Quality to validate
+        body: Batch and supplier info to complete
     reviews:
-      - author: Maxime L.
+      - author: Verified customer
         rating: 5
-        title: It really stands out
-        body: It looks far more high-end than the price suggests. The dial is crisp
-          and the strap stays comfortable all day.
-      - author: Sophie T.
+        title: Simple to order
+        body: The sizes are clear and payment is quick.
+      - author: Regular customer
         rating: 5
-        title: The perfect gift
-        body: I gave it to my partner for his birthday and he has not taken it off
-          since. The box is well made, it really feels like a gift.
-      - author: Karim B.
+        title: Good format
+        body: The pack makes it easy to plan ahead without placing several orders.
+      - author: First order
         rating: 4
-        title: Great value for money
-        body: Solid and easy to read, even in bright sunlight. Half a point off
-          because delivery took a few days longer than expected.
+        title: Reassuring flow
+        body: The summary, payment and tracking are easy to understand.
     faq:
-      - question: How long until I receive my watch?
-        answer: Your order is packed within 24 to 48 hours. Tracked delivery then
-          takes between 7 and 14 business days depending on your region.
-      - question: Is the watch really water resistant?
-        answer: It withstands splashes, rain and washing your hands (30M). Avoid
-          the shower, the pool and diving.
-      - question: Can I change the colour after ordering?
-        answer: Yes, as long as the order has not shipped. Write to us and we will
-          switch the colour before it leaves.
-      - question: How do returns work?
-        answer: You have 30 days to change your mind. The watch must be unworn and
-          in its original box.
-      - question: Is the battery included?
-        answer: Yes, the watch ships with its battery fitted and a 2-year warranty
-          on the movement.
+      - question: Which sizes are available?
+        answer: The base catalogue offers 300 g, 500 g and a 2 x 500 g pack. Exact formats still need confirmation before launch.
+      - question: How should the product be used?
+        answer: Final directions must be confirmed with the label, supplier and applicable requirements before the product goes on sale.
+      - question: Does checkout support Stripe and PayPal?
+        answer: Yes. The flow keeps card payment through Stripe and PayPal checkout.
+      - question: Can I change the size after ordering?
+        answer: Yes, as long as the order has not shipped. Write to us with your order reference.
+      - question: Is the product information final?
+        answer: No. This page is a functional base; claims, labels, images and supplier information must be validated before public launch.

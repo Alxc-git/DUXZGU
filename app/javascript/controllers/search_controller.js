@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 // Filters the pre-rendered result rows in place: the store sells one product in a
-// handful of colours, so there is nothing to fetch.
+// handful of options, so there is nothing to fetch.
 export default class extends Controller {
   static targets = ["overlay", "input", "result", "empty"]
 

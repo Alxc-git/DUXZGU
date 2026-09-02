@@ -60,7 +60,7 @@ class Variant < ApplicationRecord
   end
 
   # Editorial shot when there is one, otherwise the packshot, so callers never
-  # have to branch on which photos a given colour happens to have.
+  # have to branch on which photos a given option happens to have.
   def hero_image
     lifestyle_image.attached? ? lifestyle_image : display_image
   end

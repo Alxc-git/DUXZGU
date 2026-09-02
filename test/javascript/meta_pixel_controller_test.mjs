@@ -28,7 +28,7 @@ async function loadController() {
 }
 
 // A fresh window: a first visit, or a full reload.
-function load(href = "https://luxtimestyle.com/") {
+function load(href = "https://example.com/") {
   const calls = []
   let preview = false
 
@@ -112,9 +112,9 @@ test("each Turbo navigation raises its own PageView", () => {
   const page = load()
 
   render(Controller)
-  page.visit("https://luxtimestyle.com/panier")
+  page.visit("https://example.com/panier")
   render(Controller)
-  page.visit("https://luxtimestyle.com/commande")
+  page.visit("https://example.com/commande")
   render(Controller)
 
   assert.equal(page.pageViews(), 3)
@@ -124,9 +124,9 @@ test("navigating back to a page already seen raises a PageView again", () => {
   const page = load()
 
   render(Controller)
-  page.visit("https://luxtimestyle.com/panier")
+  page.visit("https://example.com/panier")
   render(Controller)
-  page.visit("https://luxtimestyle.com/")
+  page.visit("https://example.com/")
   render(Controller)
 
   assert.equal(page.pageViews(), 3)

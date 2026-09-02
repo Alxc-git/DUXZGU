@@ -26,7 +26,7 @@
       <h2><%= t("footer.shop") %></h2>
       <% if featured.present? %>
         <%= link_to featured.display_name, product_path %>
-        <%= link_to t("footer.all_colours"), "#{product_path}#couleurs" %>
+        <%= link_to t("footer.all_colours"), "#{product_path}#options" %>
         <%= link_to t("footer.specifications"), "#{product_path}#specifications" %>
         <%= link_to t("footer.customer_reviews"), "#{product_path}#avis" %>
       <% end %>

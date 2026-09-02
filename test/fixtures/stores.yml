@@ -1,7 +1,7 @@
 demo:
-  name: Demo Store
+  name: Creatine Store
   domain: localhost
-  slug: demo-store
+  slug: creatine-store
   active: true
   currency: cad
   supplier_type: cj

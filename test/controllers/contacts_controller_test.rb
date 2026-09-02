@@ -83,10 +83,10 @@ class ContactsControllerTest < ActionDispatch::IntegrationTest
     assert_match "Message envoye", flash[:notice]
   end
 
-  test "a store with no support address still accepts the message" do
+  test "a store with no explicit support address uses the fallback sender" do
     stores(:demo).update!(settings: stores(:demo).settings.except("support_email"))
 
-    assert_no_enqueued_emails do
+    assert_enqueued_emails 1 do
       post contact_path, params: {
         contact_message: { name: "Alexis", email: "alexis@exemple.ca", body: "Bonjour" }
       }

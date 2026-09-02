@@ -1,5 +1,5 @@
 module PrivacyConsent
-  COOKIE_NAME = "luxtime_privacy".freeze
+  COOKIE_NAME = "storefront_privacy".freeze
   ACCEPTED = "analytics".freeze
   DECLINED = "essential".freeze
   CHOICES = [ ACCEPTED, DECLINED ].freeze

@@ -7,7 +7,7 @@ class CartsControllerTest < ActionDispatch::IntegrationTest
     post cart_lines_path, params: { product_id: products(:other_product).id, quantity: 1 }
 
     assert_redirected_to root_path
-    assert_equal "Cette couleur n'est plus disponible", flash[:alert]
+    assert_equal "Ce format n'est plus disponible", flash[:alert]
   end
 
   test "rejects a variant that belongs to another product" do
@@ -18,7 +18,7 @@ class CartsControllerTest < ActionDispatch::IntegrationTest
     }
 
     assert_redirected_to root_path
-    assert_equal "Cette couleur n'est plus disponible", flash[:alert]
+    assert_equal "Ce format n'est plus disponible", flash[:alert]
   end
 
   test "buy now sends a valid product to checkout" do
@@ -32,7 +32,7 @@ class CartsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to checkout_path
   end
 
-  test "adds a colour and shows it on the cart page" do
+  test "adds an option and shows it on the cart page" do
     post cart_lines_path, params: {
       product_id: products(:demo_product).id,
       variant_id: variants(:black).id,
@@ -43,11 +43,11 @@ class CartsControllerTest < ActionDispatch::IntegrationTest
     follow_redirect!
     assert_response :success
     assert_select ".cart-line", 1
-    assert_select ".cart-line__colour", text: /Noir/
+    assert_select ".cart-line__colour", text: /300 g/
     assert_select ".site-header__cart-count", text: "2"
   end
 
-  test "a missing variant id falls back to the default colour" do
+  test "a missing variant id falls back to the default option" do
     post cart_lines_path, params: { product_id: products(:demo_product).id, quantity: 1 }
 
     assert_redirected_to cart_path
@@ -81,14 +81,14 @@ class CartsControllerTest < ActionDispatch::IntegrationTest
     assert_select ".cart-line", 0
   end
 
-  test "suggests only the colours that are not already in the cart" do
+  test "suggests only the options that are not already in the cart" do
     add_black
 
     get cart_path
 
     assert_response :success
     assert_select ".cart-suggest__item", 1
-    assert_select ".cart-suggest__name", text: "Bleu"
+    assert_select ".cart-suggest__name", text: "500 g"
   end
 
   private

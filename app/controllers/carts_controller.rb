@@ -2,7 +2,7 @@ class CartsController < ApplicationController
   before_action :require_current_store!
 
   def show
-    # The colours not already in the cart, offered as a one-click add.
+    # The options not already in the cart, offered as a one-click add.
     @suggestions = current_product&.available_variants.to_a.reject do |variant|
       current_cart.variant_ids.include?(variant.id)
     end
@@ -43,7 +43,7 @@ class CartsController < ApplicationController
   private
 
   # Only a variant of an active product of this store can enter the cart, and an
-  # unknown id is refused rather than silently swapped for the default colour.
+  # unknown id is refused rather than silently swapped for the default option.
   def requested_variant
     product = Current.store.products.active.find_by(id: params[:product_id])
     return if product.blank?

@@ -23,7 +23,7 @@ module Payments
 
         assert_equal fake_session, result.session
         assert_equal "checkout_created", result.order.status
-        assert_equal 9_800, result.order.total_cents
+        assert_equal 4_998, result.order.total_cents
         assert_equal @store.id, calls.first.first[:metadata][:store_id]
         assert_equal result.order.id, calls.first.first[:metadata][:order_id]
         assert_equal result.order.id.to_s, calls.first.first[:client_reference_id]
@@ -56,9 +56,9 @@ module Payments
       end
 
       assert_equal variants(:blue), order.variant
-      assert_equal 5_400, order.total_cents
-      assert_equal 5_400, params[:line_items].first[:price_data][:unit_amount]
-      assert_equal "Demo Product - Bleu", params[:line_items].first[:price_data][:product_data][:name]
+      assert_equal 3_499, order.total_cents
+      assert_equal 3_499, params[:line_items].first[:price_data][:unit_amount]
+      assert_equal "Creatine Monohydrate - 500 g", params[:line_items].first[:price_data][:product_data][:name]
     end
 
     test "rejects a variant that does not belong to the product" do
@@ -79,7 +79,7 @@ module Payments
       assert_equal 999, rate[:fixed_amount][:amount]
       assert_equal "cad", rate[:fixed_amount][:currency]
       assert_equal 999, order.shipping_cents
-      assert_equal 4_900 + 999, order.total_cents
+      assert_equal 2_499 + 999, order.total_cents
     end
 
     test "rejects a product from another store" do

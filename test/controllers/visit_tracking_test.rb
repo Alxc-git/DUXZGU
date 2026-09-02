@@ -58,13 +58,13 @@ class VisitTrackingTest < ActionDispatch::IntegrationTest
   end
 
   test "keeps the referring host but not the full URL" do
-    get root_path, headers: { "HTTP_REFERER" => "https://www.google.com/search?q=montre+luxe" }
+    get root_path, headers: { "HTTP_REFERER" => "https://www.google.com/search?q=produit" }
 
     assert_equal "google.com", Visit.last.referrer_host
   end
 
   test "traffic from the site itself is not a referrer" do
-    get root_path, headers: { "HTTP_REFERER" => "http://localhost/montre/demo-product" }
+    get root_path, headers: { "HTTP_REFERER" => "http://localhost/produit/demo-product" }
 
     assert_nil Visit.last.referrer_host
   end

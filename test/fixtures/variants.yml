@@ -1,30 +1,30 @@
 black:
   product: demo_product
-  name: Noir
-  color: Noir
+  name: 300 g
+  color: 300 g
   color_hex: "#111827"
   position: 1
   active: true
   supplier_variant_id: cj-variant-black
-  supplier_sku: CJ-SKU-BLACK
+  supplier_sku: CJ-SKU-300G
   metadata: {}
 
 blue:
   product: demo_product
-  name: Bleu
-  color: Bleu
+  name: 500 g
+  color: 500 g
   color_hex: "#1d4ed8"
   position: 2
   active: true
-  price_cents: 5400
+  price_cents: 3499
   supplier_variant_id: cj-variant-blue
-  supplier_sku: CJ-SKU-BLUE
+  supplier_sku: CJ-SKU-500G
   metadata: {}
 
 other_variant:
   product: other_product
-  name: Rouge
-  color: Rouge
+  name: 1 kg
+  color: 1 kg
   position: 1
   active: true
   supplier_variant_id: other-variant-red

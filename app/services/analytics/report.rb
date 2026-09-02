@@ -112,7 +112,7 @@ module Analytics
     end
 
     # Revenue earned per dollar spent on ads. Above 1 the campaign pays for its
-    # own media; whether it pays for the watch too is what `net_profit_cents`
+    # own media; whether it pays for the product too is what `net_profit_cents`
     # answers, and the two disagree far more often than people expect.
     def roas
       return 0.0 if ad_spend_cents.zero?
@@ -145,7 +145,7 @@ module Analytics
     # would invent a drop that is not there.
     FUNNEL_STEPS = [
       { key: :landing, label: "Visites", pattern: nil },
-      { key: :product, label: "Fiche produit", pattern: "/montre/%" },
+      { key: :product, label: "Fiche produit", pattern: "/produit/%" },
       { key: :cart, label: "Panier", pattern: "/panier" },
       { key: :checkout, label: "Livraison", pattern: "/commande" },
       { key: :payment, label: "Paiement", pattern: "/paiement" }
@@ -176,10 +176,10 @@ module Analytics
       end
     end
 
-    # ------------------------------------------------------------- colours
+    # -------------------------------------------------------------- options
     #
-    # Which colour actually sells, which is what decides the photo that goes in
-    # the next ad and the colour to keep stocked at the supplier.
+    # Which option actually sells, which is what decides the photo that goes in
+    # the next ad and the option to keep stocked at the supplier.
     def top_variants
       @top_variants ||= begin
         rows = paid_scope(range).joins(:variant)

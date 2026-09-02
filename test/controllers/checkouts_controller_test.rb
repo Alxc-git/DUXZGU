@@ -22,7 +22,7 @@ class CheckoutsControllerTest < ActionDispatch::IntegrationTest
     follow_redirect!
     assert_response :success
     assert_select "form[action=?]", checkout_path
-    assert_select ".order-summary", text: /Demo Product/
+    assert_select ".order-summary", text: /Creatine Monohydrate/
   end
 
   # Captured while there is still a request to read it from: a webhook confirming
@@ -135,7 +135,7 @@ class CheckoutsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_no_match "translation missing", response.body
-    assert_no_match "Votre montre est preparee", response.body
+    assert_no_match "Votre commande est preparee", response.body
     assert_select ".confirmation__lead"
   end
   private

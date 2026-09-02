@@ -26,7 +26,7 @@ module Payments
       assert_equal "cad", params[:currency]
     end
 
-    test "charges a repriced single watch at 79.99 dollars" do
+    test "charges a repriced single unit at 79.99 dollars" do
       variant = variants(:black)
       variant.update!(price_cents: 7_999)
 

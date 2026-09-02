@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 // Drives the product gallery: thumbnails, dots and the zoom overlay all point at
-// one index, and a colour change resets the rail back to the watch itself.
+// one index, and an option change resets the rail back to the product itself.
 export default class extends Controller {
   static targets = ["stage", "thumb", "dot", "lightbox", "lightboxImage"]
   static classes = ["active"]
@@ -54,8 +54,8 @@ export default class extends Controller {
     if (persist) this.storeIndex(index)
   }
 
-  // The colour picker owns the first slide's photo, so it has to be re-pointed
-  // whenever the customer switches colour.
+  // The option picker owns the first slide's photo, so it has to be re-pointed
+  // whenever the customer switches option.
   onVariantChange(event) {
     const first = this.thumbTargets[0]
     if (!first) return
@@ -124,7 +124,7 @@ export default class extends Controller {
   }
 
   storageKey() {
-    return `luxtime:gallery:${window.location.pathname}:${this.variantId}`
+    return `storefront:gallery:${window.location.pathname}:${this.variantId}`
   }
 
   zoom() {

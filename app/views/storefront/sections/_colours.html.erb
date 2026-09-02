@@ -14,7 +14,7 @@
     <ul class="colours__grid" role="list">
       <% product.available_variants.each do |variant| %>
         <li>
-          <%= link_to storefront_product_path(product.slug, couleur: variant.id), class: "colour-card" do %>
+          <%= link_to storefront_product_path(product.slug, option: variant.id), class: "colour-card" do %>
             <span class="colour-card__media">
               <%= variant_image_tag variant, alt: "#{product.display_name} - #{variant.display_name}",
                     class: "colour-card__image", loading: "lazy", decoding: "async" %>

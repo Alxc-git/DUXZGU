@@ -32,7 +32,7 @@
     <%= form.hidden_field :product_id, value: product.id %>
 
     <% if product.variants? %>
-      <fieldset class="swatches" id="couleurs">
+      <fieldset class="swatches" id="options">
         <legend class="swatches__legend">
           <span><%= t("common.colour") %></span>
           <strong data-variant-target="name"><%= variant&.display_name %></strong>

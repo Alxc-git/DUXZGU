@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   root "storefront#home"
-  get "montre/:slug", to: "storefront#show", as: :storefront_product
+  get "produit/:slug", to: "storefront#show", as: :storefront_product
 
   post "langue", to: "locales#update", as: :locale_switch
 
@@ -51,8 +51,8 @@ Rails.application.routes.draw do
     resources :customers, only: %i[index show]
     resource :settings, only: :show
 
-    # The CJ balance runs out on the busiest days, which is exactly when nobody
-    # is watching the orders list. This panel is where that shows up.
+    # The supplier balance runs out on the busiest days, which is exactly when
+    # nobody is watching the orders list. This panel is where that shows up.
     resource :fulfillment, only: :show, controller: "fulfillment" do
       post :retry_all
       patch :cj_balance

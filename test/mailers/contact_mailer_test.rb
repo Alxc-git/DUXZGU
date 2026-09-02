@@ -8,7 +8,7 @@ class ContactMailerTest < ActionMailer::TestCase
       name: "Ada Lovelace",
       email: "client@exemple.ca",
       subject: "commande",
-      body: "Ou en est ma montre ?"
+      body: "Ou en est ma commande ?"
     ).attributes
   end
 
@@ -24,7 +24,7 @@ class ContactMailerTest < ActionMailer::TestCase
     assert_equal [ "client@exemple.ca" ], mail.reply_to
     assert_match "Ada Lovelace", mail.subject
     assert_match @store.name, mail.subject
-    assert_match "Ou en est ma montre ?", mail.text_part.body.to_s
+    assert_match "Ou en est ma commande ?", mail.text_part.body.to_s
   end
 
   test "a message without a chosen subject still gets one" do

@@ -373,7 +373,7 @@
   }
 }
 
-// One scrolling row rather than a grid: the number of colours left to suggest
+// One scrolling row rather than a grid: the number of options left to suggest
 // changes with the cart, and a grid leaves an orphan card on its own line as
 // soon as the count does not divide evenly.
 .cart-suggest__list {
@@ -438,7 +438,7 @@
   font-size: 0.86rem;
   font-weight: 600;
   line-height: 1.25;
-  // Two lines are reserved so a long colour name does not push its own "Ajouter"
+  // Two lines are reserved so a long option name does not push its own "Ajouter"
   // button below the ones beside it.
   min-height: 2.5em;
   min-width: 0;

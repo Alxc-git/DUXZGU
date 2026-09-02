@@ -51,7 +51,7 @@
       <% end %>
     </div>
 
-    <%= link_to "LUXTIME", root_path, class: "site-header__brand", aria: { label: t("header.brand_home", store: current_store&.name) } %>
+    <%= link_to current_store&.name || "Boutique", root_path, class: "site-header__brand", aria: { label: t("header.brand_home", store: current_store&.name) } %>
 
     <div class="site-header__side site-header__side--end">
       <%# A sliding switch, not a link: the change is a POST so Turbo's link
@@ -110,7 +110,7 @@
       <% end %>
       <% if featured.present? %>
         <%= link_to product_path, data: { action: "menu#close" } do %>
-          <span><%= t("common.the_watch") %></span>
+          <span><%= t("common.the_product") %></span>
           <%= icon "chevron-right", size: 18 %>
         <% end %>
       <% end %>

@@ -74,7 +74,7 @@
         [ "\u{1F4E6}", t("chat.suggestions.order") ],
         [ "\u{1F3E0}", t("chat.suggestions.address") ],
         [ "\u{21A9}\u{FE0F}", t("chat.suggestions.returns") ],
-        featured.present? ? [ "\u{1F3A8}", t("chat.suggestions.colours") ] : nil,
+        featured.present? ? [ "+", t("chat.suggestions.colours") ] : nil,
         [ "\u{1F69A}", t("chat.suggestions.delivery") ]
       ].compact.each do |emoji, prompt| %>
         <button type="button" class="support-chat__chip"

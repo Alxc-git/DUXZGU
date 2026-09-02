@@ -1,5 +1,5 @@
 <%# Client-side search over what the store actually sells: the product and its
-    colours. No index to maintain, and it never promises a result that does not exist. %>
+    options. No index to maintain, and it never promises a result that does not exist. %>
 <div class="search-overlay" data-search-target="overlay" data-action="click->search#backdrop" hidden>
   <div class="search-panel" role="dialog" aria-modal="true" aria-label="<%= t("common.search") %>">
     <div class="search-panel__field">
@@ -38,7 +38,7 @@
         <ul class="search-results" role="list">
           <% product.available_variants.each do |variant| %>
             <li data-search-target="result" data-search-terms="<%= "#{product.display_name} #{variant.display_name}".downcase %>">
-              <%= link_to storefront_product_path(product.slug, couleur: variant.id), class: "search-result" do %>
+              <%= link_to storefront_product_path(product.slug, option: variant.id), class: "search-result" do %>
                 <span class="search-result__media">
                   <%= variant_image_tag variant, alt: variant.display_name, loading: "lazy" %>
                 </span>

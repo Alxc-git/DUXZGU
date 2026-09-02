@@ -9,7 +9,7 @@ class StorefrontController < ApplicationController
 
   def show
     @product = Current.store.products.active.includes(:variants).find_by!(slug: params[:slug])
-    @variant = @product.variant_for(params[:couleur]) || @product.default_variant
+    @variant = @product.variant_for(params[:option]) || @product.default_variant
 
     track_meta_event("ViewContent", Meta::Content.for_product(@product, variant: @variant))
   rescue ActiveRecord::RecordNotFound

@@ -10,8 +10,8 @@ class VariantTest < ActiveSupport::TestCase
   end
 
   test "overrides the product price when it has its own" do
-    assert_equal 5_400, variants(:blue).price_cents
-    assert_equal "54,00 $", variants(:blue).formatted_price
+    assert_equal 3_499, variants(:blue).price_cents
+    assert_equal "34,99 $", variants(:blue).formatted_price
   end
 
   test "rejects a malformed swatch colour" do
@@ -22,7 +22,7 @@ class VariantTest < ActiveSupport::TestCase
   end
 
   test "rejects two variants sharing a supplier variant id on the same product" do
-    duplicate = products(:demo_product).variants.build(name: "Noir mat", supplier_variant_id: "cj-variant-black")
+    duplicate = products(:demo_product).variants.build(name: "300 g duplicate", supplier_variant_id: "cj-variant-black")
 
     assert_not duplicate.valid?
   end
@@ -46,7 +46,7 @@ class VariantTest < ActiveSupport::TestCase
   end
 
   test "new variants are positioned after existing ones" do
-    variant = products(:demo_product).variants.create!(name: "Rouge")
+    variant = products(:demo_product).variants.create!(name: "1 kg")
 
     assert_equal 3, variant.position
   end

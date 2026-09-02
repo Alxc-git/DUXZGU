@@ -18,7 +18,7 @@ module Payments
     def call
       raise Error, "Stripe n'est pas encore configure. Ajoutez STRIPE_SECRET_KEY puis relancez le serveur." if Stripe.api_key.blank?
       raise Error, "Produit indisponible" unless product.store_id == store.id && product.active?
-      raise Error, "Veuillez choisir une couleur" if product.variants? && variant.blank?
+      raise Error, "Veuillez choisir une option" if product.variants? && variant.blank?
 
       order = build_order
       session = create_stripe_session(order)

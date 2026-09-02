@@ -165,8 +165,8 @@ class MetaPixelTest < ActionDispatch::IntegrationTest
 
       assert_equal [ products(:demo_product).id.to_s ], event["data"]["content_ids"]
       assert_equal "product", event["data"]["content_type"]
-      assert_equal "Demo Product", event["data"]["content_name"]
-      assert_equal 49.0, event["data"]["value"]
+      assert_equal "Creatine Monohydrate", event["data"]["content_name"]
+      assert_equal 24.99, event["data"]["value"]
       assert_equal "CAD", event["data"]["currency"]
     end
   end
@@ -183,7 +183,7 @@ class MetaPixelTest < ActionDispatch::IntegrationTest
 
       assert_equal [ products(:demo_product).id.to_s ], event["data"]["content_ids"]
       assert_equal 2, event["data"]["num_items"]
-      assert_equal 108.0, event["data"]["value"]
+      assert_equal 69.98, event["data"]["value"]
       assert_equal "CAD", event["data"]["currency"]
     end
   end
@@ -207,7 +207,7 @@ class MetaPixelTest < ActionDispatch::IntegrationTest
       event = event_named("InitiateCheckout")
 
       assert_equal 1, event["data"]["num_items"]
-      assert_equal 49.0, event["data"]["value"]
+      assert_equal 24.99, event["data"]["value"]
     end
   end
 

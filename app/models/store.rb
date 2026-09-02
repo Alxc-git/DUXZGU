@@ -3,7 +3,7 @@ class Store < ApplicationRecord
   DEFAULT_CURRENCY = "cad".freeze
   DEFAULT_LOCALE = "fr-CA".freeze
   DEFAULT_SHIPPING_COUNTRIES = %w[CA].freeze
-  DEFAULT_SUPPORT_EMAIL = "contact@luxtimestyle.com".freeze
+  DEFAULT_SUPPORT_EMAIL = "contact@example.com".freeze
   PUBLIC_SETTING_KEYS = %w[
     legal_business_name business_address business_phone privacy_officer_name
     instagram_url tiktok_url facebook_url
@@ -81,7 +81,7 @@ class Store < ApplicationRecord
   end
 
   def support_email
-    settings["support_email"].presence || (DEFAULT_SUPPORT_EMAIL if luxtime_store?)
+    settings["support_email"].presence || DEFAULT_SUPPORT_EMAIL
   end
 
   def support_email=(value)
@@ -137,10 +137,6 @@ class Store < ApplicationRecord
     normalized = value.to_s.strip.presence
     normalized ? updated[key] = normalized : updated.delete(key)
     self.settings = updated
-  end
-
-  def luxtime_store?
-    slug == "luxtime" || name.to_s.casecmp?("LUXTIME") || domain.to_s.end_with?("luxtimestyle.com")
   end
 
   def normalize_domain

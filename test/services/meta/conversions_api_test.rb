@@ -20,7 +20,7 @@ module Meta
     def build(**overrides)
       ConversionsApi.new(
         **{ event_name: "Purchase", event_id: "purchase_stripe_pi_123",
-            event_time: 1_764_000_000, event_source_url: "https://luxtimestyle.com/commande",
+            event_time: 1_764_000_000, event_source_url: "https://example.com/commande",
             user_data: { em: [ "abc" ], client_ip_address: "24.48.0.1" },
             custom_data: { value: 49.0, currency: "CAD" } }.merge(overrides)
       )
@@ -47,7 +47,7 @@ module Meta
         assert_equal "purchase_stripe_pi_123", event["event_id"]
         assert_equal 1_764_000_000, event["event_time"]
         assert_equal "website", event["action_source"]
-        assert_equal "https://luxtimestyle.com/commande", event["event_source_url"]
+        assert_equal "https://example.com/commande", event["event_source_url"]
         assert_equal({ "em" => [ "abc" ], "client_ip_address" => "24.48.0.1" }, event["user_data"])
         assert_equal 49.0, event["custom_data"]["value"]
         assert_equal 1, result.events_received

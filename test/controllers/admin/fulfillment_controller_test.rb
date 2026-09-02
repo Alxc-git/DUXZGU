@@ -35,9 +35,9 @@ class Admin::FulfillmentControllerTest < ActionDispatch::IntegrationTest
     get admin_fulfillment_path
 
     assert_response :success
-    assert_equal 1800, @order.supplier_cost_cents
+    assert_equal 900, @order.supplier_cost_cents
     assert_equal 4900, @order.total_cents
-    assert_match MoneyFormatter.format(1800, @order.currency), response.body
+    assert_match MoneyFormatter.format(900, @order.currency), response.body
   end
 
   test "the credit needed adds up across every blocked order" do
@@ -49,7 +49,7 @@ class Admin::FulfillmentControllerTest < ActionDispatch::IntegrationTest
     get admin_fulfillment_path
 
     assert_response :success
-    assert_match MoneyFormatter.format(5400, @order.currency), response.body
+    assert_match MoneyFormatter.format(2700, @order.currency), response.body
   end
 
   # When the button cannot get an order through, the fallback is retyping it into
@@ -138,9 +138,9 @@ class Admin::FulfillmentControllerTest < ActionDispatch::IntegrationTest
 
     forecast = Fulfillment::CreditForecast.new(store: store)
 
-    # The fixture product costs 1800 a unit and two units were sent.
-    assert_equal 3_600, forecast.spent_since_recording_cents
-    assert_equal 16_400, forecast.remaining_cents
+    # The fixture product costs 900 a unit and two units were sent.
+    assert_equal 1_800, forecast.spent_since_recording_cents
+    assert_equal 18_200, forecast.remaining_cents
   end
 
   # The state the whole panel exists for: money is in the account, but not enough

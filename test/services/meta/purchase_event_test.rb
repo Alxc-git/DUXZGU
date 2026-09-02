@@ -12,7 +12,7 @@ module Meta
         "consent" => PrivacyConsent::ACCEPTED,
         "client_ip_address" => "24.48.0.1",
         "client_user_agent" => "Mozilla/5.0",
-        "source_url" => "https://luxtimestyle.com/commande"
+        "source_url" => "https://example.com/commande"
       }.merge(extra)
     end
 
@@ -35,11 +35,11 @@ module Meta
       # The checkout session id is unique per row; the intent is what ties the two
       # lines to one payment.
       second.stripe_checkout_session_id = nil
-      second.update!(total_cents: 5400, quantity: 2, stripe_payment_intent_id: @order.stripe_payment_intent_id)
+      second.update!(total_cents: 3499, quantity: 2, stripe_payment_intent_id: @order.stripe_payment_intent_id)
 
       event = PurchaseEvent.build([ @order, second ])
 
-      assert_in_delta 103.0, event[:custom_data][:value], 0.001
+      assert_in_delta 83.99, event[:custom_data][:value], 0.001
       assert_equal 3, event[:custom_data][:num_items]
     end
 
@@ -108,7 +108,7 @@ module Meta
 
     test "uses the checkout url the customer was on, then the store domain" do
       with_context(consenting_context)
-      assert_equal "https://luxtimestyle.com/commande", PurchaseEvent.build([ @order ])[:event_source_url]
+      assert_equal "https://example.com/commande", PurchaseEvent.build([ @order ])[:event_source_url]
 
       with_context(consenting_context.except("source_url"))
       assert_equal "https://localhost/", PurchaseEvent.build([ @order ])[:event_source_url]

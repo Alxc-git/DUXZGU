@@ -111,16 +111,16 @@ class Analytics::ReportTest < ActiveSupport::TestCase
 
     report = Analytics::Report.new(store: @store, days: 7)
 
-    # The product costs 1800 a unit and two were ordered.
+    # The product costs 900 a unit and two were ordered.
     assert_equal 12_000, report.revenue_cents
-    assert_equal 3_600, report.cost_cents
-    assert_equal 8_400, report.profit_cents
-    assert_in_delta 70.0, report.margin_rate, 0.1
+    assert_equal 1_800, report.cost_cents
+    assert_equal 10_200, report.profit_cents
+    assert_in_delta 85.0, report.margin_rate, 0.1
   end
 
   test "a variant with its own cost overrides the product's" do
     variants(:blue).update!(supplier_cost_cents: 900)
-    paid_order(total_cents: 5_400, quantity: 1, variant: variants(:blue))
+    paid_order(total_cents: 3_499, quantity: 1, variant: variants(:blue))
 
     assert_equal 900, Analytics::Report.new(store: @store, days: 7).cost_cents
   end
@@ -181,7 +181,7 @@ class Analytics::ReportTest < ActiveSupport::TestCase
     assert_equal 2, row[:visits]
     assert_equal 1, row[:orders]
     assert_equal 10_000, row[:revenue_cents]
-    assert_equal 8_200, row[:profit_cents]
+    assert_equal 9_100, row[:profit_cents]
     assert_in_delta 50.0, row[:conversion_rate], 0.1
   end
 
@@ -202,7 +202,7 @@ class Analytics::ReportTest < ActiveSupport::TestCase
 
     assert_equal 1, figures[:orders]
     assert_equal 5_000, figures[:revenue_cents]
-    assert_equal 3_200, figures[:profit_cents]
+    assert_equal 4_100, figures[:profit_cents]
   end
 
   # ----------------------------------------------------------- ad spending
@@ -213,9 +213,9 @@ class Analytics::ReportTest < ActiveSupport::TestCase
 
     report = Analytics::Report.new(store: @store, days: 7)
 
-    assert_equal 10_200, report.profit_cents
+    assert_equal 11_100, report.profit_cents
     assert_equal 5_000, report.ad_spend_cents
-    assert_equal 5_200, report.net_profit_cents
+    assert_equal 6_100, report.net_profit_cents
     assert_in_delta 2.4, report.roas, 0.01
   end
 
@@ -244,7 +244,7 @@ class Analytics::ReportTest < ActiveSupport::TestCase
     row = Analytics::Report.new(store: @store, days: 7).campaigns.first
 
     assert_equal 2_000, row[:spend_cents]
-    assert_equal 6_200, row[:net_profit_cents]
+    assert_equal 7_100, row[:net_profit_cents]
     assert_in_delta 5.0, row[:roas], 0.01
   end
 

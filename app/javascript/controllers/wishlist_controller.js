@@ -1,6 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 
-const STORAGE_KEY = "luxtime:wishlist"
+const STORAGE_KEY = "storefront:wishlist"
 
 // A local favourite: there is no customer account yet, so the choice is kept in
 // this browser rather than pretending it was saved anywhere else.

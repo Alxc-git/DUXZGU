@@ -31,7 +31,7 @@ bin/rails db:seed
 bin/dev
 ```
 
-This starts Rails plus the Tailwind and Sass watchers. The demo seed creates a `localhost` store and a demo product.
+This starts Rails plus the Tailwind and Sass watchers. The seed creates a `localhost` creatine store with one starter product and reusable checkout/admin flows.
 
 ## Environment Variables
 
@@ -141,8 +141,8 @@ then overwritten with what Stripe actually charged (`amount_total`,
 1. Create a `Store` in `/admin/stores`.
 2. Enter the production domain, currency and supplier type.
 3. Create a `Product` in `/admin/products`.
-4. Add one variant row per colour, each with the CJ `vid` in **Supplier variant id**.
-   That id decides which colour actually ships, so an unmapped variant fails fast
+4. Add one variant row per option, each with the supplier option id in **Supplier variant id**.
+   That id decides which option actually ships, so an unmapped variant fails fast
    with `Suppliers::InvalidOrder` rather than shipping the wrong item.
 5. Configure DNS so the domain points to the Rails deployment.
 6. Replace or duplicate the storefront ERB partials under `app/views/storefront/sections`.
@@ -153,7 +153,7 @@ then overwritten with what Stripe actually charged (`amount_total`,
 
 ## Storefront
 
-Two pages: a landing page at `/` and a product page at `/montre/:slug`.
+Two pages: a landing page at `/` and a product page at `/produit/:slug`.
 Each section is one ERB partial plus one matching SCSS partial:
 
 ```text
@@ -161,7 +161,7 @@ app/views/storefront/sections/_hero.html.erb
 app/assets/stylesheets/storefront/_hero.scss
 ```
 
-Design tokens (fonts, colours, spacing, shadows) live in
+Design tokens (fonts, colors, spacing, shadows) live in
 `app/assets/stylesheets/abstracts/_variables.scss` and are shared with the admin.
 
 Storefront copy — headline, specs, features, reviews, FAQ — comes from
@@ -169,37 +169,24 @@ Storefront copy — headline, specs, features, reviews, FAQ — comes from
 `settings["content"]`, so a second store can be re-skinned without touching the
 templates. Icons are inline SVG from `IconsHelper`, so there is no icon font.
 
-Colour selection is one radio group driven by `variant_controller.js`. The
+Option selection is one radio group driven by `variant_controller.js`. The
 gallery thumbnails and the swatch grid are two views of the same choice: picking
-either repaints the price, the colour name, the main photo and the sticky bar.
-Every colour carries two photos, because a picker and a showcase need opposite
+either repaints the price, the option name, the main photo and the sticky bar.
+Every option can carry two photos, because a picker and a showcase need opposite
 things from an image:
 
-- `variant.image` — the packshot in `montres_images/optimized/`, white
-  background, used by the swatches, thumbnails and colour grid
-- `variant.lifestyle_image` — the dark editorial shot in
-  `montres_images/lifestyle/`, used by the hero and the gallery stage
+- `variant.image` — the packshot, used by the swatches, thumbnails and option grid
+- `variant.lifestyle_image` — the editorial shot, used by the hero and the gallery stage
 
-`Variant#hero_image` falls back to the packshot, so a colour with no editorial
+`Variant#hero_image` falls back to the packshot, so an option with no editorial
 shot still renders everywhere.
 
-The packshots are pre-processed once with ImageMagick rather than at request
-time. The supplier ships them at mixed sizes (1920 and 800 square), with a gift
-box composited into two of them and a stray fragment in a third — so the raw
-files render at wildly different scales in a grid. The recipe that fixes it:
+Versioned catalogue images live under `catalogue_images/catalogue`; images added
+from the admin use Active Storage. See `docs/PHOTOS.md` for the expected file
+contract.
 
-```bash
-# mask the gift box / stray fragment, then trim, rescale and re-centre
-convert in.webp -fuzz 8% -trim +repage   -fill white -draw "rectangle 448,435 747,735"   -fuzz 8% -trim +repage -resize x1450   -background white -gravity center -extent 1600x1600   -quality 88 optimized/out.webp
-```
-
-Product photos are served as their originals, not Active Storage variants,
-because variants need libvips — present in the Docker image, not on every dev
-machine.
-
-There is no cart. A one-product store converts better going straight from the
-product page to Stripe Checkout, so "Acheter maintenant" posts `product_id`,
-`variant_id` and `quantity` directly to `/checkout`.
+There is a session cart. "Acheter maintenant" adds the chosen variant and then
+sends the customer directly to the address step.
 
 The backend resolves the current store from `request.host` through
 `Current.store`. Store-specific templates can later be added under

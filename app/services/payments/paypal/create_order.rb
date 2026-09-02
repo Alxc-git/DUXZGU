@@ -92,7 +92,7 @@ module Payments
       # Replaying the same checkout returns the existing PayPal order instead of
       # opening a second one, which is what a double click would otherwise do.
       def idempotency_header
-        { "PayPal-Request-Id" => "luxtime-#{reference}" }
+        { "PayPal-Request-Id" => "storefront-#{reference}" }
       end
 
       def currency
