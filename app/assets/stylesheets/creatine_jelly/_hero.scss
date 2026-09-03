@@ -2,12 +2,27 @@
   position:relative;overflow:hidden;isolation:isolate;min-width:0;
   background:var(--ink-050);border:1px solid var(--border-hairline);
   border-radius:var(--radius-lg);box-shadow:var(--shadow-panel);
-  &__bleed{position:absolute;inset:0;z-index:0;
-    img{width:100%;height:100%;object-fit:cover;object-position:76% center}}
+  // The three flavour photos are framed differently: the raspberry one is wide
+  // with the jar to the right, the other two are square with it dead centre. A
+  // cover-crop would drag those two under the copy, so the image is pinned to the
+  // right edge at its own aspect ratio and its left edge is dissolved into the
+  // panel — which works whatever the shot.
+  // The photo owns the right half only, so the product can never drift under the
+  // copy — whichever flavour is showing, and whatever that shot's aspect ratio.
+  // Its left edge is dissolved so the panel has no visible seam.
+  &__bleed{
+    position:absolute;inset:0 0 0 auto;z-index:0;width:50%;
+    img{
+      width:100%;height:100%;max-width:none;object-fit:cover;
+      object-position:var(--hero-focus,center);
+      -webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 34%);
+      mask-image:linear-gradient(90deg,transparent 0%,#000 34%);
+    }
+  }
   // Two crossed gradients: one reads the copy off the left, one grounds the ticker.
   &__veil{position:absolute;inset:0;z-index:1;
     background:
-      linear-gradient(90deg,rgba(0,0,0,.97) 0%,rgba(0,0,0,.92) 34%,rgba(0,0,0,.42) 64%,rgba(0,0,0,.06) 100%),
+      linear-gradient(90deg,rgba(0,0,0,.92) 0%,rgba(0,0,0,.7) 44%,rgba(0,0,0,.18) 72%,rgba(0,0,0,0) 100%),
       linear-gradient(0deg,rgba(0,0,0,.75) 0%,rgba(0,0,0,0) 44%)}
   &__glow{position:absolute;z-index:1;inset:auto -10% -30% 30%;height:70%;pointer-events:none;
     background:var(--hero-spot,var(--spot-crimson));opacity:.5}
@@ -85,8 +100,9 @@
   @container site (max-width:#{$bp-lg - 1px}){
     display:flex;flex-direction:column;
     &__cta .btn{flex:1 1 auto}
-    &__bleed{position:relative;inset:auto;width:100%;aspect-ratio:16/10}
-    &__bleed img{object-position:center}
+    &__bleed{position:relative;inset:auto;width:100%;aspect-ratio:16/10;display:block}
+    &__bleed img{width:100%;height:100%;object-position:center 28%;
+      -webkit-mask-image:none;mask-image:none}
     &__bleed::after{content:"";position:absolute;inset:0;
       background:linear-gradient(to top,var(--ink-050) 0%,rgba(7,7,9,.35) 42%,rgba(0,0,0,0) 78%)}
     &__veil,&__glow{display:none}

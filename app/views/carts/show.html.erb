@@ -41,12 +41,14 @@
           </div>
         <% end %>
       <% end %>
+
+      <% if current_cart.any? %>
+        <%= render "shared/cross_sell" %>
+      <% end %>
     </div>
 
     <% if current_cart.any? %>
-      <div class="stack">
-        <%= render "shared/free_shipping_bar" %>
-        <%= render "shared/cross_sell" %>
+      <div class="stack checkout__aside">
         <%= render "checkouts/summary", flavor: @flavor || Flavor.default, qty: current_cart.count %>
         <%= link_to "Continue to checkout", checkout_path, class: "btn btn--primary btn--lg btn--full" %>
       </div>

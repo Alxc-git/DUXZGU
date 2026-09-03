@@ -66,19 +66,40 @@
     <div class="g2">
       <div class="card proof">
         <div class="proof__score">
-          <%= cj_stars Storefront::RATING, size: :lg %>
+          <p class="eyebrow eyebrow--accent">Verified reviews</p>
           <div class="proof__number"><%= Storefront::RATING %>/5</div>
           <p class="eyebrow eyebrow--muted">From <%= Storefront::REVIEW_COUNT %> reviews</p>
         </div>
+
         <hr class="rule">
-        <div class="stat">
-          <span class="feature-icon feature-icon--lg"><%= cj_icon "users" %></span>
-          <div style="min-width:0">
-            <div class="stat__label">Loved by athletes</div>
-            <div class="stat__note">Trusted by <%= Storefront::CUSTOMER_COUNT %> customers worldwide</div>
+
+        <div class="proof__block">
+          <div class="stat">
+            <span class="feature-icon feature-icon--lg"><%= cj_icon "users" %></span>
+            <div style="min-width:0">
+              <div class="stat__label">Loved by athletes</div>
+              <div class="stat__note">Trusted by <%= Storefront::CUSTOMER_COUNT %> customers worldwide</div>
+            </div>
           </div>
+          <%= cj_stars Storefront::RATING, size: :lg %>
         </div>
+
         <hr class="rule">
+
+        <% quote = Storefront::REVIEWS.first %>
+        <figure class="proof__quote">
+          <blockquote>&ldquo;<%= quote[:quote] %>&rdquo;</blockquote>
+          <figcaption>
+            <span class="proof__avatar" aria-hidden="true"><%= quote[:name].to_s.strip.first %></span>
+            <span>
+              <b><%= quote[:name] %></b>
+              <span class="testimonial__verified"><%= cj_icon "circle-check" %>Verified buyer</span>
+            </span>
+          </figcaption>
+        </figure>
+
+        <hr class="rule">
+
         <%= render "shared/trust_row" %>
       </div>
 

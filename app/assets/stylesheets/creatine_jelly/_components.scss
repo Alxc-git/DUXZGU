@@ -342,12 +342,27 @@
     text-transform:uppercase;letter-spacing:var(--ls-label);font-size:var(--fs-micro)}
 }
 
-// Social-proof panel: rating, reach and guarantees stacked down one column.
+// Social-proof panel: rating, reach, one real review and the guarantees, spread
+// down the column so the card fills the height of the photo beside it.
 .proof{
-  display:flex;flex-direction:column;justify-content:center;
-  gap:clamp(var(--space-5),2vw,var(--space-8));
-  &__score{display:flex;flex-direction:column;gap:var(--space-2);align-items:flex-start}
+  display:flex;flex-direction:column;justify-content:space-between;
+  gap:clamp(var(--space-4),1.6vw,var(--space-6));
+  &__score{display:flex;flex-direction:column;gap:6px;align-items:flex-start}
   &__number{font-family:var(--font-display);font-size:clamp(2.5rem,4vw,3.5rem);
     color:var(--white);line-height:1}
+  &__block{display:flex;flex-direction:column;gap:var(--space-4);align-items:flex-start}
+  &__quote{
+    margin:0;display:flex;flex-direction:column;gap:12px;
+    blockquote{margin:0;color:var(--text-body);font-size:var(--fs-body-sm);line-height:1.55}
+    figcaption{display:flex;align-items:center;gap:10px;
+      b{display:block;color:var(--text-strong);font-size:var(--fs-body-sm);font-weight:600;line-height:1.2}}
+  }
+  &__avatar{
+    flex:0 0 auto;display:flex;align-items:center;justify-content:center;
+    width:34px;height:34px;border-radius:50%;
+    background:linear-gradient(140deg,var(--crimson-700),var(--ink-400));
+    border:1px solid var(--border-subtle);
+    font-family:var(--font-display);font-size:.8125rem;color:var(--white);line-height:1;
+  }
   .trust{gap:var(--space-4) var(--space-6)}
 }

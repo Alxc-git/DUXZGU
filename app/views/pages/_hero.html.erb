@@ -1,6 +1,6 @@
-<section class="hero" style="--hero-spot:<%= flavor.spot_var %>">
+<section class="hero" style="--hero-spot:<%= flavor.spot_var %>;--hero-focus:<%= flavor.scene_focus %>">
   <div class="hero__bleed">
-    <%= image_tag "product/duwzgu-hero-raspberry.png", alt: "DUWZGU Creatine Jelly" %>
+    <%= image_tag flavor.scene_image, alt: "#{flavor.name} Creatine Jelly" %>
   </div>
   <span class="hero__veil"></span>
   <span class="hero__glow"></span>
