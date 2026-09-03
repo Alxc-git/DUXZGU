@@ -1,58 +1,78 @@
-<%# lines: [{variant:, product:, quantity:, amount:}], totals: {subtotal:, shipping_cents:, total:} %>
-<aside class="order-summary">
-  <h2 class="order-summary__title">
-    <span><%= t("checkout.your_order") %></span>
-    <% if local_assigns[:edit_path].present? %>
-      <%= link_to t("common.edit"), edit_path, class: "order-summary__edit" %>
-    <% end %>
-  </h2>
-
-  <ul class="order-summary__lines" role="list">
-    <% lines.each do |line| %>
-      <li class="order-summary__line">
-        <span class="order-summary__media">
-          <%= variant_image_tag line[:variant], alt: "#{line[:product].display_name} #{line[:variant]&.display_name}",
-                thumb: 90, loading: "lazy", decoding: "async" %>
-          <span class="order-summary__badge"><%= line[:quantity] %></span>
-        </span>
-        <span class="order-summary__info">
-          <strong><%= line[:product].display_name %></strong>
-          <span><%= line[:variant]&.display_name %></span>
-        </span>
-        <span class="order-summary__price"><%= line[:amount] %></span>
-      </li>
-    <% end %>
-  </ul>
-
-  <dl class="order-summary__rows">
-    <div class="order-summary__row">
-      <dt><%= t("cart.subtotal") %></dt>
-      <dd><%= totals[:subtotal] %></dd>
+<div class="stack">
+  <div class="card">
+    <div style="display:flex;align-items:baseline;margin-bottom:var(--space-4)">
+      <h2 style="font-size:var(--fs-title)">Your cart (<%= current_cart.count %>)</h2>
+      <%= link_to "Edit cart", cart_path,
+            style: "margin-left:auto;font-size:var(--fs-caption)" %>
     </div>
-    <% if totals[:discount_cents].to_i.positive? %>
-      <div class="order-summary__row order-summary__row--discount">
-        <dt><%= totals[:discount_label] %></dt>
-        <dd>&minus;<%= MoneyFormatter.format(totals[:discount_cents], current_store.currency) %></dd>
+    <% current_cart.lines.each do |line| %>
+      <div class="checkout__item">
+        <span class="checkout__thumb" style="background:<%= flavor.spot_var %>,var(--ink-100)">
+          <%= image_tag flavor.image, alt: "" %>
+        </span>
+        <div style="min-width:0;flex:1">
+          <div class="stat__label"><%= line.product.display_name %></div>
+          <div class="stat__note"><%= line.variant.display_name %> · Qty <%= line.quantity %></div>
+          <div style="font-family:var(--font-display);color:var(--accent);font-size:1.25rem;margin-top:10px">
+            <%= line.formatted_total %>
+          </div>
+        </div>
       </div>
     <% end %>
+  </div>
 
-    <div class="order-summary__row">
-      <dt><%= t("cart.shipping") %></dt>
-      <dd>
-        <% if totals[:shipping_cents].to_i.zero? %>
-          <span class="order-summary__free"><%= t("common.free") %></span>
-        <% else %>
-          <%= MoneyFormatter.format(totals[:shipping_cents], current_store.currency) %>
-        <% end %>
-      </dd>
+  <div class="card card--accent">
+    <p class="eyebrow eyebrow--accent" style="margin-bottom:12px">Add blueberry &amp; save 15%</p>
+    <div style="display:flex;gap:14px;align-items:center">
+      <%= image_tag "product/duwzgu-jar-2.png", alt: "", style: "width:70px" %>
+      <div style="flex:1;min-width:0">
+        <div class="stat__label">Blueberry Creatine Jelly</div>
+        <div class="stat__note">30 servings</div>
+        <div style="margin-top:6px;display:flex;gap:8px;align-items:baseline">
+          <s style="color:var(--text-faint);font-size:var(--fs-caption)">$39.99</s>
+          <span style="font-family:var(--font-display);color:var(--accent);font-size:1.125rem">$33.99</span>
+        </div>
+      </div>
     </div>
-    <div class="order-summary__row order-summary__row--total">
-      <dt><%= t("cart.total") %></dt>
-      <dd><%= totals[:total] %></dd>
+    <label class="check" style="margin-top:10px">
+      <input type="checkbox" name="addon" checked>
+      <span class="check__box"><%= cj_icon "check" %></span>
+      <span>Yes! Add blueberry &amp; save 15%</span>
+    </label>
+  </div>
+
+  <div class="card">
+    <h2 style="font-size:var(--fs-title);margin-bottom:var(--space-4)">Order summary</h2>
+    <div class="checkout__section" style="gap:10px">
+      <div class="checkout__line"><span>Subtotal</span><b><%= current_cart.formatted_subtotal %></b></div>
+      <div class="checkout__line"><span>Shipping</span><b><%= current_cart.shipping_cents.zero? ? "Free" : current_cart.formatted_shipping %></b></div>
+      <% if current_cart.discount? %>
+        <div class="checkout__line checkout__line--discount"><span><%= current_cart.offer.label %></span><b>-<%= current_cart.formatted_discount %></b></div>
+      <% end %>
+      <hr class="rule">
+      <div class="checkout__line checkout__line--total"><span>Total</span><span><%= current_cart.formatted_total %></span></div>
+      <div class="promo">
+        <input class="input" placeholder="Promo code">
+        <span class="btn btn--secondary">Apply</span>
+      </div>
     </div>
-  </dl>
+  </div>
 
-  <p class="order-summary__taxes"><%= t("common.taxes_included") %></p>
+  <div class="card">
+    <div style="display:flex;gap:14px;align-items:flex-start">
+      <span class="feature-icon"><%= cj_icon "shield-check" %></span>
+      <div>
+        <div class="stat__label">100% safe &amp; secure checkout</div>
+        <div class="stat__note">Your information is protected with 256-bit SSL encryption.</div>
+      </div>
+    </div>
+  </div>
 
-  <%= render "shared/order_perks", list_class: "order-summary__perks" %>
-</aside>
+  <div class="card">
+    <p class="eyebrow eyebrow--accent" style="margin-bottom:12px">Need help with your order?</p>
+    <div style="display:flex;flex-wrap:wrap;gap:var(--space-6)">
+      <div class="trust__item"><%= cj_icon "message-circle" %><span><span class="trust__t">Live chat</span>Mon–Fri 9AM–6PM EST</span></div>
+      <div class="trust__item"><%= cj_icon "mail" %><span><span class="trust__t">Email us</span>support@creatinejelly.com</span></div>
+    </div>
+  </div>
+</div>

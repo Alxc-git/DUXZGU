@@ -1,0 +1,34 @@
+<header class="header" data-nav>
+  <div class="page header__in">
+    <%= link_to root_path, class: "wordmark" do %>
+      <span class="wordmark__a">Creatine</span><span class="wordmark__b">Jelly</span>
+    <% end %>
+
+    <nav class="header__nav">
+      <% Storefront::NAV.each do |label, path| %>
+        <%= link_to label, path, class: ["header__link", ("is-active" if current_page?(path))] %>
+      <% end %>
+    </nav>
+
+    <div class="header__right">
+      <%= link_to "Buy now – #{Storefront::PRICE}", product_path,
+            class: "btn btn--primary btn--pill btn--sm header__cta" %>
+      <%= link_to checkout_path, class: "icon-btn", aria: { label: "Cart" } do %>
+        <%= cj_icon "shopping-cart" %><span class="icon-btn__count">1</span>
+      <% end %>
+      <button type="button" class="icon-btn icon-btn--bare header__burger" data-nav-toggle aria-label="Menu">
+        <%= cj_icon "menu" %>
+      </button>
+    </div>
+  </div>
+
+  <div class="sheet" data-nav-sheet>
+    <div class="page sheet__in">
+      <% Storefront::NAV.each do |label, path| %>
+        <%= link_to label, path, class: "header__link" %>
+      <% end %>
+      <%= link_to "Buy now – #{Storefront::PRICE}", product_path,
+            class: "btn btn--primary btn--full", style: "margin-top:16px" %>
+    </div>
+  </div>
+</header>

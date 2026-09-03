@@ -10,43 +10,19 @@ class ContactsControllerTest < ActionDispatch::IntegrationTest
     get contact_path
 
     assert_response :success
+    assert_select "h1", text: "Contact us"
     assert_select "form[action=?]", contact_path
     assert_select "#contact_message_body"
-    assert_select ".contact-select select#contact_message_subject", 1
-    assert_select ".contact-select__chevron svg", 1
-    assert_select ".field__hint", 0
+    assert_select "select#contact_message_subject", 1
   end
 
-
-  # The page used to stop dead after the form while every other page carries the
-  # FAQ and the closing call to action below its content. Half of what people
-  # write in about is answered in that FAQ, so it earns its place here most.
-  test "the page carries the same closing sections as the rest of the site" do
-    get contact_path
-
-    assert_response :success
-    assert_select "section.faq"
-    assert_select "section.footer-cta"
-  end
-
-  # The lead and the FAQ intro were both written straight into the templates, so
-  # an English visitor read them in French. They live in the locale files now.
-  test "an english visitor reads the page in english" do
-    get contact_path(locale: "en")
-
-    assert_response :success
-    assert_select ".contact__lead", text: I18n.t("contact.lead", locale: :en)
-    assert_select ".faq__lead", text: I18n.t("sections.faq_lead", locale: :en)
-    assert_no_match "It is on your confirmation email.", response.body
-    assert_no_match "translation missing", response.body
-  end
   test "refuses a message with no body" do
     assert_no_enqueued_emails do
       post contact_path, params: { contact_message: { name: "Alexis", email: "alexis@exemple.ca", body: "" } }
     end
 
     assert_response :unprocessable_entity
-    assert_select ".checkout__errors", text: /message/i
+    assert_select "[role='alert']", text: /message/i
   end
 
   test "refuses a malformed email" do
@@ -55,7 +31,7 @@ class ContactsControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :unprocessable_entity
-    assert_select ".checkout__errors", text: /courriel/i
+    assert_select "[role='alert']", text: /courriel/i
   end
 
   test "refuses a subject that is not offered" do

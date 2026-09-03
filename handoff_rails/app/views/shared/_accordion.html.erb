@@ -1,0 +1,10 @@
+<div class="accordion" data-accordion>
+  <% items.each_with_index do |item, i| %>
+    <div class="accordion__item <%= "is-open" if i.zero? && local_assigns[:open_first] %>">
+      <button type="button" class="accordion__btn" data-accordion-toggle aria-expanded="<%= i.zero? && local_assigns[:open_first] ? "true" : "false" %>">
+        <%= item[:q] %><span class="accordion__sign">+</span>
+      </button>
+      <div class="accordion__panel"><%= item[:a] %></div>
+    </div>
+  <% end %>
+</div>

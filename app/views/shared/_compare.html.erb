@@ -1,0 +1,7 @@
+<div class="compare">
+  <% items.each do |item| %>
+    <div class="compare__row compare__row--<%= tone %>">
+      <%= cj_icon(tone == "yes" ? "circle-check" : "x") %><%= item %>
+    </div>
+  <% end %>
+</div>

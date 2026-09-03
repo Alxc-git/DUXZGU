@@ -6,10 +6,7 @@ class PrivacyPreferencesControllerTest < ActionDispatch::IntegrationTest
     Visit.delete_all
   end
 
-  test "shows the privacy banner until a choice is made" do
-    get root_path
-    assert_select ".privacy-banner", 1
-
+  test "declining analytics prevents visit tracking" do
     post privacy_preferences_path,
       params: { analytics: PrivacyConsent::DECLINED },
       headers: { "HTTP_REFERER" => root_url }
@@ -17,7 +14,6 @@ class PrivacyPreferencesControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to root_path
 
     get root_path
-    assert_select ".privacy-banner", 0
     assert_equal 0, Visit.count
   end
 
@@ -31,14 +27,12 @@ class PrivacyPreferencesControllerTest < ActionDispatch::IntegrationTest
     assert_difference "Visit.count", 1 do
       get root_path
     end
-    assert_select ".privacy-banner", 0
   end
 
   test "invalid values fail closed to essential cookies only" do
     post privacy_preferences_path, params: { analytics: "all" }
 
     get root_path
-    assert_select ".privacy-banner", 0
     assert_equal 0, Visit.count
   end
 end

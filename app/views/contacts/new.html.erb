@@ -1,174 +1,39 @@
-<% content_for :title, "#{t("contact.title")} | #{current_store.name}" %>
-<% content_for :description, t("contact.lead") %>
+<% content_for :title, "Contact | #{current_store.name}" %>
 
-<section class="contact">
-  <div class="page-container">
-    <nav class="breadcrumb" aria-label="<%= t("common.breadcrumb") %>">
-      <%= link_to t("common.home"), root_path %>
-      <%= icon "chevron-right", size: 14 %>
-      <span aria-current="page"><%= t("common.contact") %></span>
-    </nav>
-
-    <header class="contact__header">
-      <p class="contact__eyebrow"><%= t("contact.eyebrow") %></p>
-      <h1 class="contact__title"><%= t("contact.title") %></h1>
-      <p class="contact__lead"><%= t("contact.lead") %></p>
-    </header>
-
-    <div class="contact__grid">
-      <%= form_with model: @message, url: contact_path, method: :post, scope: :contact_message,
-            class: class_names("contact__form", "contact__form--invalid": @message.errors.any?) do |form| %>
-
-        <% if @message.errors.any? %>
-          <div class="checkout__errors" role="alert">
-            <strong>
-              <%= icon "close", size: 16 %>
-              <%= t("checkout.errors_title") %>
-            </strong>
-            <ul>
-              <% @message.errors.each do |error| %>
-                <li><%= error.message %></li>
-              <% end %>
-            </ul>
-          </div>
-        <% end %>
-
-        <section class="checkout__panel">
-          <header class="checkout__panel-head">
-            <span class="checkout__panel-mark"><%= icon "mail", size: 16 %></span>
-            <h2><%= t("contact.your_message") %></h2>
-          </header>
-
-          <div class="field-row">
-            <div class="field">
-              <%= form.label :name, t("contact.name") %>
-              <%= form.text_field :name, autocomplete: "name", required: true,
-                    class: field_class(@message, :name) %>
-              <%= checkout_field_error(@message, :name) %>
-            </div>
-
-            <div class="field">
-              <%= form.label :email, t("checkout.email") %>
-              <%= form.email_field :email, autocomplete: "email", placeholder: "vous@exemple.ca",
-                    required: true, class: field_class(@message, :email) %>
-              <%= checkout_field_error(@message, :email) %>
-            </div>
-          </div>
-
-          <div class="field-row">
-            <div class="field">
-              <%= form.label :subject, t("contact.subject") %>
-              <div class="contact-select">
-                <span class="contact-select__icon"><%= icon "sparkles", size: 17 %></span>
-                <%= form.select :subject,
-                      ContactMessage.subjects,
-                      { include_blank: t("contact.choose_subject") },
-                      class: "#{field_class(@message, :subject)} contact-select__input" %>
-                <span class="contact-select__chevron"><%= icon "chevron-down", size: 17 %></span>
-              </div>
-              <%= checkout_field_error(@message, :subject) %>
-            </div>
-
-            <div class="field">
-              <%= form.label :order_reference, t("contact.order_number") %>
-              <%= form.text_field :order_reference, placeholder: "LX-XXXXXXXX",
-                    class: field_class(@message, :order_reference) %>
-            </div>
-          </div>
-
-          <div class="field contact__message-field">
-            <%= form.label :body, t("contact.message") %>
-            <%= form.text_area :body, rows: 7, required: true,
-                  placeholder: t("contact.message_placeholder"),
-                  class: "#{field_class(@message, :body)} input--area" %>
-            <%= checkout_field_error(@message, :body) %>
-          </div>
-
-          <%# Inside the panel, not after it: a single-panel form has nothing to
-              separate, and a button floating below the card reads as detached. %>
-          <div class="contact__actions">
-            <p class="contact__privacy">
-              <%= t("contact.privacy") %>
-              <%= link_to t("privacy_preferences.learn_more"), privacy_policy_path %>
-            </p>
-            <%= form.button type: "submit", class: "button button--lg button--block" do %>
-              <%= icon "mail", size: 18 %>
-              <span><%= t("contact.send") %></span>
-            <% end %>
-          </div>
-        </section>
-      <% end %>
-
-      <aside class="contact__side">
-        <div class="contact__card">
-          <h2 class="contact__card-title"><%= t("contact.quick_reply") %></h2>
-          <ul class="contact__facts" role="list">
-            <li>
-              <span class="contact__fact-icon"><%= icon "clock", size: 17 %></span>
-              <span>
-                <strong><%= t("contact.within_24h") %></strong>
-                <small><%= t("contact.weekdays") %></small>
-              </span>
-            </li>
-            <% if current_store&.support_email.present? %>
-              <li>
-                <span class="contact__fact-icon"><%= icon "mail", size: 17 %></span>
-                <span>
-                  <strong><%= mail_to current_store.support_email %></strong>
-                  <small><%= t("contact.write_directly") %></small>
-                </span>
-              </li>
-            <% end %>
-            <li>
-              <span class="contact__fact-icon"><%= icon "globe", size: 17 %></span>
-              <span>
-                <strong><%= t("contact.ships_to") %></strong>
-                <small><%= t("contact.prices_in", currency: current_store&.currency.to_s.upcase) %></small>
-              </span>
-            </li>
-          </ul>
-        </div>
-
-        <div class="contact__card">
-          <h2 class="contact__card-title"><%= t("contact.instant_answers") %></h2>
-          <p class="contact__card-lead"><%= t("contact.instant_lead") %></p>
-          <ul class="contact__links" role="list">
-            <% if current_product.present? %>
-              <li>
-                <%= link_to "#faq" do %>
-                  <span><%= t("footer.faq") %></span>
-                  <%= icon "chevron-right", size: 16 %>
-                <% end %>
-              </li>
-              <li>
-                <%= link_to "#{storefront_product_path(current_product.slug)}#specifications" do %>
-                  <span><%= t("footer.specifications") %></span>
-                  <%= icon "chevron-right", size: 16 %>
-                <% end %>
-              </li>
-            <% end %>
-            <li>
-              <%= link_to cart_path do %>
-                <span><%= t("contact.see_cart") %></span>
-                <%= icon "chevron-right", size: 16 %>
-              <% end %>
-            </li>
-          </ul>
-        </div>
-
-        <div class="contact__card contact__card--trust">
-          <%= render "shared/order_perks", list_class: "cart-summary__perks" %>
-        </div>
-      </aside>
-    </div>
+<div class="page stack" style="padding-top:var(--space-8);max-width:840px">
+  <div class="card checkout__section">
+    <p class="eyebrow eyebrow--accent" style="font-size:var(--fs-body-sm)">Support</p>
+    <h1 style="font-size:var(--fs-display-3)">Contact us</h1>
+    <p class="sub">Questions about an order, delivery or the product? Send a message to the store support inbox.</p>
   </div>
-</section>
 
-<%# The furniture every other page carries below its main content. The FAQ answers
-    a good share of what people were about to write in, so it belongs here more
-    than anywhere, and the product stays one click away instead of making someone
-    navigate back to find it. %>
-<% if current_product.present? %>
-  <%= render "storefront/sections/faq", product: current_product %>
-  <%= render "storefront/sections/footer_cta", product: current_product %>
-<% end %>
+  <%= form_with model: @message, scope: :contact_message, url: contact_path, class: "card checkout__section" do |form| %>
+    <% if @message.errors.any? %>
+      <div role="alert">
+        <div class="stat__label">Please check the following</div>
+        <ul>
+          <% @message.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="checkout__grid checkout__grid--2">
+      <%= form.text_field :name, class: "input", placeholder: "Name", required: true, autocomplete: "name" %>
+      <%= form.email_field :email, class: "input", placeholder: "Email", required: true, autocomplete: "email" %>
+    </div>
+
+    <span class="select">
+      <%= form.select :subject, options_for_select(ContactMessage.subjects, @message.subject), { include_blank: "Subject" }, class: "input" %>
+      <span class="select__chev"><%= cj_icon "chevron-down" %></span>
+    </span>
+
+    <%= form.text_field :order_reference, class: "input", placeholder: "Order reference" %>
+    <%= form.text_area :body, class: "input", rows: 7, placeholder: "Message", required: true %>
+
+    <button class="btn btn--primary btn--lg btn--full" type="submit">
+      <%= cj_icon "mail", size: "1.15em" %> Send message
+    </button>
+  <% end %>
+</div>

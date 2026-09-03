@@ -1,70 +1,40 @@
 <!DOCTYPE html>
 <html lang="<%= I18n.locale %>">
   <head>
-    <title><%= content_for(:title) || current_store&.name || "Boutique" %></title>
+    <title><%= content_for(:title) || current_store&.name || Storefront::PRODUCT_NAME %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="<%= current_store&.name %>">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="description" content="<%= content_for(:description) || current_store&.settings&.dig("tagline") %>">
-    <meta name="theme-color" content="#111111">
-    <%# Tells a search engine the same page exists in the other language. %>
-    <link rel="alternate" hreflang="<%= I18n.locale %>" href="<%= request.original_url %>">
-    <link rel="alternate" hreflang="<%= alternate_locale %>" href="<%= alternate_locale_url %>">
+    <meta name="description" content="<%= content_for(:description) || current_product&.description %>">
 
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-
     <%= yield :head %>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap">
-
-    <%# The SVG is a simplified mark that survives a 16px tab; the PNGs carry the
-        detailed one, where there is room for the bezel and the hour markers.
-        Files under public/ are served with a one-year cache, and browsers hold on
-        to a favicon even harder than that, so the version below is what makes a
-        changed logo actually appear. Bump it whenever the artwork changes. %>
-    <% icon_version = 2 %>
-    <link rel="icon" href="/icon.svg?v=<%= icon_version %>" type="image/svg+xml">
-    <link rel="icon" href="/icon-192.png?v=<%= icon_version %>" type="image/png" sizes="192x192">
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=<%= icon_version %>" sizes="180x180">
-    <link rel="manifest" href="<%= pwa_manifest_path %>">
 
     <%= stylesheet_link_tag "tailwind", "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
-
-    <%# The Meta Pixel lives in shared/_meta_pixel only. A second copy of the
-        snippet pasted here would raise its own PageView on top of the one the
-        meta-pixel controller raises, and would load the pixel for customers who
-        declined analytics. %>
+    <%= javascript_include_tag "site", "data-turbo-track": "reload", defer: true %>
     <%= render "shared/meta_pixel" if meta_pixel_enabled? %>
   </head>
 
   <body>
-    <a class="skip-link" href="#contenu">Aller au contenu</a>
+    <div class="site">
+      <%= render "shared/header", flavor: @flavor || Flavor.default %>
 
-    <%= render "storefront/sections/header" %>
-
-    <main id="contenu">
       <% if alert.present? || notice.present? %>
-        <div class="page-container flash-stack">
+        <div class="page" style="padding-top:var(--space-4);padding-bottom:0">
           <% if alert.present? %>
-            <div class="flash flash--alert"><%= alert %></div>
+            <div class="card" role="alert"><%= alert %></div>
           <% end %>
           <% if notice.present? %>
-            <div class="flash flash--notice"><%= notice %></div>
+            <div class="card"><%= notice %></div>
           <% end %>
         </div>
       <% end %>
 
       <%= yield %>
-    </main>
 
-    <%= render "storefront/sections/footer" %>
-    <%= render "storefront/sections/support_chat" %>
-    <%= render "shared/privacy_banner" unless privacy_consent_decided? %>
-    <%= render "shared/meta_pixel_events" if meta_pixel_enabled? %>
+      <%= render "shared/footer" unless content_for?(:hide_footer) %>
+      <%= render "shared/buy_bar", flavor: @flavor || Flavor.default unless content_for?(:hide_buy_bar) %>
+      <%= render "shared/meta_pixel_events" if meta_pixel_enabled? %>
+    </div>
   </body>
 </html>

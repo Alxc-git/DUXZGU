@@ -1,9 +1,10 @@
-<% content_for :title, "Paiement annule | #{current_store.name}" %>
-<section class="checkout-status">
-  <div class="page-container checkout-status__inner">
-    <span class="checkout-status__icon"><%= icon "refresh", size: 32 %></span>
-    <h1 class="checkout-status__title">Paiement annule</h1>
-    <p class="checkout-status__body">Aucun montant n'a ete debite. Votre selection vous attend toujours.</p>
-    <%= link_to "Revenir au produit", current_product ? storefront_product_path(current_product.slug) : root_path, class: "button button--lg" %>
+<% content_for :hide_buy_bar, true %>
+
+<div class="page stack" style="padding-top:var(--space-10);max-width:640px">
+  <div class="card card--accent" style="text-align:center;display:flex;flex-direction:column;align-items:center;gap:var(--space-5);padding:var(--space-12) var(--space-6)">
+    <span class="feature-icon feature-icon--lg"><%= cj_icon "clock" %></span>
+    <h1 style="font-size:var(--fs-display-3)">Payment canceled</h1>
+    <p class="sub">Your cart is saved. You can restart checkout anytime.</p>
+    <%= link_to "Back to cart", cart_path, class: "btn btn--primary" %>
   </div>
-</section>
+</div>

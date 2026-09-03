@@ -18,21 +18,20 @@ class PaymentsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Votre commande a expire, recommencez votre panier", flash[:alert]
   end
 
-  test "recaps the shipping address taken at the previous step" do
+  test "shows the payment page with the order total" do
     reach_payment_step
 
     assert_response :success
-    assert_select ".recap", text: /Montreal/
-    assert_select ".recap", text: /alexis@exemple\.ca/
-    assert_select ".order-summary__line", 1
+    assert_select "h1", text: "Payment"
+    assert_select ".checkout__line--total", text: /Total/
   end
 
-  test "explains what is missing when Stripe has no keys" do
+  test "explains local mode when Stripe has no keys" do
     Stripe.api_key = nil
     reach_payment_step
 
     assert_response :success
-    assert_select ".payment-notice", text: /STRIPE_SECRET_KEY/
+    assert_select "p", text: /Stripe keys are not configured/
     assert_select ".payment-form", 0
   end
 
@@ -45,8 +44,8 @@ class PaymentsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to checkout_success_path
     follow_redirect!
     assert_response :success
-    assert_select ".confirmation__icon--pending"
-    assert_select ".confirmation__reference"
+    assert_select "h1", text: "Order recorded"
+    assert_select ".checkout__line", text: /#{products(:demo_product).display_name}/
     assert_not Order.last.paid?
   end
 
@@ -57,7 +56,7 @@ class PaymentsControllerTest < ActionDispatch::IntegrationTest
     post payment_path
     get cart_path
 
-    assert_select ".cart__empty", 1
+    assert_select "p", text: "Your cart is empty."
   end
 
   test "mounts the payment element when Stripe is configured" do
@@ -68,7 +67,6 @@ class PaymentsControllerTest < ActionDispatch::IntegrationTest
         assert_response :success
         assert_select ".payment-form[data-stripe-payment-secret-value=?]", "pi_test_secret"
         assert_select "[data-stripe-payment-key-value=?]", "pk_test"
-        assert_select ".payment-notice", 0
       end
     end
   end
@@ -95,7 +93,7 @@ class PaymentsControllerTest < ActionDispatch::IntegrationTest
       reach_payment_step
 
       assert_response :success
-      assert_select ".payment-notice--error", text: /compte inactif/
+      assert_select "[role='alert']", text: /compte inactif/
     ensure
       Stripe::PaymentIntent.define_singleton_method(:create, original)
     end

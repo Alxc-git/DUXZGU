@@ -1,0 +1,67 @@
+// Breakpoints (SCSS) + design tokens (CSS custom properties).
+$bp-sm: 620px;
+$bp-md: 760px;
+$bp-lg: 900px;
+$bp-xl: 960px;
+$page-max: 1180px;
+
+:root{
+  // ink / surfaces
+  --ink-000:#000000; --ink-050:#070709; --ink-100:#0B0B0E; --ink-200:#121216;
+  --ink-300:#17171C; --ink-400:#1E1E24; --ink-500:#2A2A32; --ink-600:#3A3A44;
+  // neutrals
+  --white:#FFFFFF; --gray-100:#F2F2F3; --gray-200:#D8D8DC; --gray-300:#B4B4BC;
+  --gray-400:#8B8B95; --gray-500:#65656F; --gray-600:#45454E;
+  // crimson
+  --crimson-100:#FFE3EB; --crimson-300:#FF6D93; --crimson-400:#FF3A6B;
+  --crimson-500:#FF0F4E; --crimson-600:#DE0040; --crimson-700:#A80031; --crimson-900:#3D0013;
+  // flavours
+  --flavor-raspberry:#E8156B; --flavor-raspberry-deep:#7A0433;
+  --flavor-blueberry:#2F4FD8; --flavor-blueberry-deep:#1A1E6B;
+  --flavor-strawberry:#E51022; --flavor-strawberry-deep:#6E0410;
+  // semantic
+  --positive:#25C26A; --negative:#FF4646; --warning:#FFB020;
+
+  --bg-page:var(--ink-000); --surface-card:var(--ink-200);
+  --surface-card-raised:var(--ink-300); --surface-input:var(--ink-100);
+  --text-strong:var(--white); --text-body:var(--gray-200);
+  --text-muted:var(--gray-400); --text-faint:var(--gray-500);
+  --accent:var(--crimson-500); --accent-hover:var(--crimson-400); --accent-press:var(--crimson-600);
+  --accent-soft:rgba(255,15,78,.12); --accent-soft-strong:rgba(255,15,78,.22);
+  --border-hairline:rgba(255,255,255,.08); --border-subtle:rgba(255,255,255,.14);
+  --border-accent:var(--crimson-500); --border-accent-soft:rgba(255,15,78,.35);
+  --focus-ring:rgba(255,15,78,.55);
+
+  // type
+  --font-display:"Anton","Arial Narrow",Impact,sans-serif;
+  --font-label:"Barlow Condensed","Arial Narrow",sans-serif;
+  --font-body:"Barlow",system-ui,-apple-system,sans-serif;
+  --font-script:"Permanent Marker",cursive;
+  --fs-display-1:clamp(3rem,8.5vw,7rem); --fs-display-2:clamp(2.5rem,6vw,4.5rem);
+  --fs-display-3:clamp(2rem,4.2vw,3rem); --fs-title:clamp(1.5rem,2.6vw,2.125rem);
+  --fs-body-lg:1.0625rem; --fs-body:.9375rem; --fs-body-sm:.875rem;
+  --fs-caption:.8125rem; --fs-micro:.6875rem;
+  --lh-display:.88; --lh-title:1.05; --lh-body:1.55;
+  --ls-display:-.01em; --ls-eyebrow:.16em; --ls-label:.08em;
+
+  // space / radii
+  --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-5:20px;
+  --space-6:24px; --space-8:32px; --space-10:40px; --space-12:48px; --space-16:64px; --space-20:80px;
+  --page-max:#{$page-max}; --page-gutter:20px; --page-gutter-lg:32px;
+  --section-gap:12px; --card-pad:clamp(16px,2.2vw,24px);
+  --radius-xs:4px; --radius-sm:6px; --radius-md:10px; --radius-lg:14px; --radius-pill:999px;
+  --control-h-sm:36px; --control-h:48px; --control-h-lg:56px; --tap-min:44px;
+
+  // effects
+  --shadow-raised:0 12px 32px rgba(0,0,0,.6);
+  --shadow-accent:0 8px 24px rgba(255,15,78,.32);
+  --shadow-accent-strong:0 10px 40px rgba(255,15,78,.5);
+  --glow-accent:0 0 0 1px rgba(255,15,78,.45),0 0 28px rgba(255,15,78,.25);
+  --spot-crimson:radial-gradient(60% 60% at 50% 40%,rgba(255,15,78,.35) 0%,rgba(255,15,78,0) 70%);
+  --spot-blueberry:radial-gradient(60% 60% at 50% 40%,rgba(47,79,216,.35) 0%,rgba(47,79,216,0) 70%);
+  --spot-strawberry:radial-gradient(60% 60% at 50% 40%,rgba(229,16,34,.35) 0%,rgba(229,16,34,0) 70%);
+  --scrim-bottom:linear-gradient(to top,rgba(0,0,0,.92) 0%,rgba(0,0,0,.55) 45%,rgba(0,0,0,0) 100%);
+  --scrim-left:linear-gradient(to right,rgba(0,0,0,.94) 0%,rgba(0,0,0,.6) 45%,rgba(0,0,0,0) 100%);
+  --rule-dotted:repeating-linear-gradient(to right,rgba(255,15,78,.55) 0 4px,transparent 4px 8px);
+  --ease-out:cubic-bezier(.2,.8,.25,1); --dur-fast:120ms; --dur:200ms; --blur-panel:14px;
+}

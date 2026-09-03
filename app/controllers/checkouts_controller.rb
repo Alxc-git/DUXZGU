@@ -4,6 +4,8 @@ class CheckoutsController < ApplicationController
 
   def new
     @form = CheckoutForm.new(country: default_country)
+    @flavor = Flavor.find(params[:flavor].to_s)
+    @qty = params.fetch(:qty, current_cart.count.presence || 1).to_i.clamp(1, Cart::MAX_QUANTITY)
 
     # Only here, not on the re-render `create` does after a validation error: the
     # customer starts the checkout once.
@@ -12,6 +14,8 @@ class CheckoutsController < ApplicationController
 
   def create
     @form = CheckoutForm.new(form_params)
+    @flavor = Flavor.find(params[:flavor].to_s)
+    @qty = current_cart.count.presence || 1
 
     return render :new, status: :unprocessable_entity unless @form.valid?
 

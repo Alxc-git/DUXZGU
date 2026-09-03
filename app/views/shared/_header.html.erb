@@ -1,0 +1,49 @@
+<header class="header" data-nav>
+  <div class="page header__in">
+    <%= link_to root_path, class: "wordmark" do %>
+      <span class="wordmark__a">Creatine</span><span class="wordmark__b">Jelly</span>
+    <% end %>
+
+    <nav class="header__nav">
+      <%= link_to "Home", root_path, class: "header__link" %>
+      <%= link_to "Product", product_page_path, class: "header__link" %>
+      <%= link_to "Benefits", product_page_path(anchor: "benefits"), class: "header__link" %>
+      <%= link_to "Reviews", product_page_path(anchor: "reviews"), class: "header__link" %>
+      <%= link_to "FAQ", product_page_path(anchor: "faq"), class: "header__link" %>
+    </nav>
+
+    <div class="header__right">
+      <% if current_product && selected_purchase_variant %>
+        <%= button_to cart_lines_path,
+              params: buy_now_params(quantity: 1),
+              class: "btn btn--primary btn--pill btn--sm header__cta" do %>
+          Buy now - <%= selected_purchase_variant.formatted_price %>
+        <% end %>
+      <% end %>
+      <%= link_to cart_path, class: "icon-btn", aria: { label: "Cart" } do %>
+        <%= cj_icon "shopping-cart" %><span class="icon-btn__count"><%= current_cart.count %></span>
+      <% end %>
+      <button type="button" class="icon-btn icon-btn--bare header__burger" data-nav-toggle aria-label="Menu">
+        <%= cj_icon "menu" %>
+      </button>
+    </div>
+  </div>
+
+  <div class="sheet" data-nav-sheet>
+    <div class="page sheet__in">
+      <%= link_to "Home", root_path, class: "header__link" %>
+      <%= link_to "Product", product_page_path, class: "header__link" %>
+      <%= link_to "Benefits", product_page_path(anchor: "benefits"), class: "header__link" %>
+      <%= link_to "Reviews", product_page_path(anchor: "reviews"), class: "header__link" %>
+      <%= link_to "FAQ", product_page_path(anchor: "faq"), class: "header__link" %>
+      <% if current_product && selected_purchase_variant %>
+        <%= button_to cart_lines_path,
+              params: buy_now_params(quantity: 1),
+              class: "btn btn--primary btn--full",
+              style: "margin-top:16px" do %>
+          Buy now - <%= selected_purchase_variant.formatted_price %>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+</header>

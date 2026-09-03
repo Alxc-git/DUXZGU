@@ -1,162 +1,76 @@
-<% content_for :title, "#{t("checkout.payment_title")} | #{current_store.name}" %>
+<% content_for :title, "Payment | #{current_store.name}" %>
+<% content_for :hide_footer, true %>
+<% content_for :hide_buy_bar, true %>
 <% first = @orders.first %>
 
 <% if @client_secret.present? %>
   <% content_for :head do %>
-    <%# Stripe requires its script to come from their domain: it can never be bundled. %>
     <script src="https://js.stripe.com/v3/"></script>
   <% end %>
 <% end %>
 
-<section class="checkout">
-  <div class="page-container">
-    <header class="checkout__header">
-      <div>
-        <p class="checkout__eyebrow"><%= t("checkout.step_of", step: 3, total: 4) %></p>
-        <h1 class="checkout__title"><%= t("checkout.payment_title") %></h1>
-        <p class="checkout__lead"><%= t("checkout.payment_lead") %></p>
-      </div>
-      <%= render "checkouts/progress", step: :payment %>
-    </header>
+<div class="page stack" style="padding-top:var(--space-8)">
+  <%= render "checkouts/steps", current: 1 %>
 
-    <div class="checkout__grid">
-      <div class="checkout__main">
-        <section class="checkout__panel">
-          <header class="checkout__panel-head">
-            <span class="checkout__panel-mark"><%= icon "truck", size: 16 %></span>
-            <h2><%= t("checkout.address_title") %></h2>
-            <%= link_to t("common.edit"), checkout_path, class: "checkout__panel-edit" %>
-          </header>
-
-          <%# Icon, label, value on three rows separated by hairlines: the flat
-              two-column list gave the eye nothing to land on. %>
-          <dl class="recap">
-            <div class="recap__row">
-              <span class="recap__icon"><%= icon "mail", size: 16 %></span>
-              <dt><%= t("checkout.contact") %></dt>
-              <dd><%= first.email %></dd>
-            </div>
-
-            <div class="recap__row">
-              <span class="recap__icon"><%= icon "package", size: 16 %></span>
-              <dt><%= t("checkout.deliver_to") %></dt>
-              <dd>
-                <span class="recap__name"><%= first.customer_name %></span>
-                <%= first.address_line1 %><% if first.address_line2.present? %><br><%= first.address_line2 %><% end %><br>
-                <%= [ first.city, first.province, first.postal_code ].compact_blank.join(", ") %><br>
-                <%= country_name(first.country) %>
-              </dd>
-            </div>
-
-            <div class="recap__row">
-              <span class="recap__icon"><%= icon "truck", size: 16 %></span>
-              <dt><%= t("checkout.estimated_delivery") %></dt>
-              <dd>
-                <span class="recap__date"><%= order_delivery_window(first) %></span>
-                <span class="recap__note"><%= t("checkout.tracked_note") %></span>
-              </dd>
-            </div>
-          </dl>
-        </section>
-
-        <section class="checkout__panel checkout__panel--pay">
-          <header class="checkout__panel-head">
-            <span class="checkout__panel-mark"><%= icon "credit-card", size: 16 %></span>
-            <h2><%= t("checkout.payment_title") %></h2>
-            <span class="checkout__panel-secure">
-              <%= icon "lock", size: 14 %>
-              <span><%= t("checkout.encrypted") %></span>
-            </span>
-          </header>
-
-          <%# PayPal sits above the card form: it is a different funding source, not
-              another card, and Stripe cannot offer it for this merchant country. %>
-          <% if Payments.paypal_configured? %>
-            <div class="paypal-block"
-                 data-controller="paypal-button"
-                 data-paypal-button-client-id-value="<%= Payments.paypal_client_id %>"
-                 data-paypal-button-currency-value="<%= @orders.first.currency.to_s.upcase %>"
-                 data-paypal-button-create-url-value="<%= paypal_checkout_path %>"
-                 data-paypal-button-capture-url-value="<%= paypal_capture_path %>">
-              <div class="paypal-block__buttons" data-paypal-button-target="container"></div>
-              <p class="paypal-block__error" data-paypal-button-target="error" role="alert" hidden></p>
-            </div>
-
-            <% if @client_secret.present? %>
-              <p class="paypal-block__divider"><span><%= t("checkout.or_pay_by_card") %></span></p>
-            <% end %>
-          <% end %>
-
-          <% if @client_secret.present? %>
-            <%# Card fields, Apple Pay, Google Pay, Link and PayPal are all drawn by
-                Stripe inside this element; which ones appear is decided by the
-                payment methods enabled in the Stripe dashboard. %>
-            <form class="payment-form"
-                  data-controller="stripe-payment"
-                  data-stripe-payment-key-value="<%= Payments.publishable_key %>"
-                  data-stripe-payment-secret-value="<%= @client_secret %>"
-                  data-stripe-payment-return-url-value="<%= checkout_success_url %>"
-                  data-stripe-payment-locale-value="<%= current_store.checkout_locale %>"
-                  data-action="submit->stripe-payment#submit">
-              <div class="payment-form__element" data-stripe-payment-target="element">
-                <div class="payment-form__loading">
-                  <span class="payment-form__spinner" aria-hidden="true"></span>
-                  <span><%= t("checkout.loading_payment") %></span>
-                </div>
-              </div>
-
-              <p class="payment-form__error" data-stripe-payment-target="error" role="alert" hidden></p>
-
-              <button type="submit" class="button button--lg button--block payment-form__submit"
-                      data-stripe-payment-target="submit" disabled>
-                <%= icon "lock", size: 18 %>
-                <span data-stripe-payment-target="submitLabel">
-                  Payer <%= MoneyFormatter.format(@orders.sum(&:total_cents), first.currency) %>
-                </span>
-              </button>
-            </form>
-          <% elsif @payment_error.present? %>
-            <div class="payment-notice payment-notice--error" role="alert">
-              <strong><%= icon "close", size: 16 %> Le paiement n'a pas pu demarrer</strong>
-              <p><%= @payment_error %></p>
-              <%= link_to t("checkout.back_to_address"), checkout_path, class: "button button--secondary" %>
-            </div>
-          <% else %>
-            <div class="payment-notice">
-              <span class="payment-notice__eyebrow">Mode test local</span>
-              <strong><%= icon "check", size: 16 %> Vous pouvez finaliser une commande test</strong>
-              <p>
-                Stripe n'est pas encore configure avec les cles
-                <code>STRIPE_SECRET_KEY</code> et <code>STRIPE_PUBLISHABLE_KEY</code>.
-                Pour tester le parcours complet sans carte bancaire, cliquez sur le bouton ci-dessous :
-                la commande sera creee puis envoyee a la confirmation.
-              </p>
-
-              <%= payment_marks %>
-
-              <%= button_to payment_path, method: :post, class: "button button--lg button--block" do %>
-                <%= icon "check", size: 18 %>
-                <span>Finaliser la commande test &mdash;
-                  <%= MoneyFormatter.format(@orders.sum(&:total_cents), first.currency) %></span>
-              <% end %>
-            </div>
-          <% end %>
-
-          <ul class="payment-form__trust" role="list">
-            <li><%= icon "lock", size: 15 %><span><%= t("checkout.trust_encrypted") %></span></li>
-            <li><%= icon "refresh", size: 15 %><span><%= t("checkout.trust_refund") %></span></li>
-          </ul>
-        </section>
+  <div class="checkout">
+    <div class="stack">
+      <div class="card checkout__section">
+        <p class="eyebrow eyebrow--accent" style="font-size:var(--fs-body-sm)">Secure payment</p>
+        <h1 style="font-size:var(--fs-display-3)">Payment</h1>
+        <div class="checkout__line checkout__line--total">
+          <span>Total</span>
+          <span><%= MoneyFormatter.format(@orders.sum(&:total_cents), first.currency) %></span>
+        </div>
       </div>
 
-      <div class="checkout__side">
-        <%= render "checkouts/summary",
-              lines: summary_lines_from_orders(@orders),
-              totals: summary_totals_from_orders(@orders),
-              edit_path: cart_path %>
+      <% if Payments.paypal_configured? %>
+        <div class="card checkout__section">
+          <p class="eyebrow eyebrow--accent" style="font-size:var(--fs-body-sm)">PayPal</p>
+          <div class="paypal-block"
+               data-controller="paypal-button"
+               data-paypal-button-client-id-value="<%= Payments.paypal_client_id %>"
+               data-paypal-button-currency-value="<%= first.currency.to_s.upcase %>"
+               data-paypal-button-create-url-value="<%= paypal_checkout_path %>"
+               data-paypal-button-capture-url-value="<%= paypal_capture_path %>">
+            <div class="paypal-block__buttons" data-paypal-button-target="container"></div>
+            <p class="paypal-block__error" data-paypal-button-target="error" role="alert" hidden></p>
+          </div>
+        </div>
+      <% end %>
 
-        <%= render "checkouts/help" %>
+      <div class="card checkout__section">
+        <% if @client_secret.present? %>
+          <p class="eyebrow eyebrow--accent" style="font-size:var(--fs-body-sm)">Card</p>
+          <form class="payment-form"
+                data-controller="stripe-payment"
+                data-stripe-payment-key-value="<%= Payments.publishable_key %>"
+                data-stripe-payment-secret-value="<%= @client_secret %>"
+                data-stripe-payment-return-url-value="<%= checkout_success_url %>"
+                data-stripe-payment-locale-value="<%= current_store.checkout_locale %>"
+                data-action="submit->stripe-payment#submit">
+            <div class="payment-form__element" data-stripe-payment-target="element"></div>
+            <p class="payment-form__error" data-stripe-payment-target="error" role="alert" hidden></p>
+            <button type="submit" class="btn btn--primary btn--lg btn--full" data-stripe-payment-target="submit" disabled>
+              <%= cj_icon "lock", size: "1.15em" %>
+              <span data-stripe-payment-target="submitLabel">Pay now</span>
+            </button>
+          </form>
+        <% elsif @payment_error.present? %>
+          <div role="alert">
+            <p class="eyebrow eyebrow--accent" style="font-size:var(--fs-body-sm)">Payment error</p>
+            <p><%= @payment_error %></p>
+            <%= link_to "Back to checkout", checkout_path, class: "btn btn--secondary" %>
+          </div>
+        <% else %>
+          <p class="eyebrow eyebrow--accent" style="font-size:var(--fs-body-sm)">Local mode</p>
+          <p class="sub">Stripe keys are not configured. You can still complete a local unpaid test order.</p>
+          <%= button_to "Complete test order", payment_path, method: :post, class: "btn btn--primary btn--lg btn--full" %>
+        <% end %>
       </div>
     </div>
+
+    <div class="stack">
+      <%= render "checkouts/summary", flavor: @flavor || Flavor.default, qty: @orders.sum(&:quantity) %>
+    </div>
   </div>
-</section>
+</div>

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Creatine Jelly — premium creatine gummies</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_include_tag "site", "data-turbo-track": "reload", defer: true %>
+  </head>
+  <body>
+    <div class="site">
+      <%= render "shared/header", flavor: @flavor %>
+      <%= yield %>
+      <%= render "shared/footer" unless content_for?(:hide_footer) %>
+      <%= render "shared/buy_bar", flavor: @flavor unless content_for?(:hide_buy_bar) %>
+    </div>
+  </body>
+</html>

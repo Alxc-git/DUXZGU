@@ -3,6 +3,7 @@ class PaymentsController < ApplicationController
   before_action :load_pending_orders!
 
   def new
+    @flavor = Flavor.find(params[:flavor].to_s)
     return unless Payments.configured?
 
     @client_secret = payment_intent.client_secret

@@ -5,11 +5,18 @@ class StorefrontController < ApplicationController
     # No redirect when the store has no product: root is the redirect target,
     # so bouncing here would loop. The template renders an empty state instead.
     @product = current_product
+    @flavor = Flavor.find(params[:flavor].to_s)
+    @variant = @product&.variant_for(params[:variant_id])
+    @plan = plan_param
+    @qty = quantity_param
   end
 
   def show
     @product = Current.store.products.active.includes(:variants).find_by!(slug: params[:slug])
-    @variant = @product.variant_for(params[:option]) || @product.default_variant
+    @flavor = Flavor.find(params[:flavor].to_s)
+    @variant = @product.variant_for(params[:variant_id]) || @product.variant_for(params[:option]) || @product.default_variant
+    @plan = plan_param
+    @qty = quantity_param
 
     track_meta_event("ViewContent", Meta::Content.for_product(@product, variant: @variant))
   rescue ActiveRecord::RecordNotFound
@@ -33,6 +40,14 @@ class StorefrontController < ApplicationController
   def cancel; end
 
   private
+
+  def plan_param
+    params[:plan].presence_in(%w[once sub]) || "once"
+  end
+
+  def quantity_param
+    params.fetch(:qty, 1).to_i.clamp(1, Cart::MAX_QUANTITY)
+  end
 
   # Stripe sends the customer back here after the Payment Element confirms. The
   # webhook is still the authority, but reading the intent now means the page can

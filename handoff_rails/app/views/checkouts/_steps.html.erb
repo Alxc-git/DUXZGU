@@ -1,0 +1,13 @@
+<div class="steps">
+  <% ["Cart", "Checkout", "Complete"].each_with_index do |label, i| %>
+    <% if i.positive? %>
+      <span class="steps__bar <%= "is-done" if i <= current %>"></span>
+    <% end %>
+    <span class="steps__step <%= "is-done" if i < current %> <%= "is-current" if i == current %>">
+      <span class="steps__dot">
+        <%= i < current ? cj_icon("shopping-cart", size: "16px") : (i + 1) %>
+      </span>
+      <span class="steps__label"><%= label %></span>
+    </span>
+  <% end %>
+</div>

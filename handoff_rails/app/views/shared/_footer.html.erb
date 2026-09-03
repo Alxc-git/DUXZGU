@@ -1,0 +1,41 @@
+<footer class="footer">
+  <div class="page">
+    <div class="footer__in">
+      <div class="footer__col">
+        <span class="wordmark"><span class="wordmark__a">Creatine</span><span class="wordmark__b">Jelly</span></span>
+        <p class="sub" style="margin-top:8px">Premium creatine gummies made simple. Delicious. Effective. Every day.</p>
+        <div class="footer__social" style="margin-top:12px">
+          <% %w[instagram tiktok youtube facebook].each do |brand| %>
+            <a class="icon-btn icon-btn--bare" href="#" aria-label="<%= brand.capitalize %>"><%= cj_icon brand %></a>
+          <% end %>
+        </div>
+      </div>
+
+      <div class="footer__col">
+        <div class="footer__h">Shop</div>
+        <a href="#">All products</a><a href="#">Flavors</a><a href="#">Bundles</a><a href="#">Subscribe &amp; save</a>
+      </div>
+      <div class="footer__col">
+        <div class="footer__h">Support</div>
+        <a href="#">FAQ</a><a href="#">Shipping &amp; returns</a><a href="#">Order tracking</a><a href="#">Contact us</a>
+      </div>
+      <div class="footer__col">
+        <div class="footer__h">Company</div>
+        <a href="#">About us</a><a href="#">Ingredients</a><a href="#">Reviews</a><a href="#">Blog</a>
+      </div>
+      <div class="footer__col">
+        <div class="footer__h">Get 10% off your first order</div>
+        <p class="sub">Join the email list for exclusive offers and performance tips.</p>
+        <%= form_with url: "#", method: :post, class: "newsletter", data: { turbo: false } do %>
+          <input class="input" type="email" placeholder="Enter your email">
+          <button class="btn btn--primary" style="padding:0 16px" aria-label="Subscribe"><%= cj_icon "arrow-right", size: "1.15em" %></button>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="footer__bottom">
+      <span>© <%= Date.current.year %> Creatine Jelly. All rights reserved.</span>
+      <span style="display:flex;gap:18px"><a href="#">Privacy policy</a><a href="#">Terms of service</a></span>
+    </div>
+  </div>
+</footer>

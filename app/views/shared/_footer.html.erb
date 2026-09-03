@@ -1,0 +1,41 @@
+<footer class="footer">
+  <div class="page">
+    <div class="footer__in">
+      <div class="footer__col">
+        <span class="wordmark"><span class="wordmark__a">Creatine</span><span class="wordmark__b">Jelly</span></span>
+        <p class="sub" style="margin-top:8px">Premium creatine gummies made simple. Delicious. Effective. Every day.</p>
+        <div class="footer__social" style="margin-top:12px">
+          <% %w[instagram tiktok youtube facebook].each do |brand| %>
+            <a class="icon-btn icon-btn--bare" href="#" aria-label="<%= brand.capitalize %>"><%= cj_icon brand %></a>
+          <% end %>
+        </div>
+      </div>
+
+      <div class="footer__col">
+        <div class="footer__h">Shop</div>
+        <%= link_to "Product", product_page_path %><%= link_to "Cart", cart_path %><%= link_to "Checkout", checkout_path %>
+      </div>
+      <div class="footer__col">
+        <div class="footer__h">Support</div>
+        <%= link_to "FAQ", product_page_path(anchor: "faq") %><%= link_to "Shipping & returns", product_page_path(anchor: "faq") %><%= link_to "Contact us", contact_path %>
+      </div>
+      <div class="footer__col">
+        <div class="footer__h">Company</div>
+        <%= link_to "Benefits", product_page_path(anchor: "benefits") %><%= link_to "Reviews", product_page_path(anchor: "reviews") %><%= link_to "Admin", admin_root_path %>
+      </div>
+      <div class="footer__col">
+        <div class="footer__h">Get 10% off your first order</div>
+        <p class="sub">Join the email list for exclusive offers and performance tips.</p>
+        <%= form_with url: "#", method: :post, class: "newsletter", data: { turbo: false } do %>
+          <input class="input" type="email" placeholder="Enter your email">
+          <button class="btn btn--primary" style="padding:0 16px" aria-label="Subscribe"><%= cj_icon "arrow-right", size: "1.15em" %></button>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="footer__bottom">
+      <span>© <%= Date.current.year %> <%= current_store&.name || Storefront::BRAND %>. All rights reserved.</span>
+      <span style="display:flex;gap:18px"><%= link_to "Privacy policy", privacy_policy_path %><%= link_to "Contact", contact_path %></span>
+    </div>
+  </div>
+</footer>

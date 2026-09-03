@@ -1,115 +1,28 @@
-<% content_for :title, "#{t("confirmation.title")} | #{current_store.name}" %>
-<% first_order = @orders.first %>
+<% content_for :hide_buy_bar, true %>
 
-<section class="confirmation">
-  <div class="page-container confirmation__inner">
-    <%= render "checkouts/progress", step: :done %>
+<div class="page stack" style="padding-top:var(--space-10);max-width:760px">
+  <%= render "checkouts/steps", current: 2 %>
 
-    <header class="confirmation__head">
-      <% if @awaiting_payment %>
-        <span class="confirmation__icon confirmation__icon--pending"><%= icon "clock", size: 30 %></span>
-        <h1 class="confirmation__title"><%= t("confirmation.pending_title") %></h1>
-        <p class="confirmation__lead">
-          Elle est rattachee a <strong><%= first_order&.email %></strong>, mais le paiement reste
-          a finaliser : la boutique n'a pas encore ses cles Stripe. Rien n'a ete debite.
-        </p>
-      <% else %>
-        <span class="confirmation__icon"><%= icon "check", size: 30 %></span>
-        <h1 class="confirmation__title"><%= t("confirmation.title") %></h1>
-        <% if first_order&.email.present? %>
-          <%# The `_html` suffix is what lets the address be bold and still be
-              escaped: Rails marks the phrase safe and the interpolation not. %>
-          <p class="confirmation__lead"><%= t("confirmation.lead_with_email_html", email: first_order.email) %></p>
-        <% else %>
-          <p class="confirmation__lead"><%= t("confirmation.lead") %></p>
-        <% end %>
-      <% end %>
-    </header>
+  <div class="card card--accent" style="text-align:center;display:flex;flex-direction:column;align-items:center;gap:var(--space-5);padding:var(--space-12) var(--space-6)">
+    <span class="feature-icon feature-icon--lg feature-icon--solid"><%= cj_icon(@awaiting_payment ? "clock" : "check") %></span>
+    <h1 style="font-size:var(--fs-display-3)"><%= @awaiting_payment ? "Order recorded" : "Order confirmed" %></h1>
 
     <% if @orders.any? %>
-      <article class="confirmation__card">
-        <header class="confirmation__card-head">
-          <div>
-            <span class="confirmation__label"><%= t("confirmation.reference") %></span>
-            <strong class="confirmation__reference">
-              <%= first_order.metadata["checkout_reference"].presence || "LX-#{first_order.id}" %>
-            </strong>
-          </div>
-          <div>
-            <span class="confirmation__label"><%= t("confirmation.date") %></span>
-            <strong><%= first_order.created_at.strftime("%d/%m/%Y") %></strong>
-          </div>
-          <div>
-            <span class="confirmation__label"><%= t("confirmation.delivery") %></span>
-            <strong><%= order_delivery_window(@orders.first) %></strong>
-          </div>
-        </header>
-
-        <ul class="confirmation__lines" role="list">
-          <% @orders.each do |order| %>
-            <li class="confirmation__line">
-              <span class="confirmation__media">
-                <%= variant_image_tag order.variant, alt: order.line_item_name, thumb: 90, loading: "lazy" %>
-                <span class="confirmation__badge"><%= order.quantity %></span>
-              </span>
-              <span class="confirmation__info">
-                <strong><%= order.product.display_name %></strong>
-                <span><%= order.variant&.display_name %></span>
-              </span>
-              <span class="confirmation__price"><%= order.formatted_total %></span>
-            </li>
-          <% end %>
-        </ul>
-
-        <div class="confirmation__totals">
-          <div class="confirmation__total-row confirmation__total-row--strong">
-            <span><%= @awaiting_payment ? t("confirmation.total_due") : t("confirmation.total_paid") %></span>
-            <span><%= MoneyFormatter.format(@orders.sum(&:total_cents), first_order.currency) %></span>
-          </div>
-        </div>
-
-        <% if first_order.address_line1.present? %>
-          <div class="confirmation__address">
-            <span class="confirmation__label"><%= t("checkout.shipping_address") %></span>
-            <address>
-              <%= first_order.customer_name %><br>
-              <%= first_order.address_line1 %><br>
-              <% if first_order.address_line2.present? %><%= first_order.address_line2 %><br><% end %>
-              <%= [ first_order.city, first_order.province, first_order.postal_code ].compact_blank.join(", ") %><br>
-              <%= country_name(first_order.country) %>
-            </address>
+      <div class="stack" style="width:100%;text-align:left">
+        <% @orders.each do |order| %>
+          <div class="checkout__line">
+            <span>
+              <b><%= order.line_item_name %></b><br>
+              <small><%= order.metadata["checkout_reference"] || "ORD-#{order.id}" %> · <%= order.status %></small>
+            </span>
+            <b><%= order.formatted_total %></b>
           </div>
         <% end %>
-      </article>
-
-      <ol class="confirmation__timeline" role="list">
-        <li class="confirmation__step <%= "confirmation__step--done" unless @awaiting_payment %>">
-          <span class="confirmation__step-mark"><%= icon "check", size: 14 %></span>
-          <div>
-            <strong><%= @awaiting_payment ? t("confirmation.received") : t("confirmation.paid") %></strong>
-            <span><%= @awaiting_payment ? t("confirmation.awaiting") : t("confirmation.recorded") %></span>
-          </div>
-        </li>
-        <li class="confirmation__step">
-          <span class="confirmation__step-mark"><%= icon "package", size: 14 %></span>
-          <div>
-            <strong><%= t("confirmation.packing") %></strong>
-            <span><%= t("confirmation.packing_note") %></span>
-          </div>
-        </li>
-        <li class="confirmation__step">
-          <span class="confirmation__step-mark"><%= icon "truck", size: 14 %></span>
-          <div>
-            <strong><%= t("confirmation.shipping") %></strong>
-            <span><%= t("confirmation.tracking_note") %></span>
-          </div>
-        </li>
-      </ol>
+      </div>
+    <% else %>
+      <p class="sub">No order is attached to this browser session.</p>
     <% end %>
 
-    <%= link_to root_path, class: "button button--lg" do %>
-      <%= icon "arrow-right", size: 18 %>
-      <span><%= t("confirmation.back_to_shop") %></span>
-    <% end %>
+    <%= link_to "Back to store", root_path, class: "btn btn--primary" %>
   </div>
-</section>
+</div>

@@ -3,10 +3,12 @@ class ContactsController < ApplicationController
 
   def new
     @message = ContactMessage.new(prefill)
+    @flavor = Flavor.find(params[:flavor].to_s)
   end
 
   def create
     @message = ContactMessage.new(message_params)
+    @flavor = Flavor.find(params[:flavor].to_s)
 
     return render :new, status: :unprocessable_entity unless @message.valid?
 

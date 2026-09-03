@@ -1,203 +1,142 @@
-<% content_for :title, "#{t("checkout.address_title")} | #{current_store.name}" %>
+<% content_for :title, "Checkout | #{current_store.name}" %>
+<% content_for :hide_footer, true %>
+<% content_for :hide_buy_bar, true %>
 
-<section class="checkout">
-  <div class="page-container">
-    <header class="checkout__header">
-      <div>
-        <p class="checkout__eyebrow"><%= t("checkout.step_of", step: 2, total: 4) %></p>
-        <h1 class="checkout__title"><%= t("checkout.address_title") %></h1>
-        <p class="checkout__lead"><%= t("checkout.address_lead") %></p>
-      </div>
-      <%= render "checkouts/progress", step: :address %>
-    </header>
+<div class="page stack" style="padding-top:var(--space-8)">
+  <%= render "checkouts/steps", current: 1 %>
 
-    <div class="checkout__grid">
-      <%= form_with model: @form, url: checkout_path, method: :post, scope: :checkout_form,
-            data: { controller: "checkout" }, class: "checkout__main" do |form| %>
+  <div class="card" style="display:flex;flex-wrap:wrap;gap:var(--space-5);align-items:center">
+    <span class="feature-icon feature-icon--lg"><%= cj_icon "shield-check" %></span>
+    <div style="flex:1 1 240px">
+      <h1 style="font-size:var(--fs-display-3)">Checkout</h1>
+      <div class="stat__label" style="font-size:1.0625rem">You're one step away from stronger, faster, better.</div>
+      <div class="stat__note">Every order is protected by the store checkout flow.</div>
+    </div>
+    <span class="badge badge--outline" style="padding:10px 14px;text-align:center;line-height:1.3">Secure<br>checkout</span>
+  </div>
 
-        <% if @form.errors.any? %>
-          <div class="checkout__errors" role="alert">
-            <strong>
-              <%= icon "close", size: 16 %>
-              <%= t("checkout.errors_title") %>
-            </strong>
-            <ul>
-              <% @form.errors.each do |error| %>
-                <li><%= error.message %></li>
-              <% end %>
-            </ul>
-          </div>
-        <% end %>
-
-        <section class="checkout__panel">
-          <header class="checkout__panel-head">
-            <span class="checkout__panel-mark"><%= icon "mail", size: 16 %></span>
-            <h2><%= t("checkout.contact") %></h2>
-          </header>
-
-          <div class="field-row">
-            <div class="field">
-              <%= form.label :email, t("checkout.email") %>
-              <%= form.email_field :email, autocomplete: "email", placeholder: "vous@exemple.ca",
-                    required: true, class: field_class(@form, :email) %>
-              <%= checkout_field_error(@form, :email) %>
-            </div>
-
-            <div class="field">
-              <%= form.label :phone, t("checkout.phone") %>
-              <%= form.telephone_field :phone, autocomplete: "tel", placeholder: "514 555 0123",
-                    required: true, class: field_class(@form, :phone) %>
-              <%= checkout_field_error(@form, :phone) %>
-            </div>
-          </div>
-        </section>
-
-        <section class="checkout__panel"
-                 data-controller="address-autocomplete"
-                 data-address-autocomplete-url-value="<%= address_suggestions_path %>"
-                 data-address-autocomplete-details-url-value="<%= address_details_path %>"
-                 data-address-autocomplete-status-label-value="<%= t("checkout.address_suggestions_status") %>">
-          <header class="checkout__panel-head">
-            <span class="checkout__panel-mark"><%= icon "truck", size: 16 %></span>
-            <h2><%= t("checkout.shipping_address") %></h2>
-          </header>
-
-          <div class="field-row">
-            <div class="field">
-              <%= form.label :first_name, t("checkout.first_name") %>
-              <%= form.text_field :first_name, autocomplete: "given-name", required: true,
-                    class: field_class(@form, :first_name) %>
-              <%= checkout_field_error(@form, :first_name) %>
-            </div>
-
-            <div class="field">
-              <%= form.label :last_name, t("checkout.last_name") %>
-              <%= form.text_field :last_name, autocomplete: "family-name", required: true,
-                    class: field_class(@form, :last_name) %>
-              <%= checkout_field_error(@form, :last_name) %>
-            </div>
-          </div>
-
-          <div class="field">
-            <%= form.label :address_line1, t("checkout.address") %>
-
-            <div class="autocomplete">
-              <%= form.text_field :address_line1, autocomplete: "address-line1", required: true,
-                    placeholder: "123 rue Sainte-Catherine", class: field_class(@form, :address_line1),
-                    role: "combobox", aria: { autocomplete: "list", expanded: false, controls: "address-suggestions" },
-                    data: {
-                      address_autocomplete_target: "query",
-                      autocomplete_kind: "address",
-                      action: "input->address-autocomplete#search " \
-                              "keydown->address-autocomplete#navigate " \
-                              "focus->address-autocomplete#search " \
-                              "blur->address-autocomplete#blur"
-                    } %>
-
-              <ul id="address-suggestions" role="listbox" class="autocomplete__list" hidden
-                  aria-label="<%= t("checkout.address_suggestions_label") %>"
-                  data-autocomplete-kind="address"
-                  data-address-autocomplete-target="list"></ul>
-            </div>
-
-            <p class="field__hint"><%= t("checkout.address_hint") %></p>
-            <%= checkout_field_error(@form, :address_line1) %>
-          </div>
-
-          <div class="field">
-            <%= form.label :address_line2, t("checkout.address2") %>
-            <%= form.text_field :address_line2, autocomplete: "address-line2",
-                  placeholder: t("common.optional"), class: field_class(@form, :address_line2),
-                  data: { address_autocomplete_target: "next" } %>
-          </div>
-
-          <div class="field-row field-row--three">
-            <div class="field">
-              <%= form.label :city, t("checkout.city") %>
-              <%= form.text_field :city, autocomplete: "address-level2", required: true,
-                    class: field_class(@form, :city),
-                    data: { address_autocomplete_target: "city" } %>
-              <%= checkout_field_error(@form, :city) %>
-            </div>
-
-            <div class="field">
-              <%= form.label :province, t("checkout.province") %>
-              <%= form.text_field :province, autocomplete: "address-level1",
-                    class: field_class(@form, :province),
-                    data: { address_autocomplete_target: "province" } %>
-            </div>
-
-            <div class="field">
-              <%= form.label :postal_code, t("checkout.postal_code") %>
-
-              <div class="autocomplete">
-                <%= form.text_field :postal_code, autocomplete: "postal-code", required: true,
-                      placeholder: "H2X 1Y6", class: field_class(@form, :postal_code),
-                      role: "combobox", aria: { autocomplete: "list", expanded: false, controls: "postal-suggestions" },
-                      data: {
-                        address_autocomplete_target: "query postalCode",
-                        autocomplete_kind: "postal",
-                        action: "input->address-autocomplete#search " \
-                                "keydown->address-autocomplete#navigate " \
-                                "focus->address-autocomplete#search " \
-                                "blur->address-autocomplete#blur"
-                      } %>
-
-                <ul id="postal-suggestions" role="listbox" class="autocomplete__list" hidden
-                    aria-label="<%= t("checkout.postal_suggestions_label") %>"
-                    data-autocomplete-kind="postal"
-                    data-address-autocomplete-target="list"></ul>
-              </div>
-
-              <%= checkout_field_error(@form, :postal_code) %>
-            </div>
-          </div>
-
-          <div class="field">
-            <%= form.label :country, t("checkout.country") %>
-            <%= form.select :country, shipping_country_options, {}, class: field_class(@form, :country),
-                  data: { address_autocomplete_target: "country" } %>
-            <%= checkout_field_error(@form, :country) %>
-          </div>
-
-          <p class="autocomplete__status" role="status" aria-live="polite"
-             data-address-autocomplete-target="status"></p>
-        </section>
-
-        <div class="checkout__submit">
-          <%= form.button type: "submit", class: "button button--lg button--block" do %>
-            <span><%= t("checkout.continue_to_payment") %></span>
-            <%= icon "arrow-right", size: 18 %>
-          <% end %>
-
-          <p class="checkout__privacy">
-            <%= t("checkout.privacy_notice") %>
-            <%= link_to t("footer.privacy_policy"), privacy_policy_path, target: "_blank", rel: "noopener" %>
-          </p>
-
-          <div class="checkout__submit-note">
-            <%= payment_marks(class: "payment-marks--sm") %>
-            <span>
-              <%= icon "lock", size: 14 %>
-              <%= t("checkout.secure_next_step") %>
-            </span>
-          </div>
-
-          <%= link_to cart_path, class: "checkout__back" do %>
-            <%= icon "chevron-left", size: 15 %>
-            <span><%= t("checkout.back_to_cart") %></span>
-          <% end %>
+  <%= form_with model: @form,
+        scope: :checkout_form,
+        url: checkout_path,
+        method: :post,
+        class: "checkout",
+        data: {
+          turbo: false,
+          controller: "address-autocomplete",
+          address_autocomplete_url_value: address_suggestions_path,
+          address_autocomplete_details_url_value: address_details_path,
+          address_autocomplete_status_label_value: "suggestions"
+        } do |form| %>
+    <div class="stack">
+      <% if @form.errors.any? %>
+        <div class="card checkout__section" role="alert">
+          <div class="stat__label">Champs a corriger</div>
+          <ul>
+            <% @form.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
         </div>
       <% end %>
 
-      <div class="checkout__side">
-        <%= render "checkouts/summary",
-              lines: summary_lines_from_cart(current_cart),
-              totals: summary_totals_from_cart(current_cart),
-              edit_path: cart_path %>
+      <div class="card checkout__section">
+        <div style="display:flex;align-items:baseline;gap:12px">
+          <p class="eyebrow eyebrow--accent" style="font-size:var(--fs-body-sm)">1. Customer information</p>
+        </div>
+        <%= form.email_field :email, class: "input", placeholder: "Email address", autocomplete: "email", required: true %>
+      </div>
 
-        <%= render "checkouts/help" %>
+      <div class="card checkout__section">
+        <p class="eyebrow eyebrow--accent" style="font-size:var(--fs-body-sm)">2. Shipping address</p>
+        <div class="checkout__grid checkout__grid--2">
+          <%= form.text_field :first_name, class: "input", placeholder: "First name", autocomplete: "given-name", required: true %>
+          <%= form.text_field :last_name, class: "input", placeholder: "Last name", autocomplete: "family-name", required: true %>
+        </div>
+
+        <div class="autocomplete">
+          <%= form.text_field :address_line1,
+                class: "input",
+                placeholder: "Street address",
+                autocomplete: "shipping street-address",
+                required: true,
+                role: "combobox",
+                aria: { autocomplete: "list", expanded: false, controls: "address-suggestions" },
+                data: {
+                  autocomplete_kind: "address",
+                  address_autocomplete_target: "query",
+                  action: "input->address-autocomplete#search keydown->address-autocomplete#navigate focus->address-autocomplete#search blur->address-autocomplete#blur"
+                } %>
+          <ul id="address-suggestions" role="listbox" class="autocomplete__list" hidden
+              data-autocomplete-kind="address"
+              data-address-autocomplete-target="list"></ul>
+        </div>
+
+        <%= form.text_field :address_line2, class: "input", placeholder: "Apartment, suite, etc. (optional)",
+              autocomplete: "shipping address-line2",
+              data: { address_autocomplete_target: "next" } %>
+
+        <div class="checkout__grid checkout__grid--2">
+          <%= form.text_field :city, class: "input", placeholder: "City", autocomplete: "shipping address-level2",
+                required: true, data: { address_autocomplete_target: "city" } %>
+          <%= form.text_field :province, class: "input", placeholder: "State / Province",
+                autocomplete: "shipping address-level1", data: { address_autocomplete_target: "province" } %>
+        </div>
+
+        <div class="checkout__grid checkout__grid--2">
+          <div class="autocomplete">
+            <%= form.text_field :postal_code,
+                  class: "input",
+                  placeholder: "ZIP / Postal code",
+                  autocomplete: "shipping postal-code",
+                  required: true,
+                  role: "combobox",
+                  aria: { autocomplete: "list", expanded: false, controls: "postal-suggestions" },
+                  data: {
+                    autocomplete_kind: "postal",
+                    address_autocomplete_target: "query postalCode",
+                    action: "input->address-autocomplete#search keydown->address-autocomplete#navigate focus->address-autocomplete#search blur->address-autocomplete#blur"
+                  } %>
+            <ul id="postal-suggestions" role="listbox" class="autocomplete__list" hidden
+                data-autocomplete-kind="postal"
+                data-address-autocomplete-target="list"></ul>
+          </div>
+
+          <span class="select">
+            <%= form.select :country, checkout_form_country_options, {}, class: "input",
+                  data: { address_autocomplete_target: "country" } %>
+            <span class="select__chev"><%= cj_icon "chevron-down" %></span>
+          </span>
+        </div>
+
+        <%= form.telephone_field :phone, class: "input", placeholder: "Phone (for shipping updates)",
+              autocomplete: "tel", required: true %>
+        <p class="autocomplete__status" role="status" aria-live="polite" data-address-autocomplete-target="status"></p>
+      </div>
+
+      <div class="card checkout__section">
+        <p class="eyebrow eyebrow--accent" style="font-size:var(--fs-body-sm)">3. Shipping method</p>
+        <%= render "shared/option", title: "Standard shipping", note: "Calculated by store settings", price: current_cart.formatted_shipping, selected: true %>
+        <div class="trust__item"><%= cj_icon "truck" %>Orders are prepared after payment confirmation</div>
+      </div>
+
+      <div class="card checkout__section">
+        <div style="display:flex;align-items:baseline;gap:12px">
+          <p class="eyebrow eyebrow--accent" style="font-size:var(--fs-body-sm)">4. Payment</p>
+          <span style="margin-left:auto;font-size:var(--fs-caption);color:var(--text-muted)">Next step: Stripe or PayPal.</span>
+        </div>
+        <%= render "shared/option", title: "Secure payment", note: "Card with Stripe, PayPal when configured", selected: true %>
+
+        <button class="btn btn--primary btn--lg btn--full" type="submit">
+          <%= cj_icon "lock", size: "1.15em" %> Continue to payment
+        </button>
+        <p style="font-size:var(--fs-caption);color:var(--text-faint);text-align:center">
+          By completing your purchase, you agree to the store privacy policy.
+        </p>
       </div>
     </div>
-  </div>
-</section>
+
+    <%= render "checkouts/summary", flavor: @flavor, qty: @qty %>
+  <% end %>
+
+  <div class="card"><%= render "shared/trust_row" %></div>
+</div>

@@ -1,0 +1,12 @@
+<% content_for :hide_buy_bar, true %>
+
+<div class="page stack" style="padding-top:var(--space-10);max-width:640px">
+  <%= render "checkouts/steps", current: 2 %>
+
+  <div class="card card--accent" style="text-align:center;display:flex;flex-direction:column;align-items:center;gap:var(--space-5);padding:var(--space-12) var(--space-6)">
+    <span class="feature-icon feature-icon--lg feature-icon--solid"><%= cj_icon "check" %></span>
+    <h1 style="font-size:var(--fs-display-3)">Order confirmed</h1>
+    <p class="sub">Order #CJ-24817 · A receipt is on its way to your inbox. Orders ship within 24–48 hours.</p>
+    <%= link_to "Back to store", root_path, class: "btn btn--primary" %>
+  </div>
+</div>

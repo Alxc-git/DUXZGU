@@ -1,0 +1,13 @@
+<div class="buy-bar">
+  <span class="buy-bar__price">
+    <b><%= selected_purchase_variant&.formatted_price || current_product&.formatted_price || Storefront::PRICE %></b>
+    <span>130 gummies · 32 servings</span>
+  </span>
+  <% if current_product && selected_purchase_variant %>
+    <%= button_to cart_lines_path,
+          params: buy_now_params(quantity: 1),
+          class: "btn btn--primary" do %>
+      <%= cj_icon "shopping-cart", size: "1.15em" %> Buy now
+    <% end %>
+  <% end %>
+</div>

@@ -9,8 +9,8 @@ STORE_DOMAIN = ENV.fetch("APP_HOST", "localhost").split("//").last.split("/").fi
 
 store = Store.find_by(domain: STORE_DOMAIN) || Store.find_by(domain: "localhost") || Store.new
 store.domain = STORE_DOMAIN
-store.name = "Creatine Store" if store.new_record?
-store.slug ||= "creatine-store"
+store.name = "DUWZGU" if store.new_record? || store.name.to_s.match?(/lux|montre|watch/i)
+store.slug = "duwzgu" if store.slug.blank? || store.slug.to_s.match?(/lux|montre|watch/i)
 store.supplier_type ||= "cj"
 store.active = true if store.new_record?
 store.currency = Store::DEFAULT_CURRENCY
@@ -29,25 +29,20 @@ store.supplier_settings = store.supplier_settings.merge(
 )
 store.save!
 
-PRODUCT_SLUG = "creatine-monohydrate".freeze
+PRODUCT_SLUG = "creatine-jelly".freeze
 SALE_PRICE_CENTS = 2499
 COMPARE_AT_PRICE_CENTS = 2999
 SUPPLIER_COST_CENTS = 900
 
 product = store.products.find_by(slug: PRODUCT_SLUG) || store.products.new
-if product.new_record?
-  product.name = "Creatine Monohydrate"
-  product.slug = PRODUCT_SLUG
-  product.description = "Creatine monohydrate en poudre, proposee en plusieurs formats pour une routine d'entrainement simple."
-  product.price_cents = SALE_PRICE_CENTS
-  product.compare_at_price_cents = COMPARE_AT_PRICE_CENTS
-  product.active = true
-  product.supplier_product_id = ""
-  product.supplier_cost_cents = SUPPLIER_COST_CENTS
-end
+product.name = "Creatine Jelly"
+product.slug = PRODUCT_SLUG
+product.description = "Gummies de creatine monohydrate concus pour une routine d'entrainement simple, constante et facile a transporter."
+product.active = true
+product.supplier_product_id ||= ""
 
 product.translations = product.translations.merge(
-  "en" => { "name" => "Creatine Monohydrate" }
+  "en" => { "name" => "Creatine Jelly" }
 ) if product.translations.dig("en", "name").blank?
 
 product.currency = store.currency
@@ -55,6 +50,11 @@ product.price_cents = SALE_PRICE_CENTS
 product.compare_at_price_cents = COMPARE_AT_PRICE_CENTS
 product.supplier_cost_cents = SUPPLIER_COST_CENTS
 product.save!
+
+store.products
+  .where.not(id: product.id)
+  .where("LOWER(name) LIKE :watch OR LOWER(slug) LIKE :watch", watch: "%montre%")
+  .update_all(active: false, updated_at: Time.current)
 
 OPTIONS = [
   {

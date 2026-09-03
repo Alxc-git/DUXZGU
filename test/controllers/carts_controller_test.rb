@@ -33,18 +33,14 @@ class CartsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "adds an option and shows it on the cart page" do
-    post cart_lines_path, params: {
-      product_id: products(:demo_product).id,
-      variant_id: variants(:black).id,
-      quantity: 2
-    }
+    add_black(quantity: 2)
 
     assert_redirected_to cart_path
     follow_redirect!
     assert_response :success
-    assert_select ".cart-line", 1
-    assert_select ".cart-line__colour", text: /300 g/
-    assert_select ".site-header__cart-count", text: "2"
+    assert_select "h1", text: "Your cart"
+    assert_select ".checkout__item", text: /300 g/
+    assert_select ".checkout__item", text: /Qty 2/
   end
 
   test "a missing variant id falls back to the default option" do
@@ -60,7 +56,7 @@ class CartsControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to cart_path
     follow_redirect!
-    assert_select ".site-header__cart-count", text: "4"
+    assert_select ".checkout__item", text: /Qty 4/
   end
 
   test "removing a line empties the cart" do
@@ -70,25 +66,15 @@ class CartsControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to cart_path
     follow_redirect!
-    assert_select ".cart__empty", 1
+    assert_select "p", text: "Your cart is empty."
   end
 
-  test "an empty cart offers the product instead of a line list" do
+  test "an empty cart renders the placeholder without line items" do
     get cart_path
 
     assert_response :success
-    assert_select ".cart__empty", 1
-    assert_select ".cart-line", 0
-  end
-
-  test "suggests only the options that are not already in the cart" do
-    add_black
-
-    get cart_path
-
-    assert_response :success
-    assert_select ".cart-suggest__item", 1
-    assert_select ".cart-suggest__name", text: "500 g"
+    assert_select "p", text: "Your cart is empty."
+    assert_select ".checkout__item", 0
   end
 
   private

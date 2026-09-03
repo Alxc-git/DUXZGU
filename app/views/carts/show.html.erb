@@ -1,200 +1,53 @@
-<% content_for :title, "#{t("common.cart")} | #{current_store.name}" %>
+<% content_for :title, "Cart | #{current_store.name}" %>
 
-<section class="cart">
-  <div class="page-container">
-    <nav class="breadcrumb" aria-label="<%= t("common.breadcrumb") %>">
-      <%= link_to t("common.home"), root_path %>
-      <%= icon "chevron-right", size: 14 %>
-      <span aria-current="page"><%= t("common.cart") %></span>
-    </nav>
+<div class="page stack" style="padding-top:var(--space-8)">
+  <%= render "checkouts/steps", current: 0 %>
 
-    <header class="cart__header">
-      <h1 class="cart__title"><%= t("cart.title") %></h1>
-      <% if current_cart.any? %>
-        <p class="cart__count"><%= t("cart.count", count: current_cart.count) %></p>
-      <% end %>
-    </header>
-
-    <% if current_cart.empty? %>
-      <div class="cart__empty">
-        <span class="cart__empty-icon"><%= icon "bag", size: 30 %></span>
-        <h2><%= t("cart.empty_title") %></h2>
-        <p><%= t("cart.empty_body") %></p>
-        <%= link_to current_product ? storefront_product_path(current_product.slug) : root_path,
-              class: "button button--lg" do %>
-          <%= icon "arrow-right", size: 18 %>
-          <span><%= t("cart.see_product") %></span>
-        <% end %>
+  <div class="checkout">
+    <div class="stack">
+      <div class="card checkout__section">
+        <p class="eyebrow eyebrow--accent" style="font-size:var(--fs-body-sm)">Cart</p>
+        <h1 style="font-size:var(--fs-display-3)">Your cart</h1>
       </div>
-    <% else %>
-      <% if current_cart.offer.active? %>
-        <% if current_cart.discount? %>
-          <p class="duo-banner duo-banner--earned">
-            <%= icon "check", size: 17 %>
-            <span>
-              <strong><%= t("offer.applied", label: current_cart.offer.label) %></strong>
-              <%= t("offer.savings", amount: current_cart.formatted_discount) %>
-            </span>
-          </p>
-        <% elsif current_cart.units_to_offer.positive? %>
-          <p class="duo-banner">
-            <%= icon "spark", size: 17 %>
-            <span>
-              <strong><%= t("offer.banner_lead") %></strong>
-              <%= current_cart.offer.label.downcase %>. <%= t("offer.banner_tail") %>
-            </span>
-          </p>
-        <% end %>
-      <% end %>
 
-      <div class="cart__grid">
-        <div class="cart__lines">
-          <% current_cart.lines.each do |line| %>
-            <article class="cart-line">
-              <%= link_to storefront_product_path(line.product.slug, option: line.variant.id),
-                    class: "cart-line__media" do %>
-                <%= variant_image_tag line.variant, alt: "#{line.product.display_name} #{line.variant.display_name}",
-                      thumb: 120, loading: "lazy", decoding: "async" %>
-              <% end %>
-
-              <div class="cart-line__info">
-                <h2 class="cart-line__name">
-                  <%= link_to line.product.display_name, storefront_product_path(line.product.slug, option: line.variant.id) %>
-                </h2>
-                <p class="cart-line__colour">
-                  <span class="cart-line__dot" style="background: <%= line.variant.swatch_color %>"></span>
-                  <%= line.variant.display_name %>
-                </p>
-                <p class="cart-line__unit"><%= line.formatted_unit_price %> <%= t("product.per_unit") %></p>
-              </div>
-
-              <%= form_with url: cart_line_path(line.variant.id), method: :patch,
-                    data: { controller: "quantity cart-line", action: "change->cart-line#submit" },
-                    class: "cart-line__quantity" do |form| %>
-                <div class="stepper" role="group" aria-label="<%= t("common.quantity") %> <%= line.variant.display_name %>">
-                  <button type="button" class="stepper__button" data-action="quantity#decrement"
-                          aria-label="<%= t("cart.decrease") %>">
-                    <%= icon "minus", size: 16 %>
-                  </button>
-                  <%= form.number_field :quantity, value: line.quantity, min: 1, max: Cart::MAX_QUANTITY,
-                        id: "quantite-#{line.variant.id}", class: "stepper__input",
-                        inputmode: "numeric", "aria-label": t("common.quantity"),
-                        data: { quantity_target: "input", action: "change->quantity#clamp" } %>
-                  <button type="button" class="stepper__button" data-action="quantity#increment"
-                          aria-label="<%= t("cart.increase") %>">
-                    <%= icon "plus", size: 16 %>
-                  </button>
-                </div>
-                <noscript><%= form.button t("cart.update"), class: "button button--compact" %></noscript>
-              <% end %>
-
-              <div class="cart-line__total"><%= line.formatted_total %></div>
-
-              <%= button_to cart_line_path(line.variant.id), method: :delete,
-                    class: "cart-line__remove", form_class: "cart-line__remove-form",
-                    aria: { label: t("cart.remove_aria", name: line.variant.display_name) } do %>
-                <%= icon "close", size: 16 %>
-                <span><%= t("cart.remove") %></span>
-              <% end %>
-            </article>
-          <% end %>
-
-          <% if @suggestions.any? %>
-            <section class="cart-suggest">
-              <header class="cart-suggest__head">
-                <h2><%= t("cart.add_colour") %></h2>
-                <% if current_cart.offer.active? %>
-                  <p>
-                    <%= t("cart.suggest_offer", label: current_cart.offer.label) %>
-                    <% if current_cart.units_to_offer.positive? %>
-                      <%= t("cart.need_one_more") %>
-                    <% end %>
-                  </p>
-                <% else %>
-                  <p><%= t("cart.suggest_lead") %></p>
-                <% end %>
-              </header>
-
-              <ul class="cart-suggest__list" role="list">
-                <% @suggestions.each do |suggestion| %>
-                  <li>
-                    <%= form_with url: cart_lines_path, method: :post, class: "cart-suggest__form" do |form| %>
-                      <%= form.hidden_field :product_id, value: suggestion.product_id %>
-                      <%= form.hidden_field :variant_id, value: suggestion.id %>
-                      <button type="submit" class="cart-suggest__item">
-                        <span class="cart-suggest__media">
-                          <%= variant_image_tag suggestion, alt: suggestion.display_name, thumb: 200, loading: "lazy", decoding: "async" %>
-                        </span>
-                        <span class="cart-suggest__name"><%= suggestion.display_name %></span>
-                        <span class="cart-suggest__price"><%= suggestion.formatted_price %></span>
-                        <span class="cart-suggest__add">
-                          <%= icon "plus", size: 14 %>
-                          <span><%= t("cart.add") %></span>
-                        </span>
-                      </button>
-                    <% end %>
-                  </li>
-                <% end %>
-              </ul>
-            </section>
-          <% end %>
+      <% if current_cart.empty? %>
+        <div class="card checkout__section">
+          <p class="sub">Your cart is empty.</p>
+          <%= link_to "Back to product", product_page_path, class: "btn btn--primary" %>
         </div>
-
-        <aside class="cart-summary">
-          <h2 class="cart-summary__title"><%= t("cart.summary") %></h2>
-
-          <dl class="cart-summary__rows">
-            <div class="cart-summary__row">
-              <dt><%= t("cart.subtotal") %></dt>
-              <dd><%= current_cart.formatted_subtotal %></dd>
-            </div>
-            <% if current_cart.discount? %>
-              <div class="cart-summary__row cart-summary__row--discount">
-                <dt><%= current_cart.offer.label %></dt>
-                <dd>&minus;<%= current_cart.formatted_discount %></dd>
+      <% else %>
+        <% current_cart.lines.each do |line| %>
+          <div class="card checkout__section">
+            <div class="checkout__item">
+              <span class="checkout__thumb" style="background:<%= (@flavor || Flavor.default).spot_var %>,var(--ink-100)">
+                <%= image_tag((@flavor || Flavor.default).image, alt: "") %>
+              </span>
+              <div style="min-width:0;flex:1">
+                <div class="stat__label"><%= line.product.display_name %></div>
+                <div class="stat__note"><%= line.variant.display_name %></div>
+                <div style="font-family:var(--font-display);color:var(--accent);font-size:1.25rem;margin-top:10px">
+                  <%= line.formatted_total %>
+                </div>
               </div>
+            </div>
+
+            <%= form_with url: cart_line_path(line.variant.id), method: :patch,
+                  style: "display:flex;gap:var(--space-3);align-items:center;flex-wrap:wrap" do |form| %>
+              <%= form.number_field :quantity, value: line.quantity, min: 1, max: Cart::MAX_QUANTITY, class: "input", style: "max-width:110px" %>
+              <%= form.submit "Update", class: "btn btn--secondary" %>
             <% end %>
 
-            <div class="cart-summary__row">
-              <dt><%= t("cart.shipping") %></dt>
-              <dd>
-                <% if current_store.free_shipping? %>
-                  <span class="cart-summary__free"><%= t("common.free") %></span>
-                <% else %>
-                  <%= current_cart.formatted_shipping %>
-                <% end %>
-              </dd>
-            </div>
-            <div class="cart-summary__row cart-summary__row--total">
-              <dt><%= t("cart.total") %></dt>
-              <dd><%= current_cart.formatted_total %></dd>
-            </div>
-          </dl>
-
-          <p class="cart-summary__taxes"><%= t("common.taxes_included") %></p>
-
-          <%= link_to checkout_path, class: "button button--lg button--block" do %>
-            <%= icon "lock", size: 18 %>
-            <span><%= t("cart.checkout") %></span>
-          <% end %>
-
-          <%= link_to current_product ? storefront_product_path(current_product.slug) : root_path,
-                class: "cart-summary__continue" do %>
-            <%= icon "chevron-left", size: 15 %>
-            <span><%= t("cart.keep_shopping") %></span>
-          <% end %>
-
-          <div class="payment-note cart-summary__payment">
-            <span class="payment-note__label">
-              <%= icon "lock", size: 15 %>
-              <span><%= t("common.secure_payment") %> &mdash; <%= estimated_delivery_range %></span>
-            </span>
-            <%= payment_marks(class: "payment-marks--sm") %>
+            <%= button_to "Remove", cart_line_path(line.variant.id), method: :delete, class: "btn btn--outline" %>
           </div>
+        <% end %>
+      <% end %>
+    </div>
 
-          <%= render "shared/order_perks", list_class: "cart-summary__perks" %>
-        </aside>
+    <% if current_cart.any? %>
+      <div class="stack">
+        <%= render "checkouts/summary", flavor: @flavor || Flavor.default, qty: current_cart.count %>
+        <%= link_to "Continue to checkout", checkout_path, class: "btn btn--primary btn--lg btn--full" %>
       </div>
     <% end %>
   </div>
-</section>
+</div>

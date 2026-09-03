@@ -1,0 +1,56 @@
+<section class="hero">
+  <span class="hero__spot" style="background:<%= flavor.spot_var %>"></span>
+  <div class="hero__bleed">
+    <%= cj_image_frame hint: "Full-bleed hero art — wet splash on black, 2400×1400",
+          css_class: "image-frame--bare", style: "width:100%;height:100%" %>
+  </div>
+  <span class="hero__veil"></span>
+
+  <div class="hero__in">
+    <div class="hero__copy">
+      <span class="badge badge--outline">Premium creatine gummies</span>
+
+      <div class="hero__type">
+        <span class="l1">Creatine</span>
+        <span class="l2">made easy.</span>
+      </div>
+
+      <p class="hero__lede">
+        Delicious daily creatine for <b style="color:var(--white)">strength, power, recovery,</b>
+        and <b style="color:var(--white)">convenience</b>. Four gummies. That's the whole routine.
+      </p>
+
+      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+        <%= cj_stars Storefront::RATING, meta: "#{Storefront::RATING}/5 · #{Storefront::REVIEW_COUNT} reviews" %>
+        <span style="color:var(--text-faint)">|</span>
+        <span class="eyebrow eyebrow--muted"><%= Storefront::CUSTOMER_COUNT %> athletes</span>
+      </div>
+
+      <div class="hero__cta">
+        <%= link_to "Shop now – #{Storefront::PRICE}", product_path, class: "btn btn--primary btn--lg" %>
+        <%= link_to "Subscribe & save 15%", product_path(plan: "sub"), class: "btn btn--secondary btn--lg" %>
+      </div>
+
+      <hr class="rule rule--dotted" style="width:100%">
+
+      <div class="hero__claims">
+        <% Storefront::BENEFITS.each do |benefit| %>
+          <%= render "shared/stat", stat: benefit, icon_size: "sm" %>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="hero__media">
+      <span class="hero__ring"></span>
+      <%= image_tag flavor.image, alt: "#{flavor.name} Creatine Jelly jar", class: "hero__jar" %>
+      <div class="hero__chiprow">
+        <span class="hero__chip hero__chip--a"><%= cj_icon "dumbbell" %>5000 mg creatine</span>
+        <span class="hero__chip hero__chip--b"><%= cj_icon "candy" %>4 gummies per serving</span>
+        <span class="hero__chip hero__chip--c"><%= cj_icon "package" %>130 gummies · 32 servings</span>
+      </div>
+      <span class="hero__price"><b><%= Storefront::PRICE %></b><span>per jar</span></span>
+    </div>
+  </div>
+
+  <%= render "shared/ticker" %>
+</section>

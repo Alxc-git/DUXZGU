@@ -1,18 +1,138 @@
-<% content_for :title, [ current_store.name, @product&.display_name ].compact_blank.join(" | ") %>
-<% content_for :description, @product&.description %>
-
-<% if @product.present? %>
-  <%= render "storefront/sections/hero", product: @product %>
-  <%= render "storefront/sections/highlights", product: @product %>
-  <%= render "storefront/sections/colours", product: @product, heading: t("product.all_colours_heading"), id: "options" %>
-  <%= render "storefront/sections/trust", product: @product %>
-  <%= render "storefront/sections/craft", product: @product, variant: :fabrication %>
-  <%= render "storefront/sections/reviews", product: @product %>
-  <%= render "storefront/sections/faq", product: @product %>
-  <%= render "storefront/sections/footer_cta", product: @product %>
+<% if @product.blank? %>
+  <div class="page stack" style="padding-top:var(--space-10);max-width:720px">
+    <div class="card card--accent" style="text-align:center">
+      <p class="eyebrow eyebrow--accent">Storefront</p>
+      <h1 style="font-size:var(--fs-display-3)">No active product</h1>
+      <p class="sub">Add or activate a product in the admin to connect the storefront purchase flow.</p>
+      <%= link_to "Open admin", admin_root_path, class: "btn btn--primary" %>
+    </div>
+  </div>
 <% else %>
-  <section class="empty-state page-container">
-    <h1>Boutique en preparation</h1>
-    <p>Aucun produit n'est encore publie sur <%= current_store.name %>.</p>
-  </section>
+<div class="stack" style="padding-top:var(--section-gap)">
+  <div class="page"><%= render "pages/hero", flavor: @flavor %></div>
+
+  <div class="page stack">
+    <div class="card"><%= render "shared/trust_row" %></div>
+
+    <div class="card"><%= render "shared/stat_row", stats: Storefront::CLAIMS %></div>
+
+    <div class="card card--flush band">
+      <div class="band__media">
+        <span style="position:absolute;inset:0;background:<%= @flavor.spot_var %>"></span>
+        <%= cj_image_frame hint: "Athlete mid-set, black studio grade — 4:3",
+              css_class: "image-frame--bare", style: "position:absolute;inset:0" %>
+        <span style="position:absolute;inset:0;background:var(--scrim-left)"></span>
+      </div>
+      <div class="band__body">
+        <p class="eyebrow eyebrow--accent">Performance. Strength. Results.</p>
+        <h2>Creatine you'll<br>actually keep taking.</h2>
+        <p class="sub">Saturation is the whole game, and saturation comes from consistency. Four gummies beat a scoop you skip.</p>
+        <%= render "shared/compare", tone: "yes", items: ["5000 mg per daily serving", "No shaker, no clumps, no chalk", "Take it anywhere — gym bag, desk, car"] %>
+        <%= link_to "See the product", product_page_path, class: "btn btn--outline", style: "align-self:flex-start" %>
+      </div>
+    </div>
+
+    <div class="card card--glow">
+      <div class="vs">
+        <div class="vs__side">
+          <h2 style="font-size:var(--fs-title);color:var(--accent)">Creatine Jelly</h2>
+          <%= render "shared/compare", tone: "yes", items: Storefront::PROS %>
+        </div>
+        <div class="vs__mid"><span class="vs-badge">VS</span></div>
+        <div class="vs__side">
+          <h2 style="font-size:var(--fs-title)">Creatine powder</h2>
+          <%= render "shared/compare", tone: "no", items: Storefront::CONS %>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 style="text-align:center;margin-bottom:var(--space-2)">Choose your flavor</h2>
+      <p class="sub" style="text-align:center;margin-bottom:var(--space-6)">Three jars. Same 5000 mg dose.</p>
+      <div class="g3">
+        <% Flavor::ALL.each do |flavor| %>
+          <%= render "shared/flavor_card", flavor: flavor, selected: flavor.slug == @flavor.slug %>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 style="text-align:center;color:var(--accent);margin-bottom:var(--space-6)">How to use</h2>
+      <div class="g3">
+        <% Storefront::HOW_TO_USE.each do |step| %>
+          <div class="how-step">
+            <span class="feature-icon feature-icon--solid feature-icon--sm how-step__n"><%= step[:n] %></span>
+            <span class="feature-icon"><%= cj_icon step[:icon] %></span>
+            <div>
+              <div class="stat__label"><%= step[:title] %></div>
+              <div class="stat__note"><%= step[:note] %></div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="g2">
+      <div class="card">
+        <div style="display:flex;flex-wrap:wrap;gap:var(--space-6);align-items:center;justify-content:space-between">
+          <div>
+            <%= cj_stars Storefront::RATING, size: :lg %>
+            <div style="font-family:var(--font-display);font-size:2.25rem;color:var(--white);line-height:1.1"><%= Storefront::RATING %>/5</div>
+            <p class="eyebrow eyebrow--muted">From <%= Storefront::REVIEW_COUNT %> reviews</p>
+          </div>
+          <div style="display:flex;align-items:center;gap:14px">
+            <span class="feature-icon feature-icon--lg"><%= cj_icon "users" %></span>
+            <div>
+              <div class="stat__label">Loved by athletes</div>
+              <div class="stat__note">Trusted by <%= Storefront::CUSTOMER_COUNT %> customers</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card card--flush" style="position:relative;min-height:200px;display:flex;align-items:flex-end">
+        <%= cj_image_frame hint: "Athlete portrait row — five faces, b&w grade",
+              css_class: "image-frame--bare", style: "position:absolute;inset:0" %>
+        <span style="position:absolute;inset:0;background:var(--scrim-bottom)"></span>
+        <div style="position:relative;padding:var(--card-pad)">
+          <h2 style="font-size:var(--fs-title)">Real results.<br>Real people.</h2>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 style="margin-bottom:var(--space-6)">What athletes say</h2>
+      <div class="g3">
+        <% Storefront::REVIEWS.each do |review| %>
+          <%= render "shared/testimonial", review: review %>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="g2">
+      <div class="card">
+        <h2 style="font-size:var(--fs-title);margin-bottom:var(--space-5)">Questions? We've got answers.</h2>
+        <%= render "shared/accordion", items: Storefront::FAQ, open_first: true %>
+      </div>
+
+      <div class="card card--accent" style="position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:center;gap:var(--space-5)">
+        <span style="position:absolute;inset:0;opacity:.6;background:<%= @flavor.spot_var %>"></span>
+        <div style="position:relative;display:flex;flex-wrap:wrap;gap:var(--space-6);align-items:center">
+          <%= image_tag @flavor.image, alt: "", style: "width:150px;filter:drop-shadow(0 18px 34px rgba(0,0,0,.6))" %>
+          <div style="flex:1 1 220px;display:flex;flex-direction:column;gap:var(--space-4);align-items:flex-start">
+            <h2 style="font-size:var(--fs-title);color:var(--accent)">Ready to level up?</h2>
+            <p class="sub">Fuel your strength, power, and recovery — every day.</p>
+            <% if current_product && selected_purchase_variant %>
+              <%= button_to cart_lines_path,
+                    params: buy_now_params(quantity: 1),
+                    class: "btn btn--primary btn--lg" do %>
+                Shop now - <%= selected_purchase_variant.formatted_price %>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <% end %>

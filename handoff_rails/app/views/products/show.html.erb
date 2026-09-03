@@ -1,0 +1,130 @@
+<div class="page stack" style="padding-top:var(--space-8)">
+  <div class="pdp">
+    <div class="pdp__gallery">
+      <div class="pdp__main">
+        <span style="position:absolute;inset:0;background:<%= @flavor.spot_var %>"></span>
+        <%= image_tag @flavor.image, alt: "#{@flavor.name} jar" %>
+        <button type="button" class="icon-btn icon-btn--bare" aria-label="Zoom"><%= cj_icon "search" %></button>
+      </div>
+
+      <div class="pdp__thumbs">
+        <% Flavor::ALL.each do |flavor| %>
+          <%= link_to product_path(flavor: flavor.slug, plan: @plan, qty: @qty),
+                class: ["pdp__thumb", ("is-selected" if flavor.slug == @flavor.slug)],
+                style: "--flavor:#{flavor.color_var}" do %>
+            <span class="flavor__bg" style="background:<%= flavor.spot_var %>;opacity:.45"></span>
+            <%= image_tag flavor.image, alt: "" %>
+            <span style="position:relative;z-index:1">
+              <span class="flavor__name" style="font-size:.9375rem"><%= flavor.name %></span>
+              <span class="flavor__note" style="display:block;margin-bottom:0"><%= flavor.note %></span>
+            </span>
+            <% if flavor.slug == @flavor.slug %>
+              <span class="flavor__check"><%= cj_icon "check" %></span>
+            <% end %>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="pdp__buy">
+      <span class="badge badge--outline">Premium creatine gummies</span>
+      <h1>Creatine Jelly</h1>
+      <%= cj_stars Storefront::RATING, meta: "#{Storefront::RATING}/5 (#{Storefront::REVIEW_COUNT} reviews)" %>
+
+      <div>
+        <span class="price__row">
+          <% if @plan == "sub" %><s class="price__was"><%= Storefront::PRICE %></s><% end %>
+          <span class="price__now"><%= @plan == "sub" ? Storefront::PRICE_SUB : Storefront::PRICE %></span>
+        </span>
+        <div class="price__note">or 4 interest-free payments of $10.00</div>
+      </div>
+
+      <p><b style="color:var(--white)">Delicious daily creatine gummies</b> for strength, power, recovery, and convenience. No mixing. No mess. Just results.</p>
+
+      <div>
+        <p class="eyebrow eyebrow--muted" style="margin-bottom:8px">Choose your flavor</p>
+        <div style="display:flex;flex-wrap:wrap;gap:10px">
+          <% Flavor::ALL.each do |flavor| %>
+            <%= render "shared/flavor_pill", flavor: flavor, selected: flavor.slug == @flavor.slug %>
+          <% end %>
+        </div>
+      </div>
+
+      <div>
+        <p class="eyebrow eyebrow--muted" style="margin-bottom:8px">Quantity</p>
+        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+          <span class="qty" data-qty>
+            <button type="button" data-qty-dec aria-label="Decrease"><%= cj_icon "minus" %></button>
+            <span class="qty__val" data-qty-val><%= @qty %></span>
+            <button type="button" data-qty-inc aria-label="Increase"><%= cj_icon "plus" %></button>
+          </span>
+          <span style="color:var(--text-muted);font-size:var(--fs-body-sm)">130 gummies &nbsp;|&nbsp; 32 servings</span>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <%= render "shared/option", title: "One-time purchase", price: Storefront::PRICE,
+              selected: @plan == "once", href: product_path(flavor: @flavor.slug, plan: "once", qty: @qty) %>
+        <%= render "shared/option", title: "Subscribe & save 15%", note: "Cancel anytime",
+              price: Storefront::PRICE_SUB, selected: @plan == "sub",
+              href: product_path(flavor: @flavor.slug, plan: "sub", qty: @qty) %>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <%= link_to checkout_path(flavor: @flavor.slug, qty: @qty), class: "btn btn--primary btn--lg btn--full" do %>
+          <%= cj_icon "shopping-cart", size: "1.15em" %> Add to cart
+        <% end %>
+        <%= link_to "Buy now – #{@plan == "sub" ? Storefront::PRICE_SUB : Storefront::PRICE}",
+              checkout_path(flavor: @flavor.slug, qty: @qty), class: "btn btn--outline btn--lg btn--full" %>
+      </div>
+
+      <%= render "shared/trust_row" %>
+    </div>
+  </div>
+
+  <div class="card" id="benefits"><%= render "shared/stat_row", stats: Storefront::CLAIMS %></div>
+
+  <div class="card card--glow">
+    <div class="vs">
+      <div class="vs__side">
+        <h2 style="font-size:var(--fs-title);color:var(--accent)">Creatine Jelly</h2>
+        <%= render "shared/compare", tone: "yes", items: Storefront::PROS %>
+      </div>
+      <div class="vs__mid"><span class="vs-badge">VS</span></div>
+      <div class="vs__side">
+        <h2 style="font-size:var(--fs-title)">Traditional powder</h2>
+        <%= render "shared/compare", tone: "no", items: Storefront::CONS %>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 style="text-align:center;color:var(--accent);margin-bottom:var(--space-6)">How to use</h2>
+    <div class="g3">
+      <% Storefront::HOW_TO_USE.each do |step| %>
+        <div class="how-step">
+          <span class="feature-icon feature-icon--solid feature-icon--sm how-step__n"><%= step[:n] %></span>
+          <span class="feature-icon"><%= cj_icon step[:icon] %></span>
+          <div>
+            <div class="stat__label"><%= step[:title] %></div>
+            <div class="stat__note"><%= step[:note] %></div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="card" id="reviews">
+    <h2 style="text-align:center;color:var(--accent);margin-bottom:var(--space-6)">Loved by athletes</h2>
+    <div class="g3">
+      <% Storefront::REVIEWS.each do |review| %>
+        <%= render "shared/testimonial", review: review %>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="card" id="faq">
+    <h2 style="text-align:center;color:var(--accent);margin-bottom:var(--space-5)">Questions? We've got answers.</h2>
+    <%= render "shared/accordion", items: Storefront::FAQ %>
+  </div>
+</div>

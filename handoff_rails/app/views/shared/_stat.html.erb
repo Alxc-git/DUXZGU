@@ -1,0 +1,9 @@
+<div class="stat">
+  <span class="feature-icon <%= "feature-icon--#{local_assigns[:icon_size]}" if local_assigns[:icon_size] %>">
+    <%= cj_icon stat[:icon] %>
+  </span>
+  <div style="min-width:0">
+    <div class="stat__label"><%= stat[:label].html_safe %></div>
+    <% if stat[:note] %><div class="stat__note"><%= stat[:note] %></div><% end %>
+  </div>
+</div>

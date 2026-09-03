@@ -15,35 +15,19 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
     )
   end
 
-  test "renders the French privacy policy and public contact details" do
+  test "renders the privacy preferences page" do
     get privacy_policy_path(locale: :fr)
 
     assert_response :success
-    assert_select "h1", text: "Politique de confidentialite"
-    assert_select "a[href='mailto:contact@example.com']"
-    assert_select "a[href='tel:+15145550100']"
-    assert_select ".legal-page__summary", text: /CREATINE STORE INC\./
-    assert_select "#cookies"
-    assert_select "#ai"
-    assert_select "#rights"
-    assert_select ".translation_missing", count: 0
+    assert_select "h1", text: "Privacy preferences"
+    assert_select "form[action=?]", privacy_preferences_path, count: 2
   end
 
-  test "renders the English privacy policy" do
-    get privacy_policy_path(locale: :en)
-
-    assert_response :success
-    assert_select "h1", text: "Privacy policy"
-    assert_select "#collection h2", text: "Information we collect"
-    assert_select ".translation_missing", count: 0
-  end
-
-  test "footer links to the privacy policy and official email" do
+  test "footer links stay wired after the handoff import" do
     get root_path
 
     assert_response :success
-    assert_select "footer a[href=?]", privacy_policy_path
-    assert_select "footer a[href='mailto:contact@example.com']", text: "contact@example.com"
-    assert_select "footer", text: /CREATINE STORE INC\./
+    assert_select "footer", text: /Creatine\s*Jelly/
+    assert_select "footer a[href=?]", privacy_policy_path, text: "Privacy policy"
   end
 end

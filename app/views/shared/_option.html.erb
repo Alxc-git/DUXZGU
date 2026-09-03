@@ -1,0 +1,9 @@
+<%= link_to (local_assigns[:href] || "#"),
+      class: ["option", ("is-selected" if selected)] do %>
+  <span class="option__dot"></span>
+  <span>
+    <span class="option__title"><%= title %></span>
+    <% if local_assigns[:note] %><span class="option__note"><%= note %></span><% end %>
+  </span>
+  <% if local_assigns[:price] %><span class="option__price"><%= price %></span><% end %>
+<% end %>

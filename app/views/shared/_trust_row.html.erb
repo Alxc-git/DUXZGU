@@ -1,0 +1,8 @@
+<div class="trust">
+  <% Storefront::TRUST.each do |item| %>
+    <div class="trust__item">
+      <%= cj_icon item[:icon] %>
+      <span><span class="trust__t"><%= item[:title] %></span><%= item[:note] %></span>
+    </div>
+  <% end %>
+</div>
