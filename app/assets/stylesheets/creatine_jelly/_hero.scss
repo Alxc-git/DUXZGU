@@ -1,48 +1,23 @@
 .hero{
   position:relative;overflow:hidden;isolation:isolate;min-width:0;
   background:var(--ink-050);border:1px solid var(--border-hairline);
-  border-radius:var(--radius-lg);box-shadow:var(--shadow-panel);
-  // One pair of values drives both the copy width and where the photo starts.
-  --hero-pad:clamp(22px,3.4vw,64px);
-  --hero-copy:clamp(500px,40vw,560px);
-  // The photo owns its own panel to the right of the copy, starting exactly where
-  // the copy ends. The three flavour shots are framed differently — raspberry is
-  // wide with the jar off-centre, the other two are square with it in the middle —
-  // so `--hero-focus` says where each one's window looks, and a short mask
-  // dissolves the panel's left edge into the card.
-  &__bleed{
-    position:absolute;inset:0 0 0 auto;z-index:0;
-    left:calc(var(--hero-pad) + var(--hero-copy) + var(--space-4));width:auto;
-    img{
-      width:100%;height:100%;max-width:none;object-fit:cover;
-      object-position:var(--hero-focus,center);
-      -webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 12%);
-      mask-image:linear-gradient(90deg,transparent 0%,#000 12%);
-    }
-  }
-  // Two crossed gradients: one reads the copy off the left, one grounds the ticker.
+  border-radius:var(--radius-md);box-shadow:var(--shadow-panel);
+  &__bleed{position:absolute;inset:0;z-index:0;
+    img{width:100%;height:100%;max-width:none;object-fit:cover;
+      object-position:var(--hero-focus,67% center)}}
   &__veil{position:absolute;inset:0;z-index:1;
     background:
-      linear-gradient(90deg,rgba(0,0,0,.92) 0%,rgba(0,0,0,.7) 44%,rgba(0,0,0,.18) 72%,rgba(0,0,0,0) 100%),
-      linear-gradient(0deg,rgba(0,0,0,.75) 0%,rgba(0,0,0,0) 44%)}
-  &__glow{position:absolute;z-index:1;inset:auto -10% -30% 30%;height:70%;pointer-events:none;
-    background:var(--hero-spot,var(--spot-crimson));opacity:.5}
-  &__in{position:relative;z-index:2;display:flex;align-items:center;
-    min-height:clamp(560px,58vw,720px);
-    padding:clamp(32px,4vw,72px) var(--hero-pad);min-width:0}
-  &__copy{display:flex;flex-direction:column;gap:clamp(16px,1.5vw,24px);align-items:flex-start;
-    width:min(100%,var(--hero-copy));min-width:0}
-
-  &__top{display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-3) var(--space-5)}
-
-  &__type{
-    display:flex;flex-direction:column;line-height:.86;max-width:100%;
-    margin:0;letter-spacing:0;
+      linear-gradient(90deg,rgba(0,0,0,.98) 0%,rgba(0,0,0,.9) 32%,rgba(0,0,0,.38) 62%,rgba(0,0,0,.08) 100%),
+      linear-gradient(0deg,rgba(0,0,0,.7) 0%,rgba(0,0,0,0) 42%)}
+  &__in{position:relative;z-index:2;display:flex;align-items:center;min-height:612px;
+    padding:var(--space-16) var(--space-8);min-width:0}
+  &__copy{display:flex;flex-direction:column;gap:var(--space-5);align-items:flex-start;
+    width:min(100%,560px);min-width:0}
+  &__type{display:flex;flex-direction:column;line-height:.86;max-width:100%;
     .l1,.l2{font-family:var(--font-display);text-transform:uppercase;letter-spacing:0;
-      font-size:clamp(3.2rem,7.4vw,7rem);display:block;max-width:100%;overflow-wrap:break-word}
-    // Brushed-metal wordmark: light down the top face, a shadowed waist, light again.
+      font-size:5.7rem;display:block;max-width:100%;overflow-wrap:break-word}
     .l1{color:var(--white)}
-    .l2{color:var(--accent)}
+    .l2{color:var(--hero-flavor,var(--accent));white-space:nowrap}
   }
   @supports (-webkit-background-clip:text) or (background-clip:text){
     &__type .l1{
@@ -52,68 +27,42 @@
     }
   }
 
-  &__lede{max-width:52ch;font-size:var(--fs-body-lg);color:var(--text-body);
+  &__lede{max-width:470px;font-size:var(--fs-body-lg);color:var(--text-body);
     b{color:var(--white);font-weight:700}}
-
-  // Benefits and guarantees read as one measured strip, split by hairlines.
-  &__row{
-    display:flex;flex-wrap:wrap;align-items:center;
-    gap:var(--space-4) 0;margin:0;padding:0;list-style:none;width:100%;
-  }
-  &__row-item{
-    display:flex;align-items:center;gap:11px;min-width:0;
-    flex:1 1 0;padding-right:var(--space-5);
-    & + &{padding-left:var(--space-5);border-left:1px solid var(--border-hairline)}
-    &:last-child{padding-right:0}
-    > .icon{flex:0 0 auto;font-size:19px;color:var(--text-strong)}
-  }
-  &__row-title{
-    display:block;font-family:var(--font-display);text-transform:uppercase;
-    font-size:1rem;line-height:1.1;color:var(--text-strong);letter-spacing:.01em;
-  }
-  &__row-note{display:block;margin-top:3px;font-size:var(--fs-caption);color:var(--text-muted);line-height:1.35}
-  &__row--trust{
-    padding-top:var(--space-5);border-top:1px solid var(--border-hairline);
-    .hero__row-title{font-family:var(--font-label);letter-spacing:var(--ls-label);
-      font-weight:600;font-size:var(--fs-caption)}
-  }
-
-  &__cta{
-    width:100%;
-    // Content-sized: two buttons that grew to fill the copy column reached under
-    // the product shot on wide screens.
-    .btn{flex:0 1 auto;min-height:52px;padding:12px clamp(18px,1.7vw,26px);font-size:var(--fs-body)}
-  }
-
+  &__proof{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  &__proof-sep{width:1px;height:16px;background:var(--border-subtle)}
+  &__cta{display:grid;grid-template-columns:1fr .9fr;gap:var(--space-3);width:100%;
+    max-width:540px}
+  &__claims{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-4) var(--space-5);
+    width:100%;max-width:520px}
+  &__trust{width:100%;padding-top:var(--space-3)}
   @container site (min-width:#{$bp-xxl}){
+    &__in{min-height:652px;padding:var(--space-20) var(--space-10)}
+    &__copy{width:min(100%,580px)}
+    &__type .l1,&__type .l2{font-size:6.35rem}
     &__lede{font-size:1.1875rem}
   }
-  // Below the desktop split the photo stops being a background and becomes a
-  // stacked panel, so the copy never has to compete with it for contrast.
-  @container site (max-width:#{$bp-xxl - 1px}){
+  @container site (max-width:#{$bp-lg - 1px}){
     display:flex;flex-direction:column;
-    &__cta .btn{flex:1 1 auto}
-    &__bleed{position:relative;inset:auto;left:auto;width:100%;aspect-ratio:16/10;display:block}
-    &__bleed img{width:100%;height:100%;object-position:center 28%;
-      -webkit-mask-image:none;mask-image:none}
-    &__bleed::after{content:"";position:absolute;inset:0;
-      background:linear-gradient(to top,var(--ink-050) 0%,rgba(7,7,9,.35) 42%,rgba(0,0,0,0) 78%)}
-    &__veil,&__glow{display:none}
-    &__in{min-height:0;padding:var(--space-6) var(--space-6) var(--space-8)}
-    &__copy{width:100%;max-width:none;gap:var(--space-5)}
-    &__type .l1,&__type .l2{font-size:clamp(2.75rem,9vw,4.25rem)}
+    &__bleed{position:relative;inset:auto;width:100%;aspect-ratio:16/9}
+    &__bleed img{object-position:center}
+    &__veil{display:none}
+    &__in{min-height:0;padding:var(--space-6)}
+    &__copy{width:100%;max-width:none}
+    &__type .l1,&__type .l2{font-size:4rem}
     &__lede{max-width:60ch}
+    &__claims{grid-template-columns:repeat(3,minmax(0,1fr));max-width:none}
   }
   @container site (max-width:#{$bp-sm - 1px}){
-    border-radius:var(--radius-md);
+    border-radius:var(--radius-sm);
     &__bleed{aspect-ratio:4/3}
-    &__in{padding:var(--space-5) var(--space-5) var(--space-6)}
-    &__type .l1,&__type .l2{font-size:clamp(2.5rem,11.5vw,3.4rem)}
-    &__top{gap:var(--space-3)}
-    // Dividers stop earning their keep once every item is on its own line.
-    &__row{gap:var(--space-4)}
-    &__row-item{flex:1 1 100%;padding-right:0;
-      & + &{padding-left:0;border-left:0}}
+    &__in{padding:var(--space-5)}
+    &__type .l1,&__type .l2{font-size:3.2rem}
+    &__proof{gap:10px 12px}
+    &__proof-sep{display:none}
+    &__cta{grid-template-columns:1fr}
+    &__claims{grid-template-columns:1fr;gap:var(--space-4)}
+    &__trust{display:none}
   }
 }
 

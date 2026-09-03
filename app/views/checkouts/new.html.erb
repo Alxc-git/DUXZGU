@@ -7,8 +7,10 @@
 
   <div class="card" style="display:flex;flex-wrap:wrap;gap:var(--space-5);align-items:center">
     <span class="feature-icon feature-icon--lg"><%= cj_icon "shield-check" %></span>
-    <div style="flex:1 1 240px">
-      <h1 style="font-size:var(--fs-display-3)">Checkout</h1>
+    <%# A display face at 0.88 line-height crowds whatever follows it; the stack
+        gives the heading room instead of letting it sit on the next line. %>
+    <div style="flex:1 1 240px;display:flex;flex-direction:column;gap:6px">
+      <h1 style="font-size:var(--fs-display-3);line-height:1">Checkout</h1>
       <div class="stat__label" style="font-size:1.0625rem">You're one step away from stronger, faster, better.</div>
       <div class="stat__note">Every order is protected by the store checkout flow.</div>
     </div>
@@ -135,8 +137,8 @@
       </div>
     </div>
 
-    <%= render "checkouts/summary", flavor: @flavor, qty: @qty %>
+    <div class="checkout__aside">
+      <%= render "checkouts/summary", flavor: @flavor, qty: @qty %>
+    </div>
   <% end %>
-
-  <div class="card"><%= render "shared/trust_row" %></div>
 </div>

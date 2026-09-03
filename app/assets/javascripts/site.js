@@ -4,7 +4,8 @@ document.addEventListener("click", (event) => {
   const toggle = event.target.closest("[data-nav-toggle]");
   if (toggle) {
     const sheet = toggle.closest("[data-nav]").querySelector("[data-nav-sheet]");
-    sheet.classList.toggle("is-open");
+    const open = sheet.classList.toggle("is-open");
+    toggle.setAttribute("aria-expanded", String(open));
     return;
   }
 

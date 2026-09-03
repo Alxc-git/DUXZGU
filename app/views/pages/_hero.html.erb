@@ -1,62 +1,49 @@
-<section class="hero" style="--hero-spot:<%= flavor.spot_var %>;--hero-focus:<%= flavor.scene_focus %>">
+<section class="hero hero--scene" style="--hero-flavor:<%= flavor.color_var %>;--hero-spot:<%= flavor.spot_var %>;--hero-focus:<%= flavor.scene_focus %>">
   <div class="hero__bleed">
     <%= image_tag flavor.scene_image, alt: "#{flavor.name} Creatine Jelly" %>
   </div>
   <span class="hero__veil"></span>
-  <span class="hero__glow"></span>
 
   <div class="hero__in">
     <div class="hero__copy">
-      <div class="hero__top">
-        <span class="badge badge--outline">Premium creatine gummies</span>
-        <%= cj_stars Storefront::RATING, meta: "#{Storefront::RATING}/5 · #{Storefront::REVIEW_COUNT} reviews" %>
-      </div>
+      <span class="badge badge--outline">Premium creatine gummies</span>
 
-      <h1 class="hero__type">
+      <div class="hero__type">
         <span class="l1">Creatine</span>
         <span class="l2">made easy.</span>
-      </h1>
+      </div>
 
       <p class="hero__lede">
         Delicious daily creatine for <b>strength, power, recovery,</b>
         and <b>convenience</b>. Four gummies. That's the whole routine.
       </p>
 
-      <ul class="hero__row hero__row--benefits">
-        <% Storefront::BENEFITS.each do |benefit| %>
-          <li class="hero__row-item">
-            <span class="feature-icon feature-icon--sm"><%= cj_icon benefit[:icon] %></span>
-            <span>
-              <span class="hero__row-title"><%= benefit[:label] %></span>
-              <span class="hero__row-note"><%= benefit[:note] %></span>
-            </span>
-          </li>
-        <% end %>
-      </ul>
+      <div class="hero__proof">
+        <%= cj_stars Storefront::RATING, meta: "#{Storefront::RATING}/5 · #{Storefront::REVIEW_COUNT} reviews" %>
+        <span class="hero__proof-sep"></span>
+        <span class="eyebrow eyebrow--muted"><%= Storefront::CUSTOMER_COUNT %> athletes</span>
+      </div>
 
-      <div class="hero__cta actions">
+      <div class="hero__cta">
         <% if current_product && selected_purchase_variant %>
           <%= button_to cart_lines_path,
                 params: buy_now_params(quantity: 1),
                 class: "btn btn--primary btn--lg" do %>
-            <%= cj_icon "shopping-cart", size: "1.15em" %>
-            <span>Shop now &ndash;</span><%= cj_odometer selected_purchase_variant.formatted_price %>
+            Shop now - <%= selected_purchase_variant.formatted_price %>
           <% end %>
         <% end %>
-        <%= link_to "Subscribe & save 15%", product_page_path(plan: "sub"), class: "btn btn--glass btn--lg" %>
+        <%= link_to "See product", product_page_path(plan: "sub"), class: "btn btn--secondary btn--lg" %>
       </div>
 
-      <ul class="hero__row hero__row--trust">
-        <% Storefront::TRUST.each do |item| %>
-          <li class="hero__row-item">
-            <%= cj_icon item[:icon] %>
-            <span>
-              <span class="hero__row-title"><%= item[:title] %></span>
-              <span class="hero__row-note"><%= item[:note] %></span>
-            </span>
-          </li>
+      <hr class="rule rule--dotted" style="width:100%">
+
+      <div class="hero__claims">
+        <% Storefront::BENEFITS.each do |benefit| %>
+          <%= render "shared/stat", stat: benefit, icon_size: "sm" %>
         <% end %>
-      </ul>
+      </div>
+
+      <div class="hero__trust"><%= render "shared/trust_row" %></div>
     </div>
   </div>
 

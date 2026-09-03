@@ -40,7 +40,7 @@
     </div>
   </div>
 
-  <div class="card">
+  <div class="card checkout__section">
     <div style="display:flex;gap:14px;align-items:flex-start">
       <span class="feature-icon"><%= cj_icon "shield-check" %></span>
       <div>
@@ -48,7 +48,11 @@
         <div class="stat__note">Your information is protected with 256-bit SSL encryption.</div>
       </div>
     </div>
+    <%= render "shared/payment_methods", size: "sm" %>
+    <%= render "shared/dispatch_countdown" %>
   </div>
+
+  <div class="card"><%= render "shared/trust_row" %></div>
 
   <div class="card">
     <p class="eyebrow eyebrow--accent" style="margin-bottom:12px">Need help with your order?</p>

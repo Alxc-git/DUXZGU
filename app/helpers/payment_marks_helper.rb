@@ -2,7 +2,7 @@ module PaymentMarksHelper
   # Card and wallet marks drawn inline, so the trust row costs no extra request and
   # stays crisp on every screen. Each mark is drawn in a 40x26 box (card ratio) and
   # sized from CSS, so the caller only picks which ones to show.
-  PAYMENT_MARKS = %w[visa mastercard amex paypal klarna affirm].freeze
+  PAYMENT_MARKS = %w[visa mastercard amex paypal link apple-pay google-pay klarna affirm].freeze
 
   PAYMENT_LABELS = {
     "visa" => "Visa",
@@ -13,6 +13,7 @@ module PaymentMarksHelper
     "affirm" => "Affirm",
     "apple-pay" => "Apple Pay",
     "google-pay" => "Google Pay",
+    "link" => "Link",
     "stripe" => "Stripe"
   }.freeze
 
@@ -25,6 +26,22 @@ module PaymentMarksHelper
                 ".95-1.38 1.34-2.72 1.36-2.79-.03-.01-2.6-1-2.63-3.92z" \
                 "M14.9 5.6c.69-.83 1.15-1.99 1.02-3.14-.99.04-2.19.66-2.9 1.49-.64.73-1.19 1.91-1.04 3.04 " \
                 "1.1.09 2.23-.56 2.92-1.39z".freeze
+
+  # What this store actually takes at checkout.
+  #
+  # A store can declare the list in settings — that is the owner's word on what
+  # they accept, and the only way to advertise a method that has to be switched on
+  # at Stripe first, such as Klarna. Otherwise the list is derived from what is
+  # really wired up, so the storefront never promises a method that would fail.
+  def accepted_payment_methods
+    declared = current_store&.settings&.dig("payment_methods")
+    return Array(declared).map(&:to_s) & PAYMENT_MARKS if declared.present?
+
+    marks = []
+    marks += %w[visa mastercard amex link apple-pay google-pay] if Payments.configured?
+    marks << "paypal" if Payments.paypal_configured?
+    marks
+  end
 
   # A row of payment marks, e.g. under the add-to-cart button or in the footer.
   def payment_marks(marks = PAYMENT_MARKS, label: "Moyens de paiement acceptes", **options)
@@ -45,6 +62,7 @@ module PaymentMarksHelper
     when "affirm" then affirm_mark
     when "apple-pay" then apple_pay_mark
     when "google-pay" then google_pay_mark
+    when "link" then link_mark
     when "stripe" then stripe_mark
     end
     return "" if body.blank?
@@ -105,6 +123,15 @@ module PaymentMarksHelper
     safe_join([
       mark_plate(fill: "#006FCF"),
       mark_text("AMEX", x: 20, y: 16.9, size: 8.4, length: 25, fill: "#ffffff",
+                "text-anchor": "middle")
+    ])
+  end
+
+  # Stripe Link: the one-click wallet the Payment Element offers by default.
+  def link_mark
+    safe_join([
+      mark_plate(fill: "#00D66F"),
+      mark_text("link", x: 20, y: 17.4, size: 10.5, length: 22, fill: "#011E0F",
                 "text-anchor": "middle")
     ])
   end

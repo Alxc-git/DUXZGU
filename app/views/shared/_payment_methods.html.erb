@@ -1,0 +1,12 @@
+<%# The methods this store actually takes — see PaymentMarksHelper#accepted_payment_methods.
+    Nothing renders when none is wired up, rather than advertising a checkout that would fail. %>
+<% methods = accepted_payment_methods %>
+<% if methods.any? %>
+  <div class="payment-note <%= local_assigns[:css_class] %>">
+    <span class="payment-note__label">
+      <%= cj_icon "lock" %><%= local_assigns[:label] || "Secure checkout — we accept" %>
+    </span>
+    <%= payment_marks methods, label: "Accepted payment methods",
+          class: local_assigns[:size] == "sm" ? "payment-marks--sm" : nil %>
+  </div>
+<% end %>

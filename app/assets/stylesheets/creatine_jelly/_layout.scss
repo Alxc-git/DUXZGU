@@ -15,8 +15,17 @@
 .header{
   position:sticky;top:0;z-index:40;background:rgba(0,0,0,.82);
   backdrop-filter:blur(var(--blur-panel));border-bottom:1px solid var(--border-hairline);
-  &__in{display:flex;align-items:center;gap:var(--space-6);min-height:74px}
-  &__nav{display:none;gap:clamp(var(--space-4),1.8vw,var(--space-8));margin:0 auto}
+  // Three tracks with equal outer columns, so whatever sits in the middle is
+  // centred on the page rather than in the leftover gap between the two ends —
+  // the actions on the right are far wider than the wordmark on the left.
+  &__in{
+    display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);
+    align-items:center;gap:var(--space-4);min-height:74px;
+  }
+  // Phone: menu left, wordmark centred, cart right.
+  &__burger{grid-row:1;grid-column:1;justify-self:start}
+  &__logo{grid-row:1;grid-column:2;justify-self:center}
+  &__nav{display:none;gap:clamp(var(--space-4),1.8vw,var(--space-8))}
   &__link{
     position:relative;padding:6px 2px;background:none;border:0;cursor:pointer;
     font-family:var(--font-label);text-transform:uppercase;letter-spacing:var(--ls-label);
@@ -27,15 +36,20 @@
       transform:scaleX(0);transform-origin:left;transition:transform var(--dur) var(--ease-out)}
     &:hover::after,&.is-active::after{transform:scaleX(1)}
   }
-  &__right{display:flex;align-items:center;gap:var(--space-3);margin-left:auto}
+  &__right{
+    grid-row:1;grid-column:3;justify-self:end;min-width:0;
+    display:flex;align-items:center;gap:var(--space-3);
+  }
   &__cta{display:none}
+  // Desktop: wordmark left, nav centred, actions right.
   @container site (min-width:#{$bp-lg}){
-    &__nav{display:flex}
-    &__cta{display:inline-flex}
     &__burger{display:none}
+    &__logo{grid-column:1;justify-self:start}
+    &__nav{grid-row:1;grid-column:2;justify-self:center;display:flex}
+    &__cta{display:inline-flex}
   }
   @container site (max-width:#{$bp-sm - 1px}){
-    &__in{gap:var(--space-3);min-height:62px}
+    &__in{gap:var(--space-2);min-height:62px}
     .wordmark{font-size:18px}
     .icon-btn{width:40px;height:40px}
   }
@@ -74,6 +88,19 @@
   &__scrim{position:absolute;inset:0;background:var(--scrim-bottom)}
   &__body{position:relative;z-index:1;width:100%;padding:clamp(20px,2.4vw,34px)}
   @container site (min-width:#{$bp-lg}){min-height:340px}
+  &--lineup{
+    background:
+      radial-gradient(80% 60% at 58% 42%,rgba(47,79,216,.16),rgba(47,79,216,0) 72%),
+      radial-gradient(72% 58% at 36% 60%,rgba(255,15,78,.18),rgba(255,15,78,0) 72%),
+      var(--ink-000);
+    .image-card__image{object-fit:contain;object-position:center 32%}
+    .image-card__scrim{
+      background:
+        linear-gradient(to top,rgba(0,0,0,.98) 0%,rgba(0,0,0,.82) 22%,rgba(0,0,0,.28) 58%,rgba(0,0,0,0) 100%),
+        linear-gradient(90deg,rgba(0,0,0,.65) 0%,rgba(0,0,0,.2) 42%,rgba(0,0,0,0) 100%);
+    }
+    .image-card__body{max-width:360px}
+  }
 }
 
 // Closing CTA: the photograph sits on its own side, the copy on a solid panel.
@@ -98,49 +125,70 @@
   }
 }
 
-// Comparison band. Each side is shot + copy; the winning half carries a crimson
-// wash so the verdict is legible before a word is read.
+// Comparison band. Tight, horizontal, and image-led like the supplied mockup.
 .vs{
-  display:grid;grid-template-columns:1fr;align-items:center;
-  gap:var(--space-5);padding:clamp(20px,2.4vw,34px);
+  display:grid;grid-template-columns:minmax(0,1fr) 76px minmax(0,1fr);align-items:center;
+  gap:22px;min-height:174px;padding:18px 28px;overflow:hidden;border-radius:8px;
+  background:
+    var(--vs-spot,var(--spot-crimson)),
+    linear-gradient(90deg,rgba(255,15,78,.13) 0%,rgba(255,255,255,.035) 40%,rgba(255,255,255,.015) 100%),
+    var(--ink-100);
 
-  &__side{display:flex;align-items:center;gap:clamp(14px,1.6vw,24px);min-width:0}
+  &__side{display:grid;grid-template-columns:146px minmax(0,1fr);align-items:center;
+    gap:22px;min-width:0}
   &__side--win{
-    margin:calc(clamp(20px,2.4vw,34px) * -1);
-    padding:clamp(20px,2.4vw,34px);
-    background:linear-gradient(100deg,rgba(255,15,78,.22),rgba(255,15,78,.05) 72%,rgba(0,0,0,0));
+    margin:-18px 0 -18px -28px;padding:18px 0 18px 28px;
+    background:linear-gradient(90deg,rgba(255,15,78,.2),rgba(255,15,78,.06) 64%,rgba(0,0,0,0));
   }
+  // Both shots are already lit on their own black ground, so a plate and a border
+  // only draw a box around them. Fading the four edges lets each product float on
+  // the band instead — which is how the reference comp reads.
   &__shot{
     flex:0 0 auto;display:flex;align-items:center;justify-content:center;
-    width:clamp(84px,9vw,124px);aspect-ratio:1;overflow:hidden;
-    border-radius:var(--radius-md);background:var(--ink-100);padding:6px;
-    img{width:100%;height:100%;object-fit:contain}
-    // The rival shot is a wide scene with the tub off to the right; it is cropped
-    // to the product instead of letterboxed, so both sides read as one system.
-    &--rival{padding:0;background:var(--ink-000);
-      img{object-fit:cover;object-position:64% center}}
-  }
-  &__body{display:flex;flex-direction:column;gap:var(--space-3);min-width:0}
-  &__title{font-size:clamp(1.25rem,1.9vw,1.75rem)}
-  &__title--win{color:var(--accent)}
-  &__mid{display:flex;justify-content:center;align-items:center}
-
-  @container site (min-width:#{$bp-lg}){
-    grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);
-    gap:clamp(var(--space-6),2.4vw,var(--space-10));
-    &__side--win{
-      margin:calc(clamp(20px,2.4vw,34px) * -1) 0 calc(clamp(20px,2.4vw,34px) * -1) calc(clamp(20px,2.4vw,34px) * -1);
-      border-radius:0 var(--radius-lg) var(--radius-lg) 0;
+    width:146px;height:112px;
+    img{
+      width:100%;height:100%;object-fit:cover;object-position:center;
+      // Two crossed linear fades intersect into a soft-edged rectangle: the black
+      // ground melts into the band on all four sides while the jar stays whole.
+      -webkit-mask-image:
+        linear-gradient(90deg,transparent 0,#000 16%,#000 84%,transparent 100%),
+        linear-gradient(180deg,transparent 0,#000 14%,#000 86%,transparent 100%);
+      -webkit-mask-composite:source-in;
+      mask-image:
+        linear-gradient(90deg,transparent 0,#000 16%,#000 84%,transparent 100%),
+        linear-gradient(180deg,transparent 0,#000 14%,#000 86%,transparent 100%);
+      mask-composite:intersect;
     }
   }
-  // Stacked, the wash would band across the whole card; keep it on the shot only.
+  &__body{display:flex;flex-direction:column;gap:var(--space-3);min-width:0}
+  &__title{font-size:1.65rem;line-height:1;color:var(--gray-200);letter-spacing:0}
+  &__title--win{color:var(--vs-accent,var(--accent))}
+  &__mid{display:flex;justify-content:center;align-items:center}
+  .vs-badge{width:72px;height:72px;background:rgba(0,0,0,.26);
+    border-color:var(--vs-accent,var(--accent));color:var(--vs-accent,var(--accent));
+    box-shadow:0 0 30px -10px var(--vs-accent,var(--accent))}
+  .compare{gap:7px}
+  .compare__row{font-size:var(--fs-body-sm);line-height:1.25}
+  .compare__row .icon{font-size:14px;margin-top:1px}
+
+  @container site (min-width:#{$bp-lg}){
+    &__side--win{border-radius:0 8px 8px 0}
+  }
   @container site (max-width:#{$bp-lg - 1px}){
+    grid-template-columns:1fr;gap:18px;padding:20px;min-height:0;
+    &__side{grid-template-columns:126px minmax(0,1fr);gap:16px}
     &__side--win{margin:0;padding:0;background:none}
-    &__mid{padding:var(--space-1) 0}
+    &__shot{width:126px;height:98px}
+    &__mid{padding:0}
+    .vs-badge{width:60px;height:60px;font-size:1.25rem}
   }
   @container site (max-width:#{$bp-sm - 1px}){
-    &__side{align-items:flex-start}
-    &__shot{width:76px}
+    padding:16px;gap:16px;
+    &__side{grid-template-columns:88px minmax(0,1fr);align-items:flex-start;gap:13px}
+    &__shot{width:88px;height:88px}
+    &__title{font-size:1.35rem}
+    .compare{gap:6px}
+    .compare__row{font-size:.8125rem}
   }
 }
 

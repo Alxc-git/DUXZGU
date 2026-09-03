@@ -1,6 +1,13 @@
 <header class="header" data-nav>
   <div class="page header__in">
-    <%= link_to root_path, class: "wordmark" do %>
+    <%# Slot order is fixed by the grid, not by the markup: on a phone this button
+        sits left of the wordmark, on desktop it is hidden entirely. %>
+    <button type="button" class="icon-btn icon-btn--bare header__burger"
+            data-nav-toggle aria-label="Menu" aria-expanded="false">
+      <%= cj_icon "menu" %>
+    </button>
+
+    <%= link_to root_path, class: "wordmark header__logo" do %>
       <span class="wordmark__a">Creatine</span><span class="wordmark__b">Jelly</span>
     <% end %>
 
@@ -23,9 +30,6 @@
       <%= link_to cart_path, class: "icon-btn", aria: { label: "Cart" } do %>
         <%= cj_icon "shopping-cart" %><span class="icon-btn__count"><%= current_cart.count %></span>
       <% end %>
-      <button type="button" class="icon-btn icon-btn--bare header__burger" data-nav-toggle aria-label="Menu">
-        <%= cj_icon "menu" %>
-      </button>
     </div>
   </div>
 

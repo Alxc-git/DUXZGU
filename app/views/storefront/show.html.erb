@@ -1,5 +1,5 @@
 <div class="page stack stack--lg" style="padding-top:var(--space-4)">
-  <div class="pdp">
+  <div class="pdp" style="--pdp-focus:<%= @flavor.pdp_focus %>">
     <div class="pdp__gallery">
       <div class="pdp__main">
         <%= image_tag @flavor.pdp_image, alt: "#{@flavor.name} Creatine Jelly" %>
@@ -7,10 +7,11 @@
       </div>
 
       <div class="pdp__thumbs">
-        <% Flavor::ALL.each do |flavor| %>
+        <% gallery_flavors = [@flavor, *Flavor::ALL.reject { |flavor| flavor.slug == @flavor.slug }] %>
+        <% gallery_flavors.each do |flavor| %>
           <%= link_to product_page_path(flavor: flavor.slug, plan: @plan, qty: @qty),
                 class: ["pdp__thumb", ("is-selected" if flavor.slug == @flavor.slug)],
-                style: "--flavor:#{flavor.color_var}" do %>
+                style: "--flavor:#{flavor.color_var};--thumb-focus:#{flavor.pdp_focus}" do %>
             <span class="flavor__bg" style="background:<%= flavor.spot_var %>;opacity:.45"></span>
             <%= image_tag flavor.pdp_image, alt: "" %>
             <span style="position:relative;z-index:1">
@@ -83,6 +84,7 @@
         <% end %>
       </div>
 
+      <%= render "shared/payment_methods", size: "sm" %>
       <%= render "shared/dispatch_countdown" %>
       <%= render "shared/trust_row" %>
       </div>

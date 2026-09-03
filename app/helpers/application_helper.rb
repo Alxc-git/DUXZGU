@@ -88,7 +88,9 @@ module ApplicationHelper
     product = current_product
     return root_path if product.blank?
 
-    storefront_product_path(product.slug, { flavor:, plan:, qty:, anchor: }.compact)
+    selected_flavor = flavor.nil? ? params[:flavor].presence : flavor
+
+    storefront_product_path(product.slug, { flavor: selected_flavor, plan:, qty:, anchor: }.compact)
   end
 
   def selected_purchase_variant(product = current_product)

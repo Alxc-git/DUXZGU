@@ -1,8 +1,8 @@
 <%# Side-by-side comparison. Each side carries its own product shot so the two
     claims read as two products, not two lists. %>
-<div class="card card--flush vs">
+<div id="comparison" class="card card--flush vs" style="--vs-accent:<%= flavor.color_var %>;--vs-spot:<%= flavor.spot_var %>">
   <div class="vs__side vs__side--win">
-    <span class="vs__shot"><%= image_tag flavor.packshot, alt: "#{flavor.name} Creatine Jelly" %></span>
+    <span class="vs__shot"><%= image_tag flavor.comparison_image, alt: "#{flavor.name} Creatine Jelly" %></span>
     <div class="vs__body">
       <h3 class="vs__title vs__title--win">Creatine Jelly</h3>
       <%= render "shared/compare", tone: "yes", items: Storefront::PROS %>
@@ -13,7 +13,7 @@
 
   <div class="vs__side vs__side--lose">
     <span class="vs__shot vs__shot--rival">
-      <%= image_tag "product/creatine-powder-tub.png", alt: "Tub of creatine powder" %>
+      <%= image_tag "product/duwzgu-powder-card.png", alt: "Tub of creatine powder" %>
     </span>
     <div class="vs__body">
       <h3 class="vs__title"><%= local_assigns[:rival] || "Creatine powder" %></h3>
