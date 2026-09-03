@@ -76,6 +76,16 @@ class Store < ApplicationRecord
     [ settings["shipping_cents"].to_i, 0 ].max
   end
 
+  # Spend above which the parcel ships free. Zero switches the threshold off, so
+  # the flat fee (if any) applies to every order.
+  def free_shipping_threshold_cents
+    [ settings["free_shipping_threshold_cents"].to_i, 0 ].max
+  end
+
+  def free_shipping_threshold?
+    shipping_cents.positive? && free_shipping_threshold_cents.positive?
+  end
+
   def free_shipping?
     shipping_cents.zero?
   end

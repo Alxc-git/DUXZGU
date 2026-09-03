@@ -55,7 +55,7 @@ module CheckoutsHelper
     {
       subtotal: MoneyFormatter.format(orders.sum(&:subtotal_cents), currency),
       discount_cents: orders.sum(&:discount_cents),
-      discount_label: DuoOffer.new(orders.first.store).label,
+      discount_label: VolumeOffer.for(orders.first.store).label,
       shipping_cents: orders.sum(&:shipping_cents),
       total: MoneyFormatter.format(orders.sum(&:total_cents), currency)
     }

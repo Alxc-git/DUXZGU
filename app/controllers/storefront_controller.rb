@@ -17,6 +17,8 @@ class StorefrontController < ApplicationController
     @variant = @product.variant_for(params[:variant_id]) || @product.variant_for(params[:option]) || @product.default_variant
     @plan = plan_param
     @qty = quantity_param
+    @tiers = PackTier.for(@variant, Current.store)
+    @selected_tier = @tiers.find { |tier| tier.quantity == @qty }
 
     track_meta_event("ViewContent", Meta::Content.for_product(@product, variant: @variant))
   rescue ActiveRecord::RecordNotFound

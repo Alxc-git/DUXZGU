@@ -82,7 +82,7 @@ class Cart
   end
 
   def offer
-    @offer ||= DuoOffer.new(store)
+    @offer ||= VolumeOffer.for(store)
   end
 
   # What the duo offer takes off the whole cart.
@@ -108,9 +108,50 @@ class Cart
     remainder.zero? ? 0 : 1
   end
 
-  # A shipping fee is per parcel, not per line, so it is counted once.
+  # A shipping fee is per parcel, not per line, so it is counted once — and it is
+  # waived entirely once the cart clears the store's free-shipping threshold.
   def shipping_cents
-    empty? ? 0 : store.shipping_cents
+    return 0 if empty? || free_shipping?
+
+    store.shipping_cents
+  end
+
+  def free_shipping?
+    return true if store.shipping_cents.zero?
+    return false unless store.free_shipping_threshold?
+
+    discounted_subtotal_cents >= store.free_shipping_threshold_cents
+  end
+
+  # What still has to go in the basket before the parcel ships free. Zero once the
+  # threshold is met, and zero when there is no threshold to meet.
+  def free_shipping_remaining_cents
+    return 0 unless store.free_shipping_threshold?
+
+    [ store.free_shipping_threshold_cents - discounted_subtotal_cents, 0 ].max
+  end
+
+  # 0.0 to 1.0, for the progress bar.
+  def free_shipping_progress
+    return 1.0 unless store.free_shipping_threshold?
+
+    threshold = store.free_shipping_threshold_cents
+    (discounted_subtotal_cents.to_f / threshold).clamp(0.0, 1.0)
+  end
+
+  def formatted_free_shipping_remaining
+    MoneyFormatter.format(free_shipping_remaining_cents, currency)
+  end
+
+  def formatted_free_shipping_threshold
+    MoneyFormatter.format(store.free_shipping_threshold_cents, currency)
+  end
+
+  # The threshold is read against what the customer actually pays for the goods,
+  # so a discount can never push an order back below the free-shipping line after
+  # the bar has already said it was cleared.
+  def discounted_subtotal_cents
+    subtotal_cents - discount_cents
   end
 
   def total_cents

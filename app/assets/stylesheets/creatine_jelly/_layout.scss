@@ -98,11 +98,47 @@
   }
 }
 
+// Comparison band. Each side is shot + copy; the winning half carries a crimson
+// wash so the verdict is legible before a word is read.
 .vs{
-  display:grid;grid-template-columns:1fr;gap:var(--space-6);align-items:center;
-  &__side{display:flex;flex-direction:column;gap:var(--space-4)}
-  &__mid{display:flex;justify-content:center}
-  @container site (min-width:#{$bp-lg}){grid-template-columns:1fr auto 1fr;gap:var(--space-10)}
+  display:grid;grid-template-columns:1fr;align-items:center;
+  gap:var(--space-5);padding:clamp(20px,2.4vw,34px);
+
+  &__side{display:flex;align-items:center;gap:clamp(14px,1.6vw,24px);min-width:0}
+  &__side--win{
+    margin:calc(clamp(20px,2.4vw,34px) * -1);
+    padding:clamp(20px,2.4vw,34px);
+    background:linear-gradient(100deg,rgba(255,15,78,.22),rgba(255,15,78,.05) 72%,rgba(0,0,0,0));
+  }
+  &__shot{
+    flex:0 0 auto;display:flex;align-items:center;justify-content:center;
+    width:clamp(84px,9vw,124px);aspect-ratio:1;overflow:hidden;
+    border-radius:var(--radius-md);background:var(--ink-100);padding:6px;
+    img{width:100%;height:100%;object-fit:contain}
+    &--tub{background:transparent;padding:0;.tub{width:100%;height:100%}}
+  }
+  &__body{display:flex;flex-direction:column;gap:var(--space-3);min-width:0}
+  &__title{font-size:clamp(1.25rem,1.9vw,1.75rem)}
+  &__title--win{color:var(--accent)}
+  &__mid{display:flex;justify-content:center;align-items:center}
+
+  @container site (min-width:#{$bp-lg}){
+    grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);
+    gap:clamp(var(--space-6),2.4vw,var(--space-10));
+    &__side--win{
+      margin:calc(clamp(20px,2.4vw,34px) * -1) 0 calc(clamp(20px,2.4vw,34px) * -1) calc(clamp(20px,2.4vw,34px) * -1);
+      border-radius:0 var(--radius-lg) var(--radius-lg) 0;
+    }
+  }
+  // Stacked, the wash would band across the whole card; keep it on the shot only.
+  @container site (max-width:#{$bp-lg - 1px}){
+    &__side--win{margin:0;padding:0;background:none}
+    &__mid{padding:var(--space-1) 0}
+  }
+  @container site (max-width:#{$bp-sm - 1px}){
+    &__side{align-items:flex-start}
+    &__shot{width:76px}
+  }
 }
 
 .buy-bar{

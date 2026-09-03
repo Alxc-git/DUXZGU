@@ -2,6 +2,7 @@
 <% content_for :hide_footer, true %>
 <% content_for :hide_buy_bar, true %>
 <% first = @orders.first %>
+<% total = MoneyFormatter.format(@orders.sum(&:total_cents), first.currency) %>
 
 <% if @client_secret.present? %>
   <% content_for :head do %>
@@ -9,7 +10,7 @@
   <% end %>
 <% end %>
 
-<div class="page stack" style="padding-top:var(--space-8)">
+<div class="page stack" style="padding-top:var(--space-4)">
   <%= render "checkouts/steps", current: 1 %>
 
   <div class="checkout">
@@ -17,15 +18,19 @@
       <div class="card checkout__section">
         <p class="eyebrow eyebrow--accent" style="font-size:var(--fs-body-sm)">Secure payment</p>
         <h1 style="font-size:var(--fs-display-3)">Payment</h1>
-        <div class="checkout__line checkout__line--total">
-          <span>Total</span>
-          <span><%= MoneyFormatter.format(@orders.sum(&:total_cents), first.currency) %></span>
+        <div class="pay__total">
+          <span class="sub">Amount due today</span>
+          <b><%= total %></b>
+        </div>
+        <div class="pay__methods">
+          <%= payment_marks %w[visa mastercard amex paypal], label: "Accepted payment methods", class: "payment-marks--sm" %>
+          <span class="trust__item"><%= cj_icon "lock" %><span>256-bit SSL &middot; 3-D Secure</span></span>
         </div>
       </div>
 
       <% if Payments.paypal_configured? %>
         <div class="card checkout__section">
-          <p class="eyebrow eyebrow--accent" style="font-size:var(--fs-body-sm)">PayPal</p>
+          <p class="eyebrow eyebrow--accent" style="font-size:var(--fs-body-sm)">Pay with PayPal</p>
           <div class="paypal-block"
                data-controller="paypal-button"
                data-paypal-button-client-id-value="<%= Payments.paypal_client_id %>"
@@ -36,11 +41,18 @@
             <p class="paypal-block__error" data-paypal-button-target="error" role="alert" hidden></p>
           </div>
         </div>
+        <p class="pay__or">or pay by card</p>
       <% end %>
 
       <div class="card checkout__section">
         <% if @client_secret.present? %>
-          <p class="eyebrow eyebrow--accent" style="font-size:var(--fs-body-sm)">Card</p>
+          <div style="display:flex;flex-wrap:wrap;gap:var(--space-3);align-items:center">
+            <p class="eyebrow eyebrow--accent" style="font-size:var(--fs-body-sm)">Card details</p>
+            <%= payment_marks %w[visa mastercard amex], label: "Accepted cards",
+                  class: "payment-marks--sm", style: "margin-left:auto" %>
+          </div>
+
+          <%# The card number never touches this page: the inputs live in Stripe's iframe. %>
           <form class="payment-form"
                 data-controller="stripe-payment"
                 data-stripe-payment-key-value="<%= Payments.publishable_key %>"
@@ -48,18 +60,28 @@
                 data-stripe-payment-return-url-value="<%= checkout_success_url %>"
                 data-stripe-payment-locale-value="<%= current_store.checkout_locale %>"
                 data-action="submit->stripe-payment#submit">
-            <div class="payment-form__element" data-stripe-payment-target="element"></div>
+            <div class="payment-form__element" data-stripe-payment-target="element">
+              <p class="payment-form__loading">Loading the secure card form&hellip;</p>
+            </div>
             <p class="payment-form__error" data-stripe-payment-target="error" role="alert" hidden></p>
             <button type="submit" class="btn btn--primary btn--lg btn--full" data-stripe-payment-target="submit" disabled>
               <%= cj_icon "lock", size: "1.15em" %>
-              <span data-stripe-payment-target="submitLabel">Pay now</span>
+              <span data-stripe-payment-target="submitLabel">Pay <%= total %></span>
             </button>
+            <div class="payment-note">
+              <span class="payment-note__label">
+                <%= cj_icon "shield-check" %>
+                Your card details are handled by Stripe and never reach this store.
+              </span>
+            </div>
           </form>
         <% elsif @payment_error.present? %>
-          <div role="alert">
+          <div role="alert" class="checkout__section">
             <p class="eyebrow eyebrow--accent" style="font-size:var(--fs-body-sm)">Payment error</p>
             <p><%= @payment_error %></p>
-            <%= link_to "Back to checkout", checkout_path, class: "btn btn--secondary" %>
+            <div class="actions actions--start">
+              <%= link_to "Back to checkout", checkout_path, class: "btn btn--secondary" %>
+            </div>
           </div>
         <% else %>
           <p class="eyebrow eyebrow--accent" style="font-size:var(--fs-body-sm)">Local mode</p>
@@ -67,9 +89,18 @@
           <%= button_to "Complete test order", payment_path, method: :post, class: "btn btn--primary btn--lg btn--full" %>
         <% end %>
       </div>
+
+      <div class="card">
+        <div class="pay__reassure">
+          <div class="trust__item"><%= cj_icon "shield-check" %><span><span class="trust__t">Encrypted</span>256-bit SSL on every field</span></div>
+          <div class="trust__item"><%= cj_icon "refresh-cw" %><span><span class="trust__t">30-day guarantee</span>Love it or get a refund</span></div>
+          <div class="trust__item"><%= cj_icon "truck" %><span><span class="trust__t">Tracked delivery</span>Tracking sent by email</span></div>
+        </div>
+      </div>
     </div>
 
     <div class="stack">
+      <%= render "shared/cross_sell" %>
       <%= render "checkouts/summary", flavor: @flavor || Flavor.default, qty: @orders.sum(&:quantity) %>
     </div>
   </div>

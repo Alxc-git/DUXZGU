@@ -1,0 +1,18 @@
+<%# Social proof from real paid orders only — see RecentPurchase. With no recent
+    orders the list is empty and nothing renders, rather than inventing activity. %>
+<% entries = RecentPurchase.for(current_store) %>
+<% if entries.any? %>
+  <div class="proof-toast" data-proof hidden>
+    <button type="button" class="proof-toast__close" data-proof-close aria-label="Dismiss">
+      <%= cj_icon "close" %>
+    </button>
+    <span class="proof-toast__media"><%= image_tag flavor.packshot, alt: "" %></span>
+    <p class="proof-toast__body">
+      <span class="proof-toast__who" data-proof-who></span>
+      <span class="proof-toast__when" data-proof-when></span>
+    </p>
+  </div>
+  <script type="application/json" data-proof-data>
+    <%= raw entries.map(&:to_h).to_json %>
+  </script>
+<% end %>

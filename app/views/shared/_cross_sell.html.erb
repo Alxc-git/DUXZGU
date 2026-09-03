@@ -1,0 +1,26 @@
+<%# A real cross-sell: the price is the variant's own and the button actually adds it.
+    It must never be rendered inside another form — button_to emits a form of its own. %>
+<% addon = current_product&.available_variants.to_a.reject { |v| current_cart.variant_ids.include?(v.id) }.first %>
+<% if addon.present? %>
+  <% addon_flavor = Flavor::ALL.find { |f| f.name.casecmp?(addon.display_name.to_s) } || Flavor::ALL.last %>
+  <div class="card card--accent">
+    <p class="eyebrow eyebrow--accent" style="margin-bottom:12px">Add a second flavor</p>
+    <div style="display:flex;gap:14px;align-items:center">
+      <span class="checkout__thumb" style="width:70px;height:70px"><%= image_tag addon_flavor.packshot, alt: "" %></span>
+      <div style="flex:1;min-width:0">
+        <div class="stat__label"><%= addon.display_name %> Creatine Jelly</div>
+        <div class="stat__note">130 gummies &middot; 32 servings</div>
+        <div style="margin-top:6px;font-family:var(--font-display);color:var(--accent);font-size:1.125rem">
+          <%= addon.formatted_price %>
+        </div>
+      </div>
+    </div>
+    <div class="actions actions--stack" style="margin-top:12px">
+      <%= button_to cart_lines_path,
+            params: { product_id: addon.product_id, variant_id: addon.id, quantity: 1 },
+            class: "btn btn--outline btn--sm" do %>
+        <%= cj_icon "plus", size: "1.05em" %> Add to my order
+      <% end %>
+    </div>
+  </div>
+<% end %>

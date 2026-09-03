@@ -75,7 +75,7 @@ module Support
     # The offer the storefront advertises. Without it the assistant contradicts
     # the banner the customer is looking at.
     def offer_context
-      offer = DuoOffer.new(store)
+      offer = VolumeOffer.for(store)
       return { active: false } unless offer.active?
 
       { active: true, label: offer.label, rule: "Pour deux articles achetes, le moins cher recoit une remise de #{offer.percent} %." }

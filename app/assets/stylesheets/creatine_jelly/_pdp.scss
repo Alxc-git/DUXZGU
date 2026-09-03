@@ -25,7 +25,7 @@
   }
   &__buy{align-self:start;min-width:0}
   &__buy-inner{
-    display:flex;flex-direction:column;gap:clamp(12px,1.1vw,15px);
+    display:flex;flex-direction:column;gap:clamp(11px,1vw,13px);
     // The column stretches its children; a pill badge must keep its own width.
     > .badge,> .stars{align-self:flex-start}
   }

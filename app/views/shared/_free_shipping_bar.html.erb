@@ -1,0 +1,15 @@
+<% if current_cart.free_shipping_remaining_cents.positive? %>
+  <div class="ship-bar">
+    <p class="ship-bar__text">
+      <%= cj_icon "truck" %>
+      Add <b><%= current_cart.formatted_free_shipping_remaining %></b> for free shipping
+    </p>
+    <span class="ship-bar__track">
+      <span class="ship-bar__fill" style="width:<%= (current_cart.free_shipping_progress * 100).round %>%"></span>
+    </span>
+  </div>
+<% elsif current_cart.any? %>
+  <div class="ship-bar ship-bar--done">
+    <p class="ship-bar__text"><%= cj_icon "circle-check" %><b>Free shipping unlocked.</b> No delivery charge on this order.</p>
+  </div>
+<% end %>

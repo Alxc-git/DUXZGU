@@ -191,7 +191,7 @@
   &:hover &__box{border-color:var(--border-accent-soft)}
 }
 .option{
-  display:flex;align-items:center;gap:12px;width:100%;padding:14px 16px;text-align:left;
+  display:flex;align-items:center;gap:12px;width:100%;padding:11px 16px;text-align:left;
   background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);
   color:var(--text-body);cursor:pointer;transition:all var(--dur) var(--ease-out);
   &:hover{border-color:var(--border-accent-soft)}

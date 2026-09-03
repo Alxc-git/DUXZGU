@@ -95,28 +95,43 @@ export default class extends Controller {
     })
   }
 
-  // Matches the storefront: Inter, near-black actions, the same borders and radii.
+  // Matches the storefront, which is dark: Stripe's own "night" base, then the
+  // brand tokens read straight off :root so the fields never drift from the page.
   get appearance() {
     const styles = getComputedStyle(document.documentElement)
     const token = (name, fallback) => styles.getPropertyValue(name).trim() || fallback
 
     return {
-      theme: "stripe",
+      theme: "night",
       variables: {
-        fontFamily: "Inter, ui-sans-serif, system-ui, sans-serif",
-        colorPrimary: token("--stripe-accent", "#111111"),
-        colorText: "#0f0f0f",
-        colorTextSecondary: "#6b6b6b",
-        colorDanger: "#c62828",
-        borderRadius: "6px",
+        fontFamily: "Barlow, system-ui, -apple-system, sans-serif",
+        colorPrimary: token("--accent", "#FF0F4E"),
+        colorBackground: token("--ink-100", "#0B0B0E"),
+        colorText: token("--gray-200", "#D8D8DC"),
+        colorTextSecondary: token("--gray-400", "#8B8B95"),
+        colorTextPlaceholder: token("--gray-500", "#65656F"),
+        colorDanger: token("--negative", "#FF4646"),
+        borderRadius: token("--radius-sm", "9px"),
         spacingUnit: "4px"
       },
       rules: {
-        ".Input": { border: "1px solid #dcdcd6", boxShadow: "none", padding: "12px" },
-        ".Input:focus": { border: "1px solid #1f4ed8", boxShadow: "0 0 0 2px rgba(31, 78, 216, 0.18)" },
-        ".Tab": { border: "1px solid #dcdcd6", boxShadow: "none" },
-        ".Tab--selected": { border: "1px solid #111111", boxShadow: "0 0 0 1px #111111" },
-        ".Label": { fontWeight: "500" }
+        ".Input": {
+          border: "1px solid rgba(255,255,255,.14)",
+          boxShadow: "none",
+          padding: "13px 14px"
+        },
+        ".Input:focus": {
+          border: `1px solid ${token("--accent", "#FF0F4E")}`,
+          boxShadow: "0 0 0 3px rgba(255,15,78,.16)"
+        },
+        ".Input--invalid": { border: `1px solid ${token("--negative", "#FF4646")}` },
+        ".Tab": { border: "1px solid rgba(255,255,255,.14)", boxShadow: "none" },
+        ".Tab:hover": { border: "1px solid rgba(255,15,78,.35)" },
+        ".Tab--selected": {
+          border: `1px solid ${token("--accent", "#FF0F4E")}`,
+          boxShadow: "0 0 0 1px rgba(255,15,78,.45)"
+        },
+        ".Label": { fontWeight: "600", letterSpacing: ".02em" }
       }
     }
   }

@@ -19,8 +19,8 @@
         <% current_cart.lines.each do |line| %>
           <div class="card checkout__section">
             <div class="checkout__item">
-              <span class="checkout__thumb" style="background:<%= (@flavor || Flavor.default).spot_var %>,var(--ink-100)">
-                <%= image_tag((@flavor || Flavor.default).image, alt: "") %>
+              <span class="checkout__thumb">
+                <%= image_tag((@flavor || Flavor.default).packshot, alt: "") %>
               </span>
               <div style="min-width:0;flex:1">
                 <div class="stat__label"><%= line.product.display_name %></div>
@@ -45,6 +45,8 @@
 
     <% if current_cart.any? %>
       <div class="stack">
+        <%= render "shared/free_shipping_bar" %>
+        <%= render "shared/cross_sell" %>
         <%= render "checkouts/summary", flavor: @flavor || Flavor.default, qty: current_cart.count %>
         <%= link_to "Continue to checkout", checkout_path, class: "btn btn--primary btn--lg btn--full" %>
       </div>

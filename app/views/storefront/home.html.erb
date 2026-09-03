@@ -28,19 +28,7 @@
       </div>
     </div>
 
-    <div class="card card--glow">
-      <div class="vs">
-        <div class="vs__side">
-          <h2 style="font-size:var(--fs-title);color:var(--accent)">Creatine Jelly</h2>
-          <%= render "shared/compare", tone: "yes", items: Storefront::PROS %>
-        </div>
-        <div class="vs__mid"><span class="vs-badge">VS</span></div>
-        <div class="vs__side">
-          <h2 style="font-size:var(--fs-title)">Creatine powder</h2>
-          <%= render "shared/compare", tone: "no", items: Storefront::CONS %>
-        </div>
-      </div>
-    </div>
+    <%= render "shared/versus", flavor: @flavor %>
 
     <div class="card card--pad-lg">
       <div class="section-head section-head--center">

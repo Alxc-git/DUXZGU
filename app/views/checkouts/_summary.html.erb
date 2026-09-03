@@ -7,8 +7,8 @@
     </div>
     <% current_cart.lines.each do |line| %>
       <div class="checkout__item">
-        <span class="checkout__thumb" style="background:<%= flavor.spot_var %>,var(--ink-100)">
-          <%= image_tag flavor.image, alt: "" %>
+        <span class="checkout__thumb">
+          <%= image_tag flavor.packshot, alt: "" %>
         </span>
         <div style="min-width:0;flex:1">
           <div class="stat__label"><%= line.product.display_name %></div>
@@ -21,25 +21,7 @@
     <% end %>
   </div>
 
-  <div class="card card--accent">
-    <p class="eyebrow eyebrow--accent" style="margin-bottom:12px">Add blueberry &amp; save 15%</p>
-    <div style="display:flex;gap:14px;align-items:center">
-      <%= image_tag "product/duwzgu-jar-2.png", alt: "", style: "width:70px" %>
-      <div style="flex:1;min-width:0">
-        <div class="stat__label">Blueberry Creatine Jelly</div>
-        <div class="stat__note">30 servings</div>
-        <div style="margin-top:6px;display:flex;gap:8px;align-items:baseline">
-          <s style="color:var(--text-faint);font-size:var(--fs-caption)">$39.99</s>
-          <span style="font-family:var(--font-display);color:var(--accent);font-size:1.125rem">$33.99</span>
-        </div>
-      </div>
-    </div>
-    <label class="check" style="margin-top:10px">
-      <input type="checkbox" name="addon" checked>
-      <span class="check__box"><%= cj_icon "check" %></span>
-      <span>Yes! Add blueberry &amp; save 15%</span>
-    </label>
-  </div>
+  <%= render "shared/free_shipping_bar" %>
 
   <div class="card">
     <h2 style="font-size:var(--fs-title);margin-bottom:var(--space-4)">Order summary</h2>

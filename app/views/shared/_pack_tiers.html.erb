@@ -1,0 +1,21 @@
+<%# Quantity tiers. Every total is the cart's own calculation for that quantity,
+    so the saving advertised here is the saving actually charged. %>
+<div class="packs" role="group" aria-label="Choose your pack">
+  <% tiers.each do |tier| %>
+    <%= link_to product_page_path(flavor: flavor.slug, plan: plan, qty: tier.quantity),
+          class: ["pack", ("is-selected" if tier.quantity == qty)],
+          aria: { current: (tier.quantity == qty ? "true" : nil) } do %>
+      <% if tier.popular? %><span class="pack__flag">Most popular</span><% end %>
+      <span class="pack__head">
+        <span class="pack__dot"></span>
+        <span class="pack__qty"><%= tier.label %></span>
+        <% if tier.saves? %><span class="badge badge--save">-<%= tier.percent_off %>%</span><% end %>
+      </span>
+      <span class="pack__price"><%= tier.formatted_total %></span>
+      <span class="pack__unit">
+        <%= tier.formatted_per_unit %> / jar
+        <% if tier.saves? %><b>· save <%= tier.formatted_saving %></b><% end %>
+      </span>
+    <% end %>
+  <% end %>
+</div>

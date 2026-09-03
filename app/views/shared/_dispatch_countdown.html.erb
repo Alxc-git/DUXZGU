@@ -1,0 +1,11 @@
+<%# A real cutoff: the hour is a store setting and weekends are skipped, so the
+    countdown never promises a dispatch that will not happen. %>
+<% window = DispatchWindow.for(current_store) %>
+<p class="cutoff" data-cutoff="<%= window.cutoff_at.iso8601 %>">
+  <%= cj_icon "truck" %>
+  <% if window.same_day? %>
+    <span>Order within <b data-cutoff-clock><%= distance_of_time_in_words(window.seconds_left) %></b> for dispatch today</span>
+  <% else %>
+    <span>Ships <b><%= l window.ships_on, format: :long rescue window.ships_on.strftime("%A") %></b></span>
+  <% end %>
+</p>

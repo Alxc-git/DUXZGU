@@ -3,19 +3,19 @@
   background:var(--ink-050);border:1px solid var(--border-hairline);
   border-radius:var(--radius-lg);box-shadow:var(--shadow-panel);
   &__bleed{position:absolute;inset:0;z-index:0;
-    img{width:100%;height:100%;object-fit:cover;object-position:70% center}}
+    img{width:100%;height:100%;object-fit:cover;object-position:76% center}}
   // Two crossed gradients: one reads the copy off the left, one grounds the ticker.
   &__veil{position:absolute;inset:0;z-index:1;
     background:
       linear-gradient(90deg,rgba(0,0,0,.97) 0%,rgba(0,0,0,.92) 34%,rgba(0,0,0,.42) 64%,rgba(0,0,0,.06) 100%),
       linear-gradient(0deg,rgba(0,0,0,.75) 0%,rgba(0,0,0,0) 44%)}
   &__glow{position:absolute;z-index:1;inset:auto -10% -30% 30%;height:70%;pointer-events:none;
-    background:var(--spot-crimson);opacity:.5}
+    background:var(--hero-spot,var(--spot-crimson));opacity:.5}
   &__in{position:relative;z-index:2;display:flex;align-items:center;
     min-height:clamp(560px,58vw,720px);
     padding:clamp(32px,4vw,72px) clamp(22px,3.4vw,64px);min-width:0}
   &__copy{display:flex;flex-direction:column;gap:clamp(16px,1.5vw,24px);align-items:flex-start;
-    width:min(100%,620px);min-width:0}
+    width:min(100%,600px);min-width:0}
 
   &__top{display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-3) var(--space-5)}
 
@@ -26,7 +26,7 @@
       font-size:clamp(3.2rem,7.4vw,7rem);display:block;max-width:100%;overflow-wrap:break-word}
     // Brushed-metal wordmark: light down the top face, a shadowed waist, light again.
     .l1{color:var(--white)}
-    .l2{color:var(--hero-flavor,var(--accent))}
+    .l2{color:var(--accent)}
   }
   @supports (-webkit-background-clip:text) or (background-clip:text){
     &__type .l1{
@@ -62,7 +62,12 @@
       font-weight:600;font-size:var(--fs-caption)}
   }
 
-  &__cta{width:100%}
+  &__cta{
+    width:100%;
+    // Content-sized: two buttons that grew to fill the copy column reached under
+    // the product shot on wide screens.
+    .btn{flex:0 1 auto;min-height:52px;padding:12px clamp(18px,1.7vw,26px);font-size:var(--fs-body)}
+  }
 
   @container site (min-width:#{$bp-lg}) and (max-width:#{$bp-xxl - 1px}){
     &__copy{width:min(100%,58%)}
@@ -72,13 +77,14 @@
     &__row{gap:var(--space-4) var(--space-5)}
   }
   @container site (min-width:#{$bp-xxl}){
-    &__copy{width:min(100%,660px)}
+    &__copy{width:min(100%,620px)}
     &__lede{font-size:1.1875rem}
   }
   // Below the desktop split the photo stops being a background and becomes a
   // stacked panel, so the copy never has to compete with it for contrast.
   @container site (max-width:#{$bp-lg - 1px}){
     display:flex;flex-direction:column;
+    &__cta .btn{flex:1 1 auto}
     &__bleed{position:relative;inset:auto;width:100%;aspect-ratio:16/10}
     &__bleed img{object-position:center}
     &__bleed::after{content:"";position:absolute;inset:0;

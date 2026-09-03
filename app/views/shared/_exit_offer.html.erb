@@ -1,0 +1,19 @@
+<%# Shown once per visitor when they look like they are leaving. The dismissal is
+    remembered in the browser, so it never nags. %>
+<div class="exit-offer" data-exit-offer hidden>
+  <div class="exit-offer__scrim" data-exit-close></div>
+  <div class="exit-offer__panel" role="dialog" aria-modal="true" aria-labelledby="exit-offer-title">
+    <button type="button" class="icon-btn icon-btn--bare exit-offer__x" data-exit-close aria-label="Close">
+      <%= cj_icon "close" %>
+    </button>
+    <span class="exit-offer__media"><%= image_tag flavor.packshot, alt: "" %></span>
+    <p class="eyebrow eyebrow--accent">Before you go</p>
+    <h2 id="exit-offer-title">Take 10% off<br>your first order.</h2>
+    <p class="sub">Join the list and we will send your code straight away — plus the odd training tip, never spam.</p>
+    <%= form_with url: "#", method: :post, class: "exit-offer__form", data: { turbo: false } do %>
+      <input class="input" type="email" name="email" placeholder="Enter your email" aria-label="Email" required>
+      <button class="btn btn--primary" type="submit">Send my code</button>
+    <% end %>
+    <button type="button" class="btn btn--ghost btn--sm" data-exit-close>No thanks, I'll pay full price</button>
+  </div>
+</div>
