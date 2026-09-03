@@ -1,30 +1,62 @@
 .pdp{
-  display:grid;grid-template-columns:1fr;gap:var(--space-8);
-  @container site (min-width:#{$bp-xl}){grid-template-columns:1.05fr 1fr;gap:var(--space-10)}
-  &__gallery{display:flex;flex-direction:column;gap:var(--space-3)}
+  display:grid;grid-template-columns:1fr;gap:clamp(24px,3vw,44px);align-items:start;
+  @container site (min-width:#{$bp-xl}){grid-template-columns:minmax(0,1.02fr) minmax(400px,.98fr)}
+  &__gallery{display:flex;flex-direction:column;gap:var(--space-3);min-width:0}
+  &__title{font-size:clamp(2rem,3vw,2.75rem)}
   &__main{
-    position:relative;display:flex;align-items:center;justify-content:center;aspect-ratio:1;
-    overflow:hidden;background:var(--ink-050);border-radius:var(--radius-md);
-    img{position:relative;z-index:1;max-width:82%;max-height:92%;width:auto}
-    .icon-btn{position:absolute;top:12px;right:12px;z-index:2}
+    position:relative;display:flex;align-items:center;justify-content:center;aspect-ratio:16/13;
+    overflow:hidden;background:var(--ink-050);border:1px solid var(--border-hairline);
+    border-radius:var(--radius-lg);box-shadow:var(--shadow-panel);
+    img{position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;
+      object-fit:cover;object-position:center}
+    .icon-btn{position:absolute;top:14px;right:14px;z-index:2;background:rgba(7,7,9,.54);
+      border-color:var(--border-subtle);backdrop-filter:blur(10px)}
   }
-  &__thumbs{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-3)}
+  &__thumbs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--space-3)}
   &__thumb{
-    position:relative;display:flex;flex-direction:column;gap:8px;padding:10px;cursor:pointer;
+    position:relative;display:grid;grid-template-rows:auto auto;gap:8px;padding:8px;cursor:pointer;
     background:var(--surface-card);border:1px solid var(--border-hairline);border-radius:var(--radius-md);
-    overflow:hidden;transition:all var(--dur) var(--ease-out);
-    img{position:relative;z-index:1;width:100%;height:96px;object-fit:contain}
+    overflow:hidden;transition:all var(--dur) var(--ease-out);min-width:0;
+    img{position:relative;z-index:1;width:100%;aspect-ratio:4/3;height:auto;object-fit:cover;
+      border-radius:var(--radius-xs)}
     &:hover{border-color:var(--border-subtle)}
     &.is-selected{border-color:var(--flavor,var(--accent));
       box-shadow:0 0 0 1px var(--flavor,var(--accent)),0 0 26px -4px var(--flavor,var(--accent))}
   }
-  &__buy{display:flex;flex-direction:column;gap:var(--space-5)}
+  &__buy{align-self:start;min-width:0}
+  &__buy-inner{
+    display:flex;flex-direction:column;gap:clamp(12px,1.1vw,15px);
+    // The column stretches its children; a pill badge must keep its own width.
+    > .badge,> .stars{align-self:flex-start}
+  }
+
+  // The gallery grows to whatever height the buy column needs, so the two sides
+  // finish level and the whole block lands on one screen — no pinning required.
+  @container site (min-width:#{$bp-xl}){
+    align-items:stretch;
+    &__gallery{
+      height:100%;
+      max-height:calc(100vh - #{$header-h} - var(--space-16));
+      max-height:calc(100svh - #{$header-h} - var(--space-16));
+    }
+    &__main{flex:1 1 auto;min-height:340px;aspect-ratio:auto}
+    &__thumbs{flex:0 0 auto}
+    &__thumb img{aspect-ratio:16/10}
+  }
+  @container site (max-width:#{$bp-sm - 1px}){
+    &__main{aspect-ratio:4/3;border-radius:var(--radius-md)}
+    &__thumbs{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:4px;
+      scrollbar-width:none;&::-webkit-scrollbar{display:none}}
+    &__thumb{flex:0 0 66%;min-width:172px;scroll-snap-align:start}
+  }
 }
 .price{
-  &__row{display:inline-flex;align-items:baseline;gap:10px}
+  &__row{display:inline-flex;align-items:baseline;gap:10px;flex-wrap:wrap}
   &__was{color:var(--text-faint);font-size:1rem}
-  &__now{font-family:var(--font-display);font-size:clamp(2rem,4vw,2.75rem);color:var(--accent);line-height:1}
+  &__now{font-family:var(--font-display);font-size:clamp(2.35rem,3.4vw,3rem);color:var(--accent);line-height:1}
   &__note{margin-top:6px;color:var(--text-muted);font-size:var(--fs-caption)}
 }
-.how-step{display:flex;align-items:center;gap:14px;
-  &__n{font-family:var(--font-display);font-size:16px}}
+.how-step{
+  display:flex;align-items:center;gap:14px;min-width:0;
+  &__n{font-family:var(--font-display);font-size:16px}
+}

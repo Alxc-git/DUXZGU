@@ -10,27 +10,55 @@
 
 .btn{
   display:inline-flex;align-items:center;justify-content:center;gap:10px;
-  min-height:var(--control-h);padding:0 26px;border:1px solid transparent;
+  min-height:var(--control-h);padding:0 clamp(18px,2vw,28px);border:1px solid transparent;
   border-radius:var(--radius-sm);font-family:var(--font-body);font-size:var(--fs-body);
   font-weight:700;letter-spacing:var(--ls-label);text-transform:uppercase;cursor:pointer;
-  white-space:nowrap;text-decoration:none;
+  text-decoration:none;text-align:center;line-height:1.2;
+  // A label holds one line while it fits; below the phone breakpoint it wraps
+  // balanced rather than spilling out of the button.
+  max-width:100%;min-width:0;white-space:nowrap;padding-block:12px;
   transition:background var(--dur) var(--ease-out),color var(--dur) var(--ease-out),
              border-color var(--dur) var(--ease-out),box-shadow var(--dur) var(--ease-out),
              transform var(--dur-fast) var(--ease-out);
+  .icon{flex:0 0 auto}
+  &:hover{transform:translateY(-1px)}
   &:active{transform:translateY(1px)}
   &--primary{background:var(--accent);color:#fff;box-shadow:var(--shadow-accent);
-    &:hover{background:var(--accent-hover);box-shadow:var(--shadow-accent-strong)}
+    &:hover{background:var(--accent-hover);box-shadow:var(--shadow-accent-strong);color:#fff}
     &:active{background:var(--accent-press)}}
   &--secondary{background:var(--ink-300);color:var(--text-strong);border-color:var(--border-subtle);
-    &:hover{background:var(--ink-400);border-color:var(--gray-600)}}
+    &:hover{background:var(--ink-400);border-color:var(--gray-600);color:var(--text-strong)}}
   &--outline{background:transparent;color:var(--text-strong);border-color:var(--border-accent);
-    &:hover{background:var(--accent-soft)}}
-  &--ghost{background:transparent;color:var(--text-muted);padding:0 12px;&:hover{color:var(--text-strong)}}
+    &:hover{background:var(--accent-soft);color:var(--text-strong)}}
+  &--glass{background:rgba(255,255,255,.07);color:var(--text-strong);border-color:var(--border-subtle);
+    backdrop-filter:blur(10px);
+    &:hover{background:rgba(255,255,255,.13);color:var(--text-strong)}}
+  &--ghost{background:transparent;color:var(--text-muted);padding-inline:12px;
+    box-shadow:none;&:hover{color:var(--text-strong);transform:none}}
   &--pill{border-radius:var(--radius-pill)}
-  &--sm{min-height:var(--control-h-sm);padding:0 16px;font-size:var(--fs-caption)}
-  &--lg{min-height:var(--control-h-lg);padding:0 34px;font-size:var(--fs-body-lg)}
+  &--sm{min-height:var(--control-h-sm);padding:8px 16px;font-size:var(--fs-caption)}
+  &--lg{min-height:var(--control-h-lg);padding:14px clamp(22px,2.4vw,34px);font-size:var(--fs-body-lg)}
   &--full{width:100%}
   &[disabled]{opacity:.4;pointer-events:none;box-shadow:none}
+  @media(prefers-reduced-motion:reduce){&:hover,&:active{transform:none}}
+  @container site (max-width:#{$bp-sm - 1px}){
+    min-height:52px;padding-inline:16px;
+    white-space:normal;text-wrap:balance;overflow-wrap:break-word;
+    &--lg{min-height:56px;font-size:var(--fs-body)}
+  }
+}
+
+// Responsive button group. Buttons share a row while they fit, then stack — and
+// `button_to` wraps its button in a form, so the descendant selector is required.
+.actions{
+  display:flex;flex-wrap:wrap;gap:var(--space-3);width:100%;min-width:0;
+  .btn{flex:1 1 auto}
+  &--tight{gap:var(--space-2)}
+  &--stack{flex-direction:column;.btn{flex:0 0 auto;width:100%}}
+  &--start{justify-content:flex-start;.btn{flex:0 1 auto}}
+  @container site (max-width:#{$bp-sm - 1px}){
+    &:not(.actions--start){flex-direction:column;.btn{width:100%;flex:0 0 auto}}
+  }
 }
 
 .icon-btn{
@@ -60,12 +88,16 @@
 }
 
 .card{
-  background:var(--surface-card);border:1px solid var(--border-hairline);
-  border-radius:var(--radius-md);padding:var(--card-pad);
+  scroll-margin-top:calc(#{$header-h} + var(--space-6));
+  position:relative;background:var(--surface-veil),var(--surface-card);
+  border:1px solid var(--border-hairline);
+  border-radius:var(--radius-lg);padding:var(--card-pad);
+  box-shadow:var(--shadow-panel);
   &--flush{padding:0;overflow:hidden}
-  &--raised{background:var(--surface-card-raised);box-shadow:var(--shadow-raised)}
-  &--accent{border-color:var(--border-accent);box-shadow:var(--glow-accent)}
+  &--raised{background:var(--surface-veil),var(--surface-card-raised)}
+  &--accent{border-color:var(--border-accent-soft);box-shadow:var(--glow-accent),var(--shadow-panel)}
   &--glow{background:linear-gradient(120deg,rgba(255,15,78,.16),rgba(0,0,0,0) 55%),var(--surface-card)}
+  &--pad-lg{padding:clamp(24px,3.2vw,52px)}
 }
 
 .rule{height:1px;border:0;margin:0;background:var(--border-hairline);
@@ -81,10 +113,15 @@
   &--solid{background:var(--accent);border-color:transparent;color:#fff}
   &--soft{background:var(--accent-soft);border-color:var(--border-accent-soft)}
   &--neutral{border-color:var(--border-subtle);color:var(--text-body)}
+  @container site (max-width:#{$bp-sm - 1px}){
+    width:48px;height:48px;font-size:22px;
+    &--sm{width:38px;height:38px;font-size:17px}
+    &--lg{width:60px;height:60px;font-size:28px}
+  }
 }
 
 .stat{
-  display:flex;align-items:center;gap:14px;min-width:0;
+  display:flex;align-items:center;gap:14px;min-width:0;flex-wrap:nowrap;
   &__label{font-family:var(--font-display);text-transform:uppercase;font-size:1rem;
     line-height:1.1;color:var(--text-strong)}
   &__note{margin-top:3px;font-size:var(--fs-caption);color:var(--text-muted);line-height:1.35}
@@ -99,11 +136,14 @@
 }
 
 .trust{
-  display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-6);
+  display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-5) var(--space-6);
   &__item{display:flex;align-items:center;gap:9px;color:var(--text-muted);font-size:var(--fs-caption);
     .icon{color:var(--text-strong);font-size:19px}}
   &__t{display:block;font-family:var(--font-label);text-transform:uppercase;
     letter-spacing:var(--ls-label);font-weight:600;color:var(--text-strong);font-size:var(--fs-caption)}
+  @container site (max-width:#{$bp-sm - 1px}){
+    display:grid;grid-template-columns:1fr;gap:var(--space-4);
+  }
 }
 
 .stars{
@@ -165,6 +205,10 @@
   &__title{color:var(--text-strong);font-weight:600;font-size:var(--fs-body)}
   &__note{display:block;font-size:var(--fs-caption);color:var(--text-muted)}
   &__price{margin-left:auto;font-family:var(--font-display);font-size:1.125rem;color:var(--text-strong)}
+  @container site (max-width:#{$bp-sm - 1px}){
+    flex-wrap:wrap;align-items:center;padding:14px;
+    &__price{margin-left:auto}
+  }
 }
 .qty{
   display:inline-flex;align-items:center;overflow:hidden;background:var(--surface-input);
@@ -198,40 +242,62 @@
 }
 
 .flavor{
-  position:relative;display:flex;align-items:center;gap:14px;width:100%;padding:14px;
+  position:relative;display:flex;align-items:stretch;gap:16px;width:100%;padding:14px;
   overflow:hidden;text-align:left;cursor:pointer;
   background:var(--surface-card);border:1px solid var(--border-hairline);border-radius:var(--radius-md);
-  transition:all var(--dur) var(--ease-out);
-  &:hover{border-color:var(--border-subtle);transform:translateY(-2px)}
+  transition:border-color var(--dur) var(--ease-out),box-shadow var(--dur) var(--ease-out),
+             transform var(--dur) var(--ease-out);
+  &:hover{border-color:var(--border-subtle);transform:translateY(-3px)}
   &.is-selected{border-color:var(--flavor,var(--accent));
     box-shadow:0 0 0 1px var(--flavor,var(--accent)),0 0 26px -4px var(--flavor,var(--accent))}
   &__bg{position:absolute;inset:0;opacity:.5;pointer-events:none}
-  &__media{position:relative;z-index:1;flex:0 0 auto;width:88px;height:88px;border-radius:var(--radius-sm);
-    overflow:hidden;background:var(--ink-100);img{width:100%;height:100%;object-fit:contain}}
-  &__body{position:relative;z-index:1;min-width:0}
-  &__name{font-family:var(--font-display);text-transform:uppercase;font-size:1.0625rem;color:var(--text-strong)}
-  &__note{margin-bottom:9px;font-size:var(--fs-caption);color:var(--text-muted)}
+  &__media{position:relative;z-index:1;flex:0 0 auto;width:clamp(96px,26%,128px);
+    border-radius:var(--radius-sm);overflow:hidden;background:var(--ink-100);
+    img{width:100%;height:100%;min-height:104px;object-fit:cover}}
+  &__body{position:relative;z-index:1;min-width:0;flex:1 1 auto;
+    display:flex;flex-direction:column;gap:4px;align-items:flex-start;justify-content:center}
+  &__name{display:block;font-family:var(--font-display);text-transform:uppercase;
+    font-size:1.0625rem;line-height:1.15;color:var(--text-strong)}
+  &__note{display:block;margin-bottom:8px;font-size:var(--fs-caption);color:var(--text-muted);line-height:1.3}
   &__check{position:absolute;top:10px;right:10px;z-index:2;width:22px;height:22px;border-radius:50%;
     display:flex;align-items:center;justify-content:center;font-size:13px;
     background:var(--flavor,var(--accent));color:#fff}
+  .btn{width:100%}
+  // Keep the flavour name clear of the selected badge in the top-right corner.
+  &.is-selected &__name{padding-right:26px}
+  @media(prefers-reduced-motion:reduce){&:hover{transform:none}}
+  @container site (max-width:#{$bp-sm - 1px}){
+    &__media{width:clamp(88px,30%,112px)}
+  }
 }
 .flavor-pill{
-  display:inline-flex;align-items:center;gap:9px;min-height:var(--tap-min);padding:0 18px;
+  display:inline-flex;align-items:center;gap:9px;min-height:var(--tap-min);padding:8px 18px;
   border:1px solid var(--border-subtle);border-radius:var(--radius-sm);background:var(--surface-card);
   color:var(--text-body);font-size:var(--fs-body-sm);font-weight:500;cursor:pointer;
+  flex:1 1 auto;justify-content:center;text-align:center;min-width:0;
   transition:all var(--dur) var(--ease-out);
   &:hover{border-color:var(--border-accent-soft);color:var(--text-strong)}
   &.is-selected{border-color:var(--flavor,var(--accent));color:var(--text-strong);
     box-shadow:inset 0 0 22px -8px var(--flavor,var(--accent))}
-  &__dot{width:14px;height:14px;border-radius:50%;background:var(--flavor,var(--accent))}
+  &__media{flex:0 0 auto;width:34px;height:24px;border-radius:var(--radius-xs);overflow:hidden;
+    background:var(--ink-100);img{width:100%;height:100%;object-fit:cover}}
+  // Three pills split 2 + 1 on a phone, which reads as a mistake; stack instead.
+  @container site (max-width:#{$bp-sm - 1px}){flex:1 1 100%;justify-content:flex-start}
 }
+.flavor-pills{display:flex;flex-wrap:wrap;gap:10px;width:100%}
 
 .testimonial{
-  padding:18px;background:var(--surface-card-raised);border:1px solid var(--border-hairline);
-  border-radius:var(--radius-sm);
-  &__quote{margin:12px 0 16px;color:var(--text-body);font-size:var(--fs-body-sm);line-height:1.5}
+  display:flex;flex-direction:column;height:100%;
+  padding:clamp(18px,1.6vw,24px);background:var(--surface-veil),var(--surface-card-raised);
+  border:1px solid var(--border-hairline);border-radius:var(--radius-md);
+  &__quote{margin:12px 0 auto;padding-bottom:16px;color:var(--text-body);
+    font-size:var(--fs-body-sm);line-height:1.55}
   &__who{display:flex;align-items:center;gap:10px}
-  &__av{flex:0 0 auto;width:30px;height:30px;border-radius:50%;overflow:hidden;background:var(--ink-400)}
+  &__av{flex:0 0 auto;display:flex;align-items:center;justify-content:center;
+    width:34px;height:34px;border-radius:50%;overflow:hidden;
+    background:linear-gradient(140deg,var(--crimson-700),var(--ink-400));
+    border:1px solid var(--border-subtle);
+    font-family:var(--font-display);font-size:.8125rem;color:var(--white);line-height:1}
   &__name{display:block;color:var(--text-strong);font-size:var(--fs-body-sm);font-weight:600;line-height:1.2}
   &__verified{display:flex;align-items:center;gap:5px;color:var(--text-muted);font-size:var(--fs-micro);
     .icon{color:var(--positive);font-size:12px}}
@@ -239,8 +305,8 @@
 
 .compare{
   display:flex;flex-direction:column;gap:9px;
-  &__row{display:flex;align-items:center;gap:10px;font-size:var(--fs-body-sm);color:var(--text-body);
-    .icon{font-size:16px}}
+  &__row{display:flex;align-items:flex-start;gap:10px;font-size:var(--fs-body-sm);color:var(--text-body);
+    line-height:1.45;.icon{flex:0 0 auto;margin-top:2px;font-size:16px}}
   &__row--yes .icon{color:var(--accent)}
   &__row--no{color:var(--text-muted);.icon{color:var(--gray-400)}}
 }
@@ -274,4 +340,14 @@
   &--bare{border:0;border-radius:0;background:transparent}
   &__hint{padding:12px;text-align:center;line-height:1.4;font-family:var(--font-label);
     text-transform:uppercase;letter-spacing:var(--ls-label);font-size:var(--fs-micro)}
+}
+
+// Social-proof panel: rating, reach and guarantees stacked down one column.
+.proof{
+  display:flex;flex-direction:column;justify-content:center;
+  gap:clamp(var(--space-5),2vw,var(--space-8));
+  &__score{display:flex;flex-direction:column;gap:var(--space-2);align-items:flex-start}
+  &__number{font-family:var(--font-display);font-size:clamp(2.5rem,4vw,3.5rem);
+    color:var(--white);line-height:1}
+  .trust{gap:var(--space-4) var(--space-6)}
 }

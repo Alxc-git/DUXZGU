@@ -1,0 +1,26 @@
+<%# Closing call to action. The photograph keeps its own half of the band so the
+    headline never sits on top of it. %>
+<div class="card card--flush card--accent cta-card">
+  <div class="cta-card__media">
+    <%= image_tag flavor.pdp_image, alt: "" %>
+    <span class="cta-card__scrim"></span>
+  </div>
+  <div class="cta-card__body">
+    <p class="eyebrow eyebrow--accent">Start today</p>
+    <h2>Ready to level up?</h2>
+    <p class="sub">Fuel your strength, power, and recovery — every day. Four gummies, that's the whole routine.</p>
+    <% if current_product && selected_purchase_variant %>
+      <div class="actions">
+        <%= button_to cart_lines_path,
+              params: buy_now_params(quantity: 1),
+              class: "btn btn--primary btn--lg" do %>
+          <%= cj_icon "shopping-cart", size: "1.15em" %> Shop now - <%= selected_purchase_variant.formatted_price %>
+        <% end %>
+        <% unless local_assigns[:hide_product_link] %>
+          <%= link_to "See the product", product_page_path, class: "btn btn--glass btn--lg" %>
+        <% end %>
+      </div>
+    <% end %>
+    <p class="cta-card__note"><%= cj_icon "circle-check" %>Free shipping over $60 · 30-day money-back guarantee</p>
+  </div>
+</div>

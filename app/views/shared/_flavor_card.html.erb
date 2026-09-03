@@ -3,10 +3,12 @@
       style: "--flavor:#{flavor.color_var}" do %>
   <span class="flavor__bg" style="background:<%= flavor.spot_var %>"></span>
   <% if selected %><span class="flavor__check"><%= cj_icon "check" %></span><% end %>
-  <span class="flavor__media"><%= image_tag flavor.image, alt: flavor.name %></span>
+  <span class="flavor__media"><%= image_tag flavor.pdp_image, alt: flavor.name %></span>
   <span class="flavor__body">
     <span class="flavor__name"><%= flavor.name %></span>
     <span class="flavor__note"><%= flavor.note %></span>
-    <span class="btn btn--sm <%= selected ? "btn--primary" : "btn--secondary" %>">Select flavor</span>
+    <span class="btn btn--sm <%= selected ? "btn--primary" : "btn--secondary" %>">
+      <%= selected ? "Selected" : "Select flavor" %>
+    </span>
   </span>
 <% end %>

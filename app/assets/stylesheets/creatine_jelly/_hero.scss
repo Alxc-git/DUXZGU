@@ -1,67 +1,112 @@
 .hero{
   position:relative;overflow:hidden;isolation:isolate;min-width:0;
-  background:var(--ink-050);border-radius:var(--radius-lg);
-  &__spot{position:absolute;inset:-20% -10% auto -10%;height:120%;z-index:0;
-    background:var(--spot-crimson);opacity:.95;pointer-events:none}
-  &__bleed{position:absolute;inset:0;z-index:0;opacity:.5;
-    img{width:100%;height:100%;object-fit:cover}}
-  &__veil{position:absolute;inset:0;z-index:1;background:var(--scrim-bottom)}
-  &__in{position:relative;z-index:2;display:grid;grid-template-columns:1fr;gap:var(--space-6);
-    padding:var(--space-8) var(--space-5) var(--space-6);min-width:0}
-  &__copy{display:flex;flex-direction:column;gap:var(--space-5);align-items:flex-start;max-width:640px;min-width:0}
-  &__type{display:flex;flex-direction:column;line-height:.84;
-    .l1,.l2{font-family:var(--font-display);text-transform:uppercase;letter-spacing:-.02em;
-      font-size:clamp(3rem,7.4vw,6.5rem)}
+  background:var(--ink-050);border:1px solid var(--border-hairline);
+  border-radius:var(--radius-lg);box-shadow:var(--shadow-panel);
+  &__bleed{position:absolute;inset:0;z-index:0;
+    img{width:100%;height:100%;object-fit:cover;object-position:70% center}}
+  // Two crossed gradients: one reads the copy off the left, one grounds the ticker.
+  &__veil{position:absolute;inset:0;z-index:1;
+    background:
+      linear-gradient(90deg,rgba(0,0,0,.97) 0%,rgba(0,0,0,.92) 34%,rgba(0,0,0,.42) 64%,rgba(0,0,0,.06) 100%),
+      linear-gradient(0deg,rgba(0,0,0,.75) 0%,rgba(0,0,0,0) 44%)}
+  &__glow{position:absolute;z-index:1;inset:auto -10% -30% 30%;height:70%;pointer-events:none;
+    background:var(--spot-crimson);opacity:.5}
+  &__in{position:relative;z-index:2;display:flex;align-items:center;
+    min-height:clamp(560px,58vw,720px);
+    padding:clamp(32px,4vw,72px) clamp(22px,3.4vw,64px);min-width:0}
+  &__copy{display:flex;flex-direction:column;gap:clamp(16px,1.5vw,24px);align-items:flex-start;
+    width:min(100%,620px);min-width:0}
+
+  &__top{display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-3) var(--space-5)}
+
+  &__type{
+    display:flex;flex-direction:column;line-height:.86;max-width:100%;
+    margin:0;letter-spacing:0;
+    .l1,.l2{font-family:var(--font-display);text-transform:uppercase;letter-spacing:0;
+      font-size:clamp(3.2rem,7.4vw,7rem);display:block;max-width:100%;overflow-wrap:break-word}
+    // Brushed-metal wordmark: light down the top face, a shadowed waist, light again.
     .l1{color:var(--white)}
-    .l2{color:var(--accent);white-space:nowrap}}
-  &__lede{max-width:440px;font-size:var(--fs-body-lg);color:var(--text-body)}
-  &__cta{display:flex;flex-wrap:wrap;gap:var(--space-3);width:100%;>*{flex:1 1 210px}}
-  &__claims{display:flex;flex-wrap:wrap;gap:var(--space-5) var(--space-6)}
-  &__media{position:relative;display:flex;align-items:center;justify-content:center;min-height:340px;min-width:0}
-  &__jar{position:relative;z-index:2;width:100%;max-width:460px;
-    filter:drop-shadow(0 40px 70px rgba(0,0,0,.75))}
-  &__ring{position:absolute;z-index:1;width:min(78%,420px);aspect-ratio:1;border-radius:50%;
-    border:1px solid var(--border-accent-soft);box-shadow:inset 0 0 90px -20px var(--accent)}
-  &__chiprow{display:contents}
-  &__chip{
-    position:absolute;z-index:3;display:flex;align-items:center;gap:9px;padding:9px 13px;
-    border-radius:var(--radius-pill);background:rgba(7,7,9,.72);border:1px solid var(--border-subtle);
-    backdrop-filter:blur(10px);white-space:nowrap;color:var(--white);
-    font-family:var(--font-label);text-transform:uppercase;letter-spacing:var(--ls-label);
-    font-size:var(--fs-caption);font-weight:600;
-    .icon{color:var(--accent);font-size:16px}
-    &--a{top:6%;left:0}
-    &--b{top:42%;right:0}
-    &--c{bottom:8%;left:4%}
+    .l2{color:var(--hero-flavor,var(--accent))}
   }
-  &__price{
-    position:absolute;z-index:3;top:0;right:2%;width:96px;height:96px;border-radius:50%;
-    display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;
-    background:var(--accent);color:#fff;box-shadow:var(--shadow-accent-strong);
-    b{font-family:var(--font-display);font-size:1.25rem;letter-spacing:-.01em}
-    span{margin-top:4px;font-family:var(--font-label);text-transform:uppercase;
-      letter-spacing:.14em;font-size:9px}
+  @supports (-webkit-background-clip:text) or (background-clip:text){
+    &__type .l1{
+      background:linear-gradient(180deg,#FFFFFF 0%,#F4F4F6 34%,#9C9CA6 54%,#FFFFFF 72%,#C9C9D1 100%);
+      -webkit-background-clip:text;background-clip:text;
+      -webkit-text-fill-color:transparent;color:transparent;
+    }
   }
 
-  @container site (max-width:#{$bp-lg - 1px}){
-    &__media{flex-direction:column;gap:var(--space-4);min-height:0;padding-bottom:var(--space-2)}
-    &__jar{max-width:300px}
-    &__ring{width:min(90%,300px);top:0}
-    &__chiprow{position:relative;z-index:3;display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
-    &__chip{position:static;padding:8px 11px;font-size:var(--fs-micro)}
-    &__price{top:0;right:0;width:76px;height:76px;b{font-size:1.125rem}}
-    &__type .l1,&__type .l2{font-size:clamp(2.5rem,12vw,3.75rem)}
+  &__lede{max-width:52ch;font-size:var(--fs-body-lg);color:var(--text-body);
+    b{color:var(--white);font-weight:700}}
+
+  // Benefits and guarantees read as one measured strip, split by hairlines.
+  &__row{
+    display:flex;flex-wrap:wrap;align-items:center;
+    gap:var(--space-4) 0;margin:0;padding:0;list-style:none;width:100%;
   }
-  @container site (min-width:#{$bp-lg}){
-    &__in{grid-template-columns:1.02fr .98fr;align-items:center;
-      padding:var(--space-20) var(--space-10) var(--space-16)}
-    &__media{min-height:520px}
+  &__row-item{
+    display:flex;align-items:center;gap:11px;min-width:0;
+    flex:1 1 0;padding-right:var(--space-5);
+    & + &{padding-left:var(--space-5);border-left:1px solid var(--border-hairline)}
+    &:last-child{padding-right:0}
+    > .icon{flex:0 0 auto;font-size:19px;color:var(--text-strong)}
+  }
+  &__row-title{
+    display:block;font-family:var(--font-display);text-transform:uppercase;
+    font-size:1rem;line-height:1.1;color:var(--text-strong);letter-spacing:.01em;
+  }
+  &__row-note{display:block;margin-top:3px;font-size:var(--fs-caption);color:var(--text-muted);line-height:1.35}
+  &__row--trust{
+    padding-top:var(--space-5);border-top:1px solid var(--border-hairline);
+    .hero__row-title{font-family:var(--font-label);letter-spacing:var(--ls-label);
+      font-weight:600;font-size:var(--fs-caption)}
+  }
+
+  &__cta{width:100%}
+
+  @container site (min-width:#{$bp-lg}) and (max-width:#{$bp-xxl - 1px}){
+    &__copy{width:min(100%,58%)}
+    &__type .l1,&__type .l2{font-size:clamp(2.9rem,5.6vw,4.6rem)}
+    &__row-item{flex:1 1 46%;padding-right:0;
+      & + &{padding-left:0;border-left:0}}
+    &__row{gap:var(--space-4) var(--space-5)}
+  }
+  @container site (min-width:#{$bp-xxl}){
+    &__copy{width:min(100%,660px)}
+    &__lede{font-size:1.1875rem}
+  }
+  // Below the desktop split the photo stops being a background and becomes a
+  // stacked panel, so the copy never has to compete with it for contrast.
+  @container site (max-width:#{$bp-lg - 1px}){
+    display:flex;flex-direction:column;
+    &__bleed{position:relative;inset:auto;width:100%;aspect-ratio:16/10}
+    &__bleed img{object-position:center}
+    &__bleed::after{content:"";position:absolute;inset:0;
+      background:linear-gradient(to top,var(--ink-050) 0%,rgba(7,7,9,.35) 42%,rgba(0,0,0,0) 78%)}
+    &__veil,&__glow{display:none}
+    &__in{min-height:0;padding:var(--space-6) var(--space-6) var(--space-8)}
+    &__copy{width:100%;max-width:none;gap:var(--space-5)}
+    &__type .l1,&__type .l2{font-size:clamp(2.75rem,9vw,4.25rem)}
+    &__lede{max-width:60ch}
+  }
+  @container site (max-width:#{$bp-sm - 1px}){
+    border-radius:var(--radius-md);
+    &__bleed{aspect-ratio:4/3}
+    &__in{padding:var(--space-5) var(--space-5) var(--space-6)}
+    &__type .l1,&__type .l2{font-size:clamp(2.5rem,11.5vw,3.4rem)}
+    &__top{gap:var(--space-3)}
+    // Dividers stop earning their keep once every item is on its own line.
+    &__row{gap:var(--space-4)}
+    &__row-item{flex:1 1 100%;padding-right:0;
+      & + &{padding-left:0;border-left:0}}
   }
 }
 
 .ticker{
-  overflow:hidden;min-width:0;padding:11px 0;background:var(--ink-050);
-  border-top:1px solid var(--border-hairline);border-bottom:1px solid var(--border-hairline);
+  position:relative;z-index:3;
+  overflow:hidden;min-width:0;padding:12px 0;background:rgba(7,7,9,.86);
+  backdrop-filter:blur(8px);
+  border-top:1px solid var(--border-hairline);
   &__track{display:flex;gap:var(--space-8);width:max-content;animation:ticker-move 34s linear infinite}
   &__item{display:flex;align-items:center;gap:10px;white-space:nowrap;color:var(--gray-300);
     font-family:var(--font-label);text-transform:uppercase;letter-spacing:var(--ls-eyebrow);

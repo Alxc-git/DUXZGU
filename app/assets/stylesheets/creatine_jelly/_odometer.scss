@@ -1,0 +1,34 @@
+// Spinning price. Each digit is a vertical reel of 0-9 cells repeated a couple
+// of times; landing on the value is a single transform, so the whole roll is one
+// composited animation rather than per-frame text writes.
+//
+// The reels are parked at 0 by default and rolled to `--stop` by the `is-rolling`
+// class. Without JS that class never arrives, so the <noscript> block in the
+// layout head parks them on the final value instead.
+.odo{
+  --odo-cell:1.15em;
+  --odo-dur:1150ms;
+  display:inline-flex;align-items:flex-start;line-height:1;
+  font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1;
+
+  &__d{
+    display:block;height:var(--odo-cell);overflow:hidden;
+  }
+  &__reel{
+    display:block;transform:translateY(0);
+    transition:transform var(--odo-dur) cubic-bezier(.16,1,.3,1) var(--delay,0ms);
+  }
+  &__n{display:block;height:var(--odo-cell);line-height:var(--odo-cell);text-align:center}
+  &__sep{display:block;height:var(--odo-cell);line-height:var(--odo-cell);white-space:pre}
+
+  &.is-rolling .odo__reel{transform:translateY(calc(var(--stop) * var(--odo-cell) * -1))}
+
+  // Nothing should animate for a reader who asked for stillness: land immediately.
+  @media(prefers-reduced-motion:reduce){
+    .odo__reel{transition:none}
+  }
+}
+
+// Fallback for a reader without JavaScript, emitted from the layout head.
+.odo--static .odo__reel,
+.no-js .odo .odo__reel{transform:translateY(calc(var(--stop) * var(--odo-cell) * -1));transition:none}

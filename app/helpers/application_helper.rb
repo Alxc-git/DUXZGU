@@ -1,5 +1,5 @@
 module ApplicationHelper
-  BRAND_ICONS = %w[instagram facebook youtube tiktok].freeze
+  BRAND_ICONS = %w[facebook tiktok].freeze
   CJ_ICON_ALIASES = {
     "candy" => "drop",
     "circle-check" => "check",
@@ -22,6 +22,38 @@ module ApplicationHelper
     end
 
     tag.span(svg, class: classes, style:, aria: { hidden: true })
+  end
+
+  # Full rotations each digit reel spins through before landing on its value.
+  ODOMETER_CYCLES = 2
+  ODOMETER_STAGGER_MS = 70
+
+  # Renders a price as spinning digit reels: each digit is a column that rolls up
+  # from 0 to its final value. The reels are markup, not a JS-built widget, so the
+  # correct price is in the HTML for search engines and for readers without JS —
+  # `.odo` parks on the final digit unless the stylesheet moves it (see _odometer).
+  def cj_odometer(value, css_class: nil)
+    reel = -1
+    tag.span(class: [ "odo", css_class ].compact.join(" ")) do
+      safe_join(value.to_s.chars.map do |char|
+        next tag.span(char, class: "odo__sep", aria: { hidden: true }) unless char.match?(/\d/)
+
+        reel += 1
+        odometer_reel(char.to_i, reel)
+      end) + tag.span(value.to_s, class: "visually-hidden")
+    end
+  end
+
+  def odometer_reel(digit, position)
+    stop = ODOMETER_CYCLES * 10 + digit
+    cells = (0..stop).map { |i| tag.span(i % 10, class: "odo__n") }
+
+    tag.span(
+      tag.span(safe_join(cells), class: "odo__reel"),
+      class: "odo__d",
+      aria: { hidden: true },
+      style: "--stop:#{stop};--delay:#{position * ODOMETER_STAGGER_MS}ms"
+    )
   end
 
   def cj_image_frame(hint:, src: nil, ratio: nil, css_class: nil, style: nil)

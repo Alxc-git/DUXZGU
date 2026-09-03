@@ -13,6 +13,11 @@
     <%= javascript_importmap_tags %>
     <%= javascript_include_tag "site", "data-turbo-track": "reload", defer: true %>
     <%= render "shared/meta_pixel" if meta_pixel_enabled? %>
+
+    <%# Price reels are rolled by site.js; without it they must show the real price. %>
+    <noscript>
+      <style>.odo .odo__reel{transform:translateY(calc(var(--stop) * var(--odo-cell) * -1));transition:none}</style>
+    </noscript>
   </head>
 
   <body>

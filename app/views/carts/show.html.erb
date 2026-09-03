@@ -1,6 +1,6 @@
 <% content_for :title, "Cart | #{current_store.name}" %>
 
-<div class="page stack" style="padding-top:var(--space-8)">
+<div class="page stack" style="padding-top:var(--section-gap)">
   <%= render "checkouts/steps", current: 0 %>
 
   <div class="checkout">
@@ -13,7 +13,7 @@
       <% if current_cart.empty? %>
         <div class="card checkout__section">
           <p class="sub">Your cart is empty.</p>
-          <%= link_to "Back to product", product_page_path, class: "btn btn--primary" %>
+          <div class="actions actions--start"><%= link_to "Back to product", product_page_path, class: "btn btn--primary" %></div>
         </div>
       <% else %>
         <% current_cart.lines.each do |line| %>
@@ -31,13 +31,13 @@
               </div>
             </div>
 
-            <%= form_with url: cart_line_path(line.variant.id), method: :patch,
-                  style: "display:flex;gap:var(--space-3);align-items:center;flex-wrap:wrap" do |form| %>
-              <%= form.number_field :quantity, value: line.quantity, min: 1, max: Cart::MAX_QUANTITY, class: "input", style: "max-width:110px" %>
-              <%= form.submit "Update", class: "btn btn--secondary" %>
-            <% end %>
-
-            <%= button_to "Remove", cart_line_path(line.variant.id), method: :delete, class: "btn btn--outline" %>
+            <div class="cart-line__controls">
+              <%= form_with url: cart_line_path(line.variant.id), method: :patch, class: "cart-line__qty" do |form| %>
+                <%= form.number_field :quantity, value: line.quantity, min: 1, max: Cart::MAX_QUANTITY, class: "input" %>
+                <%= form.submit "Update", class: "btn btn--secondary" %>
+              <% end %>
+              <%= button_to "Remove", cart_line_path(line.variant.id), method: :delete, class: "btn btn--ghost" %>
+            </div>
           </div>
         <% end %>
       <% end %>

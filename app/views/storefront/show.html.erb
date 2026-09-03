@@ -1,9 +1,8 @@
-<div class="page stack" style="padding-top:var(--space-8)">
+<div class="page stack stack--lg" style="padding-top:var(--section-gap)">
   <div class="pdp">
     <div class="pdp__gallery">
       <div class="pdp__main">
-        <span style="position:absolute;inset:0;background:<%= @flavor.spot_var %>"></span>
-        <%= image_tag @flavor.image, alt: "#{@flavor.name} jar" %>
+        <%= image_tag @flavor.pdp_image, alt: "#{@flavor.name} Creatine Jelly" %>
         <button type="button" class="icon-btn icon-btn--bare" aria-label="Zoom"><%= cj_icon "search" %></button>
       </div>
 
@@ -13,7 +12,7 @@
                 class: ["pdp__thumb", ("is-selected" if flavor.slug == @flavor.slug)],
                 style: "--flavor:#{flavor.color_var}" do %>
             <span class="flavor__bg" style="background:<%= flavor.spot_var %>;opacity:.45"></span>
-            <%= image_tag flavor.image, alt: "" %>
+            <%= image_tag flavor.pdp_image, alt: "" %>
             <span style="position:relative;z-index:1">
               <span class="flavor__name" style="font-size:.9375rem"><%= flavor.name %></span>
               <span class="flavor__note" style="display:block;margin-bottom:0"><%= flavor.note %></span>
@@ -27,8 +26,9 @@
     </div>
 
     <div class="pdp__buy">
+      <div class="pdp__buy-inner">
       <span class="badge badge--outline">Premium creatine gummies</span>
-      <h1><%= @product.display_name %></h1>
+      <h1 class="pdp__title"><%= @product.display_name %></h1>
       <%= cj_stars Storefront::RATING, meta: "#{Storefront::RATING}/5 (#{Storefront::REVIEW_COUNT} reviews)" %>
 
       <div>
@@ -43,7 +43,7 @@
 
       <div>
         <p class="eyebrow eyebrow--muted" style="margin-bottom:8px">Choose your flavor</p>
-        <div style="display:flex;flex-wrap:wrap;gap:10px">
+        <div class="flavor-pills">
           <% Flavor::ALL.each do |flavor| %>
             <%= render "shared/flavor_pill", flavor: flavor, selected: flavor.slug == @flavor.slug %>
           <% end %>
@@ -70,28 +70,29 @@
               href: product_page_path(flavor: @flavor.slug, plan: "sub", qty: @qty) %>
       </div>
 
-      <div style="display:flex;flex-direction:column;gap:10px">
+      <div class="actions">
         <% if @variant.present? %>
           <%= button_to cart_lines_path,
                 params: { product_id: @product.id, variant_id: @variant.id, quantity: @qty },
-                class: "btn btn--primary btn--lg btn--full" do %>
+                class: "btn btn--primary btn--lg" do %>
             <%= cj_icon "shopping-cart", size: "1.15em" %> Add to cart
           <% end %>
           <%= button_to cart_lines_path,
                 params: { product_id: @product.id, variant_id: @variant.id, quantity: @qty, then: "checkout" },
-                class: "btn btn--outline btn--lg btn--full" do %>
+                class: "btn btn--outline btn--lg" do %>
             Buy now - <%= @variant.formatted_price %>
           <% end %>
         <% end %>
       </div>
 
       <%= render "shared/trust_row" %>
+      </div>
     </div>
   </div>
 
-  <div class="card" id="benefits"><%= render "shared/stat_row", stats: Storefront::CLAIMS %></div>
+  <div class="card card--pad-lg" id="benefits"><%= render "shared/stat_row", stats: Storefront::CLAIMS %></div>
 
-  <div class="card card--glow">
+  <div class="card card--glow card--pad-lg">
     <div class="vs">
       <div class="vs__side">
         <h2 style="font-size:var(--fs-title);color:var(--accent)">Creatine Jelly</h2>
@@ -105,8 +106,12 @@
     </div>
   </div>
 
-  <div class="card">
-    <h2 style="text-align:center;color:var(--accent);margin-bottom:var(--space-6)">How to use</h2>
+  <div class="card card--pad-lg">
+    <div class="section-head section-head--center">
+      <p class="eyebrow eyebrow--accent">Three steps</p>
+      <h2>How to use</h2>
+      <p class="sub">No shaker, no scoop, no timing rules. Just take them.</p>
+    </div>
     <div class="g3">
       <% Storefront::HOW_TO_USE.each do |step| %>
         <div class="how-step">
@@ -121,8 +126,12 @@
     </div>
   </div>
 
-  <div class="card" id="reviews">
-    <h2 style="text-align:center;color:var(--accent);margin-bottom:var(--space-6)">Loved by athletes</h2>
+  <div class="card card--pad-lg" id="reviews">
+    <div class="section-head section-head--center">
+      <p class="eyebrow eyebrow--accent">Verified reviews</p>
+      <h2>Loved by athletes</h2>
+      <p class="sub"><%= Storefront::RATING %>/5 from <%= Storefront::REVIEW_COUNT %> reviews.</p>
+    </div>
     <div class="g3">
       <% Storefront::REVIEWS.each do |review| %>
         <%= render "shared/testimonial", review: review %>
@@ -130,8 +139,15 @@
     </div>
   </div>
 
-  <div class="card" id="faq">
-    <h2 style="text-align:center;color:var(--accent);margin-bottom:var(--space-5)">Questions? We've got answers.</h2>
-    <%= render "shared/accordion", items: Storefront::FAQ %>
+  <div class="card card--pad-lg" id="faq">
+    <div class="section-head section-head--center">
+      <p class="eyebrow eyebrow--accent">FAQ</p>
+      <h2>Questions? We've got answers.</h2>
+    </div>
+    <div style="max-width:860px;margin-inline:auto">
+      <%= render "shared/accordion", items: Storefront::FAQ, open_first: true %>
+    </div>
   </div>
+
+  <%= render "shared/cta_band", flavor: @flavor, hide_product_link: true %>
 </div>

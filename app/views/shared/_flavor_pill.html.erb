@@ -1,5 +1,6 @@
 <%= link_to url_for(request.params.merge(flavor: flavor.slug)),
       class: ["flavor-pill", ("is-selected" if selected)],
       style: "--flavor:#{flavor.color_var}" do %>
-  <span class="flavor-pill__dot"></span><%= flavor.name %>
+  <span class="flavor-pill__media"><%= image_tag flavor.pdp_image, alt: "" %></span>
+  <%= flavor.name %>
 <% end %>

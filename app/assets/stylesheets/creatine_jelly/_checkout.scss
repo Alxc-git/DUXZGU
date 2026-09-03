@@ -14,5 +14,25 @@
   &__item{display:flex;gap:14px}
   &__thumb{flex:0 0 auto;width:92px;height:92px;display:flex;align-items:center;justify-content:center;
     border-radius:var(--radius-sm);background:var(--ink-100);img{max-height:78px}}
+  @container site (max-width:#{$bp-sm - 1px}){
+    &__thumb{width:72px;height:72px;img{max-height:60px}}
+  }
 }
-.promo{display:flex;gap:8px;.input{min-height:44px}}
+
+// Quantity form and Remove share one wrapping row, so neither ever overflows.
+.cart-line{
+  &__controls{display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-3);
+    margin-top:var(--space-2);padding-top:var(--space-4);
+    border-top:1px solid var(--border-hairline)}
+  &__qty{display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-2);flex:1 1 auto;min-width:0;
+    .input{flex:0 0 92px;width:92px}
+    .btn{flex:0 1 auto}}
+  @container site (max-width:#{$bp-sm - 1px}){
+    &__controls .btn{flex:1 1 auto}
+  }
+}
+.promo{
+  display:flex;flex-wrap:wrap;gap:8px;
+  .input{flex:1 1 160px;min-width:0;min-height:46px}
+  .btn{flex:0 0 auto;min-height:46px}
+}

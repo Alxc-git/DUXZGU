@@ -29,3 +29,33 @@ document.addEventListener("click", (event) => {
     val.textContent = Math.min(99, Math.max(1, next));
   }
 });
+
+// Price odometers. The reels sit at 0 until this runs, so rolling them is just
+// adding a class; an observer holds the roll back until the price is on screen.
+const rollOdometers = (root = document) => {
+  const reels = root.querySelectorAll(".odo:not([data-odo-rolled])");
+  if (!reels.length) return;
+
+  const roll = (el) => {
+    el.setAttribute("data-odo-rolled", "");
+    el.classList.add("is-rolling");
+  };
+
+  if (!("IntersectionObserver" in window)) {
+    reels.forEach(roll);
+    return;
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      roll(entry.target);
+      observer.unobserve(entry.target);
+    });
+  }, { threshold: 0.4 });
+
+  reels.forEach((el) => observer.observe(el));
+};
+
+document.addEventListener("DOMContentLoaded", () => rollOdometers());
+document.addEventListener("turbo:load", () => rollOdometers());

@@ -2,7 +2,7 @@
   <%= cj_stars 5 %>
   <p class="testimonial__quote">“<%= review[:quote] %>”</p>
   <div class="testimonial__who">
-    <span class="testimonial__av"></span>
+    <span class="testimonial__av" aria-hidden="true"><%= review[:name].to_s.strip.first %></span>
     <span>
       <span class="testimonial__name"><%= review[:name] %></span>
       <span class="testimonial__verified"><%= cj_icon "circle-check" %>Verified buyer</span>

@@ -1,15 +1,24 @@
 .footer{
-  border-top:1px solid var(--border-hairline);margin-top:var(--section-gap);
-  padding:var(--space-12) 0 var(--space-8);
-  &__in{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-8);
-    @container site (min-width:#{$bp-md}){grid-template-columns:1.4fr repeat(3,1fr) 1.2fr}}
-  &__col{display:flex;flex-direction:column;gap:var(--space-2);
+  border-top:1px solid var(--border-hairline);margin-top:clamp(32px,4vw,72px);
+  padding:clamp(40px,4vw,72px) 0 var(--space-10);
+  background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(0,0,0,0) 220px);
+  &__in{display:grid;grid-template-columns:1fr;gap:clamp(24px,2.6vw,40px);
+    @container site (min-width:#{$bp-sm}){grid-template-columns:1fr 1fr}
+    @container site (min-width:#{$bp-lg}){grid-template-columns:1.5fr repeat(3,1fr) 1.4fr}}
+  &__col{display:flex;flex-direction:column;gap:var(--space-2);min-width:0;
     a{color:var(--text-muted);font-size:var(--fs-body-sm);&:hover{color:var(--text-strong)}}}
   &__h{margin-bottom:var(--space-2);font-family:var(--font-label);text-transform:uppercase;
     letter-spacing:var(--ls-eyebrow);font-size:var(--fs-caption);font-weight:600;color:var(--text-strong)}
   &__bottom{display:flex;flex-wrap:wrap;gap:var(--space-4);justify-content:space-between;
-    margin-top:var(--space-8);padding-top:var(--space-5);border-top:1px solid var(--border-hairline);
+    margin-top:clamp(32px,3vw,52px);padding-top:var(--space-5);
+    border-top:1px solid var(--border-hairline);
     color:var(--text-faint);font-size:var(--fs-caption)}
-  &__social{display:flex;gap:var(--space-2)}
+  &__social{display:flex;gap:var(--space-2);flex-wrap:wrap}
+  // The sticky buy bar overlaps the last row on phones; clear it.
+  @container site (max-width:#{$bp-lg - 1px}){padding-bottom:calc(var(--space-16) + var(--space-6))}
 }
-.newsletter{display:flex;gap:8px;.input{min-height:44px}}
+.newsletter{
+  display:flex;gap:8px;flex-wrap:wrap;
+  .input{flex:1 1 180px;min-width:0;min-height:46px}
+  .btn{flex:0 0 auto;min-height:46px;padding-inline:18px}
+}
