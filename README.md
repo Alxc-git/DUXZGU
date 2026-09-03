@@ -1,3 +1,5 @@
+# DUXZGU
+
 # Reusable One-Product E-Commerce Backend
 
 Ruby on Rails 8 backend for multiple one-product stores sharing the same admin, checkout, orders, Stripe webhooks and supplier fulfillment pipeline.
