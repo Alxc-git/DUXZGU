@@ -2,21 +2,22 @@
   position:relative;overflow:hidden;isolation:isolate;min-width:0;
   background:var(--ink-050);border:1px solid var(--border-hairline);
   border-radius:var(--radius-lg);box-shadow:var(--shadow-panel);
-  // The three flavour photos are framed differently: the raspberry one is wide
-  // with the jar to the right, the other two are square with it dead centre. A
-  // cover-crop would drag those two under the copy, so the image is pinned to the
-  // right edge at its own aspect ratio and its left edge is dissolved into the
-  // panel — which works whatever the shot.
-  // The photo owns the right half only, so the product can never drift under the
-  // copy — whichever flavour is showing, and whatever that shot's aspect ratio.
-  // Its left edge is dissolved so the panel has no visible seam.
+  // One pair of values drives both the copy width and where the photo starts.
+  --hero-pad:clamp(22px,3.4vw,64px);
+  --hero-copy:clamp(500px,40vw,560px);
+  // The photo owns its own panel to the right of the copy, starting exactly where
+  // the copy ends. The three flavour shots are framed differently — raspberry is
+  // wide with the jar off-centre, the other two are square with it in the middle —
+  // so `--hero-focus` says where each one's window looks, and a short mask
+  // dissolves the panel's left edge into the card.
   &__bleed{
-    position:absolute;inset:0 0 0 auto;z-index:0;width:50%;
+    position:absolute;inset:0 0 0 auto;z-index:0;
+    left:calc(var(--hero-pad) + var(--hero-copy) + var(--space-4));width:auto;
     img{
       width:100%;height:100%;max-width:none;object-fit:cover;
       object-position:var(--hero-focus,center);
-      -webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 34%);
-      mask-image:linear-gradient(90deg,transparent 0%,#000 34%);
+      -webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 12%);
+      mask-image:linear-gradient(90deg,transparent 0%,#000 12%);
     }
   }
   // Two crossed gradients: one reads the copy off the left, one grounds the ticker.
@@ -28,9 +29,9 @@
     background:var(--hero-spot,var(--spot-crimson));opacity:.5}
   &__in{position:relative;z-index:2;display:flex;align-items:center;
     min-height:clamp(560px,58vw,720px);
-    padding:clamp(32px,4vw,72px) clamp(22px,3.4vw,64px);min-width:0}
+    padding:clamp(32px,4vw,72px) var(--hero-pad);min-width:0}
   &__copy{display:flex;flex-direction:column;gap:clamp(16px,1.5vw,24px);align-items:flex-start;
-    width:min(100%,600px);min-width:0}
+    width:min(100%,var(--hero-copy));min-width:0}
 
   &__top{display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-3) var(--space-5)}
 
@@ -84,23 +85,15 @@
     .btn{flex:0 1 auto;min-height:52px;padding:12px clamp(18px,1.7vw,26px);font-size:var(--fs-body)}
   }
 
-  @container site (min-width:#{$bp-lg}) and (max-width:#{$bp-xxl - 1px}){
-    &__copy{width:min(100%,58%)}
-    &__type .l1,&__type .l2{font-size:clamp(2.9rem,5.6vw,4.6rem)}
-    &__row-item{flex:1 1 46%;padding-right:0;
-      & + &{padding-left:0;border-left:0}}
-    &__row{gap:var(--space-4) var(--space-5)}
-  }
   @container site (min-width:#{$bp-xxl}){
-    &__copy{width:min(100%,620px)}
     &__lede{font-size:1.1875rem}
   }
   // Below the desktop split the photo stops being a background and becomes a
   // stacked panel, so the copy never has to compete with it for contrast.
-  @container site (max-width:#{$bp-lg - 1px}){
+  @container site (max-width:#{$bp-xxl - 1px}){
     display:flex;flex-direction:column;
     &__cta .btn{flex:1 1 auto}
-    &__bleed{position:relative;inset:auto;width:100%;aspect-ratio:16/10;display:block}
+    &__bleed{position:relative;inset:auto;left:auto;width:100%;aspect-ratio:16/10;display:block}
     &__bleed img{width:100%;height:100%;object-position:center 28%;
       -webkit-mask-image:none;mask-image:none}
     &__bleed::after{content:"";position:absolute;inset:0;

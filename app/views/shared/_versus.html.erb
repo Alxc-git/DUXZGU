@@ -12,7 +12,9 @@
   <div class="vs__mid"><span class="vs-badge">VS</span></div>
 
   <div class="vs__side vs__side--lose">
-    <span class="vs__shot vs__shot--tub"><%= render "shared/powder_tub" %></span>
+    <span class="vs__shot vs__shot--rival">
+      <%= image_tag "product/creatine-powder-tub.png", alt: "Tub of creatine powder" %>
+    </span>
     <div class="vs__body">
       <h3 class="vs__title"><%= local_assigns[:rival] || "Creatine powder" %></h3>
       <%= render "shared/compare", tone: "no", items: Storefront::CONS %>
