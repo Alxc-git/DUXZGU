@@ -5,4 +5,10 @@
       <span><span class="trust__t"><%= item[:title] %></span><%= item[:note] %></span>
     </div>
   <% end %>
+  <% if local_assigns[:include_support] %>
+    <%= link_to contact_path, class: "trust__item trust__item--support" do %>
+      <%= cj_icon "mail" %>
+      <span><span class="trust__t"><%= t("store.trust.support") %></span><%= t("store.footer.contact") %></span>
+    <% end %>
+  <% end %>
 </div>

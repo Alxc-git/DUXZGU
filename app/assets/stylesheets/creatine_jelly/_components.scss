@@ -394,7 +394,18 @@
     border:1px solid var(--border-subtle);
     font-family:var(--font-display);font-size:.8125rem;color:var(--white);line-height:1;
   }
-  .trust{gap:var(--space-4) var(--space-6)}
+  .trust{
+    display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:var(--space-4) var(--space-6);
+    @container site (max-width:#{$bp-sm - 1px}){grid-template-columns:1fr}
+  }
+  .trust__item{min-width:0;
+    .icon{flex-shrink:0}}
+  .trust__item--support{
+    text-decoration:none;border-radius:var(--radius-sm);
+    &:hover{text-decoration:underline;color:var(--text-strong)}
+    &:focus-visible{outline:2px solid var(--accent);outline-offset:5px}
+  }
 }
 
 // Policy pages: a readable measure and clear hierarchy, nothing decorative.

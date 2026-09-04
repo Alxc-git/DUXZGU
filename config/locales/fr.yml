@@ -508,6 +508,7 @@ fr:
       guarantee_note: "Satisfait ou remboursé"
       secure: "Paiement sécurisé"
       secure_note: "Chiffré de bout en bout"
+      support: "Service client"
     ticker:
       one: "5000 mg de créatine monohydrate"
       two: "Sans mélange. Sans dégât."
