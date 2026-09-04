@@ -24,9 +24,9 @@
 
     <div class="chat__log" data-chat-log role="log" aria-live="polite" aria-atomic="false">
       <div class="chat__msg chat__msg--bot">
-        <p><%= t("store.assistant.greeting") %></p>
+        <p><%= t("store.assistant.greeting", store: current_store.name) %></p>
       </div>
-      <div class="chat__chips" data-chat-chips>
+      <div class="chat__chips" data-chat-chips role="group" aria-label="<%= t("store.assistant.label") %>">
         <button type="button" class="chat__chip" data-chat-suggest><%= t("store.assistant.chip_order") %></button>
         <button type="button" class="chat__chip" data-chat-suggest><%= t("store.assistant.chip_dose") %></button>
         <button type="button" class="chat__chip" data-chat-suggest><%= t("store.assistant.chip_refund") %></button>
@@ -41,6 +41,6 @@
         <%= cj_icon "send" %>
       </button>
     </form>
-    <p class="chat__foot"><%= t("store.assistant.foot", email: current_store.support_email) %></p>
+    <p class="chat__foot"><%= t("store.assistant.foot_html", link: link_to(t("store.assistant.foot_link"), privacy_policy_path)).html_safe %></p>
   </section>
 </div>

@@ -164,8 +164,7 @@
   // to an empty box, which is worse than no icon at all.
   &__emoji{
     flex:0 0 auto;font-size:19px;line-height:1.25;font-style:normal;
-    font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",
-                "Android Emoji","EmojiOne Color","Twemoji Mozilla",sans-serif;
+    font-family:var(--emoji),sans-serif;
   }
   &__text{margin:0;min-width:0}
   &__close{

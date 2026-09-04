@@ -68,6 +68,10 @@
   &__log{
     flex:1 1 auto;min-height:0;overflow-y:auto;
     display:flex;flex-direction:column;gap:10px;padding:14px;
+    // The conversation starts at the bottom and grows upward, the way every
+    // messaging app behaves — a greeting pinned to the top of an empty panel
+    // reads as a notice, not as someone waiting to talk.
+    justify-content:flex-end;
     scrollbar-width:thin;
   }
   &__msg{
@@ -88,13 +92,28 @@
     }
   }
 
-  &__chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:2px}
+  // One line that scrolls sideways rather than a block that wraps: the strip
+  // stays one row tall however many suggestions there are.
+  &__chips{
+    display:flex;flex-wrap:nowrap;gap:7px;margin-top:2px;
+    overflow-x:auto;padding-bottom:2px;
+    scrollbar-width:none;
+    // The row must be able to overflow its flex parent to scroll at all.
+    flex:0 0 auto;
+    &::-webkit-scrollbar{display:none}
+    // Fade the right edge so it reads as "there is more this way".
+    -webkit-mask-image:linear-gradient(90deg,#000 88%,transparent 100%);
+    mask-image:linear-gradient(90deg,#000 88%,transparent 100%);
+  }
   &__chip{
-    padding:7px 12px;border-radius:var(--radius-pill);cursor:pointer;
+    flex:0 0 auto;white-space:nowrap;
+    padding:8px 13px;border-radius:var(--radius-pill);cursor:pointer;
     background:transparent;border:1px solid var(--border-subtle);
-    color:var(--text-muted);font-size:var(--fs-caption);font-family:var(--font-body);
-    transition:all var(--dur) var(--ease-out);
-    &:hover{border-color:var(--border-accent-soft);color:var(--text-strong)}
+    color:var(--text-body);font-size:var(--fs-caption);font-family:var(--font-body);
+    transition:border-color var(--dur) var(--ease-out),color var(--dur) var(--ease-out),
+               background var(--dur) var(--ease-out);
+    &:hover{border-color:var(--border-accent-soft);color:var(--text-strong);
+      background:var(--accent-soft)}
   }
 
   // Three dots while the assistant is composing.
@@ -124,6 +143,8 @@
   &__foot{
     margin:0;padding:0 14px 12px;
     color:var(--text-faint);font-size:var(--fs-micro);line-height:1.4;
+    a{color:var(--text-muted);text-decoration:underline;text-underline-offset:2px;
+      &:hover{color:var(--text-strong)}}
   }
 
   // On a phone the launcher is a circle, not a bar: a full-width pill floating
