@@ -5,17 +5,12 @@
 <div class="page stack" style="padding-top:var(--space-8)">
   <%= render "checkouts/steps", current: 1 %>
 
-  <div class="card" style="display:flex;flex-wrap:wrap;gap:var(--space-5);align-items:center">
-    <span class="feature-icon feature-icon--lg"><%= cj_icon "shield-check" %></span>
-    <%# A display face at 0.88 line-height crowds whatever follows it; the stack
-        gives the heading room instead of letting it sit on the next line. %>
-    <div style="flex:1 1 240px;display:flex;flex-direction:column;gap:6px">
-      <h1 style="font-size:var(--fs-display-3);line-height:1">Checkout</h1>
-      <div class="stat__label" style="font-size:1.0625rem">You're one step away from stronger, faster, better.</div>
-      <div class="stat__note">Every order is protected by the store checkout flow.</div>
-    </div>
-    <span class="badge badge--outline" style="padding:10px 14px;text-align:center;line-height:1.3">Secure<br>checkout</span>
-  </div>
+  <%= render "shared/page_head",
+        title: "Checkout",
+        sub: "Delivery details, then payment. Two minutes.",
+        aside: link_to(cart_path, class: "page-head__back") {
+          safe_join([ cj_icon("chevron-left"), "Back to cart" ])
+        } %>
 
   <%= form_with model: @form,
         scope: :checkout_form,
@@ -31,13 +26,16 @@
         } do |form| %>
     <div class="stack">
       <% if @form.errors.any? %>
-        <div class="card checkout__section" role="alert">
-          <div class="stat__label">Champs a corriger</div>
-          <ul>
-            <% @form.errors.full_messages.each do |message| %>
-              <li><%= message %></li>
-            <% end %>
-          </ul>
+        <div class="alert alert--alert" role="alert">
+          <span class="alert__emoji" aria-hidden="true">✋</span>
+          <div class="alert__text">
+            <b><%= pluralize(@form.errors.size, "field") %> to fix</b>
+            <ul class="alert__list">
+              <% @form.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+              <% end %>
+            </ul>
+          </div>
         </div>
       <% end %>
 
@@ -45,20 +43,29 @@
         <div style="display:flex;align-items:baseline;gap:12px">
           <p class="eyebrow eyebrow--accent" style="font-size:var(--fs-body-sm)">1. Customer information</p>
         </div>
-        <%= form.email_field :email, class: "input", placeholder: "Email address", autocomplete: "email", required: true %>
+        <%= render layout: "checkouts/field", locals: { label: "Email address" } do %>
+          <%= form.email_field :email, class: "input", placeholder: "you@example.com",
+                autocomplete: "email", inputmode: "email", required: true %>
+        <% end %>
+        <p class="field__hint"><%= cj_icon "mail" %>Your confirmation and tracking link go here.</p>
       </div>
 
       <div class="card checkout__section">
         <p class="eyebrow eyebrow--accent" style="font-size:var(--fs-body-sm)">2. Shipping address</p>
         <div class="checkout__grid checkout__grid--2">
-          <%= form.text_field :first_name, class: "input", placeholder: "First name", autocomplete: "given-name", required: true %>
-          <%= form.text_field :last_name, class: "input", placeholder: "Last name", autocomplete: "family-name", required: true %>
+          <%= render layout: "checkouts/field", locals: { label: "First name" } do %>
+            <%= form.text_field :first_name, class: "input", autocomplete: "given-name", required: true %>
+          <% end %>
+          <%= render layout: "checkouts/field", locals: { label: "Last name" } do %>
+            <%= form.text_field :last_name, class: "input", autocomplete: "family-name", required: true %>
+          <% end %>
         </div>
 
+        <%= render layout: "checkouts/field", locals: { label: "Street address" } do %>
         <div class="autocomplete">
           <%= form.text_field :address_line1,
                 class: "input",
-                placeholder: "Street address",
+                placeholder: "123 rue Sainte-Catherine",
                 autocomplete: "shipping street-address",
                 required: true,
                 role: "combobox",
@@ -72,23 +79,31 @@
               data-autocomplete-kind="address"
               data-address-autocomplete-target="list"></ul>
         </div>
+        <% end %>
 
-        <%= form.text_field :address_line2, class: "input", placeholder: "Apartment, suite, etc. (optional)",
-              autocomplete: "shipping address-line2",
-              data: { address_autocomplete_target: "next" } %>
+        <%= render layout: "checkouts/field", locals: { label: "Apartment, suite", required: false } do %>
+          <%= form.text_field :address_line2, class: "input",
+                autocomplete: "shipping address-line2",
+                data: { address_autocomplete_target: "next" } %>
+        <% end %>
 
         <div class="checkout__grid checkout__grid--2">
-          <%= form.text_field :city, class: "input", placeholder: "City", autocomplete: "shipping address-level2",
-                required: true, data: { address_autocomplete_target: "city" } %>
-          <%= form.text_field :province, class: "input", placeholder: "State / Province",
-                autocomplete: "shipping address-level1", data: { address_autocomplete_target: "province" } %>
+          <%= render layout: "checkouts/field", locals: { label: "City" } do %>
+            <%= form.text_field :city, class: "input", autocomplete: "shipping address-level2",
+                  required: true, data: { address_autocomplete_target: "city" } %>
+          <% end %>
+          <%= render layout: "checkouts/field", locals: { label: "Province / State" } do %>
+            <%= form.text_field :province, class: "input",
+                  autocomplete: "shipping address-level1", data: { address_autocomplete_target: "province" } %>
+          <% end %>
         </div>
 
         <div class="checkout__grid checkout__grid--2">
+          <%= render layout: "checkouts/field", locals: { label: "Postal code" } do %>
           <div class="autocomplete">
             <%= form.text_field :postal_code,
                   class: "input",
-                  placeholder: "ZIP / Postal code",
+                  placeholder: "H2X 1Z4",
                   autocomplete: "shipping postal-code",
                   required: true,
                   role: "combobox",
@@ -102,16 +117,22 @@
                 data-autocomplete-kind="postal"
                 data-address-autocomplete-target="list"></ul>
           </div>
+          <% end %>
 
+          <%= render layout: "checkouts/field", locals: { label: "Country" } do %>
           <span class="select">
             <%= form.select :country, checkout_form_country_options, {}, class: "input",
                   data: { address_autocomplete_target: "country" } %>
             <span class="select__chev"><%= cj_icon "chevron-down" %></span>
           </span>
+          <% end %>
         </div>
 
-        <%= form.telephone_field :phone, class: "input", placeholder: "Phone (for shipping updates)",
-              autocomplete: "tel", required: true %>
+        <%= render layout: "checkouts/field", locals: { label: "Phone" } do %>
+          <%= form.telephone_field :phone, class: "input", placeholder: "(514) 555-0123",
+                autocomplete: "tel", inputmode: "tel", required: true %>
+        <% end %>
+        <p class="field__hint"><%= cj_icon "truck" %>Carriers use it for delivery updates. Nothing else.</p>
         <p class="autocomplete__status" role="status" aria-live="polite" data-address-autocomplete-target="status"></p>
       </div>
 

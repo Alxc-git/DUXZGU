@@ -58,7 +58,7 @@ module Orders
         # Meta context is here for the same reason: the cookies, the address the
         # request came from and the consent the customer had given are all gone by
         # the time a webhook confirms the payment hours later.
-        metadata: { "checkout_reference" => reference }.merge(
+        metadata: { "checkout_reference" => reference, "flavor" => line.flavor.slug }.merge(
           attribution ? { "attribution" => attribution } : {}
         ).merge(
           meta_context ? { Meta::UserData::CONTEXT_KEY => meta_context } : {}

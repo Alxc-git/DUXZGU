@@ -22,6 +22,11 @@
     <meta name="twitter:description" content="<%= page_description %>">
     <meta name="twitter:image" content="<%= asset_url((@flavor || Flavor.default).scene_image) %>">
 
+    <%# Marks the document as able to run the reveal animation. Inline and in the
+        head so the class lands before first paint: a deferred script would let
+        the page draw, then hide the sections, which flashes. %>
+    <script nonce="<%= content_security_policy_nonce %>">document.documentElement.classList.add("js-motion")</script>
+
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <%= yield :head %>
@@ -41,16 +46,7 @@
     <div class="site">
       <%= render "shared/header", flavor: @flavor || Flavor.default %>
 
-      <% if alert.present? || notice.present? %>
-        <div class="page" style="padding-top:var(--space-4);padding-bottom:0">
-          <% if alert.present? %>
-            <div class="card" role="alert"><%= alert %></div>
-          <% end %>
-          <% if notice.present? %>
-            <div class="card"><%= notice %></div>
-          <% end %>
-        </div>
-      <% end %>
+      <%= render "shared/flash" %>
 
       <%= yield %>
 
@@ -59,6 +55,7 @@
       <% if current_store && current_product %>
         <%= render "shared/recent_purchases", flavor: @flavor || Flavor.default %>
         <%= render "shared/exit_offer", flavor: @flavor || Flavor.default %>
+        <%= render "shared/support_chat" %>
       <% end %>
       <%= render "shared/meta_pixel_events" if meta_pixel_enabled? %>
     </div>

@@ -13,9 +13,9 @@
   <div class="page"><%= render "pages/hero", flavor: @flavor %></div>
 
   <div class="page stack">
-    <div class="card"><%= render "shared/stat_row", stats: Storefront::CLAIMS %></div>
+    <div class="card reveal"><%= render "shared/stat_row", stats: Storefront::CLAIMS %></div>
 
-    <div class="card card--flush band">
+    <div class="card card--flush band reveal">
       <div class="band__media">
         <%= image_tag "product/duwzgu-athlete.webp", alt: "Athlete with Creatine Jelly", class: "band__image" %>
         <span class="band__scrim"></span>
@@ -29,7 +29,7 @@
       </div>
     </div>
 
-    <%= render "shared/versus", flavor: @flavor %>
+    <div class="reveal"><%= render "shared/versus", flavor: @flavor %></div>
 
     <div id="flavors" class="card card--pad-lg">
       <div class="section-head section-head--center">
@@ -37,20 +37,20 @@
         <h2>Choose your flavor</h2>
         <p class="sub">Three jars. Same 5000 mg dose. Pick the one you'll look forward to.</p>
       </div>
-      <div class="g3">
+      <div class="g3 reveal reveal--stagger">
         <% Flavor::ALL.each do |flavor| %>
           <%= render "shared/flavor_card", flavor: flavor, selected: flavor.slug == @flavor.slug %>
         <% end %>
       </div>
     </div>
 
-    <div class="card card--pad-lg">
+    <div class="card card--pad-lg reveal">
       <div class="section-head section-head--center">
         <p class="eyebrow eyebrow--accent">Three steps</p>
         <h2>How to use</h2>
         <p class="sub">No shaker, no scoop, no timing rules. Just take them.</p>
       </div>
-      <div class="g3">
+      <div class="g3 reveal reveal--stagger">
         <% Storefront::HOW_TO_USE.each do |step| %>
           <div class="how-step">
             <span class="feature-icon feature-icon--solid feature-icon--sm how-step__n"><%= step[:n] %></span>
@@ -64,8 +64,8 @@
       </div>
     </div>
 
-    <div class="g2">
-      <div class="card proof">
+    <div class="g2 reveal">
+      <div class="card proof reveal">
         <div class="proof__score">
           <p class="eyebrow eyebrow--accent">Verified reviews</p>
           <div class="proof__number"><%= Storefront::RATING %>/5</div>
@@ -114,12 +114,12 @@
       </div>
     </div>
 
-    <div class="card card--pad-lg">
+    <div class="card card--pad-lg reveal">
       <div class="section-head">
         <p class="eyebrow eyebrow--accent">Verified reviews</p>
         <h2>What athletes say</h2>
       </div>
-      <div class="g3">
+      <div class="g3 reveal reveal--stagger">
         <% Storefront::REVIEWS.each do |review| %>
           <%= render "shared/testimonial", review: review %>
         <% end %>
@@ -136,7 +136,7 @@
       </div>
     </div>
 
-    <%= render "shared/cta_band", flavor: @flavor %>
+    <div class="reveal"><%= render "shared/cta_band", flavor: @flavor %></div>
   </div>
 </div>
 <% end %>

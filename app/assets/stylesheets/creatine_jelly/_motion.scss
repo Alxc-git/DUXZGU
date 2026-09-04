@@ -1,0 +1,59 @@
+// Movement, kept to what carries meaning: where you are (Turbo progress), that
+// the page changed (view transition), and that there is more below (reveals).
+//
+// Every rule here is switched off under `prefers-reduced-motion`. That setting is
+// often about vestibular illness, not taste.
+
+// Turbo's own progress bar, in the brand colour instead of its default blue.
+.turbo-progress-bar{
+  height:3px;
+  background:linear-gradient(90deg,var(--crimson-600),var(--accent));
+  box-shadow:0 0 12px rgba(255,15,78,.6);
+}
+
+// Cross-fade between pages. Turbo 8 drives this natively; browsers without
+// support simply navigate as before.
+@view-transition{navigation:auto}
+
+@media(prefers-reduced-motion:no-preference){
+  ::view-transition-old(root){animation:vt-out 140ms var(--ease-out) both}
+  ::view-transition-new(root){animation:vt-in 220ms var(--ease-out) both}
+}
+@keyframes vt-out{to{opacity:0}}
+@keyframes vt-in{from{opacity:0;transform:translateY(6px)}}
+
+// Sections lift into place the first time they are scrolled to. `.is-in` is
+// added by the observer in site.js; without JS the content is simply visible.
+.js-motion .reveal{
+  opacity:0;transform:translateY(18px);
+  transition:opacity 520ms var(--ease-out),transform 520ms var(--ease-out);
+  will-change:opacity,transform;
+  &.is-in{opacity:1;transform:none}
+  // Children of a revealed row arrive one after another, which reads as one
+  // movement rather than three things twitching at once.
+  &--stagger > *{
+    opacity:0;transform:translateY(14px);
+    transition:opacity 460ms var(--ease-out),transform 460ms var(--ease-out);
+  }
+  &--stagger.is-in > *{opacity:1;transform:none}
+  &--stagger.is-in > *:nth-child(2){transition-delay:90ms}
+  &--stagger.is-in > *:nth-child(3){transition-delay:180ms}
+  &--stagger.is-in > *:nth-child(4){transition-delay:270ms}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .reveal,.reveal--stagger > *{
+    opacity:1;transform:none;transition:none;
+  }
+  .turbo-progress-bar{box-shadow:none}
+}
+
+// Cards lift a little under the cursor, so a whole panel reads as one target.
+@media(hover:hover) and (prefers-reduced-motion:no-preference){
+  .flavor,.pack,.testimonial,.pdp__thumb{
+    transition:transform var(--dur) var(--ease-out),
+               border-color var(--dur) var(--ease-out),
+               box-shadow var(--dur) var(--ease-out);
+  }
+  .testimonial:hover{transform:translateY(-3px);border-color:var(--border-subtle)}
+}

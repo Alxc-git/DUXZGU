@@ -2,25 +2,57 @@
   border-top:1px solid var(--border-hairline);margin-top:clamp(32px,4vw,72px);
   padding:clamp(40px,4vw,72px) 0 var(--space-10);
   background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(0,0,0,0) 220px);
-  &__in{display:grid;grid-template-columns:1fr;gap:clamp(24px,2.6vw,40px);
-    @container site (min-width:#{$bp-sm}){grid-template-columns:1fr 1fr}
-    @container site (min-width:#{$bp-lg}){grid-template-columns:1.5fr repeat(3,1fr) 1.4fr}}
+  // Two columns from the narrowest screen up: three stacked link lists made the
+  // footer taller than a phone screen and a half on its own.
+  &__in{
+    display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(22px,2.6vw,40px);
+    @container site (min-width:#{$bp-lg}){grid-template-columns:1.6fr 1fr 1fr 1.5fr}
+  }
+  // The brand blurb and the signup need the full width; only the link lists pair.
+  &__col--brand,&__col--news{
+    grid-column:1 / -1;
+    @container site (min-width:#{$bp-lg}){grid-column:auto}
+  }
   &__col{display:flex;flex-direction:column;gap:var(--space-2);min-width:0;
     a{color:var(--text-muted);font-size:var(--fs-body-sm);&:hover{color:var(--text-strong)}}}
   &__h{margin-bottom:var(--space-2);font-family:var(--font-label);text-transform:uppercase;
     letter-spacing:var(--ls-eyebrow);font-size:var(--fs-caption);font-weight:600;color:var(--text-strong)}
-  &__bottom{display:flex;flex-wrap:wrap;gap:var(--space-4);justify-content:space-between;
-    margin-top:clamp(32px,3vw,52px);padding-top:var(--space-5);
+  &__bottom{
+    display:flex;flex-wrap:wrap;gap:var(--space-3) var(--space-4);
+    justify-content:space-between;align-items:center;
+    margin-top:clamp(28px,3vw,52px);padding-top:var(--space-5);
     border-top:1px solid var(--border-hairline);
-    color:var(--text-faint);font-size:var(--fs-caption)}
+    color:var(--text-faint);font-size:var(--fs-caption);
+    @container site (max-width:#{$bp-sm - 1px}){
+      flex-direction:column-reverse;align-items:flex-start;gap:var(--space-4);
+    }
+  }
   &__social{display:flex;gap:var(--space-2);flex-wrap:wrap}
   &__pay{margin-top:clamp(28px,2.6vw,44px);padding-top:var(--space-5);
     border-top:1px solid var(--border-hairline)}
-  // The sticky buy bar overlaps the last row on phones; clear it.
-  @container site (max-width:#{$bp-lg - 1px}){padding-bottom:calc(var(--space-16) + var(--space-6))}
+  // Two pieces of fixed furniture sit over the bottom of a phone screen: the buy
+  // bar (~72px) and the support launcher above it (~52px plus its offset). The
+  // footer has to clear both, or the payment marks and legal links end up under
+  // them.
+  @container site (max-width:#{$bp-lg - 1px}){
+    padding-bottom:calc(140px + env(safe-area-inset-bottom));
+  }
 }
 .newsletter{
   display:flex;gap:8px;flex-wrap:wrap;
   .input{flex:1 1 180px;min-width:0;min-height:46px}
   .btn{flex:0 0 auto;min-height:46px;padding-inline:18px}
+}
+
+// Touch targets. A 21px-tall link is a miss waiting to happen on a phone: both
+// Apple and Google put the comfortable minimum near 44px. The links keep their
+// visual size — only the tappable box grows, through padding.
+@container site (max-width:#{$bp-lg - 1px}){
+  .footer__col a{
+    display:inline-flex;align-items:center;min-height:40px;
+  }
+  .footer__bottom a{
+    display:inline-flex;align-items:center;min-height:40px;padding-right:4px;
+  }
+  .footer__social .icon-btn{width:44px;height:44px}
 }

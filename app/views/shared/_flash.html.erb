@@ -1,0 +1,20 @@
+<%# Flash messages. Rendered as one component so a confirmation and a problem do
+    not look identical — which is what a bare card made them. %>
+<% messages = { notice: flash[:notice], alert: flash[:alert] }.compact_blank %>
+<% if messages.any? %>
+  <div class="page" style="padding-top:var(--space-4);padding-bottom:0">
+    <div class="stack" style="gap:var(--space-3)">
+      <% messages.each do |kind, message| %>
+        <div class="alert alert--<%= kind %>" role="<%= kind == :alert ? "alert" : "status" %>" data-flash>
+          <%# aria-hidden: the emoji is decoration. Its name would otherwise be
+              read aloud before the message, which is noise, not information. %>
+          <span class="alert__emoji" aria-hidden="true"><%= kind == :alert ? "⚠️" : "🎉" %></span>
+          <p class="alert__text"><%= message %></p>
+          <button type="button" class="alert__close" data-flash-close aria-label="Dismiss">
+            <%= cj_icon "close" %>
+          </button>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<% end %>

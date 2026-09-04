@@ -21,6 +21,13 @@ document.addEventListener("click", (event) => {
     return;
   }
 
+  // Flash dismissal
+  const flashClose = event.target.closest("[data-flash-close]");
+  if (flashClose) {
+    flashClose.closest("[data-flash]")?.remove();
+    return;
+  }
+
   // Quantity stepper
   const step = event.target.closest("[data-qty-inc], [data-qty-dec]");
   if (step) {
@@ -194,8 +201,146 @@ const startExitOffer = (root = document) => {
   document.addEventListener("keydown", (e) => { if (e.key === "Escape" && open) close(); });
 };
 
+// --- Scroll reveals --------------------------------------------------------
+// Anything marked .reveal fades up the first time it enters the viewport. The
+// class is only added when the browser can observe it and the reader has not
+// asked for less motion — otherwise the content is left visible.
+const startReveals = (root = document) => {
+  const targets = root.querySelectorAll(".reveal:not([data-revealed])");
+  if (!targets.length) return;
+
+  const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (still || !("IntersectionObserver" in window)) {
+    targets.forEach((el) => { el.setAttribute("data-revealed", ""); el.classList.add("is-in"); });
+    return;
+  }
+
+  const reveal = (el) => {
+    el.setAttribute("data-revealed", "");
+    el.classList.add("is-in");
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      reveal(entry.target);
+      observer.unobserve(entry.target);
+    });
+  }, { rootMargin: "0px 0px -8% 0px", threshold: 0.08 });
+
+  targets.forEach((el) => {
+    // Already on screen: show it now rather than waiting for a scroll that may
+    // never come on a short page.
+    if (el.getBoundingClientRect().top < window.innerHeight) return reveal(el);
+    observer.observe(el);
+  });
+};
+
+// --- Support assistant -----------------------------------------------------
+// The panel only collects the message and renders the answer. Order status is
+// resolved server-side from the session, so nothing here can be talked into
+// revealing another customer's order.
+const startSupportChat = (root = document) => {
+  const chat = root.querySelector("[data-chat]");
+  if (!chat || chat.dataset.ready) return;
+  chat.dataset.ready = "1";
+
+  const panel = chat.querySelector("[data-chat-panel]");
+  const log = chat.querySelector("[data-chat-log]");
+  const form = chat.querySelector("[data-chat-form]");
+  const input = chat.querySelector("[data-chat-input]");
+  const send = chat.querySelector("[data-chat-send]");
+  const toggles = chat.querySelectorAll("[data-chat-toggle]");
+  const launcher = chat.querySelector("[data-chat-toggle]");
+  // Only the last few turns are sent: the server caps it anyway, and a long
+  // transcript costs tokens without improving the answer.
+  const history = [];
+  let busy = false;
+
+  const open = () => {
+    panel.hidden = false;
+    requestAnimationFrame(() => chat.classList.add("is-open"));
+    toggles.forEach((t) => t.setAttribute("aria-expanded", "true"));
+    setTimeout(() => input.focus(), 120);
+  };
+
+  const close = () => {
+    chat.classList.remove("is-open");
+    toggles.forEach((t) => t.setAttribute("aria-expanded", "false"));
+    setTimeout(() => { panel.hidden = true; }, 200);
+    launcher?.focus();
+  };
+
+  const toggle = () => (chat.classList.contains("is-open") ? close() : open());
+
+  const bubble = (text, kind) => {
+    const el = document.createElement("div");
+    el.className = `chat__msg chat__msg--${kind}`;
+    // textContent, never innerHTML: a reply is untrusted text.
+    const p = document.createElement("p");
+    p.textContent = text;
+    el.appendChild(p);
+    log.appendChild(el);
+    log.scrollTop = log.scrollHeight;
+    return el;
+  };
+
+  const typing = () => {
+    const el = document.createElement("div");
+    el.className = "chat__typing";
+    el.innerHTML = "<span></span><span></span><span></span>";
+    log.appendChild(el);
+    log.scrollTop = log.scrollHeight;
+    return el;
+  };
+
+  const ask = async (text) => {
+    if (busy || !text.trim()) return;
+    busy = true;
+    send.disabled = true;
+    chat.querySelector("[data-chat-chips]")?.remove();
+    bubble(text, "me");
+    input.value = "";
+    const dots = typing();
+
+    try {
+      const token = document.querySelector("meta[name=csrf-token]")?.content;
+      const response = await fetch("/support/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-CSRF-Token": token || "" },
+        body: JSON.stringify({ message: text, history })
+      });
+      const data = await response.json();
+      dots.remove();
+
+      if (!response.ok && response.status !== 429) throw new Error("bad status");
+      bubble(data.reply, response.status === 429 ? "error" : "bot");
+
+      history.push({ role: "user", content: text }, { role: "assistant", content: data.reply });
+      if (history.length > 6) history.splice(0, history.length - 6);
+    } catch {
+      dots.remove();
+      bubble("I could not reach the assistant. Try again in a moment, or email us and a human will answer.", "error");
+    } finally {
+      busy = false;
+      send.disabled = false;
+      input.focus();
+    }
+  };
+
+  toggles.forEach((t) => t.addEventListener("click", toggle));
+  form.addEventListener("submit", (e) => { e.preventDefault(); ask(input.value); });
+  chat.querySelectorAll("[data-chat-suggest]").forEach((chip) =>
+    chip.addEventListener("click", () => ask(chip.textContent.trim())));
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && chat.classList.contains("is-open")) close();
+  });
+};
+
 const startStorefront = () => {
   rollOdometers();
+  startReveals();
+  startSupportChat();
   startCutoffClocks();
   startProofToasts();
   startExitOffer();

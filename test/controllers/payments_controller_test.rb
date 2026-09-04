@@ -57,7 +57,7 @@ class PaymentsControllerTest < ActionDispatch::IntegrationTest
     post payment_path
     get cart_path
 
-    assert_select "p", text: "Your cart is empty."
+    assert_select "h2", text: "Your cart is empty"
   end
 
   test "mounts the payment element when Stripe is configured" do

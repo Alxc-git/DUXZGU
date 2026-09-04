@@ -40,7 +40,49 @@ class CartsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "h1", text: "Your cart"
     assert_select ".checkout__item", text: /300 g/
-    assert_select ".checkout__item", text: /Qty 2/
+    assert_select "input[name=?][value=?]", "quantity", "2"
+    assert_select ".cart-layout" do
+      assert_select "main.cart-layout__main", count: 1
+      assert_select "aside.cart-layout__aside", count: 1
+      assert_select ".reassurance-card--trust", count: 1
+      assert_select ".reassurance-card--support", count: 1
+    end
+  end
+
+  test "the cart keeps the selected flavour image and suggests another flavour" do
+    post cart_lines_path, params: {
+      product_id: products(:demo_product).id,
+      variant_id: variants(:black).id,
+      quantity: 1,
+      flavor: "blueberry"
+    }
+
+    follow_redirect!
+    assert_response :success
+    assert_select "img[src*='duwzgu-checkout-blueberry']", minimum: 1
+    assert_select ".checkout__item", text: /Blueberry/
+    assert_select ".cross-sell", text: /Try another flavor/
+    assert_select ".cross-sell input[name='flavor'][value='strawberry']"
+  end
+
+  test "two flavours of one size remain separate cart lines" do
+    post cart_lines_path, params: {
+      product_id: products(:demo_product).id,
+      variant_id: variants(:black).id,
+      quantity: 1,
+      flavor: "blueberry"
+    }
+    post cart_lines_path, params: {
+      product_id: products(:demo_product).id,
+      variant_id: variants(:black).id,
+      quantity: 1,
+      flavor: "strawberry"
+    }
+
+    follow_redirect!
+    assert_select ".checkout__item", text: /Blueberry/, minimum: 1
+    assert_select ".checkout__item", text: /Strawberry/, minimum: 1
+    assert_select ".cart-line__controls", count: 2
   end
 
   test "a missing variant id falls back to the default option" do
@@ -56,7 +98,7 @@ class CartsControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to cart_path
     follow_redirect!
-    assert_select ".checkout__item", text: /Qty 4/
+    assert_select "input[name=?][value=?]", "quantity", "4"
   end
 
   test "removing a line empties the cart" do
@@ -66,14 +108,14 @@ class CartsControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to cart_path
     follow_redirect!
-    assert_select "p", text: "Your cart is empty."
+    assert_select "h2", text: "Your cart is empty"
   end
 
   test "an empty cart renders the placeholder without line items" do
     get cart_path
 
     assert_response :success
-    assert_select "p", text: "Your cart is empty."
+    assert_select "h2", text: "Your cart is empty"
     assert_select ".checkout__item", 0
   end
 

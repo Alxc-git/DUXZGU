@@ -21,6 +21,22 @@ class CartTest < ActiveSupport::TestCase
     assert_equal 3, @cart.count
   end
 
+  test "the same size in two flavours keeps two distinct lines" do
+    @cart.add(variants(:black), flavor: "blueberry")
+    @cart.add(variants(:black), flavor: "strawberry")
+
+    assert_equal 2, @cart.lines.size
+    assert_equal %w[blueberry strawberry], @cart.lines.map { |line| line.flavor.slug }
+    assert_equal 2, @cart.count
+  end
+
+  test "legacy variant-only sessions use the default flavour" do
+    @session[Cart::SESSION_KEY] = { variants(:black).id.to_s => 2 }
+
+    assert_equal Flavor.default.slug, @cart.lines.first.flavor.slug
+    assert_equal 2, @cart.count
+  end
+
   test "each colour keeps its own line" do
     @cart.add(variants(:black))
     @cart.add(variants(:blue))

@@ -1,0 +1,11 @@
+<%# One heading pattern for every step of the funnel. A card here would be an
+    empty panel carrying a title — see the cart page. %>
+<div class="page-head">
+  <div class="page-head__text">
+    <h1 style="font-size:var(--fs-display-3);line-height:1"><%= title %></h1>
+    <% if local_assigns[:sub].present? %><p class="sub"><%= sub %></p><% end %>
+  </div>
+  <% if local_assigns[:aside].present? %>
+    <div class="page-head__aside"><%= aside %></div>
+  <% end %>
+</div>

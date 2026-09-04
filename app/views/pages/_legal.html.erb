@@ -1,10 +1,8 @@
 <%# Shared shell for the policy pages, so they read as one document family. %>
 <div class="page stack" style="padding-top:var(--space-8);max-width:820px">
-  <div class="card checkout__section">
-    <p class="eyebrow eyebrow--accent" style="font-size:var(--fs-body-sm)"><%= eyebrow %></p>
-    <h1 style="font-size:var(--fs-display-3);line-height:1"><%= title %></h1>
-    <p class="sub">Last updated <%= l(Date.current, format: :long) rescue Date.current.strftime("%B %-d, %Y") %></p>
-  </div>
+  <%= render "shared/page_head",
+        title: title,
+        sub: "Last updated #{l(Date.current, format: :long) rescue Date.current.strftime('%B %-d, %Y')}" %>
 
   <div class="card card--pad-lg legal">
     <%= yield %>

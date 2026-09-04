@@ -1,4 +1,7 @@
 <div class="stack">
+  <%# `recap: false` on the cart page, where the same lines are already shown
+      alongside their quantity controls. %>
+  <% if local_assigns.fetch(:recap, true) %>
   <div class="card">
     <div style="display:flex;align-items:baseline;margin-bottom:var(--space-4)">
       <h2 style="font-size:var(--fs-title)">Your cart (<%= current_cart.count %>)</h2>
@@ -8,11 +11,11 @@
     <% current_cart.lines.each do |line| %>
       <div class="checkout__item">
         <span class="checkout__thumb">
-          <%= image_tag flavor.checkout_image, alt: "" %>
+          <%= image_tag line.flavor.checkout_image, alt: "" %>
         </span>
         <div style="min-width:0;flex:1">
           <div class="stat__label"><%= line.product.display_name %></div>
-          <div class="stat__note"><%= line.variant.display_name %> · Qty <%= line.quantity %></div>
+          <div class="stat__note"><%= line.flavor.name %> · <%= line.variant.display_name %> · Qty <%= line.quantity %></div>
           <div style="font-family:var(--font-display);color:var(--accent);font-size:1.25rem;margin-top:10px">
             <%= line.formatted_total %>
           </div>
@@ -20,12 +23,13 @@
       </div>
     <% end %>
   </div>
+  <% end %>
 
   <%= render "shared/free_shipping_bar" %>
 
-  <div class="card">
-    <h2 style="font-size:var(--fs-title);margin-bottom:var(--space-4)">Order summary</h2>
-    <div class="checkout__section" style="gap:10px">
+  <div class="card order-summary">
+    <h2 class="order-summary__title">Order summary</h2>
+    <div class="checkout__section order-summary__lines">
       <div class="checkout__line"><span>Subtotal</span><b><%= current_cart.formatted_subtotal %></b></div>
       <div class="checkout__line"><span>Shipping</span><b><%= current_cart.shipping_cents.zero? ? "Free" : current_cart.formatted_shipping %></b></div>
       <% if current_cart.discount? %>
@@ -37,11 +41,12 @@
         <input class="input" placeholder="Promo code">
         <span class="btn btn--secondary">Apply</span>
       </div>
+      <%= yield if block_given? %>
     </div>
   </div>
 
-  <div class="card checkout__section">
-    <div style="display:flex;gap:14px;align-items:flex-start">
+  <div class="card checkout__section secure-panel">
+    <div class="secure-panel__head">
       <span class="feature-icon"><%= cj_icon "shield-check" %></span>
       <div>
         <div class="stat__label">100% safe &amp; secure checkout</div>
@@ -52,13 +57,7 @@
     <%= render "shared/dispatch_countdown" %>
   </div>
 
-  <div class="card"><%= render "shared/trust_row" %></div>
-
-  <div class="card">
-    <p class="eyebrow eyebrow--accent" style="margin-bottom:12px">Need help with your order?</p>
-    <div style="display:flex;flex-wrap:wrap;gap:var(--space-6)">
-      <div class="trust__item"><%= cj_icon "message-circle" %><span><span class="trust__t">Live chat</span>Mon–Fri 9AM–6PM EST</span></div>
-      <div class="trust__item"><%= cj_icon "mail" %><span><span class="trust__t">Email us</span>support@creatinejelly.com</span></div>
-    </div>
-  </div>
+  <% if local_assigns.fetch(:extras, true) %>
+    <%= render "checkouts/reassurance" %>
+  <% end %>
 </div>

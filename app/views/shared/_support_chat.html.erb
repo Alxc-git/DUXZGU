@@ -1,0 +1,46 @@
+<%# Support assistant. The launcher and panel are markup; every answer comes from
+    POST /support/chat, where Rails builds the verified order context and Groq only
+    phrases it. Nothing about an order is decided in the browser. %>
+<div class="chat" data-chat>
+  <button type="button" class="chat__launcher" data-chat-toggle
+          aria-expanded="false" aria-controls="support-panel">
+    <span class="chat__launcher-icon"><%= cj_icon "chat" %></span>
+    <span class="chat__launcher-label">Need help?</span>
+    <span class="chat__dot" aria-hidden="true"></span>
+  </button>
+
+  <section class="chat__panel" id="support-panel" data-chat-panel hidden
+           role="dialog" aria-modal="false" aria-label="Support assistant">
+    <header class="chat__head">
+      <span class="chat__avatar" aria-hidden="true"><%= cj_icon "sparkle" %></span>
+      <div class="chat__id">
+        <b><%= current_store.name %> assistant</b>
+        <span class="chat__status"><span class="chat__pulse" aria-hidden="true"></span>Usually replies instantly</span>
+      </div>
+      <button type="button" class="chat__close" data-chat-toggle aria-label="Close">
+        <%= cj_icon "close" %>
+      </button>
+    </header>
+
+    <div class="chat__log" data-chat-log role="log" aria-live="polite" aria-atomic="false">
+      <div class="chat__msg chat__msg--bot">
+        <p>Hi! I can check where your order is, explain how the gummies work, or help you pick a flavor. What do you need?</p>
+      </div>
+      <div class="chat__chips" data-chat-chips>
+        <button type="button" class="chat__chip" data-chat-suggest>Where is my order?</button>
+        <button type="button" class="chat__chip" data-chat-suggest>How many gummies per day?</button>
+        <button type="button" class="chat__chip" data-chat-suggest>What is your refund policy?</button>
+      </div>
+    </div>
+
+    <form class="chat__form" data-chat-form>
+      <label class="visually-hidden" for="chat-input">Your message</label>
+      <input class="input chat__input" id="chat-input" name="message" autocomplete="off"
+             placeholder="Ask anything…" maxlength="1000" data-chat-input required>
+      <button type="submit" class="chat__send" data-chat-send aria-label="Send">
+        <%= cj_icon "send" %>
+      </button>
+    </form>
+    <p class="chat__foot">Order details come from your session. For anything account-related, email <%= current_store.support_email %>.</p>
+  </section>
+</div>

@@ -2,7 +2,10 @@
     headline never sits on top of it. %>
 <div class="card card--flush card--accent cta-card">
   <div class="cta-card__media">
-    <%= image_tag flavor.pdp_image, alt: "" %>
+    <picture>
+      <source media="(max-width: 899px)" srcset="<%= asset_path flavor.mobile_cta_image %>">
+      <%= image_tag flavor.pdp_image, alt: "" %>
+    </picture>
     <span class="cta-card__scrim"></span>
   </div>
   <div class="cta-card__body">

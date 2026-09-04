@@ -105,11 +105,12 @@ module ApplicationHelper
     current_store.shipping_countries.map { |code| [ country_name(code), code ] }
   end
 
-  def buy_now_params(product: current_product, variant: selected_purchase_variant(product), quantity: 1)
+  def buy_now_params(product: current_product, variant: selected_purchase_variant(product), quantity: 1, flavor: nil)
     {
       product_id: product&.id,
       variant_id: variant&.id,
       quantity: quantity.to_i.clamp(1, Cart::MAX_QUANTITY),
+      flavor: Flavor.find(flavor.presence || params[:flavor].to_s).slug,
       then: "checkout"
     }.compact
   end

@@ -74,12 +74,12 @@
       <div class="actions">
         <% if @variant.present? %>
           <%= button_to cart_lines_path,
-                params: { product_id: @product.id, variant_id: @variant.id, quantity: @qty },
+                params: { product_id: @product.id, variant_id: @variant.id, quantity: @qty, flavor: @flavor.slug },
                 class: "btn btn--primary btn--lg" do %>
             <%= cj_icon "shopping-cart", size: "1.15em" %> Add to cart
           <% end %>
           <%= button_to cart_lines_path,
-                params: { product_id: @product.id, variant_id: @variant.id, quantity: @qty, then: "checkout" },
+                params: { product_id: @product.id, variant_id: @variant.id, quantity: @qty, flavor: @flavor.slug, then: "checkout" },
                 class: "btn btn--outline btn--lg" do %>
             Buy now - <%= @selected_tier&.formatted_total || @variant.formatted_price %>
           <% end %>

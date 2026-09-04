@@ -1,11 +1,11 @@
-# Session-backed cart. Only variant ids and quantities are stored, so prices,
-# names and photos are always read fresh from the database and a price change
-# can never be carried by a stale session.
+# Session-backed cart. A line key combines the database variant (the size) and
+# the storefront flavour. Quantities are the only other stored value, so prices
+# and product names are still always read fresh from the database.
 class Cart
   SESSION_KEY = "cart".freeze
   MAX_QUANTITY = 99
 
-  Line = Data.define(:variant, :quantity) do
+  Line = Data.define(:key, :variant, :quantity, :flavor) do
     def product
       variant.product
     end
@@ -34,26 +34,29 @@ class Cart
 
   # Insertion order is kept, so a line never jumps around as quantities change.
   def lines
-    @lines ||= stored.filter_map do |variant_id, quantity|
+    @lines ||= stored.filter_map do |key, quantity|
+      variant_id, flavor_slug = split_line_key(key)
       variant = purchasable[variant_id.to_i]
       next if variant.blank? || quantity.to_i <= 0
 
-      Line.new(variant:, quantity: quantity.to_i)
+      Line.new(key:, variant:, quantity: quantity.to_i, flavor: Flavor.find(flavor_slug))
     end
   end
 
-  def add(variant, quantity: 1)
+  def add(variant, quantity: 1, flavor: nil)
     return if variant.blank?
 
-    write(variant.id, stored[variant.id.to_s].to_i + quantity.to_i)
+    flavor = Flavor.find(flavor.respond_to?(:slug) ? flavor.slug : flavor.to_s)
+    key = line_key(variant.id, flavor.slug)
+    write(key, stored[key].to_i + quantity.to_i)
   end
 
-  def set(variant_id, quantity)
-    write(variant_id, quantity)
+  def set(line_id, quantity)
+    write(line_id, quantity)
   end
 
-  def remove(variant_id)
-    write(variant_id, 0)
+  def remove(line_id)
+    write(line_id, 0)
   end
 
   def clear
@@ -74,7 +77,20 @@ class Cart
   end
 
   def variant_ids
-    lines.map { |line| line.variant.id }
+    lines.map { |line| line.variant.id }.uniq
+  end
+
+  # The first flavour not already paired with one of the sizes in the cart.
+  # This lets the cross-sell offer a real alternative flavour at the same size.
+  def flavor_suggestion
+    lines.each do |line|
+      flavor = Flavor::ALL.find do |candidate|
+        lines.none? { |existing| existing.variant.id == line.variant.id && existing.flavor.slug == candidate.slug }
+      end
+      return { line:, flavor: } if flavor
+    end
+
+    nil
   end
 
   def subtotal_cents
@@ -97,7 +113,7 @@ class Cart
   # The share of the discount carried by one line, so each order row can be
   # written with its own amount and the totals still reconcile.
   def discount_for(line)
-    discount[:per_key][line.variant.id]
+    discount[:per_key][line.key]
   end
 
   # How many more units before the offer applies. Drives the nudge in the cart.
@@ -184,7 +200,7 @@ class Cart
 
   def discount
     @discount ||= offer.apply(
-      lines.flat_map { |line| Array.new(line.quantity) { DuoOffer::Unit.new(line.variant.id, line.unit_price_cents) } }
+      lines.flat_map { |line| Array.new(line.quantity) { DuoOffer::Unit.new(line.key, line.unit_price_cents) } }
     )
   end
 
@@ -192,7 +208,7 @@ class Cart
   # another store simply disappears from the cart instead of being purchasable.
   def purchasable
     @purchasable ||= begin
-      ids = stored.keys.map(&:to_i)
+      ids = stored.keys.map { |key| split_line_key(key).first }.uniq
 
       if ids.empty? || store.blank?
         {}
@@ -207,11 +223,12 @@ class Cart
     end
   end
 
-  def write(variant_id, quantity)
+  def write(line_id, quantity)
     quantity = quantity.to_i.clamp(0, MAX_QUANTITY)
     data = stored.dup
+    key = resolve_line_key(line_id)
 
-    quantity.zero? ? data.delete(variant_id.to_s) : data[variant_id.to_s] = quantity
+    quantity.zero? ? data.delete(key) : data[key] = quantity
 
     session[SESSION_KEY] = data
     reset
@@ -219,7 +236,36 @@ class Cart
 
   def stored
     value = session[SESSION_KEY]
-    value.is_a?(Hash) ? value : {}
+    return {} unless value.is_a?(Hash)
+
+    # Sessions created before flavours were stored used a bare variant id as the
+    # key. They migrate transparently to the default flavour on the next write.
+    value.each_with_object({}) do |(raw_key, quantity), normalized|
+      variant_id, flavor_slug = split_line_key(raw_key)
+      key = line_key(variant_id, flavor_slug)
+      normalized[key] = normalized[key].to_i + quantity.to_i
+    end
+  end
+
+  def line_key(variant_id, flavor_slug)
+    "#{variant_id}:#{Flavor.find(flavor_slug.to_s).slug}"
+  end
+
+  def split_line_key(key)
+    variant_id, flavor_slug = key.to_s.split(":", 2)
+    [ variant_id.to_i, Flavor.find(flavor_slug.to_s).slug ]
+  end
+
+  # Numeric ids remain accepted for old links and sessions. When more than one
+  # flavour uses that size, the first matching line is the backwards-compatible
+  # target; current views always submit the complete composite key.
+  def resolve_line_key(line_id)
+    candidate = line_id.to_s
+    return line_key(*split_line_key(candidate)) if candidate.include?(":")
+
+    variant_id = candidate.to_i
+    stored.keys.find { |key| split_line_key(key).first == variant_id } ||
+      line_key(variant_id, Flavor.default.slug)
   end
 
   def reset

@@ -9,6 +9,7 @@ class StorefrontControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select ".hero__type", text: /Creatine/
     assert_select "a[href=?]", storefront_product_path(products(:demo_product).slug), text: "See the product"
+    assert_select ".cta-card__media source[media='(max-width: 899px)'][srcset*='duwzgu-cta-mobile-strawberry']"
   end
 
   test "the landing page survives a store with no product" do

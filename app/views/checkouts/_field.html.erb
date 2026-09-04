@@ -1,0 +1,8 @@
+<%# A labelled field. A placeholder alone is not a label: it disappears the
+    moment the customer types, and a screen reader loses it with the focus. %>
+<label class="field">
+  <span class="field__label">
+    <%= label %><% unless local_assigns.fetch(:required, true) %> <span class="field__optional">(optional)</span><% end %>
+  </span>
+  <%= yield %>
+</label>

@@ -1,24 +1,29 @@
-<%# A real cross-sell: the variants of this product are sizes, so this offers a
-    size the cart does not already hold, at that variant's own price. It must never
-    be rendered inside another form — button_to emits a form of its own. %>
-<% addon = current_product&.available_variants.to_a.reject { |v| current_cart.variant_ids.include?(v.id) }.first %>
-<% if addon.present? %>
+<%# Offer another flavour at the same size as an existing cart line. The
+    flavour is part of the cart line key, so this creates a distinct line even
+    though both products use the same size variant. %>
+<% suggestion = current_cart.flavor_suggestion %>
+<% if suggestion.present? %>
+  <% line = suggestion[:line] %>
+  <% flavor = suggestion[:flavor] %>
   <div class="card card--accent cross-sell">
-    <p class="eyebrow eyebrow--accent">Add another size</p>
+    <div class="cross-sell__head">
+      <p class="eyebrow eyebrow--accent">Try another flavor</p>
+      <span class="cross-sell__hint">Same size · one-click add</span>
+    </div>
     <div class="cross-sell__row">
       <span class="checkout__thumb cross-sell__media">
-        <%= image_tag (local_assigns[:flavor] || @flavor || Flavor.default).packshot, alt: "" %>
+        <%= image_tag flavor.checkout_image, alt: "" %>
       </span>
       <div class="cross-sell__body">
-        <div class="stat__label"><%= current_product.display_name %> &middot; <%= addon.display_name %></div>
-        <div class="stat__note">Ships in the same parcel, no extra delivery</div>
-        <div class="cross-sell__price"><%= addon.formatted_price %></div>
+        <div class="stat__label"><%= flavor.name %> &middot; <%= line.variant.display_name %></div>
+        <div class="stat__note"><%= flavor.note %></div>
+        <div class="cross-sell__price"><%= line.variant.formatted_price %></div>
       </div>
+      <%= button_to cart_lines_path,
+            params: { product_id: line.product.id, variant_id: line.variant.id, quantity: 1, flavor: flavor.slug },
+            class: "btn btn--outline btn--sm", form: { class: "cross-sell__action" } do %>
+        <%= cj_icon "plus", size: "1.05em" %> Add this flavor
+      <% end %>
     </div>
-    <%= button_to cart_lines_path,
-          params: { product_id: addon.product_id, variant_id: addon.id, quantity: 1 },
-          class: "btn btn--outline btn--sm btn--full" do %>
-      <%= cj_icon "plus", size: "1.05em" %> Add to my order
-    <% end %>
   </div>
 <% end %>

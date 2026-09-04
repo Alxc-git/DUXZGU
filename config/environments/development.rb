@@ -33,14 +33,33 @@ Rails.application.configure do
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :local
 
-  # Don't care if the mailer can't send.
-  config.action_mailer.raise_delivery_errors = false
-
   # Make template changes take effect immediately.
   config.action_mailer.perform_caching = false
 
-  # Set localhost to be used by links generated in mailer templates.
-  config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
+  # Read from APP_HOST so links in a locally sent mail point at the port actually
+  # in use, rather than a hard-coded 3000.
+  mail_host, _, mail_port = ENV.fetch("APP_HOST", "localhost:3000").partition(":")
+  config.action_mailer.default_url_options = { host: mail_host, port: (mail_port.presence || 3000).to_i }
+
+  # With SMTP credentials in .env the real provider is used, so a confirmation can
+  # be checked in a real inbox before deploying. Without them nothing is sent and
+  # failures stay quiet, which is what a machine with no mail setup needs.
+  if ENV["SMTP_ADDRESS"].present?
+    config.action_mailer.perform_deliveries = true
+    config.action_mailer.raise_delivery_errors = true
+    config.action_mailer.delivery_method = :smtp
+    config.action_mailer.smtp_settings = {
+      address: ENV["SMTP_ADDRESS"],
+      port: ENV.fetch("SMTP_PORT", 587).to_i,
+      user_name: ENV["SMTP_USERNAME"],
+      password: ENV["SMTP_PASSWORD"],
+      authentication: :plain,
+      enable_starttls_auto: true
+    }
+  else
+    config.action_mailer.perform_deliveries = false
+    config.action_mailer.raise_delivery_errors = false
+  end
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log

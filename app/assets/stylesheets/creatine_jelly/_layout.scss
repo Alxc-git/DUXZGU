@@ -51,7 +51,9 @@
   @container site (max-width:#{$bp-sm - 1px}){
     &__in{gap:var(--space-2);min-height:62px}
     .wordmark{font-size:18px}
-    .icon-btn{width:40px;height:40px}
+    .icon-btn{width:42px;height:42px}
+    // The logo is a link home; give it a tappable box, not just its glyph height.
+    &__logo{display:inline-flex;align-items:center;min-height:44px}
   }
 }
 .sheet{
@@ -116,6 +118,7 @@
 .cta-card{
   position:relative;display:grid;grid-template-columns:1fr;overflow:hidden;min-width:0;
   &__media{position:relative;min-height:240px;background:var(--ink-050);
+    picture{display:contents}
     img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center}}
   &__scrim{position:absolute;inset:0;background:var(--scrim-bottom)}
   &__body{position:relative;z-index:1;display:flex;flex-direction:column;align-items:flex-start;
@@ -125,6 +128,9 @@
   &__body .actions{max-width:none}
   &__note{display:flex;align-items:flex-start;gap:8px;color:var(--text-muted);font-size:var(--fs-caption);
     line-height:1.4;.icon{flex:0 0 auto;margin-top:1px;color:var(--accent);font-size:15px}}
+  @container site (max-width:#{$bp-lg - 1px}){
+    &__media{min-height:clamp(230px,45vw,360px)}
+  }
   @container site (min-width:#{$bp-lg}){
     grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);align-items:stretch;
     &__media{min-height:400px}

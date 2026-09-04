@@ -1,0 +1,19 @@
+<%# On the cart these two panels are split between the matching grid columns.
+    Other checkout pages render both by omitting `section`. %>
+<% section = local_assigns.fetch(:section, :all).to_sym %>
+<% if section.in?([:all, :trust]) %>
+  <div class="card reassurance-card reassurance-card--trust">
+    <p class="eyebrow eyebrow--accent">Shop with confidence</p>
+    <%= render "shared/trust_row" %>
+  </div>
+<% end %>
+
+<% if section.in?([:all, :support]) %>
+  <div class="card reassurance-card reassurance-card--support">
+    <p class="eyebrow eyebrow--accent">Need help with your order?</p>
+    <div class="reassurance-card__support-grid">
+      <div class="trust__item"><%= cj_icon "message-circle" %><span><span class="trust__t">Live chat</span>Mon&ndash;Fri 9AM&ndash;6PM EST</span></div>
+      <div class="trust__item"><%= cj_icon "mail" %><span><span class="trust__t">Email us</span><%= current_store.support_email %></span></div>
+    </div>
+  </div>
+<% end %>

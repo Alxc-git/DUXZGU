@@ -99,7 +99,7 @@ class CheckoutsControllerTest < ActionDispatch::IntegrationTest
     assert_select ".checkout__line", text: /#{products(:demo_product).display_name}/
 
     get cart_path
-    assert_select "p", text: "Your cart is empty."
+    assert_select "h2", text: "Your cart is empty"
   end
 
   test "the confirmation only shows orders placed in this session" do

@@ -73,6 +73,14 @@ class Orders::PlaceFromCartTest < ActiveSupport::TestCase
     assert_predicate place.first, :pending?
   end
 
+  test "the selected flavour is frozen on the order" do
+    @cart.add(variants(:black), flavor: "blueberry")
+
+    order = place.first
+    assert_equal "blueberry", order.metadata["flavor"]
+    assert_includes order.line_item_name, "Blueberry"
+  end
+
   test "creates the customer once, with a normalised email" do
     @cart.add(variants(:black))
     @cart.add(variants(:blue))

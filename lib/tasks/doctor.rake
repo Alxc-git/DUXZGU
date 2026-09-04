@@ -58,6 +58,12 @@ class StoreDoctor
       check("payments", "Stripe secret key",
         Payments.secret_key.present? ? :ok : :fail,
         Payments.secret_key.present? ? (live_stripe ? "live mode" : "test mode") : "set STRIPE_SECRET_KEY"),
+      # Live keys on a developer machine mean every click spends real money, and a
+      # live secret sitting in a file on a laptop is a credential to rotate the
+      # moment it leaks. This is worth shouting about.
+      check("payments", "Live keys on localhost",
+        live_on_localhost? ? :fail : :ok,
+        live_on_localhost? ? "LIVE keys with APP_HOST=#{ENV['APP_HOST']} — real cards would be charged. Use sk_test_/pk_test_ locally." : "no mismatch"),
       check("payments", "Stripe publishable key",
         Payments.publishable_key.present? ? :ok : :fail,
         Payments.publishable_key.present? ? "set" : "set STRIPE_PUBLISHABLE_KEY"),
@@ -83,9 +89,12 @@ class StoreDoctor
       check("email", "SMTP credentials",
         present?(ENV["SMTP_USERNAME"]) && present?(ENV["SMTP_PASSWORD"]) ? :ok : (smtp ? :fail : :warn),
         present?(ENV["SMTP_USERNAME"]) ? "set" : "set SMTP_USERNAME and SMTP_PASSWORD"),
+      # Resend, Postmark and the rest refuse a send whose From is not a verified
+      # domain, so with SMTP configured this is a blocker rather than a warning.
       check("email", "From address",
-        present?(ENV["MAIL_FROM"]) ? :ok : :warn,
-        ENV["MAIL_FROM"].presence || "set MAIL_FROM (defaults may be rejected by inboxes)"),
+        present?(ENV["MAIL_FROM"]) ? :ok : (smtp ? :fail : :warn),
+        ENV["MAIL_FROM"].presence ||
+          "set MAIL_FROM to an address on a domain you verified with your email provider"),
       check("email", "Support address",
         store&.support_email.to_s.exclude?("example.com") ? :ok : :warn,
         store&.support_email.presence || "unset")
@@ -129,6 +138,13 @@ class StoreDoctor
         csp_enabled? ? :ok : :warn,
         csp_enabled? ? "enabled" : "disabled — config/initializers/content_security_policy.rb is commented out")
     ]
+  end
+
+  # A live key paired with a local host is always a mistake: the webhook cannot
+  # reach localhost, and any charge that does go through is a real one.
+  def live_on_localhost?
+    live = Payments.secret_key.to_s.start_with?("sk_live") || Payments.paypal_live?
+    live && ENV["APP_HOST"].to_s.match?(/localhost|127\.0\.0\.1|\A\z/)
   end
 
   def stripe_webhook_secret

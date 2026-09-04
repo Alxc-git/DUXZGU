@@ -2,10 +2,7 @@ class CartsController < ApplicationController
   before_action :require_current_store!
 
   def show
-    # The options not already in the cart, offered as a one-click add.
-    @suggestions = current_product&.available_variants.to_a.reject do |variant|
-      current_cart.variant_ids.include?(variant.id)
-    end
+    @flavor = current_cart.lines.first&.flavor || Flavor.default
   end
 
   def create
@@ -15,7 +12,7 @@ class CartsController < ApplicationController
       return redirect_back fallback_location: root_path, alert: t("cart.expired")
     end
 
-    current_cart.add(variant, quantity: quantity_param)
+    current_cart.add(variant, quantity: quantity_param, flavor: requested_flavor)
     # Recorded here rather than on the click: the variant has been resolved and the
     # line is in the cart, so this can only ever report an add that happened. It
     # rides the flash because both branches below redirect.
@@ -53,6 +50,10 @@ class CartsController < ApplicationController
 
   def quantity_param
     params[:quantity].presence || 1
+  end
+
+  def requested_flavor
+    Flavor.find(params[:flavor].to_s)
   end
 
   # What the cart actually took, which is what the event should say.

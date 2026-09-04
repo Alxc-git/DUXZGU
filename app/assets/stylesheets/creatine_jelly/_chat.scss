@@ -1,0 +1,156 @@
+// Support assistant: a launcher pinned bottom-right and the panel it opens.
+// It shares the storefront's surfaces and accent so it reads as part of the shop
+// rather than a third-party widget dropped on top.
+.chat{
+  position:fixed;right:16px;bottom:16px;z-index:45;
+  display:flex;flex-direction:column;align-items:flex-end;gap:12px;
+  // The sticky buy bar owns the bottom of a phone screen.
+  @container site (max-width:#{$bp-lg - 1px}){bottom:calc(74px + env(safe-area-inset-bottom))}
+
+  &__launcher{
+    position:relative;
+    display:inline-flex;align-items:center;gap:10px;
+    min-height:52px;padding:0 20px 0 16px;
+    border:1px solid var(--border-accent-soft);border-radius:var(--radius-pill);
+    background:linear-gradient(140deg,var(--crimson-600),var(--accent));
+    color:#fff;cursor:pointer;
+    font-family:var(--font-label);text-transform:uppercase;
+    letter-spacing:var(--ls-label);font-size:var(--fs-body-sm);font-weight:600;
+    box-shadow:var(--shadow-accent);
+    transition:transform var(--dur) var(--ease-out),box-shadow var(--dur) var(--ease-out);
+    &:hover{transform:translateY(-2px);box-shadow:var(--shadow-accent-strong)}
+    &:active{transform:translateY(0)}
+  }
+  &__launcher-icon{display:flex;font-size:21px}
+  &__dot{
+    width:7px;height:7px;border-radius:50%;background:var(--positive);
+    box-shadow:0 0 0 3px rgba(37,194,106,.25);
+  }
+  // Once the panel is open the launcher would just repeat it.
+  &.is-open &__launcher{display:none}
+
+  &__panel{
+    display:flex;flex-direction:column;overflow:hidden;
+    width:min(380px,calc(100vw - 32px));height:min(560px,calc(100vh - 120px));
+    background:var(--surface-veil),var(--surface-card);
+    border:1px solid var(--border-subtle);border-radius:var(--radius-lg);
+    box-shadow:var(--shadow-panel),var(--glow-accent);
+    opacity:0;transform:translateY(12px) scale(.98);transform-origin:bottom right;
+    transition:opacity var(--dur) var(--ease-out),transform var(--dur) var(--ease-out);
+  }
+  &.is-open &__panel{opacity:1;transform:none}
+
+  &__head{
+    display:flex;align-items:center;gap:11px;padding:14px 14px 13px;
+    border-bottom:1px solid var(--border-hairline);
+    background:linear-gradient(180deg,rgba(255,15,78,.12),rgba(255,15,78,0));
+  }
+  &__avatar{
+    flex:0 0 auto;display:flex;align-items:center;justify-content:center;
+    width:36px;height:36px;border-radius:50%;font-size:19px;
+    background:var(--accent-soft);border:1px solid var(--border-accent-soft);color:var(--accent);
+  }
+  &__id{display:flex;flex-direction:column;gap:2px;min-width:0;
+    b{color:var(--text-strong);font-size:var(--fs-body-sm);font-weight:600}}
+  &__status{display:flex;align-items:center;gap:6px;color:var(--text-muted);font-size:var(--fs-micro)}
+  &__pulse{
+    width:6px;height:6px;border-radius:50%;background:var(--positive);
+    animation:chat-pulse 2.4s var(--ease-out) infinite;
+  }
+  &__close{
+    margin-left:auto;flex:0 0 auto;
+    display:flex;align-items:center;justify-content:center;width:30px;height:30px;
+    padding:0;background:none;border:0;border-radius:var(--radius-xs);
+    color:var(--text-faint);cursor:pointer;font-size:16px;
+    &:hover{color:var(--text-strong)}
+  }
+
+  &__log{
+    flex:1 1 auto;min-height:0;overflow-y:auto;
+    display:flex;flex-direction:column;gap:10px;padding:14px;
+    scrollbar-width:thin;
+  }
+  &__msg{
+    max-width:86%;padding:10px 13px;border-radius:var(--radius-md);
+    font-size:var(--fs-body-sm);line-height:1.5;
+    p{margin:0}
+    &--bot{
+      align-self:flex-start;border-bottom-left-radius:var(--radius-xs);
+      background:var(--ink-300);border:1px solid var(--border-hairline);color:var(--text-body);
+    }
+    &--me{
+      align-self:flex-end;border-bottom-right-radius:var(--radius-xs);
+      background:var(--accent);color:#fff;
+    }
+    &--error{
+      align-self:flex-start;background:rgba(255,70,70,.1);
+      border:1px solid rgba(255,70,70,.4);color:#FFB4B4;
+    }
+  }
+
+  &__chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:2px}
+  &__chip{
+    padding:7px 12px;border-radius:var(--radius-pill);cursor:pointer;
+    background:transparent;border:1px solid var(--border-subtle);
+    color:var(--text-muted);font-size:var(--fs-caption);font-family:var(--font-body);
+    transition:all var(--dur) var(--ease-out);
+    &:hover{border-color:var(--border-accent-soft);color:var(--text-strong)}
+  }
+
+  // Three dots while the assistant is composing.
+  &__typing{
+    align-self:flex-start;display:flex;gap:4px;padding:12px 14px;
+    background:var(--ink-300);border:1px solid var(--border-hairline);
+    border-radius:var(--radius-md);border-bottom-left-radius:var(--radius-xs);
+    span{width:6px;height:6px;border-radius:50%;background:var(--text-muted);
+      animation:chat-typing 1.2s ease-in-out infinite}
+    span:nth-child(2){animation-delay:.15s}
+    span:nth-child(3){animation-delay:.3s}
+  }
+
+  &__form{
+    display:flex;gap:8px;padding:12px 14px;
+    border-top:1px solid var(--border-hairline);
+  }
+  &__input{flex:1 1 auto;min-width:0;min-height:44px}
+  &__send{
+    flex:0 0 auto;display:flex;align-items:center;justify-content:center;
+    width:44px;height:44px;border:0;border-radius:var(--radius-sm);cursor:pointer;
+    background:var(--accent);color:#fff;font-size:18px;
+    transition:background var(--dur) var(--ease-out);
+    &:hover{background:var(--accent-hover)}
+    &[disabled]{opacity:.45;pointer-events:none}
+  }
+  &__foot{
+    margin:0;padding:0 14px 12px;
+    color:var(--text-faint);font-size:var(--fs-micro);line-height:1.4;
+  }
+
+  // On a phone the launcher is a circle, not a bar: a full-width pill floating
+  // over the page covered the footer's legal links and read as an interstitial.
+  @container site (max-width:#{$bp-sm - 1px}){
+    right:14px;left:auto;
+    &__launcher{width:54px;height:54px;min-height:0;padding:0;justify-content:center}
+    &__launcher-label{display:none}
+    &__launcher-icon{font-size:23px}
+    &__dot{position:absolute;top:9px;right:9px}
+    &__panel{
+      position:fixed;right:12px;left:12px;bottom:calc(74px + env(safe-area-inset-bottom));
+      width:auto;height:min(72vh,540px);
+    }
+  }
+  @media(prefers-reduced-motion:reduce){
+    &__launcher,&__panel{transition:none}
+    &__launcher:hover{transform:none}
+    &__pulse,&__typing span{animation:none}
+  }
+}
+
+@keyframes chat-pulse{
+  0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(37,194,106,.5)}
+  50%{opacity:.7;box-shadow:0 0 0 5px rgba(37,194,106,0)}
+}
+@keyframes chat-typing{
+  0%,60%,100%{transform:translateY(0);opacity:.5}
+  30%{transform:translateY(-4px);opacity:1}
+}
