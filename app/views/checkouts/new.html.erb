@@ -2,14 +2,14 @@
 <% content_for :hide_footer, true %>
 <% content_for :hide_buy_bar, true %>
 
-<div class="page stack" style="padding-top:var(--space-8)">
+<div class="page stack funnel-page">
   <%= render "checkouts/steps", current: 1 %>
 
   <%= render "shared/page_head",
-        title: "Checkout",
-        sub: "Delivery details, then payment. Two minutes.",
+        title: t("store.checkout.title"),
+        sub: t("store.checkout.lede"),
         aside: link_to(cart_path, class: "page-head__back") {
-          safe_join([ cj_icon("chevron-left"), "Back to cart" ])
+          safe_join([ cj_icon("chevron-left"), t("store.checkout.back_to_cart") ])
         } %>
 
   <%= form_with model: @form,
@@ -29,7 +29,7 @@
         <div class="alert alert--alert" role="alert">
           <span class="alert__emoji" aria-hidden="true">✋</span>
           <div class="alert__text">
-            <b><%= pluralize(@form.errors.size, "field") %> to fix</b>
+            <b><%= t("store.checkout.errors", count: @form.errors.size) %></b>
             <ul class="alert__list">
               <% @form.errors.full_messages.each do |message| %>
                 <li><%= message %></li>
@@ -41,27 +41,27 @@
 
       <div class="card checkout__section">
         <div style="display:flex;align-items:baseline;gap:12px">
-          <p class="eyebrow eyebrow--accent" style="font-size:var(--fs-body-sm)">1. Customer information</p>
+          <p class="eyebrow eyebrow--accent" style="font-size:var(--fs-body-sm)"><%= t("store.checkout.step_customer") %></p>
         </div>
-        <%= render layout: "checkouts/field", locals: { label: "Email address" } do %>
+        <%= render layout: "checkouts/field", locals: { label: t("store.checkout.email") } do %>
           <%= form.email_field :email, class: "input", placeholder: "you@example.com",
                 autocomplete: "email", inputmode: "email", required: true %>
         <% end %>
-        <p class="field__hint"><%= cj_icon "mail" %>Your confirmation and tracking link go here.</p>
+        <p class="field__hint"><%= cj_icon "mail" %><%= t("store.checkout.email_hint") %></p>
       </div>
 
       <div class="card checkout__section">
-        <p class="eyebrow eyebrow--accent" style="font-size:var(--fs-body-sm)">2. Shipping address</p>
+        <p class="eyebrow eyebrow--accent" style="font-size:var(--fs-body-sm)"><%= t("store.checkout.step_address") %></p>
         <div class="checkout__grid checkout__grid--2">
-          <%= render layout: "checkouts/field", locals: { label: "First name" } do %>
+          <%= render layout: "checkouts/field", locals: { label: t("store.checkout.first_name") } do %>
             <%= form.text_field :first_name, class: "input", autocomplete: "given-name", required: true %>
           <% end %>
-          <%= render layout: "checkouts/field", locals: { label: "Last name" } do %>
+          <%= render layout: "checkouts/field", locals: { label: t("store.checkout.last_name") } do %>
             <%= form.text_field :last_name, class: "input", autocomplete: "family-name", required: true %>
           <% end %>
         </div>
 
-        <%= render layout: "checkouts/field", locals: { label: "Street address" } do %>
+        <%= render layout: "checkouts/field", locals: { label: t("store.checkout.street") } do %>
         <div class="autocomplete">
           <%= form.text_field :address_line1,
                 class: "input",
@@ -81,25 +81,25 @@
         </div>
         <% end %>
 
-        <%= render layout: "checkouts/field", locals: { label: "Apartment, suite", required: false } do %>
+        <%= render layout: "checkouts/field", locals: { label: t("store.checkout.apartment"), required: false } do %>
           <%= form.text_field :address_line2, class: "input",
                 autocomplete: "shipping address-line2",
                 data: { address_autocomplete_target: "next" } %>
         <% end %>
 
         <div class="checkout__grid checkout__grid--2">
-          <%= render layout: "checkouts/field", locals: { label: "City" } do %>
+          <%= render layout: "checkouts/field", locals: { label: t("store.checkout.city") } do %>
             <%= form.text_field :city, class: "input", autocomplete: "shipping address-level2",
                   required: true, data: { address_autocomplete_target: "city" } %>
           <% end %>
-          <%= render layout: "checkouts/field", locals: { label: "Province / State" } do %>
+          <%= render layout: "checkouts/field", locals: { label: t("store.checkout.province") } do %>
             <%= form.text_field :province, class: "input",
                   autocomplete: "shipping address-level1", data: { address_autocomplete_target: "province" } %>
           <% end %>
         </div>
 
         <div class="checkout__grid checkout__grid--2">
-          <%= render layout: "checkouts/field", locals: { label: "Postal code" } do %>
+          <%= render layout: "checkouts/field", locals: { label: t("store.checkout.postal_code") } do %>
           <div class="autocomplete">
             <%= form.text_field :postal_code,
                   class: "input",
@@ -119,7 +119,7 @@
           </div>
           <% end %>
 
-          <%= render layout: "checkouts/field", locals: { label: "Country" } do %>
+          <%= render layout: "checkouts/field", locals: { label: t("store.checkout.country") } do %>
           <span class="select">
             <%= form.select :country, checkout_form_country_options, {}, class: "input",
                   data: { address_autocomplete_target: "country" } %>
@@ -128,32 +128,32 @@
           <% end %>
         </div>
 
-        <%= render layout: "checkouts/field", locals: { label: "Phone" } do %>
+        <%= render layout: "checkouts/field", locals: { label: t("store.checkout.phone") } do %>
           <%= form.telephone_field :phone, class: "input", placeholder: "(514) 555-0123",
                 autocomplete: "tel", inputmode: "tel", required: true %>
         <% end %>
-        <p class="field__hint"><%= cj_icon "truck" %>Carriers use it for delivery updates. Nothing else.</p>
+        <p class="field__hint"><%= cj_icon "truck" %><%= t("store.checkout.phone_hint") %></p>
         <p class="autocomplete__status" role="status" aria-live="polite" data-address-autocomplete-target="status"></p>
       </div>
 
       <div class="card checkout__section">
-        <p class="eyebrow eyebrow--accent" style="font-size:var(--fs-body-sm)">3. Shipping method</p>
-        <%= render "shared/option", title: "Standard shipping", note: "Calculated by store settings", price: current_cart.formatted_shipping, selected: true %>
-        <div class="trust__item"><%= cj_icon "truck" %>Orders are prepared after payment confirmation</div>
+        <p class="eyebrow eyebrow--accent" style="font-size:var(--fs-body-sm)"><%= t("store.checkout.step_shipping") %></p>
+        <%= render "shared/option", title: t("store.checkout.standard_shipping"), note: t("store.checkout.standard_shipping_note"), price: current_cart.formatted_shipping, selected: true %>
+        <div class="trust__item"><%= cj_icon "truck" %><%= t("store.checkout.prepared_note") %></div>
       </div>
 
       <div class="card checkout__section">
         <div style="display:flex;align-items:baseline;gap:12px">
-          <p class="eyebrow eyebrow--accent" style="font-size:var(--fs-body-sm)">4. Payment</p>
-          <span style="margin-left:auto;font-size:var(--fs-caption);color:var(--text-muted)">Next step: Stripe or PayPal.</span>
+          <p class="eyebrow eyebrow--accent" style="font-size:var(--fs-body-sm)"><%= t("store.checkout.step_payment") %></p>
+          <span style="margin-left:auto;font-size:var(--fs-caption);color:var(--text-muted)"><%= t("store.checkout.next_step") %></span>
         </div>
-        <%= render "shared/option", title: "Secure payment", note: "Card with Stripe, PayPal when configured", selected: true %>
+        <%= render "shared/option", title: t("store.checkout.secure_payment"), note: t("store.checkout.secure_payment_note"), selected: true %>
 
         <button class="btn btn--primary btn--lg btn--full" type="submit">
-          <%= cj_icon "lock", size: "1.15em" %> Continue to payment
+          <%= cj_icon "lock", size: "1.15em" %> <%= t("store.checkout.continue_to_payment") %>
         </button>
         <p style="font-size:var(--fs-caption);color:var(--text-faint);text-align:center">
-          By completing your purchase, you agree to the store privacy policy.
+          <%= t("store.checkout.agree_html", link: link_to(t("store.checkout.agree_link"), privacy_policy_path)).html_safe %>
         </p>
       </div>
     </div>

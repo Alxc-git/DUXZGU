@@ -60,5 +60,7 @@
 }
 .how-step{
   display:flex;align-items:center;gap:14px;min-width:0;
-  &__n{font-family:var(--font-display);font-size:16px}
+  @container site (max-width:#{$bp-sm - 1px}){
+    width:min(100%,270px);margin-inline:auto;
+  }
 }

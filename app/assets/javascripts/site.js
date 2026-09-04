@@ -87,73 +87,6 @@ const startCutoffClocks = (root = document) => {
   });
 };
 
-// --- Social proof ----------------------------------------------------------
-// Entries are real paid orders serialised by the server; this only phrases and
-// cycles them. With too few recent orders the server sends an aggregate instead.
-const relativeTime = (iso) => {
-  const minutes = Math.round((Date.now() - new Date(iso).getTime()) / 60000);
-  if (minutes < 2) return "just now";
-  if (minutes < 60) return `${minutes} minutes ago`;
-  const hours = Math.round(minutes / 60);
-  if (hours < 24) return hours === 1 ? "an hour ago" : `${hours} hours ago`;
-  const days = Math.round(hours / 24);
-  return days === 1 ? "yesterday" : `${days} days ago`;
-};
-
-const startProofToasts = (root = document) => {
-  const toast = root.querySelector("[data-proof]");
-  const data = root.querySelector("[data-proof-data]");
-  if (!toast || !data) return;
-
-  let payload = {};
-  try { payload = JSON.parse(data.textContent) || {}; } catch { return; }
-
-  const entries = Array.isArray(payload.entries) ? payload.entries : [];
-  const summary = payload.summary;
-  if (!entries.length && !summary) return;
-
-  const who = toast.querySelector("[data-proof-who]");
-  const when = toast.querySelector("[data-proof-when]");
-  let index = 0;
-  let hideTimer;
-
-  const render = () => {
-    if (!entries.length) {
-      who.textContent = `${summary.count} people ordered in the last ${summary.days} days`;
-      when.textContent = "Verified orders";
-      return;
-    }
-    const entry = entries[index % entries.length];
-    index += 1;
-    const jars = entry.quantity > 1 ? `${entry.quantity} jars` : "a jar";
-    who.textContent = `${entry.who} in ${entry.city} ordered ${jars}`;
-    when.textContent = relativeTime(entry.at);
-  };
-
-  const show = () => {
-    render();
-    toast.hidden = false;
-    requestAnimationFrame(() => toast.classList.add("is-in"));
-    hideTimer = setTimeout(hide, 6500);
-  };
-
-  const hide = () => {
-    toast.classList.remove("is-in");
-    setTimeout(() => { toast.hidden = true; }, 400);
-  };
-
-  const stop = () => {
-    clearTimeout(hideTimer);
-    clearInterval(loop);
-    hide();
-  };
-
-  toast.querySelector("[data-proof-close]")?.addEventListener("click", stop);
-  // A single aggregate has nothing to cycle through: show it once and stop.
-  const loop = entries.length > 1 ? setInterval(show, 15000) : null;
-  setTimeout(show, 7000);
-};
-
 // --- Exit offer ------------------------------------------------------------
 const EXIT_KEY = "cj:exit-offer-seen";
 
@@ -233,6 +166,31 @@ const startReveals = (root = document) => {
     // never come on a short page.
     if (el.getBoundingClientRect().top < window.innerHeight) return reveal(el);
     observer.observe(el);
+  });
+};
+
+// Reviews use native touch scrolling and CSS scroll snap. On a phone, start on
+// the middle review so both neighbours are visible and the swipe is discoverable.
+const startReviewCarousels = (root = document) => {
+  const mobile = window.matchMedia("(max-width: 759px)");
+
+  root.querySelectorAll("[data-review-carousel]").forEach((carousel) => {
+    if (carousel.dataset.carouselReady) return;
+    carousel.dataset.carouselReady = "1";
+
+    const centerMiddleReview = () => {
+      if (!mobile.matches) return;
+      const cards = carousel.querySelectorAll(".testimonial");
+      const middle = cards[Math.floor(cards.length / 2)];
+      if (!middle) return;
+
+      const railBox = carousel.getBoundingClientRect();
+      const cardBox = middle.getBoundingClientRect();
+      carousel.scrollLeft += cardBox.left - railBox.left - (railBox.width - cardBox.width) / 2;
+    };
+
+    requestAnimationFrame(centerMiddleReview);
+    mobile.addEventListener?.("change", centerMiddleReview);
   });
 };
 
@@ -340,9 +298,9 @@ const startSupportChat = (root = document) => {
 const startStorefront = () => {
   rollOdometers();
   startReveals();
+  startReviewCarousels();
   startSupportChat();
   startCutoffClocks();
-  startProofToasts();
   startExitOffer();
 };
 

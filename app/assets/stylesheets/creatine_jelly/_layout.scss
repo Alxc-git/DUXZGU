@@ -70,6 +70,28 @@
 .g3{display:grid;grid-template-columns:1fr;gap:var(--section-gap);
   @container site (min-width:#{$bp-md}){grid-template-columns:repeat(3,minmax(0,1fr))}}
 
+// On phones, reviews become a native swipe rail. The centred card stays fully
+// readable while the neighbouring cards peek in to make the gesture obvious.
+.review-carousel{
+  @container site (max-width:#{$bp-md - 1px}){
+    --review-card-w:min(72vw,290px);
+    --review-bleed:clamp(24px,3.2vw,52px);
+    display:flex;align-items:stretch;gap:12px;
+    margin-inline:calc(var(--review-bleed) * -1);
+    padding:4px calc((100% - var(--review-card-w)) / 2) 14px;
+    overflow-x:auto;overscroll-behavior-inline:contain;
+    scroll-snap-type:x mandatory;scroll-padding-inline:calc((100% - var(--review-card-w)) / 2);
+    scrollbar-width:none;-webkit-overflow-scrolling:touch;
+    cursor:grab;
+    &::-webkit-scrollbar{display:none}
+    &:active{cursor:grabbing}
+    >.testimonial{
+      flex:0 0 var(--review-card-w);height:auto;
+      scroll-snap-align:center;scroll-snap-stop:always;
+    }
+  }
+}
+
 .band{
   display:grid;grid-template-columns:1fr;overflow:hidden;
   &__media{position:relative;min-height:280px;background:var(--ink-050)}

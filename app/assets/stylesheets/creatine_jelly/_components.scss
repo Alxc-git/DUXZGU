@@ -156,9 +156,23 @@
 // Payment marks and guarantees paired into two columns rather than stacked full
 // width, where each was leaving the other half of the row empty.
 .assurance{
-  display:grid;grid-template-columns:1fr;gap:var(--space-4) var(--space-6);
-  &__col{display:flex;flex-direction:column;gap:var(--space-3);min-width:0}
-  @container site (min-width:#{$bp-sm}){grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr)}
+  display:flex;flex-direction:column;gap:var(--space-4);
+  padding-top:var(--space-2);
+  // Payment marks left, dispatch date right — one row, both ends used.
+  &__row{
+    display:flex;flex-wrap:wrap;align-items:center;
+    gap:var(--space-3) var(--space-5);justify-content:space-between;
+    .payment-marks{flex:0 1 auto;min-width:0}
+    .cutoff{flex:0 1 auto;margin:0}
+  }
+  // Three equal guarantees across the full width, so the row is symmetric by
+  // construction instead of by nudging.
+  .trust{
+    display:grid;grid-template-columns:1fr;gap:var(--space-4);
+    padding-top:var(--space-4);border-top:1px solid var(--border-hairline);
+    @container site (min-width:#{$bp-sm}){grid-template-columns:repeat(3,minmax(0,1fr))}
+  }
+  .trust__item{align-items:flex-start;min-width:0}
 }
 
 .stars{

@@ -2,7 +2,7 @@
     moment the customer types, and a screen reader loses it with the focus. %>
 <label class="field">
   <span class="field__label">
-    <%= label %><% unless local_assigns.fetch(:required, true) %> <span class="field__optional">(optional)</span><% end %>
+    <%= label %><% unless local_assigns.fetch(:required, true) %> <span class="field__optional">(<%= t("store.checkout.optional") %>)</span><% end %>
   </span>
   <%= yield %>
 </label>

@@ -74,8 +74,8 @@
     <div class="secure-panel__head">
       <span class="feature-icon"><%= cj_icon "shield-check" %></span>
       <div>
-        <div class="stat__label">100% safe &amp; secure checkout</div>
-        <div class="stat__note">Your information is protected with 256-bit SSL encryption.</div>
+        <div class="stat__label"><%= t("store.cart.secure_title") %></div>
+        <div class="stat__note"><%= t("store.cart.secure_note") %></div>
       </div>
     </div>
     <%= render "shared/payment_methods", size: "sm" %>

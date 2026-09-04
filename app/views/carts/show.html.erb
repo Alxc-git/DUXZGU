@@ -61,7 +61,7 @@
         <%= render layout: "checkouts/summary",
               locals: { flavor: @flavor || Flavor.default, qty: current_cart.count,
                         recap: false, extras: false } do %>
-          <%= link_to "Continue to checkout", checkout_path, class: "btn btn--primary btn--lg btn--full",
+          <%= link_to t("store.cart.continue_to_checkout"), checkout_path, class: "btn btn--primary btn--lg btn--full",
                 style: "margin-top:var(--space-2)" %>
         <% end %>
         <%= render "checkouts/reassurance", section: :support %>

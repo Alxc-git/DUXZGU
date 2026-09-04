@@ -53,7 +53,6 @@
       <%= render "shared/footer" unless content_for?(:hide_footer) %>
       <%= render "shared/buy_bar", flavor: @flavor || Flavor.default unless content_for?(:hide_buy_bar) %>
       <% if current_store && current_product %>
-        <%= render "shared/recent_purchases", flavor: @flavor || Flavor.default %>
         <%= render "shared/exit_offer", flavor: @flavor || Flavor.default %>
         <%= render "shared/support_chat" %>
       <% end %>

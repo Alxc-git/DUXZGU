@@ -1,6 +1,19 @@
+// Checkout and payment hide the site footer, so nothing below them gives the
+// content room to breathe: without this the last card sits flush against the
+// bottom of the window.
+.funnel-page{
+  padding-top:var(--space-8);
+  padding-bottom:clamp(var(--space-12),6vh,var(--space-20));
+  &--tight{padding-top:var(--space-4)}
+}
+
 .checkout{
   display:grid;grid-template-columns:1fr;gap:var(--section-gap);align-items:start;
-  @container site (min-width:#{$bp-xl}){grid-template-columns:1.35fr .85fr}
+  // Closer tracks than 1.35/.85: the form still leads, but the summary no longer
+  // reads as an afterthought pinned to the edge.
+  @container site (min-width:#{$bp-xl}){
+    grid-template-columns:minmax(0,1.4fr) minmax(360px,1fr);
+  }
   &__section{display:flex;flex-direction:column;gap:var(--space-4)}
   // The order summary follows the eye down a long list of lines. Only from the
   // two-column breakpoint: stacked, a sticky panel would pin itself over the list.
@@ -51,7 +64,11 @@
     &__main .reassurance-card--trust{order:2}
   }
   @container site (min-width:#{$bp-xl}){
-    grid-template-columns:minmax(0,1.5fr) minmax(360px,.9fr);
+    grid-template-columns:minmax(0,1.42fr) minmax(360px,1fr);
+    // A cart holds a variable number of lines, so the two columns can never be
+    // made to end level. Pinning the summary means the shorter column tracks the
+    // taller one instead of leaving a void under it.
+    &__aside{position:sticky;top:calc(#{$header-h} + var(--space-4))}
   }
 }
 

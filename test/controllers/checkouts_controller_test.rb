@@ -16,7 +16,7 @@ class CheckoutsControllerTest < ActionDispatch::IntegrationTest
     get checkout_path
 
     assert_response :success
-    assert_select "h1", text: "Checkout"
+    assert_select "h1", text: I18n.t("store.checkout.title")
     assert_select "form[action=?]", checkout_path
     assert_select "input#checkout_form_email"
   end

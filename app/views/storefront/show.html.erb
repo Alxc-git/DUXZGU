@@ -85,12 +85,17 @@
         <% end %>
       </div>
 
+      <%# Payment marks and guarantees pair off; the dispatch line spans both, so
+          neither column has to stretch to match the other's item count. %>
+      <%# Full-width rows rather than two columns: two items on one side and three
+          on the other can only be made level by padding one of them out. Each row
+          is balanced within itself instead. %>
       <div class="assurance">
-        <div class="assurance__col">
+        <div class="assurance__row">
           <%= render "shared/payment_methods", size: "sm" %>
           <%= render "shared/dispatch_countdown" %>
         </div>
-        <%= render "shared/trust_row", variant: "stack" %>
+        <%= render "shared/trust_row" %>
       </div>
       </div>
     </div>
@@ -109,7 +114,6 @@
     <div class="g3">
       <% Storefront.how_to_use.each do |step| %>
         <div class="how-step">
-          <span class="feature-icon feature-icon--solid feature-icon--sm how-step__n"><%= step[:n] %></span>
           <span class="feature-icon"><%= cj_icon step[:icon] %></span>
           <div>
             <div class="stat__label"><%= step[:title] %></div>
@@ -126,7 +130,9 @@
       <h2><%= t("store.pdp.loved_title") %></h2>
       <p class="sub"><%= t("store.pdp.loved_lede", rating: Storefront::RATING, count: Storefront::REVIEW_COUNT) %></p>
     </div>
-    <div class="g3">
+    <div class="g3 review-carousel"
+         data-review-carousel role="region" tabindex="0"
+         aria-label="<%= t("store.pdp.loved_title") %>">
       <% Storefront.reviews.each do |review| %>
         <%= render "shared/testimonial", review: review %>
       <% end %>
