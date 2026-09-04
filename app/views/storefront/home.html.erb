@@ -13,7 +13,7 @@
   <div class="page"><%= render "pages/hero", flavor: @flavor %></div>
 
   <div class="page stack">
-    <div class="card reveal"><%= render "shared/stat_row", stats: Storefront::CLAIMS %></div>
+    <div class="card reveal"><%= render "shared/stat_row", stats: Storefront.claims %></div>
 
     <div class="card card--flush band reveal">
       <div class="band__media">
@@ -21,11 +21,11 @@
         <span class="band__scrim"></span>
       </div>
       <div class="band__body">
-        <p class="eyebrow eyebrow--accent">Performance. Strength. Results.</p>
-        <h2>Creatine you'll<br>actually keep taking.</h2>
-        <p class="sub">Saturation is the whole game, and saturation comes from consistency. Four gummies beat a scoop you skip.</p>
-        <%= render "shared/compare", tone: "yes", items: ["5000 mg per daily serving", "No shaker, no clumps, no chalk", "Take it anywhere — gym bag, desk, car"] %>
-        <div class="actions actions--start"><%= link_to "See the product", product_page_path, class: "btn btn--outline" %></div>
+        <p class="eyebrow eyebrow--accent"><%= t("store.home.band_eyebrow") %></p>
+        <h2><%= t("store.home.band_title_html").html_safe %></h2>
+        <p class="sub"><%= t("store.home.band_lede") %></p>
+        <%= render "shared/compare", tone: "yes", items: (1..3).map { |i| t("store.home.band_point#{i}") } %>
+        <div class="actions actions--start"><%= link_to t("store.hero.see_product"), product_page_path, class: "btn btn--outline" %></div>
       </div>
     </div>
 
@@ -33,9 +33,9 @@
 
     <div id="flavors" class="card card--pad-lg">
       <div class="section-head section-head--center">
-        <p class="eyebrow eyebrow--accent">Three flavors</p>
-        <h2>Choose your flavor</h2>
-        <p class="sub">Three jars. Same 5000 mg dose. Pick the one you'll look forward to.</p>
+        <p class="eyebrow eyebrow--accent"><%= t("store.home.flavors_eyebrow") %></p>
+        <h2><%= t("store.home.flavors_title") %></h2>
+        <p class="sub"><%= t("store.home.flavors_lede") %></p>
       </div>
       <div class="g3 reveal reveal--stagger">
         <% Flavor::ALL.each do |flavor| %>
@@ -46,12 +46,12 @@
 
     <div class="card card--pad-lg reveal">
       <div class="section-head section-head--center">
-        <p class="eyebrow eyebrow--accent">Three steps</p>
-        <h2>How to use</h2>
-        <p class="sub">No shaker, no scoop, no timing rules. Just take them.</p>
+        <p class="eyebrow eyebrow--accent"><%= t("store.home.steps_eyebrow") %></p>
+        <h2><%= t("store.home.steps_title") %></h2>
+        <p class="sub"><%= t("store.home.steps_lede") %></p>
       </div>
       <div class="g3 reveal reveal--stagger">
-        <% Storefront::HOW_TO_USE.each do |step| %>
+        <% Storefront.how_to_use.each do |step| %>
           <div class="how-step">
             <span class="feature-icon feature-icon--solid feature-icon--sm how-step__n"><%= step[:n] %></span>
             <span class="feature-icon"><%= cj_icon step[:icon] %></span>
@@ -67,9 +67,9 @@
     <div class="g2 reveal">
       <div class="card proof reveal">
         <div class="proof__score">
-          <p class="eyebrow eyebrow--accent">Verified reviews</p>
+          <p class="eyebrow eyebrow--accent"><%= t("store.home.proof_eyebrow") %></p>
           <div class="proof__number"><%= Storefront::RATING %>/5</div>
-          <p class="eyebrow eyebrow--muted">From <%= Storefront::REVIEW_COUNT %> reviews</p>
+          <p class="eyebrow eyebrow--muted"><%= t("store.home.proof_reviews", count: Storefront::REVIEW_COUNT) %></p>
         </div>
 
         <hr class="rule">
@@ -78,8 +78,8 @@
           <div class="stat">
             <span class="feature-icon feature-icon--lg"><%= cj_icon "users" %></span>
             <div style="min-width:0">
-              <div class="stat__label">Loved by athletes</div>
-              <div class="stat__note">Trusted by <%= Storefront::CUSTOMER_COUNT %> customers worldwide</div>
+              <div class="stat__label"><%= t("store.home.proof_loved") %></div>
+              <div class="stat__note"><%= t("store.home.proof_trusted", count: Storefront::CUSTOMER_COUNT) %></div>
             </div>
           </div>
           <%= cj_stars Storefront::RATING, size: :lg %>
@@ -87,14 +87,14 @@
 
         <hr class="rule">
 
-        <% quote = Storefront::REVIEWS.first %>
+        <% quote = Storefront.reviews.first %>
         <figure class="proof__quote">
           <blockquote>&ldquo;<%= quote[:quote] %>&rdquo;</blockquote>
           <figcaption>
             <span class="proof__avatar" aria-hidden="true"><%= quote[:name].to_s.strip.first %></span>
             <span>
               <b><%= quote[:name] %></b>
-              <span class="testimonial__verified"><%= cj_icon "circle-check" %>Verified buyer</span>
+              <span class="testimonial__verified"><%= cj_icon "circle-check" %><%= t("store.home.verified_buyer") %></span>
             </span>
           </figcaption>
         </figure>
@@ -108,19 +108,19 @@
         <%= image_tag "product/duwzgu-lineup-centered.webp", alt: "Creatine Jelly flavor lineup", class: "image-card__image" %>
         <span class="image-card__scrim"></span>
         <div class="image-card__body">
-          <p class="eyebrow eyebrow--accent">Three flavors</p>
-          <h2 class="image-card__title">Real results.<br>Real people.</h2>
+          <p class="eyebrow eyebrow--accent"><%= t("store.home.flavors_eyebrow") %></p>
+          <h2 class="image-card__title"><%= t("store.home.lineup_title_html").html_safe %></h2>
         </div>
       </div>
     </div>
 
     <div class="card card--pad-lg reveal">
       <div class="section-head">
-        <p class="eyebrow eyebrow--accent">Verified reviews</p>
-        <h2>What athletes say</h2>
+        <p class="eyebrow eyebrow--accent"><%= t("store.home.reviews_eyebrow") %></p>
+        <h2><%= t("store.home.reviews_title") %></h2>
       </div>
       <div class="g3 reveal reveal--stagger">
-        <% Storefront::REVIEWS.each do |review| %>
+        <% Storefront.reviews.each do |review| %>
           <%= render "shared/testimonial", review: review %>
         <% end %>
       </div>
@@ -128,11 +128,11 @@
 
     <div class="card card--pad-lg">
       <div class="section-head section-head--center">
-        <p class="eyebrow eyebrow--accent">FAQ</p>
-        <h2>Questions? We've got answers.</h2>
+        <p class="eyebrow eyebrow--accent"><%= t("store.home.faq_eyebrow") %></p>
+        <h2><%= t("store.home.faq_title") %></h2>
       </div>
       <div style="max-width:860px;margin-inline:auto">
-        <%= render "shared/accordion", items: Storefront::FAQ, open_first: true %>
+        <%= render "shared/accordion", items: Storefront.faq, open_first: true %>
       </div>
     </div>
 

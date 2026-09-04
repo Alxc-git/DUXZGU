@@ -1,0 +1,22 @@
+<%# Language switch. Each option is a POST, not a link: persisting a preference
+    changes state, and as a GET the browser could fire it just by prefetching the
+    link under the pointer. button_to works without JavaScript. %>
+<%# The active index drives the slider. It cannot be derived in CSS: button_to
+    wraps each option in its own <form>, so the buttons are not children of .lang
+    and :last-child never matches them. %>
+<div class="lang <%= local_assigns[:css_class] %>"
+     style="--lang-index:<%= I18n.available_locales.index(I18n.locale).to_i %>;--lang-count:<%= I18n.available_locales.size %>"
+     role="group" aria-label="<%= t("language.label") %>">
+  <span class="lang__track" aria-hidden="true"></span>
+  <% I18n.available_locales.each do |locale| %>
+    <%= button_to locale_switch_path,
+          params: { locale: locale },
+          class: ["lang__opt", ("is-on" if I18n.locale == locale)],
+          lang: locale,
+          title: t("language.label"),
+          aria: { current: (I18n.locale == locale ? "true" : nil) },
+          data: { turbo: false } do %>
+      <%= locale.to_s.upcase %>
+    <% end %>
+  <% end %>
+</div>

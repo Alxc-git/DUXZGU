@@ -3,7 +3,6 @@ Rails.application.routes.draw do
   get "produit/:slug", to: "storefront#show", as: :storefront_product
 
   post "langue", to: "locales#update", as: :locale_switch
-
   get "contact", to: "contacts#new", as: :contact
   post "contact", to: "contacts#create"
   get "politique-de-confidentialite", to: "pages#privacy", as: :privacy_policy
@@ -18,6 +17,8 @@ Rails.application.routes.draw do
   post "panier", to: "carts#create", as: :cart_lines
   patch "panier/:variant_id", to: "carts#update", as: :cart_line
   delete "panier/:variant_id", to: "carts#destroy"
+  post "code-promo", to: "discount_codes#create", as: :discount_codes
+  delete "code-promo", to: "discount_codes#destroy", as: :discount_code
 
   get "commande", to: "checkouts#new", as: :checkout
   post "commande", to: "checkouts#create"

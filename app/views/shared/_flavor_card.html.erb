@@ -8,7 +8,7 @@
     <span class="flavor__name"><%= flavor.name %></span>
     <span class="flavor__note"><%= flavor.note %></span>
     <span class="btn btn--sm <%= selected ? "btn--primary" : "btn--secondary" %>">
-      <%= selected ? "Selected" : "Select flavor" %>
+      <%= selected ? t("store.flavors.selected") : t("store.flavors.select") %>
     </span>
   </span>
 <% end %>

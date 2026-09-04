@@ -2,9 +2,9 @@
 
 <div class="page stack" style="padding-top:var(--space-8);max-width:840px">
   <div class="card checkout__section">
-    <p class="eyebrow eyebrow--accent" style="font-size:var(--fs-body-sm)">Support</p>
-    <h1 style="font-size:var(--fs-display-3)">Contact us</h1>
-    <p class="sub">Questions about an order, delivery or the product? Send a message to the store support inbox.</p>
+    <p class="eyebrow eyebrow--accent" style="font-size:var(--fs-body-sm)"><%= t("store.contact.eyebrow") %></p>
+    <h1 style="font-size:var(--fs-display-3)"><%= t("store.contact.title") %></h1>
+    <p class="sub"><%= t("store.contact.lede") %></p>
   </div>
 
   <%= form_with model: @message, scope: :contact_message, url: contact_path, class: "card checkout__section" do |form| %>
@@ -33,7 +33,7 @@
     <%= form.text_area :body, class: "input", rows: 7, placeholder: "Message", required: true %>
 
     <button class="btn btn--primary btn--lg btn--full" type="submit">
-      <%= cj_icon "mail", size: "1.15em" %> Send message
+      <%= cj_icon "mail", size: "1.15em" %> <%= t("store.contact.submit") %>
     </button>
   <% end %>
 </div>

@@ -9,21 +9,21 @@
     <span class="cta-card__scrim"></span>
   </div>
   <div class="cta-card__body">
-    <p class="eyebrow eyebrow--accent">Start today</p>
-    <h2>Ready to level up?</h2>
-    <p class="sub">Fuel your strength, power, and recovery — every day. Four gummies, that's the whole routine.</p>
+    <p class="eyebrow eyebrow--accent"><%= t("store.cta.eyebrow") %></p>
+    <h2><%= t("store.cta.title") %></h2>
+    <p class="sub"><%= t("store.cta.lede") %></p>
     <% if current_product && selected_purchase_variant %>
       <div class="actions">
         <%= button_to cart_lines_path,
               params: buy_now_params(quantity: 1),
               class: "btn btn--primary btn--lg" do %>
-          <%= cj_icon "shopping-cart", size: "1.15em" %> Shop now - <%= selected_purchase_variant.formatted_price %>
+          <%= cj_icon "shopping-cart", size: "1.15em" %> <%= t("store.hero.shop_now") %> - <%= selected_purchase_variant.formatted_price %>
         <% end %>
         <% unless local_assigns[:hide_product_link] %>
-          <%= link_to "See the product", product_page_path, class: "btn btn--glass btn--lg" %>
+          <%= link_to t("store.hero.see_product"), product_page_path, class: "btn btn--glass btn--lg" %>
         <% end %>
       </div>
     <% end %>
-    <p class="cta-card__note"><%= cj_icon "circle-check" %>Free shipping over $60 · 30-day money-back guarantee</p>
+    <p class="cta-card__note"><%= cj_icon "circle-check" %><%= t("store.cta.note") %></p>
   </div>
 </div>

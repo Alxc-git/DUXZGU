@@ -4,9 +4,9 @@
 <% if methods.any? %>
   <div class="payment-note <%= local_assigns[:css_class] %>">
     <span class="payment-note__label">
-      <%= cj_icon "lock" %><%= local_assigns[:label] || "Secure checkout — we accept" %>
+      <%= cj_icon "lock" %><%= local_assigns[:label] || t("store.payments.accepted") %>
     </span>
-    <%= payment_marks methods, label: "Accepted payment methods",
+    <%= payment_marks methods, label: t("store.payments.methods_label"),
           class: local_assigns[:size] == "sm" ? "payment-marks--sm" : nil %>
   </div>
 <% end %>

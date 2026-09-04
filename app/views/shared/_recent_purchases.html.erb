@@ -5,7 +5,7 @@
 <% summary = entries.any? ? nil : RecentPurchase.summary(current_store) %>
 <% if entries.any? || summary %>
   <div class="proof-toast" data-proof hidden>
-    <button type="button" class="proof-toast__close" data-proof-close aria-label="Dismiss">
+    <button type="button" class="proof-toast__close" data-proof-close aria-label="<%= t("store.social_proof.dismiss") %>">
       <%= cj_icon "close" %>
     </button>
     <span class="proof-toast__media"><%= image_tag flavor.packshot, alt: "" %></span>

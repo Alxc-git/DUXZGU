@@ -8,19 +8,19 @@
       <%# A bare heading rather than a card: an empty box the height of a panel
           just to carry two words was the widest thing on the page. %>
       <%= render "shared/page_head",
-            title: "Your cart",
-            sub: pluralize(current_cart.count, "item"),
+            title: t("store.cart.title"),
+            sub: t("store.cart.items", count: current_cart.count),
             aside: link_to(product_page_path, class: "page-head__back") {
-              safe_join([ cj_icon("chevron-left"), "Continue shopping" ])
+              safe_join([ cj_icon("chevron-left"), t("store.cart.continue_shopping") ])
             } %>
 
       <% if current_cart.empty? %>
         <div class="card card--pad-lg cart-empty">
           <span class="feature-icon feature-icon--lg"><%= cj_icon "shopping-cart" %></span>
-          <h2 style="font-size:var(--fs-title)">Your cart is empty</h2>
-          <p class="sub">Nothing here yet. Pick a flavor and it will show up on this page.</p>
+          <h2 style="font-size:var(--fs-title)"><%= t("store.cart.empty_title") %></h2>
+          <p class="sub"><%= t("store.cart.empty_lede") %></p>
           <div class="actions actions--start">
-            <%= link_to "Shop Creatine Jelly", product_page_path, class: "btn btn--primary btn--lg" %>
+            <%= link_to t("store.cart.empty_cta"), product_page_path, class: "btn btn--primary btn--lg" %>
           </div>
         </div>
       <% else %>
@@ -41,9 +41,9 @@
               <%= form_with url: cart_line_path(line.key), method: :patch, class: "cart-line__qty" do |form| %>
                 <%= form.number_field :quantity, value: line.quantity, min: 1, max: Cart::MAX_QUANTITY,
                       class: "input", aria: { label: "Quantity for #{line.flavor.name}" } %>
-                <%= form.submit "Update", class: "btn btn--secondary" %>
+                <%= form.submit t("store.cart.update"), class: "btn btn--secondary" %>
               <% end %>
-              <%= button_to "Remove", cart_line_path(line.key), method: :delete,
+              <%= button_to t("store.cart.remove"), cart_line_path(line.key), method: :delete,
                     class: "btn btn--ghost", form: { class: "cart-line__remove" } %>
             </div>
           </article>

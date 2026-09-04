@@ -38,7 +38,7 @@ class CartsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to cart_path
     follow_redirect!
     assert_response :success
-    assert_select "h1", text: "Your cart"
+    assert_select "h1", text: I18n.t("store.cart.title")
     assert_select ".checkout__item", text: /300 g/
     assert_select "input[name=?][value=?]", "quantity", "2"
     assert_select ".cart-layout" do
@@ -60,8 +60,8 @@ class CartsControllerTest < ActionDispatch::IntegrationTest
     follow_redirect!
     assert_response :success
     assert_select "img[src*='duwzgu-checkout-blueberry']", minimum: 1
-    assert_select ".checkout__item", text: /Blueberry/
-    assert_select ".cross-sell", text: /Try another flavor/
+    assert_select ".checkout__item", text: /#{Flavor.find("blueberry").name}/
+    assert_select ".cross-sell", text: /#{I18n.t("store.cart.cross_sell_flavor")}/
     assert_select ".cross-sell input[name='flavor'][value='strawberry']"
   end
 
@@ -80,8 +80,8 @@ class CartsControllerTest < ActionDispatch::IntegrationTest
     }
 
     follow_redirect!
-    assert_select ".checkout__item", text: /Blueberry/, minimum: 1
-    assert_select ".checkout__item", text: /Strawberry/, minimum: 1
+    assert_select ".checkout__item", text: /#{Flavor.find("blueberry").name}/, minimum: 1
+    assert_select ".checkout__item", text: /#{Flavor.find("strawberry").name}/, minimum: 1
     assert_select ".cart-line__controls", count: 2
   end
 
@@ -108,14 +108,14 @@ class CartsControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to cart_path
     follow_redirect!
-    assert_select "h2", text: "Your cart is empty"
+    assert_select "h2", text: I18n.t("store.cart.empty_title")
   end
 
   test "an empty cart renders the placeholder without line items" do
     get cart_path
 
     assert_response :success
-    assert_select "h2", text: "Your cart is empty"
+    assert_select "h2", text: I18n.t("store.cart.empty_title")
     assert_select ".checkout__item", 0
   end
 

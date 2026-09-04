@@ -7,13 +7,13 @@
       <%= cj_icon "close" %>
     </button>
     <span class="exit-offer__media"><%= image_tag flavor.packshot, alt: "" %></span>
-    <p class="eyebrow eyebrow--accent">Before you go</p>
-    <h2 id="exit-offer-title">Take 10% off<br>your first order.</h2>
-    <p class="sub">Join the list and we will send your code straight away — plus the odd training tip, never spam.</p>
+    <p class="eyebrow eyebrow--accent"><%= t("store.exit.eyebrow") %></p>
+    <h2 id="exit-offer-title"><%= t("store.exit.title_html").html_safe %></h2>
+    <p class="sub"><%= t("store.exit.lede") %></p>
     <%= form_with url: "#", method: :post, class: "exit-offer__form", data: { turbo: false } do %>
-      <input class="input" type="email" name="email" placeholder="Enter your email" aria-label="Email" required>
-      <button class="btn btn--primary" type="submit">Send my code</button>
+      <input class="input" type="email" name="email" placeholder="<%= t("store.exit.placeholder") %>" aria-label="Email" required>
+      <button class="btn btn--primary" type="submit"><%= t("store.exit.submit") %></button>
     <% end %>
-    <button type="button" class="btn btn--ghost btn--sm" data-exit-close>No thanks, I'll pay full price</button>
+    <button type="button" class="btn btn--ghost btn--sm" data-exit-close><%= t("store.exit.decline") %></button>
   </div>
 </div>

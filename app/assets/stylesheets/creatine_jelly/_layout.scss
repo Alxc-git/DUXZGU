@@ -225,3 +225,57 @@
   .btn{flex:1 1 auto;min-height:50px}
   @container site (min-width:#{$bp-lg}){display:none}
 }
+
+// Language switch: a two-position slider built from two links, so it still works
+// with JavaScript off and reads as navigation to a screen reader.
+.lang{
+  position:relative;display:inline-flex;align-items:center;flex:0 0 auto;
+  padding:3px;border-radius:var(--radius-pill);
+  background:var(--ink-300);border:1px solid var(--border-hairline);
+  &__track{
+    position:absolute;top:3px;bottom:3px;left:3px;
+    width:calc((100% - 6px) / var(--lang-count, 2));
+    border-radius:var(--radius-pill);background:var(--accent);
+    box-shadow:var(--shadow-accent);
+    // Driven by --lang-index from the view, not by a structural selector.
+    transform:translateX(calc(var(--lang-index, 0) * 100%));
+    transition:transform var(--dur) var(--ease-out);
+  }
+  &__opt{
+    position:relative;z-index:1;
+    display:inline-flex;align-items:center;justify-content:center;
+    min-width:38px;min-height:30px;padding:0 9px;
+    border-radius:var(--radius-pill);
+    font-family:var(--font-label);text-transform:uppercase;
+    letter-spacing:var(--ls-label);font-size:var(--fs-caption);font-weight:700;
+    color:var(--text-muted);text-decoration:none;
+    transition:color var(--dur) var(--ease-out);
+    &:hover{color:var(--text-strong)}
+    &.is-on{color:#fff}
+  }
+  @container site (max-width:#{$bp-lg - 1px}){
+    // Comfortable on a touch screen, like every other control in the header.
+    &__opt{min-width:44px;min-height:44px;padding:0 10px}
+  }
+  // The top bar holds the menu, the wordmark and the cart; a fourth control
+  // there pushed the wordmark off centre, so below the desktop breakpoint the
+  // switch moves into the menu panel instead.
+  &--header{
+    @container site (max-width:#{$bp-lg - 1px}){display:none}
+  }
+  &--sheet{
+    @container site (min-width:#{$bp-lg}){display:none}
+  }
+  @media(prefers-reduced-motion:reduce){&__track{transition:none}}
+}
+
+// Last row of the mobile menu: the buy button takes whatever width the language
+// switch leaves, so the two sit level rather than stacking.
+.sheet__foot{
+  display:flex;align-items:stretch;gap:var(--space-3);
+  margin-top:var(--space-4);
+  .lang{flex:0 0 auto}
+}
+.sheet__buy{
+  flex:1 1 auto;min-width:0;
+}

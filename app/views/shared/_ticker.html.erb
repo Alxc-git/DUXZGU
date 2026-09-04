@@ -1,6 +1,6 @@
 <div class="ticker">
   <div class="ticker__track">
-    <% (Storefront::TICKER * 2).each do |claim| %>
+    <% (Storefront.ticker * 2).each do |claim| %>
       <span class="ticker__item"><%= cj_icon "zap" %><%= claim %></span>
     <% end %>
   </div>

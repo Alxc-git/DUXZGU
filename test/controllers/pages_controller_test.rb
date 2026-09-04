@@ -34,9 +34,9 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
   # A card processor will not approve a store whose policies 404, so every one of
   # them is asserted reachable and linked from the footer.
   test "every policy page is reachable and linked from the footer" do
-    { terms_path => "Terms of sale",
-      refunds_path => "Refunds & returns",
-      shipping_policy_path => "Shipping policy" }.each do |path, heading|
+    { terms_path => I18n.t("legal.terms.title"),
+      refunds_path => I18n.t("legal.refunds.title"),
+      shipping_policy_path => I18n.t("legal.shipping.title") }.each do |path, heading|
       get path
 
       assert_response :success, "#{path} should render"

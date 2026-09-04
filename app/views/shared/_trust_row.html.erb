@@ -1,5 +1,5 @@
 <div class="trust <%= "trust--stack" if local_assigns[:variant] == "stack" %>">
-  <% Storefront::TRUST.each do |item| %>
+  <% Storefront.trust.each do |item| %>
     <div class="trust__item">
       <%= cj_icon item[:icon] %>
       <span><span class="trust__t"><%= item[:title] %></span><%= item[:note] %></span>

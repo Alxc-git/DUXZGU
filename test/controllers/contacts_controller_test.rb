@@ -10,7 +10,7 @@ class ContactsControllerTest < ActionDispatch::IntegrationTest
     get contact_path
 
     assert_response :success
-    assert_select "h1", text: "Contact us"
+    assert_select "h1", text: I18n.t("store.contact.title")
     assert_select "form[action=?]", contact_path
     assert_select "#contact_message_body"
     assert_select "select#contact_message_subject", 1

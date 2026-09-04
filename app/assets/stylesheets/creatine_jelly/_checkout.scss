@@ -230,3 +230,22 @@
   .alert__close{width:42px;height:42px;top:3px;right:3px}
   .page-head__back{min-height:42px}
 }
+
+.promo{
+  &--applied{align-items:center}
+  &__tag{
+    display:inline-flex;align-items:center;gap:7px;flex:1 1 auto;min-width:0;
+    padding:10px 13px;border-radius:var(--radius-sm);
+    background:var(--accent-soft);border:1px solid var(--border-accent-soft);
+    color:var(--text-strong);font-size:var(--fs-body-sm);font-weight:600;
+    letter-spacing:.04em;
+    .icon{color:var(--accent);font-size:15px}
+  }
+}
+
+.promo__note{
+  display:flex;align-items:center;gap:7px;margin:0;
+  color:var(--text-muted);font-size:var(--fs-caption);
+  .icon{color:var(--positive);font-size:14px}
+  b{color:var(--text-strong)}
+}

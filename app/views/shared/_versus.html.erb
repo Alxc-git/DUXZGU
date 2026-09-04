@@ -6,8 +6,8 @@
       <%= image_tag flavor.comparison_image, alt: "#{flavor.name} Creatine Jelly" %>
     </span>
     <div class="vs__body">
-      <h3 class="vs__title vs__title--win">Creatine Jelly</h3>
-      <%= render "shared/compare", tone: "yes", items: Storefront::PROS %>
+      <h3 class="vs__title vs__title--win"><%= t("store.versus.jelly") %></h3>
+      <%= render "shared/compare", tone: "yes", items: Storefront.pros %>
     </div>
   </div>
 
@@ -15,11 +15,11 @@
 
   <div class="vs__side vs__side--lose">
     <span class="vs__shot vs__shot--cutout vs__shot--rival">
-      <%= image_tag "product/creatine-powder-tub.webp", alt: "Tub of creatine powder" %>
+      <%= image_tag "product/creatine-powder-tub.webp", alt: t("store.versus.powder") %>
     </span>
     <div class="vs__body">
-      <h3 class="vs__title"><%= local_assigns[:rival] || "Creatine powder" %></h3>
-      <%= render "shared/compare", tone: "no", items: Storefront::CONS %>
+      <h3 class="vs__title"><%= local_assigns[:rival] || t("store.versus.powder") %></h3>
+      <%= render "shared/compare", tone: "no", items: Storefront.cons %>
     </div>
   </div>
 </div>

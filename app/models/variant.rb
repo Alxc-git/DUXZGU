@@ -54,6 +54,12 @@ class Variant < ApplicationRecord
     MoneyFormatter.format(compare_at_price_cents, currency)
   end
 
+  def discount_percentage
+    return if compare_at_price_cents.blank? || compare_at_price_cents <= price_cents
+
+    (100.0 * (compare_at_price_cents - price_cents) / compare_at_price_cents).round
+  end
+
   # Falls back to the product gallery so a variant without its own photo still renders.
   def display_image
     image.attached? ? image : product.images.first

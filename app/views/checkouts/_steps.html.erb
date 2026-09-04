@@ -1,5 +1,5 @@
 <div class="steps">
-  <% ["Cart", "Checkout", "Complete"].each_with_index do |label, i| %>
+  <% %w[cart checkout complete].map { |k| t("store.steps.#{k}") }.each_with_index do |label, i| %>
     <% if i.positive? %>
       <span class="steps__bar <%= "is-done" if i <= current %>"></span>
     <% end %>

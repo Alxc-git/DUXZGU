@@ -27,9 +27,53 @@ class Cart
     end
   end
 
+  DISCOUNT_KEY = "discount_code".freeze
+
   def initialize(store:, session:)
     @store = store
     @session = session
+  end
+
+  # ------------------------------------------------------------- promo code
+
+  # The code held in the session, or nil once it has expired, run out or been
+  # deactivated since it was applied. Re-checked on every read rather than
+  # trusted from the session, so a code cannot outlive its own rules.
+  def discount_code
+    return @discount_code if defined?(@discount_code)
+
+    code = DiscountCode.lookup(store, @session[DISCOUNT_KEY])
+    @discount_code = code&.usable_for?(offer_subtotal_cents) ? code : nil
+  end
+
+  def apply_discount_code(code)
+    found = DiscountCode.lookup(store, code)
+    return :unknown if found.blank?
+
+    rejection = found.rejection_for(offer_subtotal_cents)
+    return rejection if rejection
+
+    @session[DISCOUNT_KEY] = found.code
+    reset
+    :ok
+  end
+
+  def remove_discount_code
+    @session.delete(DISCOUNT_KEY)
+    reset
+  end
+
+  # What the code takes off, on top of the volume offer.
+  def code_discount_cents
+    discount_code ? discount_code.discount_on(offer_subtotal_cents) : 0
+  end
+
+  def code_discount?
+    code_discount_cents.positive?
+  end
+
+  def formatted_code_discount
+    MoneyFormatter.format(code_discount_cents, currency)
   end
 
   # Insertion order is kept, so a line never jumps around as quantities change.
@@ -167,11 +211,17 @@ class Cart
   # so a discount can never push an order back below the free-shipping line after
   # the bar has already said it was cleared.
   def discounted_subtotal_cents
+    offer_subtotal_cents - code_discount_cents
+  end
+
+  # What the goods cost once the volume offer is taken off. This is the base the
+  # promo code works on, so the two can never combine past the basket.
+  def offer_subtotal_cents
     subtotal_cents - discount_cents
   end
 
   def total_cents
-    subtotal_cents - discount_cents + shipping_cents
+    offer_subtotal_cents - code_discount_cents + shipping_cents
   end
 
   def currency
@@ -269,6 +319,7 @@ class Cart
   end
 
   def reset
+    remove_instance_variable(:@discount_code) if defined?(@discount_code)
     @lines = nil
     @purchasable = nil
     @discount = nil

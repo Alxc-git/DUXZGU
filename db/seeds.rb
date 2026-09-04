@@ -30,8 +30,8 @@ store.supplier_settings = store.supplier_settings.merge(
 store.save!
 
 PRODUCT_SLUG = "creatine-jelly".freeze
-SALE_PRICE_CENTS = 2499
-COMPARE_AT_PRICE_CENTS = 2999
+SALE_PRICE_CENTS = 3499
+COMPARE_AT_PRICE_CENTS = 4999
 SUPPLIER_COST_CENTS = 900
 
 product = store.products.find_by(slug: PRODUCT_SLUG) || store.products.new
@@ -59,7 +59,7 @@ store.products
 OPTIONS = [
   {
     name: "300 g", name_en: "300 g", hex: "#2563eb", slug: "creatine-300g",
-    price_cents: 2499, compare_at_price_cents: 2999, supplier_cost_cents: 900
+    price_cents: SALE_PRICE_CENTS, compare_at_price_cents: COMPARE_AT_PRICE_CENTS, supplier_cost_cents: 900
   },
   {
     name: "500 g", name_en: "500 g", hex: "#16a34a", slug: "creatine-500g",

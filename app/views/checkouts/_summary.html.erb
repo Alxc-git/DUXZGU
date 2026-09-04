@@ -4,8 +4,8 @@
   <% if local_assigns.fetch(:recap, true) %>
   <div class="card">
     <div style="display:flex;align-items:baseline;margin-bottom:var(--space-4)">
-      <h2 style="font-size:var(--fs-title)">Your cart (<%= current_cart.count %>)</h2>
-      <%= link_to "Edit cart", cart_path,
+      <h2 style="font-size:var(--fs-title)"><%= t("store.cart.your_cart_count", count: current_cart.count) %></h2>
+      <%= link_to t("store.cart.edit"), cart_path,
             style: "margin-left:auto;font-size:var(--fs-caption)" %>
     </div>
     <% current_cart.lines.each do |line| %>
@@ -28,19 +28,44 @@
   <%= render "shared/free_shipping_bar" %>
 
   <div class="card order-summary">
-    <h2 class="order-summary__title">Order summary</h2>
+    <h2 class="order-summary__title"><%= t("store.cart.summary") %></h2>
     <div class="checkout__section order-summary__lines">
-      <div class="checkout__line"><span>Subtotal</span><b><%= current_cart.formatted_subtotal %></b></div>
-      <div class="checkout__line"><span>Shipping</span><b><%= current_cart.shipping_cents.zero? ? "Free" : current_cart.formatted_shipping %></b></div>
+      <div class="checkout__line"><span><%= t("store.cart.subtotal") %></span><b><%= current_cart.formatted_subtotal %></b></div>
+      <div class="checkout__line"><span><%= t("store.cart.shipping") %></span><b><%= current_cart.shipping_cents.zero? ? t("store.cart.free") : current_cart.formatted_shipping %></b></div>
       <% if current_cart.discount? %>
         <div class="checkout__line checkout__line--discount"><span><%= current_cart.offer.label %></span><b>-<%= current_cart.formatted_discount %></b></div>
       <% end %>
+      <% if current_cart.code_discount? %>
+        <div class="checkout__line checkout__line--discount">
+          <span><%= current_cart.discount_code.label %></span>
+          <b>-<%= current_cart.formatted_code_discount %></b>
+        </div>
+      <% end %>
       <hr class="rule">
-      <div class="checkout__line checkout__line--total"><span>Total</span><span><%= current_cart.formatted_total %></span></div>
-      <div class="promo">
-        <input class="input" placeholder="Promo code">
-        <span class="btn btn--secondary">Apply</span>
-      </div>
+      <div class="checkout__line checkout__line--total"><span><%= t("store.cart.total") %></span><span><%= current_cart.formatted_total %></span></div>
+
+      <%# Both branches below emit a form, so neither may render inside another
+          one — the checkout page passes `promo: false` and links back instead. %>
+      <% if !local_assigns.fetch(:promo, true) %>
+        <% if current_cart.discount_code %>
+          <p class="promo__note"><%= cj_icon "check" %><%= t("store.cart.code_applied_html", code: tag.b(current_cart.discount_code.code)).html_safe %></p>
+        <% else %>
+          <p class="promo__note"><%= link_to t("store.cart.have_code"), cart_path %></p>
+        <% end %>
+      <% elsif current_cart.discount_code %>
+        <div class="promo promo--applied">
+          <span class="promo__tag"><%= cj_icon "check" %><%= current_cart.discount_code.code %></span>
+          <%= button_to discount_code_path, method: :delete, class: "btn btn--ghost btn--sm" do %>
+            <%= t("store.cart.remove") %>
+          <% end %>
+        </div>
+      <% else %>
+        <%= form_with url: discount_codes_path, method: :post, class: "promo", data: { turbo: false } do %>
+          <label class="visually-hidden" for="promo-code"><%= t("store.cart.promo_placeholder") %></label>
+          <input class="input" id="promo-code" name="code" placeholder="<%= t("store.cart.promo_placeholder") %>" autocomplete="off">
+          <button class="btn btn--secondary" type="submit"><%= t("store.cart.apply") %></button>
+        <% end %>
+      <% end %>
       <%= yield if block_given? %>
     </div>
   </div>

@@ -3,7 +3,7 @@
     <div class="footer__in">
       <div class="footer__col footer__col--brand">
         <span class="wordmark"><span class="wordmark__a">Creatine</span><span class="wordmark__b">Jelly</span></span>
-        <p class="sub" style="margin-top:8px">Premium creatine gummies made simple. Delicious. Effective. Every day.</p>
+        <p class="sub" style="margin-top:8px"><%= t("store.footer.tagline") %></p>
         <div class="footer__social" style="margin-top:12px">
           <% %w[instagram tiktok youtube facebook].each do |brand| %>
             <a class="icon-btn icon-btn--bare" href="#" aria-label="<%= brand.capitalize %>"><%= cj_icon brand %></a>
@@ -14,19 +14,19 @@
       <%# Two lists rather than three: three never divide evenly on a phone, and
           the admin link had no business being offered to customers. %>
       <div class="footer__col footer__col--links">
-        <div class="footer__h">Shop</div>
-        <%= link_to "Product", product_page_path %><%= link_to "Benefits", product_page_path(anchor: "benefits") %><%= link_to "Reviews", product_page_path(anchor: "reviews") %><%= link_to "Cart", cart_path %>
+        <div class="footer__h"><%= t("store.footer.shop") %></div>
+        <%= link_to t("store.nav.product"), product_page_path %><%= link_to t("store.nav.benefits"), product_page_path(anchor: "benefits") %><%= link_to t("store.nav.reviews"), product_page_path(anchor: "reviews") %><%= link_to t("store.nav.cart"), cart_path %>
       </div>
       <div class="footer__col footer__col--links">
-        <div class="footer__h">Support</div>
-        <%= link_to "FAQ", product_page_path(anchor: "faq") %><%= link_to "Shipping", shipping_policy_path %><%= link_to "Refunds & returns", refunds_path %><%= link_to "Contact us", contact_path %>
+        <div class="footer__h"><%= t("store.footer.support") %></div>
+        <%= link_to t("store.nav.faq"), product_page_path(anchor: "faq") %><%= link_to t("store.footer.shipping_link"), shipping_policy_path %><%= link_to t("store.footer.refunds_returns"), refunds_path %><%= link_to t("store.footer.contact"), contact_path %>
       </div>
       <div class="footer__col footer__col--news">
-        <div class="footer__h">Get 10% off your first order</div>
-        <p class="sub">Join the email list for exclusive offers and performance tips.</p>
+        <div class="footer__h"><%= t("store.footer.newsletter_title") %></div>
+        <p class="sub"><%= t("store.footer.newsletter_lede") %></p>
         <%= form_with url: "#", method: :post, class: "newsletter", data: { turbo: false } do %>
-          <input class="input" type="email" placeholder="Enter your email">
-          <button class="btn btn--primary" style="padding:0 16px" aria-label="Subscribe"><%= cj_icon "arrow-right", size: "1.15em" %></button>
+          <input class="input" type="email" placeholder="<%= t("store.footer.newsletter_placeholder") %>">
+          <button class="btn btn--primary" style="padding:0 16px" aria-label="<%= t("store.footer.subscribe") %>"><%= cj_icon "arrow-right", size: "1.15em" %></button>
         <% end %>
       </div>
     </div>
@@ -34,8 +34,8 @@
     <div class="footer__pay"><%= render "shared/payment_methods" %></div>
 
     <div class="footer__bottom">
-      <span>© <%= Date.current.year %> <%= current_store&.name || Storefront::BRAND %>. All rights reserved.</span>
-      <span style="display:flex;gap:18px;flex-wrap:wrap"><%= link_to "Terms", terms_path %><%= link_to "Refunds", refunds_path %><%= link_to "Shipping", shipping_policy_path %><%= link_to "Privacy", privacy_policy_path %></span>
+      <span>© <%= Date.current.year %> <%= current_store&.name || Storefront::BRAND %>. <%= t("store.footer.rights") %></span>
+      <span style="display:flex;gap:18px;flex-wrap:wrap"><%= link_to t("store.footer.terms"), terms_path %><%= link_to t("store.footer.refunds"), refunds_path %><%= link_to t("store.footer.shipping_link"), shipping_policy_path %><%= link_to t("store.footer.privacy"), privacy_policy_path %></span>
     </div>
   </div>
 </footer>

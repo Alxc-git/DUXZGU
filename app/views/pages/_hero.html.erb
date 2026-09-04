@@ -9,22 +9,21 @@
 
   <div class="hero__in">
     <div class="hero__copy">
-      <span class="badge badge--outline">Premium creatine gummies</span>
+      <span class="badge badge--outline"><%= t("store.hero.badge") %></span>
 
       <div class="hero__type">
-        <span class="l1">Creatine</span>
-        <span class="l2">made easy.</span>
+        <span class="l1"><%= t("store.hero.line1") %></span>
+        <span class="l2"><%= t("store.hero.line2") %></span>
       </div>
 
       <p class="hero__lede">
-        Delicious daily creatine for <b>strength, power, recovery,</b>
-        and <b>convenience</b>. Four gummies. That's the whole routine.
+        <%= t("store.hero.lede_html").html_safe %>
       </p>
 
       <div class="hero__proof">
-        <%= cj_stars Storefront::RATING, meta: "#{Storefront::RATING}/5 · #{Storefront::REVIEW_COUNT} reviews" %>
+        <%= cj_stars Storefront::RATING, meta: t("store.hero.reviews_meta", rating: Storefront::RATING, count: Storefront::REVIEW_COUNT) %>
         <span class="hero__proof-sep"></span>
-        <span class="eyebrow eyebrow--muted"><%= Storefront::CUSTOMER_COUNT %> athletes</span>
+        <span class="eyebrow eyebrow--muted"><%= t("store.hero.athletes", count: Storefront::CUSTOMER_COUNT) %></span>
       </div>
 
       <div class="hero__cta">
@@ -32,16 +31,16 @@
           <%= button_to cart_lines_path,
                 params: buy_now_params(quantity: 1),
                 class: "btn btn--primary btn--lg" do %>
-            Shop now - <%= selected_purchase_variant.formatted_price %>
+            <%= t("store.hero.shop_now") %> - <%= selected_purchase_variant.formatted_price %>
           <% end %>
         <% end %>
-        <%= link_to "See product", product_page_path(plan: "sub"), class: "btn btn--secondary btn--lg" %>
+        <%= link_to t("store.hero.see_product"), product_page_path, class: "btn btn--glass btn--lg" %>
       </div>
 
       <hr class="rule rule--dotted" style="width:100%">
 
       <div class="hero__claims">
-        <% Storefront::BENEFITS.each do |benefit| %>
+        <% Storefront.benefits.each do |benefit| %>
           <%= render "shared/stat", stat: benefit, icon_size: "sm" %>
         <% end %>
       </div>

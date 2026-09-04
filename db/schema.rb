@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_31_230000) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_04_090000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -76,6 +76,22 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_31_230000) do
     t.index ["store_id", "email"], name: "index_customers_on_store_id_and_email"
     t.index ["store_id"], name: "index_customers_on_store_id"
     t.index ["stripe_customer_id"], name: "index_customers_on_stripe_customer_id"
+  end
+
+  create_table "discount_codes", force: :cascade do |t|
+    t.boolean "active", default: true, null: false
+    t.integer "amount_off_cents"
+    t.string "code", null: false
+    t.datetime "created_at", null: false
+    t.datetime "expires_at"
+    t.integer "minimum_cents", default: 0, null: false
+    t.integer "percent_off"
+    t.bigint "store_id", null: false
+    t.integer "times_used", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.integer "usage_limit"
+    t.index ["store_id", "code"], name: "index_discount_codes_on_store_id_and_code", unique: true
+    t.index ["store_id"], name: "index_discount_codes_on_store_id"
   end
 
   create_table "orders", force: :cascade do |t|
@@ -390,6 +406,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_31_230000) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "ad_spends", "stores"
   add_foreign_key "customers", "stores"
+  add_foreign_key "discount_codes", "stores"
   add_foreign_key "orders", "customers"
   add_foreign_key "orders", "products"
   add_foreign_key "orders", "stores"

@@ -7,8 +7,8 @@
   <% flavor = suggestion[:flavor] %>
   <div class="card card--accent cross-sell">
     <div class="cross-sell__head">
-      <p class="eyebrow eyebrow--accent">Try another flavor</p>
-      <span class="cross-sell__hint">Same size · one-click add</span>
+      <p class="eyebrow eyebrow--accent"><%= t("store.cart.cross_sell_flavor") %></p>
+      <span class="cross-sell__hint"><%= t("store.cart.cross_sell_hint") %></span>
     </div>
     <div class="cross-sell__row">
       <span class="checkout__thumb cross-sell__media">
@@ -22,7 +22,7 @@
       <%= button_to cart_lines_path,
             params: { product_id: line.product.id, variant_id: line.variant.id, quantity: 1, flavor: flavor.slug },
             class: "btn btn--outline btn--sm", form: { class: "cross-sell__action" } do %>
-        <%= cj_icon "plus", size: "1.05em" %> Add this flavor
+        <%= cj_icon "plus", size: "1.05em" %> <%= t("store.cart.cross_sell_add_flavor") %>
       <% end %>
     </div>
   </div>

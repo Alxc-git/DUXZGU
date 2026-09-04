@@ -5,7 +5,7 @@
     <span class="testimonial__av" aria-hidden="true"><%= review[:name].to_s.strip.first %></span>
     <span>
       <span class="testimonial__name"><%= review[:name] %></span>
-      <span class="testimonial__verified"><%= cj_icon "circle-check" %>Verified buyer</span>
+      <span class="testimonial__verified"><%= cj_icon "circle-check" %><%= t("store.home.verified_buyer") %></span>
     </span>
   </div>
 </div>

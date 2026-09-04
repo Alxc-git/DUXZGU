@@ -3,7 +3,7 @@
     <%# Slot order is fixed by the grid, not by the markup: on a phone this button
         sits left of the wordmark, on desktop it is hidden entirely. %>
     <button type="button" class="icon-btn icon-btn--bare header__burger"
-            data-nav-toggle aria-label="Menu" aria-expanded="false">
+            data-nav-toggle aria-label="<%= t("store.nav.menu") %>" aria-expanded="false">
       <%= cj_icon "menu" %>
     </button>
 
@@ -12,22 +12,23 @@
     <% end %>
 
     <nav class="header__nav">
-      <%= link_to "Home", root_path, class: "header__link" %>
-      <%= link_to "Product", product_page_path, class: "header__link" %>
-      <%= link_to "Benefits", product_page_path(anchor: "benefits"), class: "header__link" %>
-      <%= link_to "Reviews", product_page_path(anchor: "reviews"), class: "header__link" %>
-      <%= link_to "FAQ", product_page_path(anchor: "faq"), class: "header__link" %>
+      <%= link_to t("store.nav.home"), root_path, class: "header__link" %>
+      <%= link_to t("store.nav.product"), product_page_path, class: "header__link" %>
+      <%= link_to t("store.nav.benefits"), product_page_path(anchor: "benefits"), class: "header__link" %>
+      <%= link_to t("store.nav.reviews"), product_page_path(anchor: "reviews"), class: "header__link" %>
+      <%= link_to t("store.nav.faq"), product_page_path(anchor: "faq"), class: "header__link" %>
     </nav>
 
     <div class="header__right">
+      <%= render "shared/locale_switch", css_class: "lang--header" %>
       <% if current_product && selected_purchase_variant %>
         <%= button_to cart_lines_path,
               params: buy_now_params(quantity: 1),
               class: "btn btn--primary btn--pill btn--sm header__cta" do %>
-          Buy now - <%= selected_purchase_variant.formatted_price %>
+          <%= t("store.nav.buy_now") %> - <%= selected_purchase_variant.formatted_price %>
         <% end %>
       <% end %>
-      <%= link_to cart_path, class: "icon-btn", aria: { label: "Cart" } do %>
+      <%= link_to cart_path, class: "icon-btn", aria: { label: t("store.nav.cart") } do %>
         <%= cj_icon "shopping-cart" %><span class="icon-btn__count"><%= current_cart.count %></span>
       <% end %>
     </div>
@@ -35,19 +36,24 @@
 
   <div class="sheet" data-nav-sheet>
     <div class="page sheet__in">
-      <%= link_to "Home", root_path, class: "header__link" %>
-      <%= link_to "Product", product_page_path, class: "header__link" %>
-      <%= link_to "Benefits", product_page_path(anchor: "benefits"), class: "header__link" %>
-      <%= link_to "Reviews", product_page_path(anchor: "reviews"), class: "header__link" %>
-      <%= link_to "FAQ", product_page_path(anchor: "faq"), class: "header__link" %>
-      <% if current_product && selected_purchase_variant %>
-        <%= button_to cart_lines_path,
-              params: buy_now_params(quantity: 1),
-              class: "btn btn--primary btn--full",
-              style: "margin-top:16px" do %>
-          Buy now - <%= selected_purchase_variant.formatted_price %>
+      <%= link_to t("store.nav.home"), root_path, class: "header__link" %>
+      <%= link_to t("store.nav.product"), product_page_path, class: "header__link" %>
+      <%= link_to t("store.nav.benefits"), product_page_path(anchor: "benefits"), class: "header__link" %>
+      <%= link_to t("store.nav.reviews"), product_page_path(anchor: "reviews"), class: "header__link" %>
+      <%= link_to t("store.nav.faq"), product_page_path(anchor: "faq"), class: "header__link" %>
+      <%# On a phone the switch lives in the menu: the top bar is already three
+          controls wide, and a fourth pushed the wordmark off centre. It shares
+          the last row with the buy button, which takes the space that is left. %>
+      <div class="sheet__foot">
+        <% if current_product && selected_purchase_variant %>
+          <%= button_to cart_lines_path,
+                params: buy_now_params(quantity: 1),
+                class: "btn btn--primary sheet__buy" do %>
+            <%= t("store.nav.buy_now") %> - <%= selected_purchase_variant.formatted_price %>
+          <% end %>
         <% end %>
-      <% end %>
+        <%= render "shared/locale_switch", css_class: "lang--sheet" %>
+      </div>
     </div>
   </div>
 </header>

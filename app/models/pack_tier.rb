@@ -37,6 +37,6 @@ class PackTier
   def formatted_per_unit = MoneyFormatter.format(per_unit_cents, currency)
 
   def label
-    quantity == 1 ? "1 jar" : "#{quantity} jars"
+    I18n.t(quantity == 1 ? "store.pdp.jar" : "store.pdp.jars", count: quantity)
   end
 end

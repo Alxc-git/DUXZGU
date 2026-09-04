@@ -78,7 +78,7 @@ class Orders::PlaceFromCartTest < ActiveSupport::TestCase
 
     order = place.first
     assert_equal "blueberry", order.metadata["flavor"]
-    assert_includes order.line_item_name, "Blueberry"
+    assert_includes order.line_item_name, Flavor.find("blueberry").name
   end
 
   test "creates the customer once, with a normalised email" do

@@ -28,13 +28,11 @@ class ApplicationController < ActionController::Base
   # Priority: what the customer just clicked, then what they chose before, then
   # what their browser asks for, then French.
   def switch_locale(&)
-    chosen = requested_locale
-    # A prefetch is the browser guessing, not the customer choosing: Turbo fetches
-    # links near the pointer, and letting one of those write the cookie is what
-    # made the language flip back on the next page.
-    remember_locale(chosen) if params[:locale].present? && !prefetch_request?
-
-    I18n.with_locale(chosen, &)
+    # A `?locale=` in the URL applies to this request only, so a shared or
+    # bookmarked link still opens in its language. Persisting the choice is a
+    # POST to LocalesController: a GET must not have side effects, and Turbo
+    # fetching a link near the pointer was enough to rewrite the cookie.
+    I18n.with_locale(requested_locale, &)
   end
 
   def remember_locale(locale)

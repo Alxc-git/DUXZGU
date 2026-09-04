@@ -1,36 +1,22 @@
-require "uri"
-
-# Changing the language is a preference change, so it goes through a POST.
+# Persisting a language choice changes state, so it is a POST.
 #
-# As a GET it was being triggered by Turbo's link prefetching: hovering anywhere
-# near the switch quietly fetched the other language and wrote its cookie, which
-# reset the choice on the next page.
+# It used to be a GET link, and Turbo prefetching that link on hover was enough to
+# rewrite the cookie: a pointer drifting across the switch silently changed the
+# customer's language on the next page. A safe method must never have a side
+# effect — this is exactly why.
 class LocalesController < ApplicationController
-  skip_after_action :track_visit
-
   def update
-    chosen = params[:locale].to_s.to_sym.presence_in(I18n.available_locales)
-    remember_locale(chosen) if chosen
+    locale = params[:locale].to_s.to_sym.presence_in(I18n.available_locales)
+    return redirect_back fallback_location: root_path if locale.blank?
 
-    redirect_to return_path, allow_other_host: false
-  end
+    cookies[ApplicationController::LOCALE_COOKIE] = {
+      value: locale.to_s,
+      expires: ApplicationController::LOCALE_COOKIE_MAX_AGE.from_now,
+      same_site: :lax
+    }
 
-  private
-
-  # The `locale` query parameter outranks the cookie, so returning to a URL that
-  # still carries one would undo the choice that was just made — and leave the
-  # switch stuck on that language for good. It is stripped here.
-  def return_path
-    referer = request.referer.presence or return root_path
-
-    uri = URI.parse(referer)
-    return root_path unless uri.host.nil? || uri.host == request.host
-
-    query = Rack::Utils.parse_nested_query(uri.query).except("locale")
-    uri.query = query.any? ? query.to_query : nil
-
-    [ uri.path.presence || "/", uri.query.present? ? "?#{uri.query}" : nil ].compact.join
-  rescue URI::InvalidURIError
-    root_path
+    # Back to the same page, without a locale param left in the URL: the cookie is
+    # the record of the choice now.
+    redirect_back fallback_location: root_path, allow_other_host: false
   end
 end

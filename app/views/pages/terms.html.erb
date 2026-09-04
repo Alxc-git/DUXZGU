@@ -1,50 +1,30 @@
-<% content_for :title, "Terms of sale | #{current_store.name}" %>
-<%= render layout: "pages/legal", locals: { eyebrow: "Legal", title: "Terms of sale" } do %>
-  <h2>1. Who you are buying from</h2>
-  <p>These terms govern every order placed on this store, operated by
-     <b><%= current_store.name %></b> (&ldquo;we&rdquo;, &ldquo;us&rdquo;).
-     <mark class="legal__todo">Add your registered company name, business number and registered address here.</mark>
-     Placing an order means you accept these terms as they read on the day of your order.</p>
+<% content_for :title, "#{t('legal.terms.title')} | #{current_store.name}" %>
+<%= render layout: "pages/legal", locals: { title: t("legal.terms.title") } do %>
+  <h2><%= t("legal.terms.h1") %></h2>
+  <%= legal_p "terms.p1_html", store: current_store.name, todo: legal_todo("terms.todo1") %>
 
-  <h2>2. The product</h2>
-  <p>We sell a food supplement. It is not a medicine and it does not treat, prevent or cure any
-     condition. It is not intended for anyone under 18, for pregnant or breastfeeding women, or for
-     anyone under medical supervision without advice from their doctor. Do not exceed the stated
-     daily serving. Photography is illustrative; packaging may change.</p>
+  <h2><%= t("legal.terms.h2") %></h2>
+  <p><%= t("legal.terms.p2") %></p>
 
-  <h2>3. Prices and payment</h2>
-  <p>Prices are shown in <%= current_store.currency.to_s.upcase %> and include applicable taxes unless
-     stated otherwise at checkout. Shipping, where charged, is shown before you confirm. Payment is
-     taken at the moment you confirm your order, by card through Stripe or through PayPal. We never
-     see or store your full card number.</p>
-  <p>A price shown in error does not bind us. If we discover an error before dispatch we will contact
-     you and you may confirm at the corrected price or cancel for a full refund.</p>
+  <h2><%= t("legal.terms.h3") %></h2>
+  <p><%= t("legal.terms.p3", currency: current_store.currency.to_s.upcase) %></p>
+  <p><%= t("legal.terms.p3b") %></p>
 
-  <h2>4. Your order</h2>
-  <p>Your order is an offer to buy. The contract is formed when we send you the confirmation email.
-     We may refuse an order — for example where stock has run out, where we cannot ship to your
-     address, or where we suspect fraud — and will refund you in full if we do.</p>
+  <h2><%= t("legal.terms.h4") %></h2>
+  <p><%= t("legal.terms.p4") %></p>
 
-  <h2>5. Delivery</h2>
-  <p>See our <%= link_to "shipping policy", shipping_policy_path %> for destinations, times and costs.
-     Risk passes to you on delivery.</p>
+  <h2><%= t("legal.terms.h5") %></h2>
+  <%= legal_p "terms.p5_html", link: link_to(t("legal.terms.p5_link"), shipping_policy_path) %>
 
-  <h2>6. Cancelling and returning</h2>
-  <p>See our <%= link_to "refund policy", refunds_path %>. Nothing in these terms limits the statutory
-     rights you have as a consumer.</p>
+  <h2><%= t("legal.terms.h6") %></h2>
+  <%= legal_p "terms.p6_html", link: link_to(t("legal.terms.p6_link"), refunds_path) %>
 
-  <h2>7. Our liability</h2>
-  <p>We are liable for foreseeable loss caused by our breach of these terms. We are not liable for
-     business losses, nor for loss we could not have foreseen. Nothing here excludes liability for
-     death or personal injury caused by our negligence, for fraud, or for anything else that cannot
-     lawfully be excluded.</p>
+  <h2><%= t("legal.terms.h7") %></h2>
+  <p><%= t("legal.terms.p7") %></p>
 
-  <h2>8. Changes</h2>
-  <p>We may change these terms. The version that applies to your order is the one published when you
-     ordered.</p>
+  <h2><%= t("legal.terms.h8") %></h2>
+  <p><%= t("legal.terms.p8") %></p>
 
-  <h2>9. Law and disputes</h2>
-  <p><mark class="legal__todo">State the governing law and the courts that have jurisdiction — normally
-     the country where your company is registered.</mark> If something goes wrong, write to
-     <%= mail_to current_store.support_email %> first: most problems are settled in a day.</p>
+  <h2><%= t("legal.terms.h9") %></h2>
+  <%= legal_p "terms.p9_html", todo: legal_todo("terms.todo9"), email: mail_to(current_store.support_email) %>
 <% end %>

@@ -7,8 +7,8 @@ class StorefrontControllerTest < ActionDispatch::IntegrationTest
     get root_path
 
     assert_response :success
-    assert_select ".hero__type", text: /Creatine/
-    assert_select "a[href=?]", storefront_product_path(products(:demo_product).slug), text: "See the product"
+    assert_select ".hero__type", text: /#{I18n.t("store.hero.line1")}/
+    assert_select "a[href=?]", storefront_product_path(products(:demo_product).slug), text: I18n.t("store.hero.see_product")
     assert_select ".cta-card__media source[media='(max-width: 899px)'][srcset*='duwzgu-cta-mobile-strawberry']"
   end
 
@@ -28,6 +28,17 @@ class StorefrontControllerTest < ActionDispatch::IntegrationTest
     assert_select "h1", text: products(:demo_product).display_name
     assert_select ".pdp__buy form[action=?]", cart_lines_path, count: 2
     assert_select "input[name='variant_id'][value=?]", variants(:black).id.to_s
+  end
+
+  test "the product page displays the original price, sale price and discount badge" do
+    products(:demo_product).update!(price_cents: 3_499, compare_at_price_cents: 4_999)
+
+    get storefront_product_path(products(:demo_product).slug)
+
+    assert_response :success
+    assert_select ".price__was", text: "49,99 $"
+    assert_select ".price__now", text: "34,99 $"
+    assert_select ".price__sale", text: "-30%"
   end
 
   test "inactive variants are not exposed" do

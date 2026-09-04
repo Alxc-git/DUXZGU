@@ -1,66 +1,84 @@
-# Copy and claims live in one place so views stay markup-only.
+# Copy and claims for the storefront.
+#
+# The text lives in config/locales; only the structure is here — which icon goes
+# with which line, and in what order. Everything is a method rather than a
+# constant because a constant would freeze whichever language happened to be
+# active when the class was first loaded.
 module Storefront
   BRAND          = "DUWZGU"
   PRODUCT_NAME   = "Creatine Jelly"
-  PRICE          = "$24.99"
-  PRICE_SUB      = "$21.24"
+  PRICE          = "$34.99"
   RATING         = 4.9
   REVIEW_COUNT   = "2,300+"
   CUSTOMER_COUNT = "25,000+"
 
-  CLAIMS = [
-    { icon: "dumbbell", label: "5000 mg<br>creatine",      note: "Pure creatine monohydrate" },
-    { icon: "candy",    label: "4 gummies<br>per serving", note: "Easy & convenient daily dose" },
-    { icon: "package",  label: "130<br>gummies",           note: "32 servings per container" },
-    { icon: "zap",      label: "Fast &amp;<br>convenient", note: "No mixing. No mess. Just results." }
-  ].freeze
+  module_function
 
-  BENEFITS = [
-    { icon: "dumbbell",   label: "Build muscle",    note: "Lean mass & strength" },
-    { icon: "zap",        label: "Boost power",     note: "Explosive performance" },
-    { icon: "refresh-cw", label: "Faster recovery", note: "Train harder, recover smarter" }
-  ].freeze
+  def t(key, **args) = I18n.t("store.#{key}", **args)
 
-  TRUST = [
-    { icon: "truck",        title: "Free shipping",     note: "On orders $60+" },
-    { icon: "shield-check", title: "30-day guarantee",  note: "Love it or get a refund" },
-    { icon: "lock",         title: "Secure checkout",   note: "Safe & encrypted" }
-  ].freeze
+  def claims
+    [
+      { icon: "dumbbell", label: t("claims.creatine_label_html"),    note: t("claims.creatine_note") },
+      { icon: "candy",    label: t("claims.serving_label_html"),     note: t("claims.serving_note") },
+      { icon: "package",  label: t("claims.count_label_html"),       note: t("claims.count_note") },
+      { icon: "zap",      label: t("claims.convenient_label_html"),  note: t("claims.convenient_note") }
+    ]
+  end
 
-  TICKER = [
-    "5000 mg creatine monohydrate", "No mixing. No mess.", "130 gummies per jar",
-    "32 servings", "Free shipping available", "30-day money back guarantee",
-    "Trusted by 25,000+ athletes", "4.9/5 from 2,300+ reviews"
-  ].freeze
+  def benefits
+    [
+      { icon: "dumbbell",   label: t("benefits.muscle"),   note: t("benefits.muscle_note") },
+      { icon: "zap",        label: t("benefits.power"),    note: t("benefits.power_note") },
+      { icon: "refresh-cw", label: t("benefits.recovery"), note: t("benefits.recovery_note") }
+    ]
+  end
 
-  PROS = ["5000 mg creatine monohydrate", "Delicious, easy-to-take gummies",
-          "No mixing, no chalky taste", "Perfect for daily consistency"].freeze
-  CONS = ["Usually less per serving", "Hard to mix, chalky taste",
-          "Messy & inconvenient", "Easy to skip"].freeze
+  def trust
+    [
+      { icon: "truck",        title: t("trust.shipping"),  note: t("trust.shipping_note") },
+      { icon: "shield-check", title: t("trust.guarantee"), note: t("trust.guarantee_note") },
+      { icon: "lock",         title: t("trust.secure"),    note: t("trust.secure_note") }
+    ]
+  end
 
-  HOW_TO_USE = [
-    { n: "1", icon: "candy",    title: "Take 4 gummies", note: "One serving, any time of day." },
-    { n: "2", icon: "calendar", title: "Be consistent",  note: "Daily use builds saturation." },
-    { n: "3", icon: "dumbbell", title: "Feel the results", note: "More strength, power, recovery." }
-  ].freeze
+  def ticker
+    %w[one two three four five six].map { |k| t("ticker.#{k}") }
+  end
 
-  REVIEWS = [
-    { quote: "These gummies are a game changer. No mix, no mess, and they taste amazing.", name: "Jason T." },
-    { quote: "More energy in my workouts and faster recovery. I feel the difference every day.", name: "Sarah M." },
-    { quote: "Finally, creatine I enjoy! Great flavor and super easy to stay consistent.", name: "Mike R." }
-  ].freeze
+  def pros = %w[one two three four].map { |k| t("pros.#{k}") }
+  def cons = %w[one two three four].map { |k| t("cons.#{k}") }
 
-  FAQ = [
-    { q: "How many gummies should I take?",
-      a: "Four gummies daily — that is a full 5000 mg serving of creatine monohydrate." },
-    { q: "When is the best time to take Creatine Jelly?",
-      a: "Any time of day. Consistency matters far more than timing." },
-    { q: "Is it safe to take every day?",
-      a: "Yes. Creatine monohydrate is one of the most studied supplements there is, and daily use is what builds saturation." },
-    { q: "What if I am not satisfied?",
-      a: "Every order is covered by our 30-day money back guarantee." }
-  ].freeze
+  def how_to_use
+    [
+      { n: "1", icon: "candy",    title: t("how_to_use.one"),   note: t("how_to_use.one_note") },
+      { n: "2", icon: "calendar", title: t("how_to_use.two"),   note: t("how_to_use.two_note") },
+      { n: "3", icon: "dumbbell", title: t("how_to_use.three"), note: t("how_to_use.three_note") }
+    ]
+  end
 
-  NAV = [["Home", :root], ["Product", :product], ["Benefits", :benefits],
-         ["Reviews", :reviews], ["FAQ", :faq]].freeze
+  def faq
+    (1..4).map { |i| { q: t("faq.q#{i}"), a: t("faq.a#{i}") } }
+  end
+
+  # Placeholder testimonials. These are not real customer reviews: swap them for
+  # genuine ones before opening, or drop the section — see REVIEWS_ARE_SAMPLES.
+  REVIEWS_ARE_SAMPLES = true
+
+  def reviews
+    [
+      { quote: t("home.sample_quote1"), name: "Jason T." },
+      { quote: t("home.sample_quote2"), name: "Sarah M." },
+      { quote: t("home.sample_quote3"), name: "Mike R." }
+    ]
+  end
+
+  def nav
+    [
+      [ t("nav.home"),     :root ],
+      [ t("nav.product"),  :product ],
+      [ t("nav.benefits"), :benefits ],
+      [ t("nav.reviews"),  :reviews ],
+      [ t("nav.faq"),      :faq ]
+    ]
+  end
 end

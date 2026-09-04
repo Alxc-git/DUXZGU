@@ -4,8 +4,9 @@
 <p class="cutoff" data-cutoff="<%= window.cutoff_at.iso8601 %>">
   <%= cj_icon "truck" %>
   <% if window.same_day? %>
-    <span>Order within <b data-cutoff-clock><%= distance_of_time_in_words(window.seconds_left) %></b> for dispatch today</span>
+    <span><%= t("store.dispatch.same_day_html", time: tag.b(distance_of_time_in_words(window.seconds_left), data: { cutoff_clock: true })).html_safe %></span>
   <% else %>
-    <span>Ships <b><%= l window.ships_on, format: :long rescue window.ships_on.strftime("%A") %></b></span>
+    <% ships_on = (l(window.ships_on, format: :long) rescue window.ships_on.strftime("%A")) %>
+    <span><%= t("store.dispatch.ships_html", day: tag.b(ships_on)).html_safe %></span>
   <% end %>
 </p>

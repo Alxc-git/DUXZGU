@@ -14,6 +14,13 @@ class VariantTest < ActiveSupport::TestCase
     assert_equal "34,99 $", variants(:blue).formatted_price
   end
 
+  test "calculates the displayed discount from the current and original prices" do
+    variant = variants(:black)
+    variant.product.update!(price_cents: 3_499, compare_at_price_cents: 4_999)
+
+    assert_equal 30, variant.discount_percentage
+  end
+
   test "rejects a malformed swatch colour" do
     variant = variants(:black)
     variant.color_hex = "dark blue"

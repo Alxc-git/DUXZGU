@@ -2,7 +2,7 @@
 <div class="page stack" style="padding-top:var(--space-8);max-width:820px">
   <%= render "shared/page_head",
         title: title,
-        sub: "Last updated #{l(Date.current, format: :long) rescue Date.current.strftime('%B %-d, %Y')}" %>
+        sub: t("legal.updated", date: (l(Date.current, format: :long) rescue Date.current.strftime("%B %-d, %Y"))) %>
 
   <div class="card card--pad-lg legal">
     <%= yield %>
@@ -10,12 +10,12 @@
 
   <div class="card">
     <div class="trust trust--stack">
-      <div class="trust__item"><%= cj_icon "mail" %><span><span class="trust__t">Questions</span><%= current_store.support_email %></span></div>
-      <div class="trust__item"><%= cj_icon "shield-check" %><span><span class="trust__t">Other policies</span>
-        <%= link_to "Terms", terms_path %> ·
-        <%= link_to "Refunds", refunds_path %> ·
-        <%= link_to "Shipping", shipping_policy_path %> ·
-        <%= link_to "Privacy", privacy_policy_path %></span></div>
+      <div class="trust__item"><%= cj_icon "mail" %><span><span class="trust__t"><%= t("legal.questions") %></span><%= current_store.support_email %></span></div>
+      <div class="trust__item"><%= cj_icon "shield-check" %><span><span class="trust__t"><%= t("legal.other_policies") %></span>
+        <%= link_to t("store.footer.terms"), terms_path %> ·
+        <%= link_to t("store.footer.refunds"), refunds_path %> ·
+        <%= link_to t("store.footer.shipping_link"), shipping_policy_path %> ·
+        <%= link_to t("store.footer.privacy"), privacy_policy_path %></span></div>
     </div>
   </div>
 </div>

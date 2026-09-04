@@ -4,7 +4,7 @@
     <div class="pdp__gallery">
       <div class="pdp__main">
         <%= image_tag @flavor.pdp_image, alt: "#{@flavor.name} Creatine Jelly" %>
-        <button type="button" class="icon-btn icon-btn--bare" aria-label="Zoom"><%= cj_icon "search" %></button>
+        <button type="button" class="icon-btn icon-btn--bare" aria-label="<%= t("store.pdp.zoom") %>"><%= cj_icon "search" %></button>
       </div>
 
       <div class="pdp__thumbs">
@@ -30,22 +30,28 @@
 
     <div class="pdp__buy">
       <div class="pdp__buy-inner">
-      <span class="badge badge--outline">Premium creatine gummies</span>
+      <span class="badge badge--outline"><%= t("store.pdp.badge") %></span>
       <h1 class="pdp__title"><%= @product.display_name %></h1>
-      <%= cj_stars Storefront::RATING, meta: "#{Storefront::RATING}/5 (#{Storefront::REVIEW_COUNT} reviews)" %>
+      <%= cj_stars Storefront::RATING, meta: t("store.hero.reviews_meta", rating: Storefront::RATING, count: Storefront::REVIEW_COUNT) %>
 
+      <% priced_item = @variant || @product %>
       <div>
         <span class="price__row">
-          <% if @plan == "sub" %><s class="price__was"><%= Storefront::PRICE %></s><% end %>
-          <span class="price__now"><%= @variant&.formatted_price || @product.formatted_price %></span>
+          <% if priced_item.discount_percentage.present? %>
+            <s class="price__was"><%= priced_item.formatted_compare_at_price %></s>
+          <% end %>
+          <span class="price__now"><%= priced_item.formatted_price %></span>
+          <% if priced_item.discount_percentage.present? %>
+            <span class="badge badge--save price__sale">-<%= priced_item.discount_percentage %>%</span>
+          <% end %>
         </span>
-        <div class="price__note">Secure checkout with Stripe or PayPal</div>
+        <div class="price__note"><%= t("store.pdp.secure_note") %></div>
       </div>
 
-      <p><b style="color:var(--white)">Delicious daily creatine gummies</b> for strength, power and recovery. No mixing, no mess.</p>
+      <p><%= t("store.pdp.description_html").html_safe %></p>
 
       <div>
-        <p class="eyebrow eyebrow--muted" style="margin-bottom:8px">Choose your flavor</p>
+        <p class="eyebrow eyebrow--muted" style="margin-bottom:8px"><%= t("store.pdp.choose_flavor") %></p>
         <div class="flavor-pills">
           <% Flavor::ALL.each do |flavor| %>
             <%= render "shared/flavor_pill", flavor: flavor, selected: flavor.slug == @flavor.slug %>
@@ -56,32 +62,25 @@
       <% if @tiers.any? %>
         <div>
           <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:baseline;margin-bottom:10px">
-            <p class="eyebrow eyebrow--muted">Choose your pack</p>
-            <span style="margin-left:auto;color:var(--text-muted);font-size:var(--fs-caption)">130 gummies &middot; 32 servings per jar</span>
+            <p class="eyebrow eyebrow--muted"><%= t("store.pdp.choose_pack") %></p>
+            <span style="margin-left:auto;color:var(--text-muted);font-size:var(--fs-caption)"><%= t("store.pdp.servings") %></span>
           </div>
           <%= render "shared/pack_tiers", tiers: @tiers, qty: @qty, plan: @plan, flavor: @flavor %>
         </div>
       <% end %>
 
-      <div style="display:flex;flex-direction:column;gap:10px">
-        <%= render "shared/option", title: "One-time purchase", price: @variant&.formatted_price || @product.formatted_price,
-              selected: @plan == "once", href: product_page_path(flavor: @flavor.slug, plan: "once", qty: @qty) %>
-        <%= render "shared/option", title: "Subscribe & save 15%", note: "Cancel anytime",
-              price: Storefront::PRICE_SUB, selected: @plan == "sub",
-              href: product_page_path(flavor: @flavor.slug, plan: "sub", qty: @qty) %>
-      </div>
 
       <div class="actions">
         <% if @variant.present? %>
           <%= button_to cart_lines_path,
                 params: { product_id: @product.id, variant_id: @variant.id, quantity: @qty, flavor: @flavor.slug },
                 class: "btn btn--primary btn--lg" do %>
-            <%= cj_icon "shopping-cart", size: "1.15em" %> Add to cart
+            <%= cj_icon "shopping-cart", size: "1.15em" %> <%= t("store.pdp.add_to_cart") %>
           <% end %>
           <%= button_to cart_lines_path,
                 params: { product_id: @product.id, variant_id: @variant.id, quantity: @qty, flavor: @flavor.slug, then: "checkout" },
                 class: "btn btn--outline btn--lg" do %>
-            Buy now - <%= @selected_tier&.formatted_total || @variant.formatted_price %>
+            <%= t("store.pdp.buy_now") %> - <%= @selected_tier&.formatted_total || @variant.formatted_price %>
           <% end %>
         <% end %>
       </div>
@@ -97,18 +96,18 @@
     </div>
   </div>
 
-  <div class="card card--pad-lg" id="benefits"><%= render "shared/stat_row", stats: Storefront::CLAIMS %></div>
+  <div class="card card--pad-lg" id="benefits"><%= render "shared/stat_row", stats: Storefront.claims %></div>
 
-  <%= render "shared/versus", flavor: @flavor, rival: "Traditional powder" %>
+  <%= render "shared/versus", flavor: @flavor, rival: t("store.versus.traditional") %>
 
   <div class="card card--pad-lg">
     <div class="section-head section-head--center">
-      <p class="eyebrow eyebrow--accent">Three steps</p>
-      <h2>How to use</h2>
-      <p class="sub">No shaker, no scoop, no timing rules. Just take them.</p>
+      <p class="eyebrow eyebrow--accent"><%= t("store.home.steps_eyebrow") %></p>
+      <h2><%= t("store.home.steps_title") %></h2>
+      <p class="sub"><%= t("store.home.steps_lede") %></p>
     </div>
     <div class="g3">
-      <% Storefront::HOW_TO_USE.each do |step| %>
+      <% Storefront.how_to_use.each do |step| %>
         <div class="how-step">
           <span class="feature-icon feature-icon--solid feature-icon--sm how-step__n"><%= step[:n] %></span>
           <span class="feature-icon"><%= cj_icon step[:icon] %></span>
@@ -123,12 +122,12 @@
 
   <div class="card card--pad-lg" id="reviews">
     <div class="section-head section-head--center">
-      <p class="eyebrow eyebrow--accent">Verified reviews</p>
-      <h2>Loved by athletes</h2>
-      <p class="sub"><%= Storefront::RATING %>/5 from <%= Storefront::REVIEW_COUNT %> reviews.</p>
+      <p class="eyebrow eyebrow--accent"><%= t("store.home.reviews_eyebrow") %></p>
+      <h2><%= t("store.pdp.loved_title") %></h2>
+      <p class="sub"><%= t("store.pdp.loved_lede", rating: Storefront::RATING, count: Storefront::REVIEW_COUNT) %></p>
     </div>
     <div class="g3">
-      <% Storefront::REVIEWS.each do |review| %>
+      <% Storefront.reviews.each do |review| %>
         <%= render "shared/testimonial", review: review %>
       <% end %>
     </div>
@@ -136,11 +135,11 @@
 
   <div class="card card--pad-lg" id="faq">
     <div class="section-head section-head--center">
-      <p class="eyebrow eyebrow--accent">FAQ</p>
-      <h2>Questions? We've got answers.</h2>
+      <p class="eyebrow eyebrow--accent"><%= t("store.home.faq_eyebrow") %></p>
+      <h2><%= t("store.home.faq_title") %></h2>
     </div>
     <div style="max-width:860px;margin-inline:auto">
-      <%= render "shared/accordion", items: Storefront::FAQ, open_first: true %>
+      <%= render "shared/accordion", items: Storefront.faq, open_first: true %>
     </div>
   </div>
 

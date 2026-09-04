@@ -1,40 +1,26 @@
-<% content_for :title, "Refunds & returns | #{current_store.name}" %>
-<%= render layout: "pages/legal", locals: { eyebrow: "Legal", title: "Refunds & returns" } do %>
-  <h2>The 30-day guarantee</h2>
-  <p>If the product is not for you, tell us within <b>30 days of delivery</b> and we will refund what
-     you paid for the goods. You do not need a reason. This is the guarantee advertised across this
-     store, and it applies even to an opened jar — we would rather you tried it.</p>
+<% content_for :title, "#{t('legal.refunds.title')} | #{current_store.name}" %>
+<%= render layout: "pages/legal", locals: { title: t("legal.refunds.title") } do %>
+  <h2><%= t("legal.refunds.h1") %></h2>
+  <%= legal_p "refunds.p1_html" %>
 
-  <h2>How to ask</h2>
-  <p>Email <%= mail_to current_store.support_email %> with your order number, which is in your
-     confirmation email. We answer within one business day and tell you whether to return the jar or
-     keep it. Do not send anything back before we reply: an unannounced return can arrive without a
-     reference and cannot be matched to your order.</p>
+  <h2><%= t("legal.refunds.h2") %></h2>
+  <%= legal_p "refunds.p2_html", email: mail_to(current_store.support_email) %>
 
-  <h2>Return shipping</h2>
-  <p><mark class="legal__todo">State who pays return postage — you or the customer — and give the return
-     address.</mark> Where a return is our fault (wrong item, damaged, faulty) we always pay.</p>
+  <h2><%= t("legal.refunds.h3") %></h2>
+  <%= legal_p "refunds.p3_html", todo: legal_todo("refunds.todo3") %>
 
-  <h2>When you get your money</h2>
-  <p>We refund to the original payment method within <b>5 business days</b> of approving the request, or
-     of receiving the return where one was asked for. Your bank then takes its own time, usually two to
-     five days. Shipping you originally paid is refunded when the whole order is returned; it is not
-     refunded on a partial return.</p>
+  <h2><%= t("legal.refunds.h4") %></h2>
+  <%= legal_p "refunds.p4_html" %>
 
-  <h2>Damaged or wrong on arrival</h2>
-  <p>Send us a photograph within 48 hours of delivery and we replace it or refund it in full, including
-     shipping. Keep the packaging until we have answered.</p>
+  <h2><%= t("legal.refunds.h5") %></h2>
+  <p><%= t("legal.refunds.p5") %></p>
 
-  <h2>Cancelling before dispatch</h2>
-  <p>Write to us before your order ships and we cancel it and refund you in full. Once it has shipped,
-     the guarantee above takes over.</p>
+  <h2><%= t("legal.refunds.h6") %></h2>
+  <p><%= t("legal.refunds.p6") %></p>
 
-  <h2>Subscriptions</h2>
-  <p>A subscription can be cancelled at any time from the link in any order email, or by writing to us.
-     Cancelling stops future deliveries; a delivery already dispatched is covered by the 30-day
-     guarantee like any other order.</p>
+  <h2><%= t("legal.refunds.h7") %></h2>
+  <p><%= t("legal.refunds.p7") %></p>
 
-  <h2>Your statutory rights</h2>
-  <p>This guarantee is offered on top of the rights the law already gives you as a consumer, and does
-     not replace them.</p>
+  <h2><%= t("legal.refunds.h8") %></h2>
+  <p><%= t("legal.refunds.p8") %></p>
 <% end %>
