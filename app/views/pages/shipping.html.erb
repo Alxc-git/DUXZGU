@@ -1,0 +1,51 @@
+<% content_for :title, "Shipping | #{current_store.name}" %>
+<%= render layout: "pages/legal", locals: { eyebrow: "Legal", title: "Shipping policy" } do %>
+  <h2>Where we ship</h2>
+  <p>We currently ship to
+     <b><%= current_store.shipping_countries.map { |c| country_name(c) rescue c }.to_sentence %></b>.
+     If your country is not on the list, the checkout will not let you complete an order — write to us
+     and we will tell you whether we can arrange it.</p>
+
+  <h2>What it costs</h2>
+  <% if current_store.shipping_cents.zero? %>
+    <p>Shipping is <b>free on every order</b>, with no minimum.</p>
+  <% else %>
+    <p>Shipping is <b><%= MoneyFormatter.format(current_store.shipping_cents, current_store.currency) %></b>
+       per parcel.
+       <% if current_store.free_shipping_threshold? %>
+         Orders over
+         <b><%= MoneyFormatter.format(current_store.free_shipping_threshold_cents, current_store.currency) %></b>
+         ship free.
+       <% end %>
+       The fee is charged once per parcel, not per item, so adding a second jar never doubles it.</p>
+  <% end %>
+
+  <h2>When it leaves</h2>
+  <% window = DispatchWindow.for(current_store) %>
+  <p>Orders placed on a working day before <b><%= window.cutoff_at.strftime("%-l %p").strip %></b> are
+     prepared the same day. Orders placed after that, or at a weekend, go out on the next working day.
+     Dispatch always follows payment confirmation — an order that has not been paid is not prepared.</p>
+
+  <h2>How long it takes</h2>
+  <p><mark class="legal__todo">State your real delivery windows per destination, for example "Canada:
+     5–9 business days".</mark> These are estimates from the carrier, not guarantees. Customs, weather
+     and public holidays can add days, and we cannot shorten them once a parcel has left.</p>
+
+  <h2>Tracking</h2>
+  <p>You get a tracking link by email as soon as the carrier scans your parcel. If tracking has not
+     moved for five business days, write to <%= mail_to current_store.support_email %> and we will open
+     an enquiry with the carrier.</p>
+
+  <h2>Wrong address</h2>
+  <p>We ship to the address you enter at checkout. Check it before paying: once a parcel is with the
+     carrier we cannot change it. A parcel returned to us because the address was wrong can be
+     reshipped, with postage payable again.</p>
+
+  <h2>Lost parcels</h2>
+  <p>If tracking shows a parcel as delivered but you have not received it, tell us within 7 days. We
+     open an enquiry with the carrier and, once they confirm the loss, we replace or refund the order.</p>
+
+  <h2>Duties and taxes</h2>
+  <p><mark class="legal__todo">If you ship outside your own customs union, say clearly whether the
+     customer pays import duty on delivery.</mark></p>
+<% end %>

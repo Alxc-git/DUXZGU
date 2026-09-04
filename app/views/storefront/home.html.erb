@@ -8,6 +8,7 @@
     </div>
   </div>
 <% else %>
+<%= render "shared/product_schema", product: @product %>
 <div class="stack" style="padding-top:var(--section-gap)">
   <div class="page"><%= render "pages/hero", flavor: @flavor %></div>
 
@@ -16,7 +17,7 @@
 
     <div class="card card--flush band">
       <div class="band__media">
-        <%= image_tag "product/duwzgu-athlete.png", alt: "Athlete with Creatine Jelly", class: "band__image" %>
+        <%= image_tag "product/duwzgu-athlete.webp", alt: "Athlete with Creatine Jelly", class: "band__image" %>
         <span class="band__scrim"></span>
       </div>
       <div class="band__body">
@@ -104,11 +105,11 @@
       </div>
 
       <div id="flavor-lineup" class="card card--flush image-card image-card--lineup">
-        <%= image_tag "product/duwzgu-lineup.png", alt: "Creatine Jelly flavor lineup", class: "image-card__image" %>
+        <%= image_tag "product/duwzgu-lineup-centered.webp", alt: "Creatine Jelly flavor lineup", class: "image-card__image" %>
         <span class="image-card__scrim"></span>
         <div class="image-card__body">
           <p class="eyebrow eyebrow--accent">Three flavors</p>
-          <h2 style="font-size:var(--fs-title)">Real results.<br>Real people.</h2>
+          <h2 class="image-card__title">Real results.<br>Real people.</h2>
         </div>
       </div>
     </div>

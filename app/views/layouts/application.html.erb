@@ -5,6 +5,23 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="description" content="<%= content_for(:description) || current_product&.description %>">
 
+    <%# Link previews: without these a share on Instagram, WhatsApp or Slack shows
+        a bare URL. `canonical` keeps the ?flavor= and ?plan= variants of a page
+        from competing with each other in search results. %>
+    <% page_title = content_for(:title) || current_store&.name || Storefront::PRODUCT_NAME %>
+    <% page_description = content_for(:description) || current_product&.description %>
+    <link rel="canonical" href="<%= url_for(only_path: false, params: {}) rescue request.base_url + request.path %>">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="<%= current_store&.name || Storefront::BRAND %>">
+    <meta property="og:title" content="<%= page_title %>">
+    <meta property="og:description" content="<%= page_description %>">
+    <meta property="og:url" content="<%= request.base_url + request.path %>">
+    <meta property="og:image" content="<%= asset_url((@flavor || Flavor.default).scene_image) %>">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="<%= page_title %>">
+    <meta name="twitter:description" content="<%= page_description %>">
+    <meta name="twitter:image" content="<%= asset_url((@flavor || Flavor.default).scene_image) %>">
+
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <%= yield :head %>

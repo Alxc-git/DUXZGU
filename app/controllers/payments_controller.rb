@@ -11,10 +11,16 @@ class PaymentsController < ApplicationController
     @payment_error = e.message
   end
 
-  # Only reachable while Stripe has no keys: the order is recorded so the store is
-  # demonstrable end to end, and the confirmation says it is awaiting payment.
+  # Records an unpaid order so the flow is demonstrable end to end before any
+  # Stripe key exists. It is barred outside development and test: in production a
+  # misconfigured or expired key would otherwise turn this into a way to check out
+  # for free.
   def create
     return redirect_to payment_path, alert: "Utilisez le formulaire de paiement." if Payments.configured?
+    unless Rails.env.local?
+      return redirect_to payment_path, alert: t("checkout.payment_unavailable",
+        default: "Le paiement est momentanement indisponible. Merci de reessayer dans quelques minutes.")
+    end
 
     complete_checkout
     redirect_to checkout_success_path

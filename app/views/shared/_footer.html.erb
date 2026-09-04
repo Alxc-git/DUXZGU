@@ -17,7 +17,7 @@
       </div>
       <div class="footer__col">
         <div class="footer__h">Support</div>
-        <%= link_to "FAQ", product_page_path(anchor: "faq") %><%= link_to "Shipping & returns", product_page_path(anchor: "faq") %><%= link_to "Contact us", contact_path %>
+        <%= link_to "FAQ", product_page_path(anchor: "faq") %><%= link_to "Shipping", shipping_policy_path %><%= link_to "Refunds & returns", refunds_path %><%= link_to "Contact us", contact_path %>
       </div>
       <div class="footer__col">
         <div class="footer__h">Company</div>
@@ -37,7 +37,7 @@
 
     <div class="footer__bottom">
       <span>© <%= Date.current.year %> <%= current_store&.name || Storefront::BRAND %>. All rights reserved.</span>
-      <span style="display:flex;gap:18px"><%= link_to "Privacy policy", privacy_policy_path %><%= link_to "Contact", contact_path %></span>
+      <span style="display:flex;gap:18px;flex-wrap:wrap"><%= link_to "Terms", terms_path %><%= link_to "Refunds", refunds_path %><%= link_to "Shipping", shipping_policy_path %><%= link_to "Privacy", privacy_policy_path %></span>
     </div>
   </div>
 </footer>

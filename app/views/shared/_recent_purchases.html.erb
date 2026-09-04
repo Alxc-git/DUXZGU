@@ -12,7 +12,7 @@
       <span class="proof-toast__when" data-proof-when></span>
     </p>
   </div>
-  <script type="application/json" data-proof-data>
+  <script type="application/json" data-proof-data nonce="<%= content_security_policy_nonce %>">
     <%= raw entries.map(&:to_h).to_json %>
   </script>
 <% end %>

@@ -7,6 +7,10 @@ Rails.application.routes.draw do
   get "contact", to: "contacts#new", as: :contact
   post "contact", to: "contacts#create"
   get "politique-de-confidentialite", to: "pages#privacy", as: :privacy_policy
+  get "conditions-generales", to: "pages#terms", as: :terms
+  get "remboursements", to: "pages#refunds", as: :refunds
+  get "livraison", to: "pages#shipping", as: :shipping_policy
+  get "sitemap.xml", to: "pages#sitemap", as: :sitemap, defaults: { format: "xml" }
   post "preferences-confidentialite", to: "privacy_preferences#update", as: :privacy_preferences
   post "support/chat", to: "support_chats#create", as: :support_chat
 

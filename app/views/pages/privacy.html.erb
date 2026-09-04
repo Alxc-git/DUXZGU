@@ -15,4 +15,42 @@
           params: { analytics: PrivacyConsent::DECLINED },
           class: "btn btn--outline btn--lg btn--full" %>
   </div>
+
+  <div class="card card--pad-lg legal">
+    <h2>What we collect</h2>
+    <p>To take an order we need your name, email, postal address and phone number. Your card number is
+       entered inside Stripe's own form and never reaches this store — we only ever see the last four
+       digits and the result of the charge. If you pay with PayPal, PayPal tells us only that the
+       payment succeeded.</p>
+    <p>We also record what you looked at on the site, but only if you accepted analytics above.</p>
+
+    <h2>Why we are allowed to</h2>
+    <p>We process your order details because we need them to perform the contract you entered into.
+       We keep records of sales because tax law requires it. Analytics and advertising measurement
+       run on your consent, which you can withdraw at any time using the buttons above.</p>
+
+    <h2>Who else sees it</h2>
+    <p>Only the companies that make the order happen: our payment providers (Stripe, PayPal), our
+       shipping and fulfilment partner, our email provider, and our hosting provider. Each sees only
+       what its job requires. We do not sell your data, and we never will.</p>
+
+    <h2>How long we keep it</h2>
+    <p>Order records are kept as long as tax law requires
+       <mark class="legal__todo">(state the retention period for your country)</mark>. Analytics data
+       is kept for 14 months. Anything else is deleted when it is no longer needed.</p>
+
+    <h2>Your rights</h2>
+    <p>You can ask us for a copy of what we hold, ask us to correct it, or ask us to delete it. Write to
+       <%= mail_to current_store.support_email %> and we answer within 30 days. If you are not
+       satisfied you can complain to your national data protection authority.</p>
+
+    <h2>Cookies</h2>
+    <p>The store sets a session cookie so your cart survives page loads — that one is essential and
+       cannot be switched off. Analytics and Meta Pixel cookies are set only after you accept above.</p>
+
+    <h2>Contact</h2>
+    <p><mark class="legal__todo">Name the legal entity responsible for this data and its registered
+       address; this is required by law in most jurisdictions.</mark>
+       Questions: <%= mail_to current_store.support_email %>.</p>
+  </div>
 </div>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <% [[root_url, "1.0", "daily"],
+      (@product && [storefront_product_url(@product.slug), "0.9", "daily"]),
+      [contact_url, "0.4", "monthly"],
+      [terms_url, "0.2", "yearly"],
+      [refunds_url, "0.3", "yearly"],
+      [shipping_policy_url, "0.3", "yearly"],
+      [privacy_policy_url, "0.2", "yearly"]].compact.each do |loc, priority, freq| %>
+  <url>
+    <loc><%= loc %></loc>
+    <changefreq><%= freq %></changefreq>
+    <priority><%= priority %></priority>
+  </url>
+  <% end %>
+</urlset>

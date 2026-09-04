@@ -1,0 +1,23 @@
+<%# Shared shell for the policy pages, so they read as one document family. %>
+<div class="page stack" style="padding-top:var(--space-8);max-width:820px">
+  <div class="card checkout__section">
+    <p class="eyebrow eyebrow--accent" style="font-size:var(--fs-body-sm)"><%= eyebrow %></p>
+    <h1 style="font-size:var(--fs-display-3);line-height:1"><%= title %></h1>
+    <p class="sub">Last updated <%= l(Date.current, format: :long) rescue Date.current.strftime("%B %-d, %Y") %></p>
+  </div>
+
+  <div class="card card--pad-lg legal">
+    <%= yield %>
+  </div>
+
+  <div class="card">
+    <div class="trust trust--stack">
+      <div class="trust__item"><%= cj_icon "mail" %><span><span class="trust__t">Questions</span><%= current_store.support_email %></span></div>
+      <div class="trust__item"><%= cj_icon "shield-check" %><span><span class="trust__t">Other policies</span>
+        <%= link_to "Terms", terms_path %> ·
+        <%= link_to "Refunds", refunds_path %> ·
+        <%= link_to "Shipping", shipping_policy_path %> ·
+        <%= link_to "Privacy", privacy_policy_path %></span></div>
+    </div>
+  </div>
+</div>

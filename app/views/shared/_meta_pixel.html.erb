@@ -8,7 +8,7 @@
 
     Only the pixel id is written here. It is public by design; the Conversions API
     token is a server secret and never reaches a view. %>
-<script>
+<script nonce="<%= content_security_policy_nonce %>">
   !function(f,b,e,v,n,t,s)
   {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
   n.callMethod.apply(n,arguments):n.queue.push(arguments)};

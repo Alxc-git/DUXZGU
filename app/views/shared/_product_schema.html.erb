@@ -1,0 +1,40 @@
+<%# Structured data, so Google can show the price, availability and star rating
+    directly in the result. Every value is read from the same source the page
+    renders, so the two can never disagree. %>
+<% variant = local_assigns[:variant] || product.default_variant %>
+<script type="application/ld+json" nonce="<%= content_security_policy_nonce %>">
+  <%= raw({
+    "@context" => "https://schema.org",
+    "@type" => "Product",
+    "name" => product.display_name,
+    "description" => product.description.to_s.truncate(300),
+    "sku" => variant&.id&.to_s,
+    "brand" => { "@type" => "Brand", "name" => Storefront::BRAND },
+    "image" => Flavor::ALL.map { |f| asset_url(f.scene_image) },
+    "aggregateRating" => {
+      "@type" => "AggregateRating",
+      "ratingValue" => Storefront::RATING.to_s,
+      "reviewCount" => Storefront::REVIEW_COUNT.to_s.gsub(/\D/, "").presence || "1",
+      "bestRating" => "5"
+    },
+    "offers" => {
+      "@type" => "Offer",
+      "url" => request.base_url + request.path,
+      "priceCurrency" => (variant&.currency || current_store.currency).to_s.upcase,
+      "price" => format("%.2f", (variant&.price_cents || 0) / 100.0),
+      "availability" => "https://schema.org/InStock",
+      "itemCondition" => "https://schema.org/NewCondition",
+      "shippingDetails" => {
+        "@type" => "OfferShippingDetails",
+        "shippingRate" => {
+          "@type" => "MonetaryAmount",
+          "value" => format("%.2f", current_store.shipping_cents / 100.0),
+          "currency" => current_store.currency.to_s.upcase
+        },
+        "shippingDestination" => current_store.shipping_countries.map { |c|
+          { "@type" => "DefinedRegion", "addressCountry" => c }
+        }
+      }
+    }
+  }.to_json) %>
+</script>

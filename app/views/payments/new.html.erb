@@ -83,10 +83,57 @@
               <%= link_to "Back to checkout", checkout_path, class: "btn btn--secondary" %>
             </div>
           </div>
+        <% elsif Rails.env.local? %>
+          <%# Development only. The card fields live inside Stripe's iframe, so they
+              cannot render without a publishable key tied to a real account — this
+              panel says exactly which one is missing instead of failing silently. %>
+          <p class="eyebrow eyebrow--accent" style="font-size:var(--fs-body-sm)">Card form not connected</p>
+          <p class="sub">The real Stripe card form appears here as soon as these keys are set. Test keys are free and take a minute.</p>
+
+          <ol class="setup">
+            <li class="setup__step">
+              <span class="setup__n">1</span>
+              <div>
+                <b>Copy your test keys</b>
+                <span class="setup__note">Stripe dashboard &rarr; Developers &rarr; API keys, with <b>Test mode</b> on.</span>
+              </div>
+            </li>
+            <li class="setup__step">
+              <span class="setup__n">2</span>
+              <div>
+                <b>Paste them into <code>.env</code></b>
+                <pre class="setup__code">STRIPE_SECRET_KEY=sk_test_…
+STRIPE_PUBLISHABLE_KEY=pk_test_…</pre>
+              </div>
+            </li>
+            <li class="setup__step">
+              <span class="setup__n">3</span>
+              <div>
+                <b>Forward the webhook, then restart</b>
+                <span class="setup__note">Without it a payment succeeds but the order never turns paid.</span>
+                <pre class="setup__code">stripe listen --forward-to localhost:5000/webhooks/stripe</pre>
+              </div>
+            </li>
+          </ol>
+
+          <div class="setup__missing">
+            <b>Missing right now:</b>
+            <%= [("STRIPE_SECRET_KEY" if Payments.secret_key.blank?),
+                 ("STRIPE_PUBLISHABLE_KEY" if Payments.publishable_key.blank?)].compact.join(", ") %>
+          </div>
+
+          <hr class="rule">
+          <p class="sub" style="font-size:var(--fs-caption)">Until then you can record an unpaid order to exercise the rest of the flow. This button does not exist outside development.</p>
+          <%= button_to "Record an unpaid test order", payment_path, method: :post, class: "btn btn--secondary btn--full" %>
         <% else %>
-          <p class="eyebrow eyebrow--accent" style="font-size:var(--fs-body-sm)">Local mode</p>
-          <p class="sub">Stripe keys are not configured. You can still complete a local unpaid test order.</p>
-          <%= button_to "Complete test order", payment_path, method: :post, class: "btn btn--primary btn--lg btn--full" %>
+          <%# Never offer a way through this page without a payment. %>
+          <div role="alert" class="checkout__section">
+            <p class="eyebrow eyebrow--accent" style="font-size:var(--fs-body-sm)">Payment unavailable</p>
+            <p class="sub">We cannot take payment right now. Your order is saved — please try again in a few minutes, or contact us and we will finish it for you.</p>
+            <div class="actions actions--start">
+              <%= link_to "Contact us", contact_path, class: "btn btn--secondary" %>
+            </div>
+          </div>
         <% end %>
       </div>
 

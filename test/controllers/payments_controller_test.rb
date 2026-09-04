@@ -26,13 +26,14 @@ class PaymentsControllerTest < ActionDispatch::IntegrationTest
     assert_select ".checkout__line--total", text: /Total/
   end
 
-  test "explains local mode when Stripe has no keys" do
+  test "names the missing keys instead of the card form when Stripe has none" do
     Stripe.api_key = nil
     reach_payment_step
 
     assert_response :success
-    assert_select "p", text: /Stripe keys are not configured/
     assert_select ".payment-form", 0
+    assert_select ".setup__missing", text: /STRIPE_SECRET_KEY/
+    assert_select ".setup__step", 3
   end
 
   test "without keys the order can still be recorded, unpaid" do
@@ -71,6 +72,31 @@ class PaymentsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "outside development an unconfigured store refuses the no-payment shortcut" do
+    Stripe.api_key = nil
+    reach_payment_step
+
+    outside_development do
+      assert_no_difference "Order.where.not(status: :pending).count" do
+        post payment_path
+      end
+
+      assert_redirected_to payment_path
+    end
+  end
+
+  test "outside development an unconfigured store offers no way past the payment step" do
+    Stripe.api_key = nil
+
+    outside_development do
+      reach_payment_step
+
+      assert_response :success
+      assert_select "form[action=?]", payment_path, 0
+      assert_select "p", text: /cannot take payment right now/
+    end
+  end
+
   test "a configured store refuses the no-payment shortcut" do
     with_stripe_keys do
       with_intent_stub do
@@ -100,6 +126,17 @@ class PaymentsControllerTest < ActionDispatch::IntegrationTest
   end
 
   private
+
+  # `Rails.env.local?` is the one predicate the guard reads. Reassigning Rails.env
+  # would tear down the fixture connection, so only that answer is overridden —
+  # the same singleton-method idiom this file already uses for Stripe.
+  def outside_development
+    env = Rails.env
+    env.define_singleton_method(:local?) { false }
+    yield
+  ensure
+    env.singleton_class.remove_method(:local?)
+  end
 
   def reach_payment_step
     post cart_lines_path, params: {

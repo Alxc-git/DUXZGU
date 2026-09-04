@@ -76,3 +76,33 @@
     .icon,svg{flex:0 0 auto;color:var(--accent)}
   }
 }
+
+// Development-only setup guide, shown where the card form will appear once the
+// Stripe keys are set.
+.setup{
+  display:flex;flex-direction:column;gap:var(--space-4);
+  margin:0;padding:0;list-style:none;
+  &__step{display:flex;gap:12px;align-items:flex-start;
+    >div{display:flex;flex-direction:column;gap:5px;min-width:0}
+    b{color:var(--text-strong);font-size:var(--fs-body-sm)}}
+  &__n{
+    flex:0 0 auto;display:flex;align-items:center;justify-content:center;
+    width:24px;height:24px;border-radius:50%;
+    background:var(--accent-soft);border:1px solid var(--border-accent-soft);
+    color:var(--accent);font-family:var(--font-display);font-size:13px;
+  }
+  &__note{color:var(--text-muted);font-size:var(--fs-caption);line-height:1.45}
+  &__code{
+    margin:2px 0 0;padding:10px 12px;overflow-x:auto;
+    background:var(--ink-000);border:1px solid var(--border-hairline);
+    border-radius:var(--radius-sm);
+    color:var(--gray-300);font-size:var(--fs-caption);line-height:1.6;
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre;
+  }
+  &__missing{
+    padding:10px 13px;border-radius:var(--radius-sm);
+    background:rgba(255,176,32,.1);border:1px solid rgba(255,176,32,.35);
+    color:var(--warning);font-size:var(--fs-caption);
+    b{color:var(--warning)}
+  }
+}
