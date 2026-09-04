@@ -20,7 +20,7 @@
           <div class="card checkout__section">
             <div class="checkout__item">
               <span class="checkout__thumb">
-                <%= image_tag((@flavor || Flavor.default).packshot, alt: "") %>
+                <%= image_tag((@flavor || Flavor.default).checkout_image, alt: "") %>
               </span>
               <div style="min-width:0;flex:1">
                 <div class="stat__label"><%= line.product.display_name %></div>

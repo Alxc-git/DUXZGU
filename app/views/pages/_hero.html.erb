@@ -1,6 +1,9 @@
 <section class="hero hero--scene" style="--hero-flavor:<%= flavor.color_var %>;--hero-spot:<%= flavor.spot_var %>;--hero-focus:<%= flavor.scene_focus %>">
   <div class="hero__bleed">
-    <%= image_tag flavor.scene_image, alt: "#{flavor.name} Creatine Jelly" %>
+    <picture>
+      <source media="(max-width: 899px)" srcset="<%= asset_path flavor.mobile_scene_image %>">
+      <%= image_tag flavor.scene_image, alt: "#{flavor.name} Creatine Jelly" %>
+    </picture>
   </div>
   <span class="hero__veil"></span>
 

@@ -8,7 +8,7 @@
     <% current_cart.lines.each do |line| %>
       <div class="checkout__item">
         <span class="checkout__thumb">
-          <%= image_tag flavor.packshot, alt: "" %>
+          <%= image_tag flavor.checkout_image, alt: "" %>
         </span>
         <div style="min-width:0;flex:1">
           <div class="stat__label"><%= line.product.display_name %></div>

@@ -1,7 +1,9 @@
-<%# Social proof from real paid orders only — see RecentPurchase. With no recent
-    orders the list is empty and nothing renders, rather than inventing activity. %>
+<%# Social proof from real paid orders only — see RecentPurchase. With too few
+    recent ones the notice falls back to a real count over 30 days, and with
+    nothing to say it renders nothing rather than inventing activity. %>
 <% entries = RecentPurchase.for(current_store) %>
-<% if entries.any? %>
+<% summary = entries.any? ? nil : RecentPurchase.summary(current_store) %>
+<% if entries.any? || summary %>
   <div class="proof-toast" data-proof hidden>
     <button type="button" class="proof-toast__close" data-proof-close aria-label="Dismiss">
       <%= cj_icon "close" %>
@@ -13,6 +15,6 @@
     </p>
   </div>
   <script type="application/json" data-proof-data nonce="<%= content_security_policy_nonce %>">
-    <%= raw entries.map(&:to_h).to_json %>
+    <%= raw({ entries: entries.map(&:to_h), summary: summary }.to_json) %>
   </script>
 <% end %>
