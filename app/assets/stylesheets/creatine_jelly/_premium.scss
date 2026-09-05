@@ -129,7 +129,7 @@
   .product-facts span{font-size:.6rem;line-height:1.6}
   .editorial-story__grid{grid-template-columns:1fr;gap:32px}
   .editorial-story__detail img{aspect-ratio:4/3}
-  .editorial-story__hand{max-width:74%;margin-top:28px!important}
+  .editorial-story__hand{max-width:74%;margin:28px auto 0!important;text-align:center}
   .editorial-story__copy{max-width:none}
   .ritual-steps{grid-template-columns:1fr;border-top:0}
   .ritual-steps li,.ritual-steps li+li{padding:25px 0;border-left:0;border-top:1px solid var(--border-hairline);display:grid;grid-template-columns:33px 1fr;gap:12px}
