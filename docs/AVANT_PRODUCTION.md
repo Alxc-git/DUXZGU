@@ -1,6 +1,6 @@
 # Avant de lancer DUWZGU en production
 
-Audit du code local, 4 septembre 2026. La finition visuelle ne valide pas les
+Audit du code local, mis à jour le 5 septembre 2026. La finition visuelle ne valide pas les
 paiements ni les services de production. Aucun courriel réel, paiement réel ou
 déploiement n'a été effectué pendant cette intervention.
 
@@ -22,17 +22,18 @@ déploiement n'a été effectué pendant cette intervention.
   `app/services/payments/paypal/create_order.rb` envoie le sous-total avant remise
   et le total après remise sans ligne de réduction correspondante. Le détail
   doit se réconcilier avec le montant payable. Tester panier simple et multiligne.
-- [ ] **Brancher l'offre « 10 % ».** Le formulaire du pied de page ET la fenêtre
-  de sortie pointent vers `#`. Créer la table d'abonnés (courriel normalisé unique
-  par boutique, langue, consentement horodaté/source/version, statut, désabonnement),
-  la validation serveur, une protection anti-abus et le courriel de bienvenue.
-  Livrer un code personnel valide, avec conditions explicites de cumul et durée.
-  Exporter uniquement les abonnés autorisés aux campagnes, jamais tous les clients
-  du checkout par défaut. Tester la désinscription et sa prise en compte par les exports.
-- [ ] **Remplacer les preuves sociales fictives.** `Storefront::REVIEWS_ARE_SAMPLES`
-  vaut `true`, alors que des avis portent « Achat vérifié » et que des notes/chiffres
-  sont affichés. Utiliser uniquement des avis et chiffres documentés, ou retirer
-  les blocs et les données structurées correspondantes avant le lancement.
+- [ ] **Terminer l'offre « 10 % » pour les campagnes.** Le formulaire du pied de
+  page stocke maintenant le courriel normalisé et unique par boutique, la langue,
+  la source et le consentement horodaté; un courriel de bienvenue est mis en file.
+  Restent à réaliser : lien public de désabonnement (le champ existe, sans parcours
+  public), export des seuls abonnés autorisés, protection anti-abus au-delà de la
+  session et preuve de livraison SMTP. Le code de bienvenue est partagé; rendre
+  effective la condition « première commande », ses limites, son cumul et sa durée.
+  Contrôler également la fenêtre de sortie, encore distincte du formulaire branché.
+  Ne pas inscrire automatiquement les clients du checkout aux campagnes.
+- [x] **Retirer les preuves sociales fictives.** Avis de démonstration, scores,
+  chiffres clients et `aggregateRating` ont été retirés des pages publiques.
+  N'ajouter des avis et chiffres qu'avec une source vérifiable.
 
 ## 2. Paiement, courriels et livraison
 
@@ -58,15 +59,17 @@ déploiement n'a été effectué pendant cette intervention.
   pays servis et délais chez le fournisseur. Tester une commande jusqu'au suivi,
   puis un remboursement complet et partiel d'un panier multiligne.
   **Constat du 5 septembre :** l'API CJ répond, mais les variantes locales de
-  Creatine Jelly n'ont pas de VID; la sélection de saveur reste visuelle et le
-  paiement CJ est manuel. Voir [les identifiants vérifiés et le détail du suivi](CJ_EXPEDITION.md).
+  Creatine Jelly n'ont pas de VID. La saveur est conservée dans le panier et les
+  métadonnées de commande, mais n'est pas reliée au VID de chaque saveur chez CJ.
+  Le paiement CJ est manuel. Voir [les identifiants vérifiés et le détail du suivi](CJ_EXPEDITION.md).
 - [ ] Valider taxes, devises, frais et conditions de retour pour les pays vendus.
 
 ## 3. Contenu, confidentialité et confiance
 
 - [ ] Compléter l'identité du vendeur, l'adresse professionnelle, les coordonnées
   support et le responsable de la confidentialité dans les pages publiques.
-- [ ] Remplacer les liens sociaux `#` par les vrais profils, ou les retirer.
+- [x] Masquer les liens sociaux sans profil HTTPS configuré. Renseigner les vrais
+  profils dans les réglages de la boutique pour les afficher.
 - [ ] Vérifier avec les documents produit les ingrédients, doses, portions,
   précautions, promesses et étiquettes des images. Faire valider les allégations
   et la commercialisation pour les marchés visés.
@@ -88,7 +91,7 @@ déploiement n'a été effectué pendant cette intervention.
 - [ ] Exécuter migrations et compilation des assets; vérifier le démarrage web,
   le worker, `/up`, les erreurs applicatives et une procédure de retour arrière.
 - [ ] Lancer `bin/rails test`, `bin/rails zeitwerk:check`,
-  `node --test test/javascript/site_lifecycle_test.cjs`,
+  `node --test test/javascript/*.cjs`,
   `bin/brakeman --no-pager` et `bin/bundler-audit check --update`.
   Corriger les problèmes pertinents avant le lancement.
 - [ ] Tester FR/EN, les trois saveurs, menu mobile, panier, checkout, FAQ,
@@ -109,13 +112,11 @@ visuels responsives avec dimensions et chargement différé; nettoyage d'images
 inutilisées; animations avec nettoyage lors des navigations Turbo et respect
 des préférences de mouvement. Voir [le bilan des images](NETTOYAGE_IMAGES.md).
 
-Validation locale : 373 tests Rails / 1 565 assertions passent; 4 tests JavaScript
-de cycle de vie passent; autoload Zeitwerk et compilation Sass vérifiés. Les tests
-contrôleurs storefront/panier/checkout ont également été rejoués après les derniers
-ajustements (27 tests, tous réussis). L'accueil a été contrôlé à 320, 390, 768,
-1 024 et 1 440 px : aucun débordement détecté sur les blocs inspectés, cartes de
-saveurs de même hauteur. Les trois saveurs et le changement FR/EN ont été vérifiés
-dans le navigateur; aucune image manquante ou erreur JavaScript constatée.
+Validation locale du 5 septembre : 395 tests Rails / 1 681 assertions et 12 tests
+JavaScript passent; autoload Zeitwerk et compilation Sass vérifiés. Accueil et
+fiche produit contrôlés dans le navigateur, notamment sur téléphone et tablette;
+ajout de framboise au panier après sélection vérifié, puis article de test retiré.
+Voir [le bilan des six améliorations et les nouveaux visuels](REFONTE_PREMIUM.md).
 
 Les blocages fonctionnels ci-dessus restent à corriger. Cette liste constitue
 une recette à effectuer, pas une attestation de préparation à la production.

@@ -37,7 +37,13 @@
     </noscript>
   </head>
 
-  <body>
+  <body class="premium-store" data-controller="flavor"
+        data-flavor-options-value="<%= storefront_flavor_options.to_json %>"
+        data-flavor-selected-value="<%= (@flavor || Flavor.default).slug %>"
+        data-flavor-product-path-value="<%= current_product ? storefront_product_path(current_product.slug) : '' %>"
+        data-flavor-selected-label-value="<%= t('store.flavors.selected') %>"
+        data-flavor-choose-label-value="<%= t('store.flavors.select') %>">
+    <span class="visually-hidden" aria-live="polite" aria-atomic="true" data-flavor-status></span>
     <div class="scroll-progress" aria-hidden="true">
       <span class="scroll-progress__fill" data-scroll-progress></span>
     </div>

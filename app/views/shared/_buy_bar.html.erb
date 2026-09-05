@@ -6,6 +6,7 @@
   <% if current_product && selected_purchase_variant %>
     <%= button_to cart_lines_path,
           params: buy_now_params(quantity: 1),
+          form: { data: { flavor_purchase: true } },
           class: "btn btn--primary" do %>
       <%= cj_icon "shopping-cart", size: "1.15em" %> <%= t("store.nav.buy_now") %>
     <% end %>

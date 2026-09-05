@@ -11,12 +11,6 @@
     "sku" => variant&.id&.to_s,
     "brand" => { "@type" => "Brand", "name" => Storefront::BRAND },
     "image" => Flavor::ALL.map { |f| asset_url(f.scene_image) },
-    "aggregateRating" => {
-      "@type" => "AggregateRating",
-      "ratingValue" => Storefront::RATING.to_s,
-      "reviewCount" => Storefront::REVIEW_COUNT.to_s.gsub(/\D/, "").presence || "1",
-      "bestRating" => "5"
-    },
     "offers" => {
       "@type" => "Offer",
       "url" => request.base_url + request.path,

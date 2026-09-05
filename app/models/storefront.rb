@@ -8,9 +8,6 @@ module Storefront
   BRAND          = "DUWZGU"
   PRODUCT_NAME   = "Creatine Jelly"
   PRICE          = "$34.99"
-  RATING         = 4.9
-  REVIEW_COUNT   = "2,300+"
-  CUSTOMER_COUNT = "25,000+"
 
   module_function
 
@@ -60,17 +57,8 @@ module Storefront
     (1..4).map { |i| { q: t("faq.q#{i}"), a: t("faq.a#{i}") } }
   end
 
-  # Placeholder testimonials. These are not real customer reviews: swap them for
-  # genuine ones before opening, or drop the section — see REVIEWS_ARE_SAMPLES.
-  REVIEWS_ARE_SAMPLES = true
-
-  def reviews
-    [
-      { quote: t("home.sample_quote1"), name: "Jason T." },
-      { quote: t("home.sample_quote2"), name: "Sarah M." },
-      { quote: t("home.sample_quote3"), name: "Mike R." }
-    ]
-  end
+  # Only render reviews once a source of real customer feedback is connected.
+  def reviews = []
 
   def nav
     [

@@ -1,29 +1,16 @@
-<%# Closing call to action. The photograph keeps its own half of the band so the
-    headline never sits on top of it. %>
-<div class="card card--flush card--accent cta-card">
-  <div class="cta-card__media">
-    <picture>
-      <source media="(max-width: 899px)" srcset="<%= storefront_image_srcset(flavor.mobile_cta_image) %>" sizes="100vw">
-      <%= storefront_image_tag flavor.pdp_image, alt: "", sizes: "50vw" %>
-    </picture>
-    <span class="cta-card__scrim"></span>
-  </div>
+<section class="cta-card" data-flavor-theme style="--active-flavor:<%= flavor.color_var %>">
+  <div class="cta-card__media"><%= storefront_image_tag flavor.card_image, alt: "#{flavor.name} · DUWZGU Creatine Jelly", sizes: "(min-width: 620px) 50vw, 100vw", data: { flavor_image: true } %></div>
   <div class="cta-card__body">
-    <p class="eyebrow eyebrow--accent"><%= t("store.cta.eyebrow") %></p>
-    <h2><%= t("store.cta.title") %></h2>
-    <p class="sub"><%= t("store.cta.lede") %></p>
+    <p class="eyebrow"><%= t("premium.cta.eyebrow") %></p>
+    <h2><%= t("premium.cta.title") %></h2><p class="sub"><%= t("premium.cta.lede") %></p>
     <% if current_product && selected_purchase_variant %>
       <div class="actions">
-        <%= button_to cart_lines_path,
-              params: buy_now_params(quantity: 1),
-              class: "btn btn--primary btn--lg" do %>
-          <%= cj_icon "shopping-cart", size: "1.15em" %> <%= t("store.hero.shop_now") %> - <%= selected_purchase_variant.formatted_price %>
+        <%= button_to cart_lines_path, params: buy_now_params(quantity: 1), form: { data: { flavor_purchase: true } }, class: "btn btn--primary btn--lg" do %>
+          <%= t("premium.hero.cta") %><%= cj_icon "arrow-right" %>
         <% end %>
-        <% unless local_assigns[:hide_product_link] %>
-          <%= link_to t("store.hero.see_product"), product_page_path, class: "btn btn--glass btn--lg" %>
-        <% end %>
+        <% unless local_assigns[:hide_product_link] %><%= link_to t("store.hero.see_product"), product_page_path, class: "text-link" %><% end %>
       </div>
     <% end %>
-    <p class="cta-card__note"><%= cj_icon "circle-check" %><%= t("store.cta.note") %></p>
+    <p class="cta-card__note"><%= cj_icon "shield-check" %><%= t("store.cta.note") %></p>
   </div>
-</div>
+</section>

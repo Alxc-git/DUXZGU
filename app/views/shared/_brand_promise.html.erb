@@ -1,0 +1,14 @@
+<section class="brand-promise" id="approach">
+  <div class="brand-promise__intro">
+    <p class="eyebrow"><%= t("premium.promise.eyebrow") %></p>
+    <h2><%= t("premium.promise.title") %></h2>
+    <p class="sub"><%= t("premium.promise.body") %></p>
+  </div>
+  <div class="brand-promise__items">
+    <% [["shipping", "truck", shipping_policy_path], ["returns", "shield-check", refunds_path], ["support", "message-circle", contact_path]].each do |key, icon, path| %>
+      <%= link_to path, class: "brand-promise__item" do %>
+        <%= cj_icon icon %><span><b><%= t("premium.promise.#{key}_title") %></b><span><%= t("premium.promise.#{key}_body") %></span></span><%= cj_icon "arrow-right" %>
+      <% end %>
+    <% end %>
+  </div>
+</section>

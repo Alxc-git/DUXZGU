@@ -1,14 +1,15 @@
 <%= link_to url_for(request.params.merge(flavor: flavor.slug)),
       class: ["flavor", "flavor--showcase", ("is-selected" if selected)],
       aria: { current: ("true" if selected) },
+      data: flavor_choice_data(flavor),
       style: "--flavor:#{flavor.color_var};--flavor-focus:#{flavor.card_focus};--flavor-zoom:#{flavor.card_zoom || 1}" do %>
   <span class="flavor__bg" style="background:<%= flavor.spot_var %>"></span>
-  <% if selected %><span class="flavor__check"><%= cj_icon "check" %></span><% end %>
+  <span class="flavor__check" data-flavor-check <%= 'hidden' unless selected %>><%= cj_icon "check" %></span>
   <span class="flavor__media"><%= storefront_image_tag flavor.card_image, alt: flavor.name, sizes: "(min-width: 1360px) 370px, (min-width: 760px) 30vw, 112px" %></span>
   <span class="flavor__body">
     <span class="flavor__name"><%= flavor.name %></span>
     <span class="flavor__note"><%= flavor.note %></span>
-    <span class="btn btn--sm <%= selected ? "btn--primary" : "btn--secondary" %>">
+    <span data-flavor-choice-label class="btn btn--sm <%= selected ? "btn--primary" : "btn--secondary" %>">
       <%= selected ? t("store.flavors.selected") : t("store.flavors.select") %>
     </span>
   </span>

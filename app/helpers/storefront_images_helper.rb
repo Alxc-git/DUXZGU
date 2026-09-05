@@ -1,4 +1,5 @@
 module StorefrontImagesHelper
+  # Rebuilt whenever a campaign photo or responsive derivative changes.
   IMAGE_MANIFEST = JSON.parse(Rails.root.join("config/storefront_images.json").read).freeze
 
   def storefront_image_srcset(source)

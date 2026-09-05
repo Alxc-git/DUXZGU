@@ -1,53 +1,38 @@
-<section class="hero hero--scene" style="--hero-flavor:<%= flavor.color_var %>;--hero-spot:<%= flavor.spot_var %>;--hero-focus:<%= flavor.scene_focus %>">
+<section class="hero hero--scene" data-flavor-theme style="--active-flavor:<%= flavor.color_var %>;--active-spot:<%= flavor.spot_var %>;--hero-focus:<%= flavor.scene_focus %>">
   <div class="hero__bleed">
     <picture>
-      <source media="(max-width: 899px)" srcset="<%= storefront_image_srcset(flavor.mobile_scene_image) %>" sizes="calc(100vw - 36px)">
-      <%= storefront_image_tag flavor.scene_image, alt: "#{flavor.name} Creatine Jelly", loading: "eager", fetchpriority: "high", sizes: "(min-width: 1360px) 1264px, calc(100vw - 64px)" %>
+      <source media="(max-width: 899px)" srcset="<%= storefront_image_srcset(flavor.mobile_scene_image) %>" sizes="calc(100vw - 36px)" data-flavor-hero-mobile>
+      <%= storefront_image_tag flavor.scene_image, alt: "#{flavor.name} · DUWZGU Creatine Jelly", loading: "eager", fetchpriority: "high",
+            sizes: "(min-width: 1360px) 1264px, calc(100vw - 64px)", data: { flavor_image: "hero" } %>
     </picture>
   </div>
-  <span class="hero__veil"></span>
-
+  <span class="hero__veil" aria-hidden="true"></span>
   <div class="hero__in">
-    <div class="hero__copy">
-      <span class="badge badge--outline"><%= t("store.hero.badge") %></span>
-
-      <h1 class="hero__type">
-        <span class="l1"><%= t("store.hero.line1") %></span>
-        <span class="l2"><%= t("store.hero.line2") %></span>
-      </h1>
-
-      <p class="hero__lede">
-        <%= t("store.hero.lede_html").html_safe %>
-      </p>
-
-      <div class="hero__proof">
-        <%= cj_stars Storefront::RATING, meta: t("store.hero.reviews_meta", rating: Storefront::RATING, count: Storefront::REVIEW_COUNT) %>
-        <span class="hero__proof-sep"></span>
-        <span class="eyebrow eyebrow--muted"><%= t("store.hero.athletes", count: Storefront::CUSTOMER_COUNT) %></span>
-      </div>
-
-      <div class="hero__cta">
-        <% if current_product && selected_purchase_variant %>
-          <%= button_to cart_lines_path,
-                params: buy_now_params(quantity: 1),
-                class: "btn btn--primary btn--lg" do %>
-            <%= t("store.hero.shop_now") %> - <%= selected_purchase_variant.formatted_price %>
-          <% end %>
+  <div class="hero__copy">
+    <p class="eyebrow"><span class="hero__dash" aria-hidden="true"></span><%= t("premium.hero.eyebrow") %></p>
+    <h1 class="hero__type"><span class="l1"><%= t("store.hero.line1") %></span><span class="l2"><%= t("premium.hero.title_end") %></span></h1>
+    <p class="hero__lede"><%= t("premium.hero.lede") %></p>
+    <div class="hero__cta">
+      <% if current_product && selected_purchase_variant %>
+        <%= button_to cart_lines_path, params: buy_now_params(quantity: 1),
+              form: { data: { flavor_purchase: true } }, class: "btn btn--primary btn--lg" do %>
+          <%= t("premium.hero.cta") %><%= cj_icon "arrow-right" %>
         <% end %>
-        <%= link_to t("store.hero.see_product"), product_page_path, class: "btn btn--glass btn--lg" %>
-      </div>
-
-      <hr class="rule rule--dotted" style="width:100%">
-
-      <div class="hero__claims">
-        <% Storefront.benefits.each do |benefit| %>
-          <%= render "shared/stat", stat: benefit, icon_size: "sm" %>
-        <% end %>
-      </div>
-
-      <div class="hero__trust"><%= render "shared/trust_row" %></div>
+      <% end %>
+      <%= link_to t("store.hero.see_product"), product_page_path, class: "text-link" %>
     </div>
+    <div class="hero__pick">
+      <span class="eyebrow"><%= t("store.pdp.choose_flavor") %></span>
+      <div class="hero__swatches" role="group" aria-label="<%= t("store.pdp.choose_flavor") %>">
+        <% Flavor::ALL.each do |item| %>
+          <%= link_to url_for(request.params.merge(flavor: item.slug)), class: ["hero__swatch", ("is-selected" if item.slug == flavor.slug)],
+                data: flavor_choice_data(item), aria: { label: item.name, current: ("true" if item.slug == flavor.slug) },
+                style: "--flavor:#{item.color_var}" do %><span aria-hidden="true"></span><% end %>
+        <% end %>
+        <span class="hero__flavor-name" data-flavor-text="name"><%= flavor.name %></span>
+      </div>
+    </div>
+    <p class="hero__shipping"><%= cj_icon "truck" %><%= t("store.cta.note") %></p>
   </div>
-
-  <%= render "shared/ticker" %>
+  </div>
 </section>

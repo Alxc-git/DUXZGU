@@ -5,6 +5,7 @@ require "json"
 
 sources = Flavor::ALL.flat_map { |flavor| flavor.to_h.values.grep(/\Aproduct\/.*\.webp\z/) }
 sources += %w[product/duwzgu-athlete.webp product/duwzgu-lineup-centered.webp product/creatine-powder-tub.webp]
+sources += %w[product/duwzgu-editorial-hand-v2.webp product/duwzgu-editorial-detail-v2.webp]
 manifest = sources.uniq.sort.to_h do |source|
   path = Rails.root.join("app/assets/images", source)
   original = Vips::Image.new_from_file(path.to_s)

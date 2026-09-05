@@ -1,133 +1,38 @@
 <% if @product.blank? %>
   <div class="page stack" style="padding-top:var(--space-10);max-width:720px">
-    <div class="card card--accent" style="text-align:center">
-      <p class="eyebrow eyebrow--accent">Storefront</p>
-      <h1 style="font-size:var(--fs-display-3)">No active product</h1>
-      <p class="sub">Add or activate a product in the admin to connect the storefront purchase flow.</p>
-      <%= link_to "Open admin", admin_root_path, class: "btn btn--primary" %>
-    </div>
+    <h1>No active product</h1><%= link_to "Open admin", admin_root_path, class: "btn btn--primary" %>
   </div>
 <% else %>
-<%= render "shared/product_schema", product: @product %>
-<div class="stack" style="padding-top:var(--section-gap)">
-  <div class="page"><%= render "pages/hero", flavor: @flavor %></div>
-
-  <div class="page stack">
-    <div class="card reveal"><%= render "shared/stat_row", stats: Storefront.claims %></div>
-
-    <div class="card card--flush band reveal">
-      <div class="band__media">
-        <%= storefront_image_tag "product/duwzgu-athlete.webp", alt: "Athlete with Creatine Jelly", class: "band__image", sizes: "(min-width: 900px) 50vw, 100vw" %>
-        <span class="band__scrim"></span>
+  <%= render "shared/product_schema", product: @product %>
+  <main class="premium-home">
+    <div class="page"><%= render "pages/hero", flavor: @flavor %></div>
+    <div class="page"><%= render "shared/product_facts" %></div>
+    <section class="page editorial-section" id="flavors">
+      <div class="editorial-heading">
+        <div><p class="eyebrow"><%= t("premium.flavors.eyebrow") %></p><h2><%= t("premium.flavors.title") %></h2></div>
+        <p class="sub"><%= t("premium.flavors.lede") %></p>
       </div>
-      <div class="band__body">
-        <p class="eyebrow eyebrow--accent"><%= t("store.home.band_eyebrow") %></p>
-        <h2><%= t("store.home.band_title_html").html_safe %></h2>
-        <p class="sub"><%= t("store.home.band_lede") %></p>
-        <%= render "shared/compare", tone: "yes", items: (1..3).map { |i| t("store.home.band_point#{i}") } %>
-        <div class="actions actions--start"><%= link_to t("store.hero.see_product"), product_page_path, class: "btn btn--outline" %></div>
+      <div class="g3 flavor-collection">
+        <% Flavor::ALL.each do |flavor| %><%= render "shared/flavor_card", flavor: flavor, selected: flavor.slug == @flavor.slug %><% end %>
       </div>
-    </div>
-
-    <div class="reveal"><%= render "shared/versus", flavor: @flavor %></div>
-
-    <div id="flavors" class="card card--pad-lg">
-      <div class="section-head section-head--center">
-        <p class="eyebrow eyebrow--accent"><%= t("store.home.flavors_eyebrow") %></p>
-        <h2><%= t("store.home.flavors_title") %></h2>
-        <p class="sub"><%= t("store.home.flavors_lede") %></p>
+    </section>
+    <%= render "shared/product_editorial" %>
+    <section class="page editorial-section" id="routine">
+      <div class="editorial-heading">
+        <div><p class="eyebrow"><%= t("premium.routine.eyebrow") %></p><h2><%= t("premium.routine.title") %></h2></div>
+        <p class="sub"><%= t("premium.routine.lede") %></p>
       </div>
-      <div class="g3 reveal reveal--stagger">
-        <% Flavor::ALL.each do |flavor| %>
-          <%= render "shared/flavor_card", flavor: flavor, selected: flavor.slug == @flavor.slug %>
+      <ol class="ritual-steps">
+        <% %w[one two three].each_with_index do |step, index| %>
+          <li><span class="ritual-steps__number">0<%= index + 1 %></span><h3><%= t("premium.routine.#{step}_title") %></h3><p><%= t("premium.routine.#{step}_body") %></p></li>
         <% end %>
-      </div>
-    </div>
-
-    <div class="card card--pad-lg reveal">
-      <div class="section-head section-head--center">
-        <p class="eyebrow eyebrow--accent"><%= t("store.home.steps_eyebrow") %></p>
-        <h2><%= t("store.home.steps_title") %></h2>
-        <p class="sub"><%= t("store.home.steps_lede") %></p>
-      </div>
-      <%= render "shared/routine" %>
-    </div>
-
-    <div class="g2 reveal">
-      <div class="card proof reveal">
-        <div class="proof__score">
-          <p class="eyebrow eyebrow--accent"><%= t("store.home.proof_eyebrow") %></p>
-          <div class="proof__number"><%= Storefront::RATING %>/5</div>
-          <p class="eyebrow eyebrow--muted"><%= t("store.home.proof_reviews", count: Storefront::REVIEW_COUNT) %></p>
-        </div>
-
-        <hr class="rule">
-
-        <div class="proof__block">
-          <div class="stat">
-            <span class="feature-icon feature-icon--lg"><%= cj_icon "users" %></span>
-            <div style="min-width:0">
-              <div class="stat__label"><%= t("store.home.proof_loved") %></div>
-              <div class="stat__note"><%= t("store.home.proof_trusted", count: Storefront::CUSTOMER_COUNT) %></div>
-            </div>
-          </div>
-          <%= cj_stars Storefront::RATING, size: :lg %>
-        </div>
-
-        <hr class="rule">
-
-        <% quote = Storefront.reviews.first %>
-        <figure class="proof__quote">
-          <blockquote>&ldquo;<%= quote[:quote] %>&rdquo;</blockquote>
-          <figcaption>
-            <span class="proof__avatar" aria-hidden="true"><%= quote[:name].to_s.strip.first %></span>
-            <span>
-              <b><%= quote[:name] %></b>
-              <span class="testimonial__verified"><%= cj_icon "circle-check" %><%= t("store.home.verified_buyer") %></span>
-            </span>
-          </figcaption>
-        </figure>
-
-        <hr class="rule">
-
-        <%= render "shared/trust_row", include_support: true %>
-      </div>
-
-      <div id="flavor-lineup" class="card card--flush image-card image-card--lineup">
-        <%= storefront_image_tag "product/duwzgu-lineup-centered.webp", alt: "Creatine Jelly flavor lineup", class: "image-card__image", sizes: "(min-width: 900px) 50vw, 100vw" %>
-        <span class="image-card__scrim"></span>
-        <div class="image-card__body">
-          <p class="eyebrow eyebrow--accent"><%= t("store.home.flavors_eyebrow") %></p>
-          <h2 class="image-card__title"><%= t("store.home.lineup_title_html").html_safe %></h2>
-        </div>
-      </div>
-    </div>
-
-    <div class="card card--pad-lg reveal">
-      <div class="section-head section-head--center">
-        <p class="eyebrow eyebrow--accent"><%= t("store.home.reviews_eyebrow") %></p>
-        <h2><%= t("store.home.reviews_title") %></h2>
-      </div>
-      <div class="g3 review-carousel reveal reveal--stagger"
-           data-review-carousel role="region" tabindex="0"
-           aria-label="<%= t("store.home.reviews_title") %>">
-        <% Storefront.reviews.each do |review| %>
-          <%= render "shared/testimonial", review: review %>
-        <% end %>
-      </div>
-    </div>
-
-    <div class="card card--pad-lg">
-      <div class="section-head section-head--center">
-        <p class="eyebrow eyebrow--accent"><%= t("store.home.faq_eyebrow") %></p>
-        <h2><%= t("store.home.faq_title") %></h2>
-      </div>
-      <div style="max-width:860px;margin-inline:auto">
-        <%= render "shared/accordion", items: Storefront.faq, open_first: true %>
-      </div>
-    </div>
-
-    <div class="reveal"><%= render "shared/cta_band", flavor: @flavor %></div>
-  </div>
-</div>
+      </ol>
+    </section>
+    <div class="page editorial-section"><%= render "shared/brand_promise" %></div>
+    <section class="page editorial-section editorial-faq" id="faq">
+      <div class="editorial-heading"><div><p class="eyebrow"><%= t("store.home.faq_eyebrow") %></p><h2><%= t("premium.faq_title") %></h2></div><%= link_to t("store.footer.contact"), contact_path, class: "text-link" %></div>
+      <%= render "shared/accordion", items: Storefront.faq, open_first: true %>
+    </section>
+    <div class="page editorial-section"><%= render "shared/cta_band", flavor: @flavor %></div>
+  </main>
 <% end %>

@@ -8,8 +8,27 @@ class StorefrontControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select ".hero__type", text: /#{I18n.t("store.hero.line1")}/
+    assert_select ".hero__bleed img[data-flavor-image='hero'][src*='duwzgu-hero-strawberry']"
+    assert_select ".hero__bleed source[data-flavor-hero-mobile][srcset*='duwzgu-hero-mobile-strawberry']"
     assert_select "a[href=?]", storefront_product_path(products(:demo_product).slug), text: I18n.t("store.hero.see_product")
-    assert_select ".cta-card__media source[media='(max-width: 899px)'][srcset*='duwzgu-cta-mobile-strawberry']"
+    assert_select ".cta-card__media img[data-flavor-image][srcset*='duwzgu-card-fruit-strawberry']"
+    assert_select ".editorial-story img[loading='lazy']", count: 2
+    schema = JSON.parse(css_select("script[type='application/ld+json']").first.text)
+    assert_not schema.key?("aggregateRating"), "Do not publish sample review scores as real ratings"
+  end
+
+  test "a linked flavor is used by every purchase form on home and product pages" do
+    [ root_path, storefront_product_path(products(:demo_product).slug) ].each do |path|
+      get path, params: { flavor: "blueberry" }
+      assert_response :success
+      assert_select "body[data-flavor-selected-value='blueberry']"
+      assert_select "form[data-flavor-purchase]" do |forms|
+        assert forms.any?
+        forms.each { |form| assert_select form, "input[name='flavor'][value='blueberry']" }
+      end
+      assert_select "[data-flavor-choice='blueberry'][aria-current='true']"
+      assert_select "[data-flavor-image][src*='duwzgu-card-fruit-blueberry']"
+    end
   end
 
   test "the landing page survives a store with no product" do

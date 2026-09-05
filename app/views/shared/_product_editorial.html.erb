@@ -1,0 +1,18 @@
+<section class="editorial-story editorial-section" id="details">
+  <div class="page editorial-story__grid">
+    <figure class="editorial-story__detail reveal">
+      <%= storefront_image_tag "product/duwzgu-editorial-detail-v2.webp", alt: t("premium.editorial.detail_alt"), sizes: "(min-width: 900px) 55vw, 100vw" %>
+      <figcaption><%= t("premium.editorial.detail_caption") %></figcaption>
+    </figure>
+    <div class="editorial-story__copy">
+      <p class="eyebrow"><%= t("premium.editorial.eyebrow") %></p>
+      <h2><%= t("premium.editorial.title") %></h2>
+      <p class="sub"><%= t("premium.editorial.body") %></p>
+      <%= link_to t("premium.editorial.link"), product_page_path, class: "text-link" %>
+      <figure class="editorial-story__hand reveal">
+        <%= storefront_image_tag "product/duwzgu-editorial-hand-v2.webp", alt: t("premium.editorial.hand_alt"), sizes: "(min-width: 900px) 35vw, 70vw" %>
+        <figcaption><%= t("premium.editorial.hand_caption") %></figcaption>
+      </figure>
+    </div>
+  </div>
+</section>

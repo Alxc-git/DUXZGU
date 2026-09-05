@@ -8,14 +8,14 @@
     </button>
 
     <%= link_to root_path, class: "wordmark header__logo" do %>
-      <span class="wordmark__a">Creatine</span><span class="wordmark__b">Jelly</span>
+      <%= render "shared/wordmark" %>
     <% end %>
 
     <nav class="header__nav">
       <%= link_to t("store.nav.home"), root_path, class: "header__link" %>
       <%= link_to t("store.nav.product"), product_page_path, class: "header__link" %>
       <%= link_to t("store.nav.benefits"), product_page_path(anchor: "benefits"), class: "header__link" %>
-      <%= link_to t("store.nav.reviews"), product_page_path(anchor: "reviews"), class: "header__link" %>
+      <%= link_to t("premium.promise.nav"), product_page_path(anchor: "approach"), class: "header__link" %>
       <%= link_to t("store.nav.faq"), product_page_path(anchor: "faq"), class: "header__link" %>
     </nav>
 
@@ -24,6 +24,7 @@
       <% if current_product && selected_purchase_variant %>
         <%= button_to cart_lines_path,
               params: buy_now_params(quantity: 1),
+              form: { data: { flavor_purchase: true } },
               class: "btn btn--primary btn--pill btn--sm header__cta" do %>
           <%= t("store.nav.buy_now") %> - <%= selected_purchase_variant.formatted_price %>
         <% end %>
@@ -39,7 +40,7 @@
       <%= link_to t("store.nav.home"), root_path, class: "header__link" %>
       <%= link_to t("store.nav.product"), product_page_path, class: "header__link" %>
       <%= link_to t("store.nav.benefits"), product_page_path(anchor: "benefits"), class: "header__link" %>
-      <%= link_to t("store.nav.reviews"), product_page_path(anchor: "reviews"), class: "header__link" %>
+      <%= link_to t("premium.promise.nav"), product_page_path(anchor: "approach"), class: "header__link" %>
       <%= link_to t("store.nav.faq"), product_page_path(anchor: "faq"), class: "header__link" %>
       <%# On a phone the switch lives in the menu: the top bar is already three
           controls wide, and a fourth pushed the wordmark off centre. It shares
@@ -48,6 +49,7 @@
         <% if current_product && selected_purchase_variant %>
           <%= button_to cart_lines_path,
                 params: buy_now_params(quantity: 1),
+                form: { data: { flavor_purchase: true } },
                 class: "btn btn--primary sheet__buy" do %>
             <%= t("store.nav.buy_now") %> - <%= selected_purchase_variant.formatted_price %>
           <% end %>

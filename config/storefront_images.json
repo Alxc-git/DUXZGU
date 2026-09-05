@@ -109,6 +109,25 @@
       "product/duwzgu-cta-mobile-strawberry-1200w.webp": 1200
     }
   },
+  "product/duwzgu-editorial-detail-v2.webp": {
+    "width": 1448,
+    "height": 1086,
+    "variants": {
+      "product/duwzgu-editorial-detail-v2-240w.webp": 240,
+      "product/duwzgu-editorial-detail-v2-480w.webp": 480,
+      "product/duwzgu-editorial-detail-v2-800w.webp": 800,
+      "product/duwzgu-editorial-detail-v2-1200w.webp": 1200
+    }
+  },
+  "product/duwzgu-editorial-hand-v2.webp": {
+    "width": 1122,
+    "height": 1402,
+    "variants": {
+      "product/duwzgu-editorial-hand-v2-240w.webp": 240,
+      "product/duwzgu-editorial-hand-v2-480w.webp": 480,
+      "product/duwzgu-editorial-hand-v2-800w.webp": 800
+    }
+  },
   "product/duwzgu-hero-blueberry.webp": {
     "width": 1672,
     "height": 941,

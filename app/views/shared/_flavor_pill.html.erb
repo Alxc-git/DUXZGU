@@ -1,6 +1,7 @@
 <%= link_to url_for(request.params.merge(flavor: flavor.slug)),
       class: ["flavor-pill", ("is-selected" if selected)],
+      data: flavor_choice_data(flavor), aria: { current: ("true" if selected) },
       style: "--flavor:#{flavor.color_var};--flavor-focus:#{flavor.pdp_focus}" do %>
-  <span class="flavor-pill__media"><%= storefront_image_tag flavor.pdp_image, alt: "", sizes: "34px" %></span>
+  <span class="flavor-pill__dot" aria-hidden="true"></span>
   <%= flavor.name %>
 <% end %>
