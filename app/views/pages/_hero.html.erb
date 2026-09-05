@@ -1,8 +1,8 @@
 <section class="hero hero--scene" style="--hero-flavor:<%= flavor.color_var %>;--hero-spot:<%= flavor.spot_var %>;--hero-focus:<%= flavor.scene_focus %>">
   <div class="hero__bleed">
     <picture>
-      <source media="(max-width: 899px)" srcset="<%= asset_path flavor.mobile_scene_image %>">
-      <%= image_tag flavor.scene_image, alt: "#{flavor.name} Creatine Jelly" %>
+      <source media="(max-width: 899px)" srcset="<%= storefront_image_srcset(flavor.mobile_scene_image) %>" sizes="calc(100vw - 36px)">
+      <%= storefront_image_tag flavor.scene_image, alt: "#{flavor.name} Creatine Jelly", loading: "eager", fetchpriority: "high", sizes: "(min-width: 1360px) 1264px, calc(100vw - 64px)" %>
     </picture>
   </div>
   <span class="hero__veil"></span>
@@ -11,10 +11,10 @@
     <div class="hero__copy">
       <span class="badge badge--outline"><%= t("store.hero.badge") %></span>
 
-      <div class="hero__type">
+      <h1 class="hero__type">
         <span class="l1"><%= t("store.hero.line1") %></span>
         <span class="l2"><%= t("store.hero.line2") %></span>
-      </div>
+      </h1>
 
       <p class="hero__lede">
         <%= t("store.hero.lede_html").html_safe %>

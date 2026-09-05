@@ -22,11 +22,6 @@
     <meta name="twitter:description" content="<%= page_description %>">
     <meta name="twitter:image" content="<%= asset_url((@flavor || Flavor.default).scene_image) %>">
 
-    <%# Marks the document as able to run the reveal animation. Inline and in the
-        head so the class lands before first paint: a deferred script would let
-        the page draw, then hide the sections, which flashes. %>
-    <script nonce="<%= content_security_policy_nonce %>">document.documentElement.classList.add("js-motion")</script>
-
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <%= yield :head %>
@@ -43,6 +38,9 @@
   </head>
 
   <body>
+    <div class="scroll-progress" aria-hidden="true">
+      <span class="scroll-progress__fill" data-scroll-progress></span>
+    </div>
     <div class="site">
       <%= render "shared/header", flavor: @flavor || Flavor.default %>
 

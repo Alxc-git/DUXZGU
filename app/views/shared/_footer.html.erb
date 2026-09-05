@@ -24,10 +24,15 @@
       <div class="footer__col footer__col--news">
         <div class="footer__h"><%= t("store.footer.newsletter_title") %></div>
         <p class="sub"><%= t("store.footer.newsletter_lede") %></p>
-        <%= form_with url: "#", method: :post, class: "newsletter", data: { turbo: false } do %>
-          <input class="input" type="email" placeholder="<%= t("store.footer.newsletter_placeholder") %>">
-          <button class="btn btn--primary" style="padding:0 16px" aria-label="<%= t("store.footer.subscribe") %>"><%= cj_icon "arrow-right", size: "1.15em" %></button>
+        <%# The arrow carries no visible text, so its accessible name has to come
+            from the aria-label: without it a screen reader announces "button". %>
+        <%= form_with url: newsletter_subscribers_path, method: :post, class: "newsletter", data: { turbo: false } do %>
+          <label class="visually-hidden" for="newsletter-email"><%= t("store.footer.newsletter_placeholder") %></label>
+          <input class="input" id="newsletter-email" name="email" type="email" required autocomplete="email"
+            placeholder="<%= t("store.footer.newsletter_placeholder") %>">
+          <button class="btn btn--primary" type="submit" style="padding:0 16px" aria-label="<%= t("store.footer.newsletter_cta") %>"><%= cj_icon "arrow-right", size: "1.15em" %></button>
         <% end %>
+        <p class="sub footer__consent"><%= t("store.footer.newsletter_consent") %></p>
       </div>
     </div>
 

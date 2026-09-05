@@ -4,6 +4,10 @@ class Store < ApplicationRecord
   DEFAULT_LOCALE = "fr-CA".freeze
   DEFAULT_SHIPPING_COUNTRIES = %w[CA].freeze
   DEFAULT_SUPPORT_EMAIL = "contact@example.com".freeze
+  # The welcome discount mailed to a new newsletter subscriber. A setting rather
+  # than a hard-coded code so a shop can run a different campaign without a deploy.
+  DEFAULT_NEWSLETTER_CODE = "BIENVENUE10".freeze
+  DEFAULT_NEWSLETTER_PERCENT = 10
   PUBLIC_SETTING_KEYS = %w[
     legal_business_name business_address business_phone privacy_officer_name
     instagram_url tiktok_url facebook_url
@@ -12,6 +16,8 @@ class Store < ApplicationRecord
   has_many :products, dependent: :destroy
   has_many :orders, dependent: :restrict_with_error
   has_many :customers, dependent: :restrict_with_error
+  has_many :discount_codes, dependent: :destroy
+  has_many :newsletter_subscribers, dependent: :destroy
 
   before_validation :normalize_domain
   before_validation :set_slug, if: -> { slug.blank? && name.present? }
@@ -96,6 +102,17 @@ class Store < ApplicationRecord
 
   def support_email=(value)
     write_public_setting("support_email", value)
+  end
+
+  # Code the welcome email hands out. Changing it starts a new campaign: the
+  # next signup creates that code at 10% and mails it, leaving the old one
+  # working for everyone who already has it.
+  def newsletter_discount_code
+    settings["newsletter_discount_code"].presence&.strip&.upcase || DEFAULT_NEWSLETTER_CODE
+  end
+
+  def newsletter_discount_code=(value)
+    write_public_setting("newsletter_discount_code", value)
   end
 
   PUBLIC_SETTING_KEYS.each do |key|

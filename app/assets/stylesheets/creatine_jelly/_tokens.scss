@@ -54,7 +54,7 @@ $header-h: 74px;
   --space-6:24px; --space-8:32px; --space-10:40px; --space-12:48px; --space-16:64px; --space-20:80px;
   --page-max:#{$page-max}; --page-gutter:18px; --page-gutter-lg:32px; --page-gutter-xl:48px;
   // Sections breathe with the viewport instead of sitting at a hard-packed 12px.
-  --section-gap:clamp(16px,1.9vw,30px);
+  --section-gap:clamp(22px,2.5vw,38px);
   --card-pad:clamp(20px,2.4vw,34px);
   --radius-xs:5px; --radius-sm:9px; --radius-md:14px; --radius-lg:20px;
   --radius-xl:26px; --radius-pill:999px;

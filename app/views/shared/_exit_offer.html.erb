@@ -6,7 +6,7 @@
     <button type="button" class="icon-btn icon-btn--bare exit-offer__x" data-exit-close aria-label="Close">
       <%= cj_icon "close" %>
     </button>
-    <span class="exit-offer__media"><%= image_tag flavor.packshot, alt: "" %></span>
+    <span class="exit-offer__media"><%= storefront_image_tag flavor.packshot, alt: "", sizes: "92px" %></span>
     <p class="eyebrow eyebrow--accent"><%= t("store.exit.eyebrow") %></p>
     <h2 id="exit-offer-title"><%= t("store.exit.title_html").html_safe %></h2>
     <p class="sub"><%= t("store.exit.lede") %></p>

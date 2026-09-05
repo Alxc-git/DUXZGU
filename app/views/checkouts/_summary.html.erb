@@ -11,7 +11,7 @@
     <% current_cart.lines.each do |line| %>
       <div class="checkout__item">
         <span class="checkout__thumb">
-          <%= image_tag line.flavor.checkout_image, alt: "" %>
+          <%= storefront_image_tag line.flavor.checkout_image, alt: "", sizes: "80px" %>
         </span>
         <div style="min-width:0;flex:1">
           <div class="stat__label"><%= line.product.display_name %></div>

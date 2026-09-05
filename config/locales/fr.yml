@@ -370,6 +370,15 @@ fr:
     text_tracking_next: "Vous recevrez le numero de suivi des l'expedition."
     to: "au"
     first_scan: "Le suivi peut mettre 24 a 48h avant d'afficher un premier scan."
+    newsletter_subject: "Votre rabais de %{amount} vous attend"
+    newsletter_title: "Voici votre rabais de %{amount}"
+    newsletter_body: "Merci de vous etre inscrit. Utilisez ce code au moment de payer, sur la commande de votre choix."
+    newsletter_code_label: "Votre code promo"
+    newsletter_percent: "%{percent} %"
+    newsletter_minimum: "Valide a partir de %{amount} d'achat."
+    newsletter_expires: "A utiliser avant le %{date}."
+    newsletter_cta: "Magasiner maintenant"
+    newsletter_unsubscribe: "Vous recevez ce courriel parce que vous avez demande ce rabais. Repondez DESABONNEMENT pour ne plus rien recevoir."
 
   store:
     checkout:
@@ -463,7 +472,8 @@ fr:
       newsletter_title: "10 % de rabais sur ta première commande"
       newsletter_lede: "Inscris-toi pour des offres exclusives et des conseils d'entraînement."
       newsletter_placeholder: "Ton courriel"
-      subscribe: "S'inscrire"
+      newsletter_cta: "Obtenir mon rabais"
+      newsletter_consent: "En laissant ton courriel, tu acceptes de recevoir nos offres promotionnelles. Désabonnement en tout temps."
       rights: "Tous droits réservés."
       terms: "Conditions"
       refunds: "Remboursements"
@@ -476,6 +486,9 @@ fr:
       title: "Nous joindre"
       lede: "Des questions sur une commande, la livraison ou le produit ? Écris à l'équipe."
       submit: "Envoyer le message"
+    newsletter:
+      thanks: "Merci ! Ton code de rabais s'en vient dans ta boîte courriel."
+      too_many: "Trop de tentatives. Réessaie dans quelques minutes."
     nav:
       home: "Accueil"
       product: "Produit"
@@ -608,8 +621,7 @@ fr:
       accepted: "Paiement sécurisé — nous acceptons"
       methods_label: "Moyens de paiement acceptés"
     dispatch:
-      same_day_html: "Commande dans les <b>%{time}</b> pour un envoi aujourd'hui"
-      ships_html: "Expédié <b>%{day}</b>"
+      tracking_available: "Suivi par courriel dès qu'il est disponible"
     exit:
       eyebrow: "Avant de partir"
       title_html: "Prends 10 % de rabais<br>sur ta première commande."

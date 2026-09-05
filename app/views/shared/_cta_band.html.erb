@@ -3,8 +3,8 @@
 <div class="card card--flush card--accent cta-card">
   <div class="cta-card__media">
     <picture>
-      <source media="(max-width: 899px)" srcset="<%= asset_path flavor.mobile_cta_image %>">
-      <%= image_tag flavor.pdp_image, alt: "" %>
+      <source media="(max-width: 899px)" srcset="<%= storefront_image_srcset(flavor.mobile_cta_image) %>" sizes="100vw">
+      <%= storefront_image_tag flavor.pdp_image, alt: "", sizes: "50vw" %>
     </picture>
     <span class="cta-card__scrim"></span>
   </div>

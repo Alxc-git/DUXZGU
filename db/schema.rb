@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_04_090000) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_05_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -92,6 +92,20 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_04_090000) do
     t.integer "usage_limit"
     t.index ["store_id", "code"], name: "index_discount_codes_on_store_id_and_code", unique: true
     t.index ["store_id"], name: "index_discount_codes_on_store_id"
+  end
+
+  create_table "newsletter_subscribers", force: :cascade do |t|
+    t.datetime "consented_at", null: false
+    t.datetime "created_at", null: false
+    t.string "email", null: false
+    t.string "locale"
+    t.string "source", default: "footer", null: false
+    t.bigint "store_id", null: false
+    t.datetime "unsubscribed_at"
+    t.datetime "updated_at", null: false
+    t.datetime "welcome_sent_at"
+    t.index ["store_id", "email"], name: "index_newsletter_subscribers_on_store_id_and_email", unique: true
+    t.index ["store_id"], name: "index_newsletter_subscribers_on_store_id"
   end
 
   create_table "orders", force: :cascade do |t|
@@ -407,6 +421,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_04_090000) do
   add_foreign_key "ad_spends", "stores"
   add_foreign_key "customers", "stores"
   add_foreign_key "discount_codes", "stores"
+  add_foreign_key "newsletter_subscribers", "stores"
   add_foreign_key "orders", "customers"
   add_foreign_key "orders", "products"
   add_foreign_key "orders", "stores"

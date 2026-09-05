@@ -3,7 +3,7 @@
 <div id="comparison" class="card card--flush vs" style="--vs-accent:<%= flavor.color_var %>;--vs-spot:<%= flavor.spot_var %>">
   <div class="vs__side vs__side--win">
     <span class="vs__shot <%= flavor.comparison_cutout ? "vs__shot--cutout" : "vs__shot--framed" %>">
-      <%= image_tag flavor.comparison_image, alt: "#{flavor.name} Creatine Jelly" %>
+      <%= storefront_image_tag flavor.comparison_image, alt: "#{flavor.name} Creatine Jelly", sizes: "(min-width: 900px) 150px, 132px" %>
     </span>
     <div class="vs__body">
       <h3 class="vs__title vs__title--win"><%= t("store.versus.jelly") %></h3>
@@ -15,7 +15,7 @@
 
   <div class="vs__side vs__side--lose">
     <span class="vs__shot vs__shot--cutout vs__shot--rival">
-      <%= image_tag "product/creatine-powder-tub.webp", alt: t("store.versus.powder") %>
+      <%= storefront_image_tag "product/creatine-powder-tub.webp", alt: t("store.versus.powder"), sizes: "(min-width: 900px) 150px, 132px" %>
     </span>
     <div class="vs__body">
       <h3 class="vs__title"><%= local_assigns[:rival] || t("store.versus.powder") %></h3>

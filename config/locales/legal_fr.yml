@@ -58,7 +58,7 @@ fr:
       threshold_html: "Les commandes de plus de <b>%{amount}</b> sont livrées gratuitement."
       per_parcel: "Les frais sont facturés une fois par colis, pas par article : ajouter un deuxième pot ne les double jamais."
       h3: "Quand le colis part"
-      p3_html: "Les commandes passées un jour ouvrable avant <b>%{time}</b> sont préparées le jour même. Passé cette heure, ou la fin de semaine, elles partent le jour ouvrable suivant. L'expédition suit toujours la confirmation du paiement : une commande non payée n'est pas préparée."
+      p3_html: "La préparation commence après confirmation du paiement. Le délai d'expédition dépend du stock disponible et du traitement par notre fournisseur. Les délais annoncés sont estimatifs; une date d'expédition précise ne peut être garantie avant confirmation du fournisseur. Le numéro de suivi est envoyé par courriel dès qu'il est disponible."
       h4: "Combien de temps ça prend"
       p4_html: "%{todo} Ce sont des estimations du transporteur, pas des garanties. Les douanes, la météo et les jours fériés peuvent ajouter des jours, et nous ne pouvons pas les raccourcir une fois le colis parti."
       todo4: "Indiquez vos délais réels par destination, par exemple « Canada : 5 à 9 jours ouvrables »."

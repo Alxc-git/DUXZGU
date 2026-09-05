@@ -58,7 +58,7 @@ en:
       threshold_html: "Orders over <b>%{amount}</b> ship free."
       per_parcel: "The fee is charged once per parcel, not per item, so adding a second jar never doubles it."
       h3: "When it leaves"
-      p3_html: "Orders placed on a working day before <b>%{time}</b> are prepared the same day. Orders placed after that, or at a weekend, go out on the next working day. Dispatch always follows payment confirmation — an order that has not been paid is not prepared."
+      p3_html: "Preparation starts after payment is confirmed. Dispatch timing depends on available stock and processing by our supplier. Any timelines shown are estimates; an exact dispatch date cannot be guaranteed before supplier confirmation. Your tracking number is emailed as soon as it is available."
       h4: "How long it takes"
       p4_html: "%{todo} These are estimates from the carrier, not guarantees. Customs, weather and public holidays can add days, and we cannot shorten them once a parcel has left."
       todo4: "State your real delivery windows per destination, for example \"Canada: 5–9 business days\"."

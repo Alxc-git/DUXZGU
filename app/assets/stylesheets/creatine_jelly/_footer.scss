@@ -6,7 +6,7 @@
   // footer taller than a phone screen and a half on its own.
   &__in{
     display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(22px,2.6vw,40px);
-    @container site (min-width:#{$bp-lg}){grid-template-columns:1.6fr 1fr 1fr 1.5fr}
+    @container site (min-width:#{$bp-lg}){grid-template-columns:1.4fr 1fr 1fr 1.4fr}
   }
   // The brand blurb and the signup need the full width; only the link lists pair.
   &__col--brand,&__col--news{
@@ -43,6 +43,9 @@
   .input{flex:1 1 180px;min-width:0;min-height:46px}
   .btn{flex:0 0 auto;min-height:46px;padding-inline:18px}
 }
+// The consent line the CASL opt-in needs. Small and quiet, but present: it is
+// what makes the address on file express consent rather than a harvested one.
+.footer__consent{margin-top:10px;font-size:12px;line-height:1.5}
 
 // Touch targets. A 21px-tall link is a miss waiting to happen on a phone: both
 // Apple and Google put the comfortable minimum near 44px. The links keep their

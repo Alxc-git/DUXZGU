@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   get "sitemap.xml", to: "pages#sitemap", as: :sitemap, defaults: { format: "xml" }
   post "preferences-confidentialite", to: "privacy_preferences#update", as: :privacy_preferences
   post "support/chat", to: "support_chats#create", as: :support_chat
+  post "infolettre", to: "newsletter_subscribers#create", as: :newsletter_subscribers
 
   get "panier", to: "carts#show", as: :cart
   post "panier", to: "carts#create", as: :cart_lines

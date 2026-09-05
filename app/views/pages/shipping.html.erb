@@ -1,5 +1,4 @@
 <% content_for :title, "#{t('legal.shipping.title')} | #{current_store.name}" %>
-<% window = DispatchWindow.for(current_store) %>
 <%= render layout: "pages/legal", locals: { title: t("legal.shipping.title") } do %>
   <h2><%= t("legal.shipping.h1") %></h2>
   <%= legal_p "shipping.p1_html",
@@ -21,7 +20,7 @@
   <% end %>
 
   <h2><%= t("legal.shipping.h3") %></h2>
-  <%= legal_p "shipping.p3_html", time: window.cutoff_at.strftime("%-l %p").strip %>
+  <%= legal_p "shipping.p3_html" %>
 
   <h2><%= t("legal.shipping.h4") %></h2>
   <%= legal_p "shipping.p4_html", todo: legal_todo("shipping.todo4") %>

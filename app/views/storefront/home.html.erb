@@ -17,7 +17,7 @@
 
     <div class="card card--flush band reveal">
       <div class="band__media">
-        <%= image_tag "product/duwzgu-athlete.webp", alt: "Athlete with Creatine Jelly", class: "band__image" %>
+        <%= storefront_image_tag "product/duwzgu-athlete.webp", alt: "Athlete with Creatine Jelly", class: "band__image", sizes: "(min-width: 900px) 50vw, 100vw" %>
         <span class="band__scrim"></span>
       </div>
       <div class="band__body">
@@ -50,17 +50,7 @@
         <h2><%= t("store.home.steps_title") %></h2>
         <p class="sub"><%= t("store.home.steps_lede") %></p>
       </div>
-      <div class="g3 reveal reveal--stagger">
-        <% Storefront.how_to_use.each do |step| %>
-          <div class="how-step">
-            <span class="feature-icon"><%= cj_icon step[:icon] %></span>
-            <div>
-              <div class="stat__label"><%= step[:title] %></div>
-              <div class="stat__note"><%= step[:note] %></div>
-            </div>
-          </div>
-        <% end %>
-      </div>
+      <%= render "shared/routine" %>
     </div>
 
     <div class="g2 reveal">
@@ -104,7 +94,7 @@
       </div>
 
       <div id="flavor-lineup" class="card card--flush image-card image-card--lineup">
-        <%= image_tag "product/duwzgu-lineup-centered.webp", alt: "Creatine Jelly flavor lineup", class: "image-card__image" %>
+        <%= storefront_image_tag "product/duwzgu-lineup-centered.webp", alt: "Creatine Jelly flavor lineup", class: "image-card__image", sizes: "(min-width: 900px) 50vw, 100vw" %>
         <span class="image-card__scrim"></span>
         <div class="image-card__body">
           <p class="eyebrow eyebrow--accent"><%= t("store.home.flavors_eyebrow") %></p>
@@ -114,7 +104,7 @@
     </div>
 
     <div class="card card--pad-lg reveal">
-      <div class="section-head">
+      <div class="section-head section-head--center">
         <p class="eyebrow eyebrow--accent"><%= t("store.home.reviews_eyebrow") %></p>
         <h2><%= t("store.home.reviews_title") %></h2>
       </div>

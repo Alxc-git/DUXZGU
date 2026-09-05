@@ -12,7 +12,7 @@
     </div>
     <div class="cross-sell__row">
       <span class="checkout__thumb cross-sell__media">
-        <%= image_tag flavor.checkout_image, alt: "" %>
+        <%= storefront_image_tag flavor.checkout_image, alt: "", sizes: "100px" %>
       </span>
       <div class="cross-sell__body">
         <div class="stat__label"><%= flavor.name %> &middot; <%= line.variant.display_name %></div>

@@ -1,5 +1,9 @@
 # Production Launch Checklist
 
+> La checklist actuelle, avec les blocages constatés dans le code et les critères
+> de validation, est [AVANT_PRODUCTION.md](AVANT_PRODUCTION.md). La liste ci-dessous
+> est un aide-mémoire historique; ses formulations ne prouvent pas l'état du site.
+
 Run this checklist before sending paid traffic to the store.
 
 ## Business Identity
@@ -7,8 +11,7 @@ Run this checklist before sending paid traffic to the store.
 - In Admin > Stores, enter the merchant's complete legal business name, physical
   business address, telephone number and privacy officer name.
 - Confirm that the `SUPPORT_EMAIL` mailbox is working, not only displayed.
-- Publish only real Instagram, TikTok or Facebook profile URLs. Empty fields are
-  intentionally hidden from the footer.
+- Publish only real Instagram, TikTok or Facebook profile URLs, or hide those links.
 
 ## Railway Variables
 

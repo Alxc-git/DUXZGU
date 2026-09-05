@@ -1,4 +1,42 @@
 // Progressive enhancement only — every screen works without it.
+let activeBody = null;
+let pageEvents = null;
+const pageCleanups = [];
+const onPageCleanup = (callback) => pageCleanups.push(callback);
+
+// Older browsers get the same reading indicator. Batch scroll/resize updates
+// into one frame, and release everything when Turbo replaces or caches the page.
+const startScrollProgress = () => {
+  const fill = document.querySelector("[data-scroll-progress]");
+  if (!fill || window.CSS?.supports("animation-timeline: scroll(root block)")) return;
+
+  const scroller = document.scrollingElement || document.documentElement;
+  let frame = null;
+  const update = () => {
+    frame = null;
+    const distance = scroller.scrollHeight - scroller.clientHeight;
+    const progress = distance > 0 ? Math.min(1, Math.max(0, scroller.scrollTop / distance)) : 0;
+    fill.style.transform = `scaleX(${progress})`;
+  };
+  const schedule = () => {
+    if (frame === null) frame = requestAnimationFrame(update);
+  };
+  const options = { passive: true, signal: pageEvents.signal };
+  window.addEventListener("scroll", schedule, options);
+  window.addEventListener("resize", schedule, options);
+  window.addEventListener("pageshow", schedule, options);
+  document.addEventListener("load", schedule, { capture: true, signal: pageEvents.signal });
+  const observer = "ResizeObserver" in window ? new ResizeObserver(schedule) : null;
+  observer?.observe(document.body);
+  update();
+  schedule();
+  onPageCleanup(() => {
+    if (frame !== null) cancelAnimationFrame(frame);
+    observer?.disconnect();
+    fill.style.removeProperty("transform");
+  });
+};
+
 document.addEventListener("click", (event) => {
   // Mobile nav sheet
   const toggle = event.target.closest("[data-nav-toggle]");
@@ -15,7 +53,10 @@ document.addEventListener("click", (event) => {
     const item = accBtn.closest(".accordion__item");
     const open = item.classList.contains("is-open");
     item.closest("[data-accordion]").querySelectorAll(".accordion__item")
-      .forEach((el) => el.classList.remove("is-open"));
+      .forEach((el) => {
+        el.classList.remove("is-open");
+        el.querySelector("[data-accordion-toggle]")?.setAttribute("aria-expanded", "false");
+      });
     if (!open) item.classList.add("is-open");
     accBtn.setAttribute("aria-expanded", String(!open));
     return;
@@ -49,7 +90,7 @@ const rollOdometers = (root = document) => {
     el.classList.add("is-rolling");
   };
 
-  if (!("IntersectionObserver" in window)) {
+  if (!("IntersectionObserver" in window) || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
     reels.forEach(roll);
     return;
   }
@@ -63,6 +104,7 @@ const rollOdometers = (root = document) => {
   }, { threshold: 0.4 });
 
   reels.forEach((el) => observer.observe(el));
+  onPageCleanup(() => observer.disconnect());
 };
 
 
@@ -74,6 +116,7 @@ const startCutoffClocks = (root = document) => {
     if (!clock) return;
 
     const target = new Date(el.getAttribute("data-cutoff")).getTime();
+    if (!Number.isFinite(target)) return;
     const tick = () => {
       const left = Math.max(0, Math.floor((target - Date.now()) / 1000));
       if (left === 0) { clearInterval(timer); el.hidden = true; return; }
@@ -83,6 +126,7 @@ const startCutoffClocks = (root = document) => {
       clock.textContent = h > 0 ? `${h}h ${String(m).padStart(2, "0")}m` : `${m}m ${String(s).padStart(2, "0")}s`;
     };
     const timer = setInterval(tick, 1000);
+    onPageCleanup(() => clearInterval(timer));
     tick();
   });
 };
@@ -123,15 +167,17 @@ const startExitOffer = (root = document) => {
   };
 
   if (window.matchMedia("(hover: hover)").matches) {
-    document.addEventListener("mouseout", onLeave);
+    document.addEventListener("mouseout", onLeave, { signal: pageEvents.signal });
   } else {
     let scrolled = false;
-    addEventListener("scroll", () => { scrolled = window.scrollY > 600; }, { passive: true });
-    setTimeout(() => { if (scrolled) show(); }, 25000);
+    addEventListener("scroll", () => { scrolled = window.scrollY > 600; }, { passive: true, signal: pageEvents.signal });
+    const timer = setTimeout(() => { if (scrolled) show(); }, 25000);
+    onPageCleanup(() => clearTimeout(timer));
   }
 
-  modal.querySelectorAll("[data-exit-close]").forEach((el) => el.addEventListener("click", close));
-  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && open) close(); });
+  modal.querySelectorAll("[data-exit-close]").forEach((el) => el.addEventListener("click", close, { signal: pageEvents.signal }));
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && open) close(); }, { signal: pageEvents.signal });
+  onPageCleanup(() => { modal.hidden = true; modal.classList.remove("is-open"); });
 };
 
 // --- Scroll reveals --------------------------------------------------------
@@ -159,14 +205,34 @@ const startReveals = (root = document) => {
       reveal(entry.target);
       observer.unobserve(entry.target);
     });
-  }, { rootMargin: "0px 0px -8% 0px", threshold: 0.08 });
+  }, { rootMargin: "0px 0px 40px 0px", threshold: 0 });
 
   targets.forEach((el) => {
     // Already on screen: show it now rather than waiting for a scroll that may
     // never come on a short page.
     if (el.getBoundingClientRect().top < window.innerHeight) return reveal(el);
+    el.classList.add("is-reveal-pending");
     observer.observe(el);
   });
+  const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
+  preference.addEventListener("change", () => {
+    if (!preference.matches) return;
+    observer.disconnect();
+    targets.forEach(reveal);
+  }, { signal: pageEvents.signal });
+  onPageCleanup(() => { observer.disconnect(); targets.forEach(reveal); });
+};
+
+// No offscreen animation work; the ticker also stops in a background tab.
+const startTicker = () => {
+  const ticker = document.querySelector(".ticker");
+  if (!ticker || !("IntersectionObserver" in window)) return;
+  let visible = true;
+  const update = () => ticker.style.setProperty("--ticker-play-state", visible && !document.hidden ? "running" : "paused");
+  const observer = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; update(); });
+  observer.observe(ticker);
+  document.addEventListener("visibilitychange", update, { signal: pageEvents.signal });
+  onPageCleanup(() => observer.disconnect());
 };
 
 // Reviews use native touch scrolling and CSS scroll snap. On a phone, start on
@@ -189,8 +255,16 @@ const startReviewCarousels = (root = document) => {
       carousel.scrollLeft += cardBox.left - railBox.left - (railBox.width - cardBox.width) / 2;
     };
 
-    requestAnimationFrame(centerMiddleReview);
-    mobile.addEventListener?.("change", centerMiddleReview);
+    const frame = requestAnimationFrame(centerMiddleReview);
+    mobile.addEventListener?.("change", centerMiddleReview, { signal: pageEvents.signal });
+    carousel.addEventListener("keydown", (event) => {
+      if (!mobile.matches || !["ArrowLeft", "ArrowRight"].includes(event.key)) return;
+      event.preventDefault();
+      const distance = carousel.querySelector(".testimonial")?.getBoundingClientRect().width || carousel.clientWidth;
+      carousel.scrollBy({ left: (distance + 12) * (event.key === "ArrowRight" ? 1 : -1),
+        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+    }, { signal: pageEvents.signal });
+    onPageCleanup(() => { cancelAnimationFrame(frame); delete carousel.dataset.carouselReady; });
   });
 };
 
@@ -286,18 +360,37 @@ const startSupportChat = (root = document) => {
     }
   };
 
-  toggles.forEach((t) => t.addEventListener("click", toggle));
-  form.addEventListener("submit", (e) => { e.preventDefault(); ask(input.value); });
+  toggles.forEach((t) => t.addEventListener("click", toggle, { signal: pageEvents.signal }));
+  form.addEventListener("submit", (e) => { e.preventDefault(); ask(input.value); }, { signal: pageEvents.signal });
   chat.querySelectorAll("[data-chat-suggest]").forEach((chip) =>
-    chip.addEventListener("click", () => ask(chip.textContent.trim())));
+    chip.addEventListener("click", () => ask(chip.textContent.trim()), { signal: pageEvents.signal }));
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && chat.classList.contains("is-open")) close();
+  }, { signal: pageEvents.signal });
+  onPageCleanup(() => {
+    delete chat.dataset.ready;
+    chat.classList.remove("is-open");
+    panel.hidden = true;
+    toggles.forEach((t) => t.setAttribute("aria-expanded", "false"));
   });
 };
 
+const stopStorefront = () => {
+  pageEvents?.abort();
+  pageCleanups.splice(0).forEach((cleanup) => cleanup());
+  activeBody = null;
+};
+
 const startStorefront = () => {
+  // DOMContentLoaded and turbo:load both fire on the first visit.
+  if (activeBody === document.body) return;
+  stopStorefront();
+  activeBody = document.body;
+  pageEvents = new AbortController();
+  startScrollProgress();
   rollOdometers();
   startReveals();
+  startTicker();
   startReviewCarousels();
   startSupportChat();
   startCutoffClocks();
@@ -306,3 +399,5 @@ const startStorefront = () => {
 
 document.addEventListener("DOMContentLoaded", startStorefront);
 document.addEventListener("turbo:load", startStorefront);
+document.addEventListener("turbo:before-cache", stopStorefront);
+document.addEventListener("turbo:before-render", stopStorefront);

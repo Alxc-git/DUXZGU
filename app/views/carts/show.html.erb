@@ -28,7 +28,7 @@
           <article class="card cart-line">
             <div class="checkout__item cart-line__main">
               <span class="checkout__thumb cart-line__media">
-                <%= image_tag line.flavor.checkout_image, alt: "" %>
+                <%= storefront_image_tag line.flavor.checkout_image, alt: "", sizes: "120px" %>
               </span>
               <div class="cart-line__body">
                 <div class="stat__label cart-line__name"><%= line.product.display_name %></div>

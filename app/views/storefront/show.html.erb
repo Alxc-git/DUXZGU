@@ -3,8 +3,8 @@
   <div class="pdp" style="--pdp-focus:<%= @flavor.pdp_focus %>">
     <div class="pdp__gallery">
       <div class="pdp__main">
-        <%= image_tag @flavor.pdp_image, alt: "#{@flavor.name} Creatine Jelly" %>
-        <button type="button" class="icon-btn icon-btn--bare" aria-label="<%= t("store.pdp.zoom") %>"><%= cj_icon "search" %></button>
+        <%= storefront_image_tag @flavor.pdp_image, alt: "#{@flavor.name} Creatine Jelly", loading: "eager", fetchpriority: "high", sizes: "(min-width: 960px) 50vw, 100vw" %>
+        <%= link_to asset_path(@flavor.pdp_image), class: "icon-btn icon-btn--bare", target: "_blank", rel: "noopener", aria: { label: t("store.pdp.zoom") } do %><%= cj_icon "search" %><% end %>
       </div>
 
       <div class="pdp__thumbs">
@@ -15,7 +15,7 @@
                 class: ["pdp__thumb", ("is-selected" if flavor.slug == @flavor.slug)],
                 style: "--flavor:#{flavor.color_var};--thumb-focus:#{flavor.pdp_focus}" do %>
             <span class="flavor__bg" style="background:<%= flavor.spot_var %>;opacity:.45"></span>
-            <%= image_tag flavor.pdp_image, alt: "" %>
+            <%= storefront_image_tag flavor.pdp_image, alt: "", sizes: "(min-width: 960px) 17vw, (min-width: 620px) 30vw, 60vw" %>
             <span style="position:relative;z-index:1">
               <span class="flavor__name" style="font-size:.9375rem"><%= flavor.name %></span>
               <span class="flavor__note" style="display:block;margin-bottom:0"><%= flavor.note %></span>
@@ -111,17 +111,7 @@
       <h2><%= t("store.home.steps_title") %></h2>
       <p class="sub"><%= t("store.home.steps_lede") %></p>
     </div>
-    <div class="g3">
-      <% Storefront.how_to_use.each do |step| %>
-        <div class="how-step">
-          <span class="feature-icon"><%= cj_icon step[:icon] %></span>
-          <div>
-            <div class="stat__label"><%= step[:title] %></div>
-            <div class="stat__note"><%= step[:note] %></div>
-          </div>
-        </div>
-      <% end %>
-    </div>
+    <%= render "shared/routine" %>
   </div>
 
   <div class="card card--pad-lg" id="reviews">

@@ -1,0 +1,16 @@
+<%= @store.name %> — <%= t("mailer.newsletter_title", amount: @amount) %>
+
+<%= t("mailer.newsletter_body") %>
+
+<%= t("mailer.newsletter_code_label") %> : <%= @discount.code %>
+<% if @discount.minimum_cents.positive? -%>
+<%= t("mailer.newsletter_minimum", amount: MoneyFormatter.format(@discount.minimum_cents, @store.currency)) %>
+<% end -%>
+<% if @discount.expires_at.present? -%>
+<%= t("mailer.newsletter_expires", date: l(@discount.expires_at.to_date, format: "%-d %B %Y")) %>
+<% end -%>
+
+<%= root_url(host: @store.domain) %>
+
+<%= t("mailer.question") %><% if @store.support_email.present? %> <%= t("mailer.or_write", email: @store.support_email) %><% end %>.
+<%= t("mailer.newsletter_unsubscribe") %>

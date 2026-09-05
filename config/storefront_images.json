@@ -1,0 +1,252 @@
+{
+  "product/creatine-powder-tub.webp": {
+    "width": 1254,
+    "height": 1254,
+    "variants": {
+      "product/creatine-powder-tub-240w.webp": 240,
+      "product/creatine-powder-tub-480w.webp": 480,
+      "product/creatine-powder-tub-800w.webp": 800,
+      "product/creatine-powder-tub-1200w.webp": 1200
+    }
+  },
+  "product/duwzgu-athlete.webp": {
+    "width": 1448,
+    "height": 1086,
+    "variants": {
+      "product/duwzgu-athlete-240w.webp": 240,
+      "product/duwzgu-athlete-480w.webp": 480,
+      "product/duwzgu-athlete-800w.webp": 800,
+      "product/duwzgu-athlete-1200w.webp": 1200
+    }
+  },
+  "product/duwzgu-card-fruit-blueberry.webp": {
+    "width": 1448,
+    "height": 1086,
+    "variants": {
+      "product/duwzgu-card-fruit-blueberry-240w.webp": 240,
+      "product/duwzgu-card-fruit-blueberry-480w.webp": 480,
+      "product/duwzgu-card-fruit-blueberry-800w.webp": 800,
+      "product/duwzgu-card-fruit-blueberry-1200w.webp": 1200
+    }
+  },
+  "product/duwzgu-card-fruit-raspberry.webp": {
+    "width": 1448,
+    "height": 1086,
+    "variants": {
+      "product/duwzgu-card-fruit-raspberry-240w.webp": 240,
+      "product/duwzgu-card-fruit-raspberry-480w.webp": 480,
+      "product/duwzgu-card-fruit-raspberry-800w.webp": 800,
+      "product/duwzgu-card-fruit-raspberry-1200w.webp": 1200
+    }
+  },
+  "product/duwzgu-card-fruit-strawberry.webp": {
+    "width": 1448,
+    "height": 1086,
+    "variants": {
+      "product/duwzgu-card-fruit-strawberry-240w.webp": 240,
+      "product/duwzgu-card-fruit-strawberry-480w.webp": 480,
+      "product/duwzgu-card-fruit-strawberry-800w.webp": 800,
+      "product/duwzgu-card-fruit-strawberry-1200w.webp": 1200
+    }
+  },
+  "product/duwzgu-checkout-blueberry.webp": {
+    "width": 1254,
+    "height": 1254,
+    "variants": {
+      "product/duwzgu-checkout-blueberry-240w.webp": 240,
+      "product/duwzgu-checkout-blueberry-480w.webp": 480,
+      "product/duwzgu-checkout-blueberry-800w.webp": 800,
+      "product/duwzgu-checkout-blueberry-1200w.webp": 1200
+    }
+  },
+  "product/duwzgu-checkout-raspberry.webp": {
+    "width": 1254,
+    "height": 1254,
+    "variants": {
+      "product/duwzgu-checkout-raspberry-240w.webp": 240,
+      "product/duwzgu-checkout-raspberry-480w.webp": 480,
+      "product/duwzgu-checkout-raspberry-800w.webp": 800,
+      "product/duwzgu-checkout-raspberry-1200w.webp": 1200
+    }
+  },
+  "product/duwzgu-checkout-strawberry.webp": {
+    "width": 1254,
+    "height": 1254,
+    "variants": {
+      "product/duwzgu-checkout-strawberry-240w.webp": 240,
+      "product/duwzgu-checkout-strawberry-480w.webp": 480,
+      "product/duwzgu-checkout-strawberry-800w.webp": 800,
+      "product/duwzgu-checkout-strawberry-1200w.webp": 1200
+    }
+  },
+  "product/duwzgu-cta-mobile-blueberry.webp": {
+    "width": 1536,
+    "height": 1024,
+    "variants": {
+      "product/duwzgu-cta-mobile-blueberry-240w.webp": 240,
+      "product/duwzgu-cta-mobile-blueberry-480w.webp": 480,
+      "product/duwzgu-cta-mobile-blueberry-800w.webp": 800,
+      "product/duwzgu-cta-mobile-blueberry-1200w.webp": 1200
+    }
+  },
+  "product/duwzgu-cta-mobile-raspberry.webp": {
+    "width": 1536,
+    "height": 1024,
+    "variants": {
+      "product/duwzgu-cta-mobile-raspberry-240w.webp": 240,
+      "product/duwzgu-cta-mobile-raspberry-480w.webp": 480,
+      "product/duwzgu-cta-mobile-raspberry-800w.webp": 800,
+      "product/duwzgu-cta-mobile-raspberry-1200w.webp": 1200
+    }
+  },
+  "product/duwzgu-cta-mobile-strawberry.webp": {
+    "width": 1536,
+    "height": 1024,
+    "variants": {
+      "product/duwzgu-cta-mobile-strawberry-240w.webp": 240,
+      "product/duwzgu-cta-mobile-strawberry-480w.webp": 480,
+      "product/duwzgu-cta-mobile-strawberry-800w.webp": 800,
+      "product/duwzgu-cta-mobile-strawberry-1200w.webp": 1200
+    }
+  },
+  "product/duwzgu-hero-blueberry.webp": {
+    "width": 1672,
+    "height": 941,
+    "variants": {
+      "product/duwzgu-hero-blueberry-240w.webp": 240,
+      "product/duwzgu-hero-blueberry-480w.webp": 480,
+      "product/duwzgu-hero-blueberry-800w.webp": 800,
+      "product/duwzgu-hero-blueberry-1200w.webp": 1200
+    }
+  },
+  "product/duwzgu-hero-mobile-blueberry.webp": {
+    "width": 1448,
+    "height": 1086,
+    "variants": {
+      "product/duwzgu-hero-mobile-blueberry-240w.webp": 240,
+      "product/duwzgu-hero-mobile-blueberry-480w.webp": 480,
+      "product/duwzgu-hero-mobile-blueberry-800w.webp": 800,
+      "product/duwzgu-hero-mobile-blueberry-1200w.webp": 1200
+    }
+  },
+  "product/duwzgu-hero-mobile-raspberry.webp": {
+    "width": 1448,
+    "height": 1086,
+    "variants": {
+      "product/duwzgu-hero-mobile-raspberry-240w.webp": 240,
+      "product/duwzgu-hero-mobile-raspberry-480w.webp": 480,
+      "product/duwzgu-hero-mobile-raspberry-800w.webp": 800,
+      "product/duwzgu-hero-mobile-raspberry-1200w.webp": 1200
+    }
+  },
+  "product/duwzgu-hero-mobile-strawberry.webp": {
+    "width": 1448,
+    "height": 1086,
+    "variants": {
+      "product/duwzgu-hero-mobile-strawberry-240w.webp": 240,
+      "product/duwzgu-hero-mobile-strawberry-480w.webp": 480,
+      "product/duwzgu-hero-mobile-strawberry-800w.webp": 800,
+      "product/duwzgu-hero-mobile-strawberry-1200w.webp": 1200
+    }
+  },
+  "product/duwzgu-hero-raspberry.webp": {
+    "width": 1672,
+    "height": 941,
+    "variants": {
+      "product/duwzgu-hero-raspberry-240w.webp": 240,
+      "product/duwzgu-hero-raspberry-480w.webp": 480,
+      "product/duwzgu-hero-raspberry-800w.webp": 800,
+      "product/duwzgu-hero-raspberry-1200w.webp": 1200
+    }
+  },
+  "product/duwzgu-hero-strawberry.webp": {
+    "width": 1672,
+    "height": 941,
+    "variants": {
+      "product/duwzgu-hero-strawberry-240w.webp": 240,
+      "product/duwzgu-hero-strawberry-480w.webp": 480,
+      "product/duwzgu-hero-strawberry-800w.webp": 800,
+      "product/duwzgu-hero-strawberry-1200w.webp": 1200
+    }
+  },
+  "product/duwzgu-lineup-centered.webp": {
+    "width": 1254,
+    "height": 1254,
+    "variants": {
+      "product/duwzgu-lineup-centered-240w.webp": 240,
+      "product/duwzgu-lineup-centered-480w.webp": 480,
+      "product/duwzgu-lineup-centered-800w.webp": 800,
+      "product/duwzgu-lineup-centered-1200w.webp": 1200
+    }
+  },
+  "product/duwzgu-packshot-blueberry.webp": {
+    "width": 1448,
+    "height": 1086,
+    "variants": {
+      "product/duwzgu-packshot-blueberry-240w.webp": 240,
+      "product/duwzgu-packshot-blueberry-480w.webp": 480,
+      "product/duwzgu-packshot-blueberry-800w.webp": 800,
+      "product/duwzgu-packshot-blueberry-1200w.webp": 1200
+    }
+  },
+  "product/duwzgu-packshot-raspberry.webp": {
+    "width": 1448,
+    "height": 1086,
+    "variants": {
+      "product/duwzgu-packshot-raspberry-240w.webp": 240,
+      "product/duwzgu-packshot-raspberry-480w.webp": 480,
+      "product/duwzgu-packshot-raspberry-800w.webp": 800,
+      "product/duwzgu-packshot-raspberry-1200w.webp": 1200
+    }
+  },
+  "product/duwzgu-packshot-strawberry.webp": {
+    "width": 1448,
+    "height": 1086,
+    "variants": {
+      "product/duwzgu-packshot-strawberry-240w.webp": 240,
+      "product/duwzgu-packshot-strawberry-480w.webp": 480,
+      "product/duwzgu-packshot-strawberry-800w.webp": 800,
+      "product/duwzgu-packshot-strawberry-1200w.webp": 1200
+    }
+  },
+  "product/duwzgu-pdp-blueberry.webp": {
+    "width": 1448,
+    "height": 1086,
+    "variants": {
+      "product/duwzgu-pdp-blueberry-240w.webp": 240,
+      "product/duwzgu-pdp-blueberry-480w.webp": 480,
+      "product/duwzgu-pdp-blueberry-800w.webp": 800,
+      "product/duwzgu-pdp-blueberry-1200w.webp": 1200
+    }
+  },
+  "product/duwzgu-pdp-strawberry.webp": {
+    "width": 1448,
+    "height": 1086,
+    "variants": {
+      "product/duwzgu-pdp-strawberry-240w.webp": 240,
+      "product/duwzgu-pdp-strawberry-480w.webp": 480,
+      "product/duwzgu-pdp-strawberry-800w.webp": 800,
+      "product/duwzgu-pdp-strawberry-1200w.webp": 1200
+    }
+  },
+  "product/duwzgu-raspberry-close.webp": {
+    "width": 1448,
+    "height": 1086,
+    "variants": {
+      "product/duwzgu-raspberry-close-240w.webp": 240,
+      "product/duwzgu-raspberry-close-480w.webp": 480,
+      "product/duwzgu-raspberry-close-800w.webp": 800,
+      "product/duwzgu-raspberry-close-1200w.webp": 1200
+    }
+  },
+  "product/duwzgu-versus-raspberry.webp": {
+    "width": 1448,
+    "height": 1086,
+    "variants": {
+      "product/duwzgu-versus-raspberry-240w.webp": 240,
+      "product/duwzgu-versus-raspberry-480w.webp": 480,
+      "product/duwzgu-versus-raspberry-800w.webp": 800,
+      "product/duwzgu-versus-raspberry-1200w.webp": 1200
+    }
+  }
+}

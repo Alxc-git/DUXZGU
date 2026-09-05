@@ -351,6 +351,15 @@ en:
     text_tracking_next: "You will receive the tracking number as soon as it ships."
     to: "to"
     first_scan: "Tracking can take 24 to 48 hours to show a first scan."
+    newsletter_subject: "Your %{amount} discount is waiting"
+    newsletter_title: "Here is your %{amount} discount"
+    newsletter_body: "Thanks for signing up. Use this code at checkout, on whichever order you like."
+    newsletter_code_label: "Your promo code"
+    newsletter_percent: "%{percent}%"
+    newsletter_minimum: "Valid from %{amount} spent."
+    newsletter_expires: "Use before %{date}."
+    newsletter_cta: "Shop now"
+    newsletter_unsubscribe: "You are receiving this email because you asked for this discount. Reply UNSUBSCRIBE to stop receiving them."
 
   store:
     checkout:
@@ -444,7 +453,8 @@ en:
       newsletter_title: "Get 10% off your first order"
       newsletter_lede: "Join the email list for exclusive offers and performance tips."
       newsletter_placeholder: "Enter your email"
-      subscribe: "Subscribe"
+      newsletter_cta: "Get my discount"
+      newsletter_consent: "By leaving your email you agree to receive our promotional offers. Unsubscribe any time."
       rights: "All rights reserved."
       terms: "Terms"
       refunds: "Refunds"
@@ -457,6 +467,9 @@ en:
       title: "Contact us"
       lede: "Questions about an order, delivery or the product? Send a message to the team."
       submit: "Send message"
+    newsletter:
+      thanks: "Thanks! Your discount code is on its way to your inbox."
+      too_many: "Too many attempts. Try again in a few minutes."
     nav:
       home: "Home"
       product: "Product"
@@ -589,8 +602,7 @@ en:
       accepted: "Secure checkout — we accept"
       methods_label: "Accepted payment methods"
     dispatch:
-      same_day_html: "Order within <b>%{time}</b> for dispatch today"
-      ships_html: "Ships <b>%{day}</b>"
+      tracking_available: "Tracking emailed as soon as it is available"
     exit:
       eyebrow: "Before you go"
       title_html: "Take 10% off<br>your first order."

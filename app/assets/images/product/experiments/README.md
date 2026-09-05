@@ -1,7 +1,8 @@
 # DUWZGU experimental product imagery
 
-These files are intentionally not wired into a page yet. The PNG files are the
-editable masters; the matching WebP files are the versions to use on the site.
+The unreferenced image files were removed from the deployed assets during the
+September 2026 cleanup. They remain recoverable from Git history. The notes below
+describe those archived concepts; see docs/NETTOYAGE_IMAGES.md for the inventory.
 
 ## Production candidates
 

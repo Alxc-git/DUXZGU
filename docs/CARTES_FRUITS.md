@@ -1,0 +1,40 @@
+# Nouveaux décors fruités des cartes saveurs
+
+Créés avec l’outil imagegen intégré. Les originaux de génération restent dans le dossier personnel `generated_images`; les trois versions WebP ci-dessous sont les fichiers utilisés par le site.
+
+- `app/assets/images/product/duwzgu-card-fruit-strawberry.webp`
+- `app/assets/images/product/duwzgu-card-fruit-blueberry.webp`
+- `app/assets/images/product/duwzgu-card-fruit-raspberry.webp`
+
+Les anciennes images sont conservées. Les nouveaux décors sont composés au format 4:3, avec les fruits au premier plan depuis le bas et un fond sombre continu. Le cadrage CSS conserve un grand pot dans chaque carte; un fondu discret en bas évite la coupure visuelle avec le texte.
+
+## Consignes de génération
+
+### strawberry
+
+Use case: precise-object-edit / product-mockup. Deliver ONE standalone premium e-commerce product photograph for the strawberry flavor. Landscape 4:3 composition, ideally 1536 x 1152. Not a screenshot, not a collage, no UI.
+Input image 1 is the product identity reference: preserve this exact DUWZGU creatine jar, black ribbed lid, proportions, label artwork, lettering and flavor color. Input image 2 is the existing website's three-card layout: use only the strawberry card as a reference for the LARGE apparent jar size. The user likes the size of the jars and wants ONLY the scenery improved.
+Primary request: new continuous natural fruit scenery growing up from the bottom of the image, without the chopped-off backdrop look. Remove the tall stone pedestal. Place the same jar on a barely visible low dark ground among ripe strawberries with their natural little green leaves. Let the fruit arrangement start near the bottom foreground and rise organically along both lower sides of the jar. Subtle wet reflections and a few tiny deep strawberry red juice droplets can rise from the fruit near the lower third; keep the upper background calm, uninterrupted and almost black (#121216). Natural contact shadows unify jar and fruit. No rectangular background plate, no abrupt horizontal cutoff, no isolated product cutout look.
+Framing invariant: one upright front-facing centered jar, very large: approximately 48% of canvas width and 78% of canvas height, lid around 7% from the top, base around 85% from the top. Entire lid and jar bottom visible. Fruit must not hide the main lettering. Keep the foreground berries fully composed with a small breathing margin at the bottom. Dark soft falloff at all four edges for seamless blending with the dark website. Fruit begins at the bottom, not suspended high behind the jar.
+Lighting: high-end photorealistic studio product photography, crisp readable package, soft neutral key light, restrained deep strawberry red rim highlights, tactile fresh fruit, subtle grounded reflections. Consistent centered camera, same jar scale and ground level as companion flavor photos.
+Text on jar must retain the reference: DUWZGU, CREATINE, MONOHYDRATE, DIETARY SUPPLEMENT, STRAWBERRY TASTE, 5000 MG, 130 GUMMIES. Do not invent or add any other text or badge. Keep the product branding intact. No hands, no extra jars, no architecture, no watermark, no frame, no large splashes reaching the top, no solid rock block.
+
+### blueberry
+
+Use case: precise-object-edit / product-mockup. Deliver ONE standalone premium e-commerce product photograph for the blueberry flavor. Landscape 4:3 composition, ideally 1536 x 1152. Not a screenshot, not a collage, no UI.
+Input image 1 is the product identity reference: preserve this exact DUWZGU creatine jar, black ribbed lid, proportions, label artwork, lettering and flavor color. Input image 2 is the existing website's three-card layout: use only the blueberry card as a reference for the LARGE apparent jar size. The user likes the size of the jars and wants ONLY the scenery improved.
+Primary request: new continuous natural fruit scenery growing up from the bottom of the image, without the chopped-off backdrop look. Remove the tall stone pedestal. Place the same jar on a barely visible low dark ground among plump fresh blueberries with subtle natural bloom. Let the fruit arrangement start near the bottom foreground and rise organically along both lower sides of the jar. Subtle wet reflections and a few tiny deep sapphire blue juice droplets can rise from the fruit near the lower third; keep the upper background calm, uninterrupted and almost black (#121216). Natural contact shadows unify jar and fruit. No rectangular background plate, no abrupt horizontal cutoff, no isolated product cutout look.
+Framing invariant: one upright front-facing centered jar, very large: approximately 48% of canvas width and 78% of canvas height, lid around 7% from the top, base around 85% from the top. Entire lid and jar bottom visible. Fruit must not hide the main lettering. Keep the foreground berries fully composed with a small breathing margin at the bottom. Dark soft falloff at all four edges for seamless blending with the dark website. Fruit begins at the bottom, not suspended high behind the jar.
+Lighting: high-end photorealistic studio product photography, crisp readable package, soft neutral key light, restrained deep sapphire blue rim highlights, tactile fresh fruit, subtle grounded reflections. Consistent centered camera, same jar scale and ground level as companion flavor photos.
+Text on jar must retain the reference: DUWZGU, CREATINE, MONOHYDRATE, DIETARY SUPPLEMENT, BLUEBERRY TASTE, 5000 MG, 130 GUMMIES. Do not invent or add any other text or badge. Keep the product branding intact. No hands, no extra jars, no architecture, no watermark, no frame, no large splashes reaching the top, no solid rock block.
+
+### raspberry
+
+Use case: precise-object-edit / product-mockup. Deliver ONE standalone premium e-commerce product photograph for the raspberry flavor. Landscape 4:3 composition, ideally 1536 x 1152. Not a screenshot, not a collage, no UI.
+Input image 1 is the product identity reference: preserve this exact DUWZGU creatine jar, black ribbed lid, proportions, label artwork, lettering and flavor color. Input image 2 is the existing website's three-card layout: use only the raspberry card as a reference for the LARGE apparent jar size. The user likes the size of the jars and wants ONLY the scenery improved.
+Primary request: new continuous natural fruit scenery growing up from the bottom of the image, without the chopped-off backdrop look. Remove the tall stone pedestal. Place the same jar on a barely visible low dark ground among fresh raspberries with realistic delicate drupelets. Let the fruit arrangement start near the bottom foreground and rise organically along both lower sides of the jar. Subtle wet reflections and a few tiny rich raspberry magenta juice droplets can rise from the fruit near the lower third; keep the upper background calm, uninterrupted and almost black (#121216). Natural contact shadows unify jar and fruit. No rectangular background plate, no abrupt horizontal cutoff, no isolated product cutout look.
+Framing invariant: one upright front-facing centered jar, very large: approximately 48% of canvas width and 78% of canvas height, lid around 7% from the top, base around 85% from the top. Entire lid and jar bottom visible. Fruit must not hide the main lettering. Keep the foreground berries fully composed with a small breathing margin at the bottom. Dark soft falloff at all four edges for seamless blending with the dark website. Fruit begins at the bottom, not suspended high behind the jar.
+Lighting: high-end photorealistic studio product photography, crisp readable package, soft neutral key light, restrained rich raspberry magenta rim highlights, tactile fresh fruit, subtle grounded reflections. Consistent centered camera, same jar scale and ground level as companion flavor photos.
+Text on jar must retain the reference: DUWZGU, CREATINE, MONOHYDRATE, DIETARY SUPPLEMENT, RASPBERRY TASTE, 5000 MG, 130 GUMMIES. Do not invent or add any other text or badge. Keep the product branding intact. No hands, no extra jars, no architecture, no watermark, no frame, no large splashes reaching the top, no solid rock block.
+
+

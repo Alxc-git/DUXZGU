@@ -1,6 +1,6 @@
 .pdp{
   display:grid;grid-template-columns:1fr;gap:clamp(24px,3vw,44px);align-items:start;
-  @container site (min-width:#{$bp-xl}){grid-template-columns:minmax(0,1.02fr) minmax(400px,.98fr)}
+  @container site (min-width:#{$bp-xl}){grid-template-columns:repeat(2,minmax(0,1fr))}
   &__gallery{display:flex;flex-direction:column;gap:var(--space-3);min-width:0}
   &__title{font-size:2.75rem}
   &__main{
@@ -24,6 +24,11 @@
       box-shadow:0 0 0 1px var(--flavor,var(--accent)),0 0 26px -4px var(--flavor,var(--accent))}
   }
   &__buy{align-self:start;min-width:0}
+  &__buy .actions{
+    display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+    .btn{width:100%;white-space:normal;font-size:var(--fs-body-sm);text-wrap:balance}
+    @container site (max-width:#{$bp-sm - 1px}){grid-template-columns:1fr}
+  }
   &__buy-inner{
     display:flex;flex-direction:column;gap:clamp(11px,1vw,13px);
     // The column stretches its children; a pill badge must keep its own width.
@@ -36,12 +41,14 @@
     align-items:stretch;
     &__gallery{
       height:100%;
-      max-height:calc(100vh - #{$header-h} - var(--space-16));
-      max-height:calc(100svh - #{$header-h} - var(--space-16));
     }
     &__main{flex:1 1 auto;min-height:340px;aspect-ratio:auto}
     &__thumbs{flex:0 0 auto}
     &__thumb img{aspect-ratio:16/10}
+  }
+  @container site (min-width:#{$bp-sm}) and (max-width:#{$bp-xl - 1px}){
+    &__main{aspect-ratio:16/9;
+      img{object-fit:contain;object-position:center}}
   }
   @container site (max-width:#{$bp-sm - 1px}){
     &__main{aspect-ratio:4/3;border-radius:var(--radius-md)}
@@ -58,9 +65,22 @@
   &__note{margin-top:6px;color:var(--text-muted);font-size:var(--fs-caption)}
   @container site (max-width:#{$bp-sm - 1px}){&__now{font-size:2.35rem}}
 }
+.routine{list-style:none;margin:0;padding:0;grid-auto-rows:1fr}
 .how-step{
-  display:flex;align-items:center;gap:14px;min-width:0;
-  @container site (max-width:#{$bp-sm - 1px}){
-    width:min(100%,270px);margin-inline:auto;
+  position:relative;display:flex;flex-direction:column;align-items:center;gap:20px;
+  min-width:0;padding:32px 22px;text-align:center;
+  border:1px solid var(--border-hairline);border-radius:var(--radius-md);
+  background:linear-gradient(150deg,rgba(255,255,255,.035),transparent 65%),var(--ink-100);
+  &__number{position:absolute;top:16px;left:18px;font-family:var(--font-display);
+    font-size:1.2rem;color:var(--gray-500);letter-spacing:.08em}
+  &__copy{max-width:28ch}
+  .stat__label{font-size:1.5rem;line-height:1.1;text-wrap:balance}
+  .stat__note{margin-top:10px;line-height:1.6}
+  @container site (max-width:#{$bp-md - 1px}){
+    flex-direction:row;text-align:left;padding:26px 20px;gap:16px;
+    &__number{top:10px;left:auto;right:14px;font-size:.875rem}
+    &__copy{max-width:none;flex:1}
+    .stat__label{font-size:1.25rem}
+    .stat__note{margin-top:6px}
   }
 }

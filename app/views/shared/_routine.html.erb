@@ -1,0 +1,12 @@
+<ol class="g3 routine reveal reveal--stagger">
+  <% Storefront.how_to_use.each do |step| %>
+    <li class="how-step">
+      <span class="how-step__number" aria-hidden="true"><%= format("%02d", step[:n].to_i) %></span>
+      <span class="feature-icon feature-icon--soft"><%= cj_icon step[:icon] %></span>
+      <div class="how-step__copy">
+        <h3 class="stat__label"><%= step[:title] %></h3>
+        <p class="stat__note"><%= step[:note] %></p>
+      </div>
+    </li>
+  <% end %>
+</ol>
